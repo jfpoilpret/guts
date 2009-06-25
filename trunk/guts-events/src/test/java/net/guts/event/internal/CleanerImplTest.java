@@ -42,6 +42,7 @@ public class CleanerImplTest
 		_handler = new ThreadExceptionHandler();
 		Thread.setDefaultUncaughtExceptionHandler(_handler);
 		_control = EasyMock.createStrictControl();
+		_control.makeThreadSafe(true);
 		_clean1 = _control.createMock(Cleanable.class);
 		_clean2 = _control.createMock(Cleanable.class);
 		_clean3 = _control.createMock(Cleanable.class);
@@ -135,6 +136,7 @@ public class CleanerImplTest
 		
 		public void uncaughtException(Thread t, Throwable e)
 		{
+			System.out.printf("uncaught exception in thread %s\n", t.getName());
 			_exception = e;
 		}
 
