@@ -93,11 +93,13 @@ public class CleanerImpl implements Cleaner
 	{
 		try
 		{
-			long nextCleanup = System.currentTimeMillis() + _delay;
+			long nextCleanup = System.currentTimeMillis() + _delay * ONE_SECOND;
 			while (true)
 			{
 				long delay =  nextCleanup - System.currentTimeMillis();
-				Cleanable cleanable = _waitingCleanables.poll(delay, TimeUnit.SECONDS);
+				// Make sure delay > 0
+				delay = Math.max(delay, 1);
+				Cleanable cleanable = _waitingCleanables.poll(delay, TimeUnit.MILLISECONDS);
 				if (cleanable != null)
 				{
 					cleanable.cleanup();
@@ -105,7 +107,7 @@ public class CleanerImpl implements Cleaner
 				if (System.currentTimeMillis() >= nextCleanup)
 				{
 					cleanupAll();
-					nextCleanup = System.currentTimeMillis() + _delay;
+					nextCleanup = System.currentTimeMillis() + _delay * ONE_SECOND;
 				}
 			}
 		}
@@ -127,6 +129,7 @@ public class CleanerImpl implements Cleaner
 		}
 	}
 
+	static final private long ONE_SECOND = 1000;
 	static final private long DELAY_SECONDS = 300;
 	final private long _delay;
 	private Thread _cleaner;
