@@ -20,6 +20,6 @@ public final class InDeferredThreadExecutor implements Executor
 {
 	public void execute(Runnable command)
 	{
-		new Thread(command).run();
+		new Thread(command).start();
 	}
 }
