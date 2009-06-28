@@ -239,6 +239,33 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 			int diff = this._priority - that._priority;
 			return (diff != 0 ? diff : this._order - that._order);
 		}
+		
+		@Override public int hashCode()
+		{
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + _order;
+			result = prime * result + _priority;
+			return result;
+		}
+
+		@Override public boolean equals(Object obj)
+		{
+			if (this == obj)
+			{
+				return true;
+			}
+			if (obj == null)
+			{
+				return false;
+			}
+			if (getClass() != obj.getClass())
+			{
+				return false;
+			}
+			Consumer other = (Consumer) obj;
+			return compareTo(other) == 0;
+		}
 
 		final private WeakReference<Object> _instance;
 		final private Method _consumer;
