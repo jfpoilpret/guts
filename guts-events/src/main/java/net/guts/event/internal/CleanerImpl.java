@@ -36,7 +36,7 @@ public class CleanerImpl implements Cleaner
 
 	public CleanerImpl(long delay)
 	{
-		_delay = delay;
+		_delay = delay * ONE_SECOND;
 		// Start a thread (as daemon)
 		start();
 	}
@@ -93,7 +93,7 @@ public class CleanerImpl implements Cleaner
 	{
 		try
 		{
-			long nextCleanup = System.currentTimeMillis() + _delay * ONE_SECOND;
+			long nextCleanup = System.currentTimeMillis() + _delay;
 			while (true)
 			{
 				long delay =  nextCleanup - System.currentTimeMillis();
@@ -107,7 +107,7 @@ public class CleanerImpl implements Cleaner
 				if (System.currentTimeMillis() >= nextCleanup)
 				{
 					cleanupAll();
-					nextCleanup = System.currentTimeMillis() + _delay * ONE_SECOND;
+					nextCleanup = System.currentTimeMillis() + _delay;
 				}
 			}
 		}
