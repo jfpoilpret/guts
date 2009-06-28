@@ -16,6 +16,7 @@ package net.guts.event;
 
 import java.lang.annotation.Annotation;
 
+import org.easymock.classextension.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -61,6 +62,7 @@ public class GuiceEventServiceThreadsTest
 	{
 		Integer event = 1;
 		reset(_mock);
+		EasyMock.makeThreadSafe(_mock, true);
 		_mock.push(event, InCurrentThread.class);
 		_mock.push(event, InDeferredThread.class);
 		
