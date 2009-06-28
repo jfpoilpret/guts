@@ -31,5 +31,5 @@ public class ConsumerInjectionListener implements InjectionListener<Object>
 		_service.registerConsumers(injectee);
 	}
 	
-	private EventService _service;
+	private EventService _service = null;
 }
