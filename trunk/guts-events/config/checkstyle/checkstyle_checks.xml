@@ -152,7 +152,6 @@
 			<property name="max" value="5"/>
 			<property name="severity" value="error"/>
 		</module>
-		<!-- This is because I prefer constructor-injection! -->
 		<module name="ParameterNumber">
 			<property name="tokens" value="CTOR_DEF"/>
 			<property name="max" value="5"/>

@@ -15,6 +15,8 @@
 package net.guts.event.internal;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Random;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -24,6 +26,8 @@ import org.easymock.Capture;
 import org.easymock.classextension.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
+
+import com.google.inject.TypeLiteral;
 
 import static org.easymock.EasyMock.eq;
 import static org.easymock.EasyMock.same;
@@ -35,6 +39,7 @@ import static org.easymock.classextension.EasyMock.reset;
 import static org.easymock.classextension.EasyMock.verify;
 
 import net.guts.event.ConsumerExceptionHandler;
+import net.guts.event.ConsumerReturnHandler;
 import net.guts.event.internal.ChannelImpl;
 import net.guts.event.internal.Cleaner;
 
@@ -45,8 +50,14 @@ public class ChannelImplTest
 	{
 		_exceptionHandler = createMock(ConsumerExceptionHandler.class);
 		_cleanup = createNiceMock(Cleaner.class);
+		_intReturnHandler = createMock(ConsumerReturnHandler.class);
+		_stringReturnHandler = createMock(ConsumerReturnHandler.class);
+		_returnHandlers = new HashMap<TypeLiteral<?>, ConsumerReturnHandler<?>>();
+		_returnHandlers.put(TypeLiteral.get(int.class), _intReturnHandler);
+		_returnHandlers.put(TypeLiteral.get(String.class), _stringReturnHandler);
 		_channel = new ChannelImpl<Integer>(
-			Integer.class, "", _exceptionHandler, _cleanup);
+			Integer.class, "", _exceptionHandler, _cleanup, _returnHandlers);
+		replay(_exceptionHandler, _cleanup);
 	}
 	
 	public void checkTwoExecutors() throws Exception
@@ -164,7 +175,48 @@ public class ChannelImplTest
 		private final int _priority;
 	}
 	
+	public void checkConsumerReturnHandlers() throws Exception
+	{
+		Method method1 = Consumer5.class.getDeclaredMethod("push1", Integer.class);
+		Method method2 = Consumer5.class.getDeclaredMethod("push2", Integer.class);
+		Consumer5 consumer = new Consumer5();
+
+		Executor exec = new Executor()
+		{
+			public void execute(Runnable command)
+			{
+				command.run();
+			}
+		};
+
+		// Expect result handlers called
+		_intReturnHandler.handle(10);
+		_stringReturnHandler.handle("10");
+		
+		// Send events
+		_channel.addConsumer(consumer, method1, 0, null, exec);
+		_channel.addConsumer(consumer, method2, 0, null, exec);
+		replay(_intReturnHandler, _stringReturnHandler);
+		_channel.publish(10);
+		verify(_intReturnHandler, _stringReturnHandler);
+	}
+	
+	static public class Consumer5
+	{
+		public int push1(Integer event)
+		{
+			return event;
+		}
+		public String push2(Integer event)
+		{
+			return "" + event;
+		}
+	}
+	
 	private ConsumerExceptionHandler _exceptionHandler;
+	private ConsumerReturnHandler<Integer> _intReturnHandler;
+	private ConsumerReturnHandler<String> _stringReturnHandler;
 	private Cleaner _cleanup;
 	private ChannelImpl<Integer> _channel;
+	private Map<TypeLiteral<?>, ConsumerReturnHandler<?>> _returnHandlers;
 }

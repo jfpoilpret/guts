@@ -24,7 +24,6 @@ import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.guts.event.Channel;
-import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.EventService;
 
 import com.google.inject.Inject;
@@ -35,12 +34,11 @@ import com.google.inject.TypeLiteral;
 public class EventServiceImpl implements EventService
 {
 	@Inject
-	public EventServiceImpl(AnnotationProcessorFactory factory, 
-		ConsumerExceptionHandler exceptionHandler, Cleaner cleaner)
+	public EventServiceImpl(
+		AnnotationProcessorFactory processorFactory, ChannelFactory channelFactory)
 	{
-		_processor = factory.create(Collections.unmodifiableSet(_channels.keySet()));
-		_exceptionHandler = exceptionHandler;
-		_cleaner = cleaner;
+		_processor = processorFactory.create(Collections.unmodifiableSet(_channels.keySet()));
+		_factory = channelFactory;
 	}
 	
 	public <T> void registerChannel(TypeLiteral<T> type, String topic)
@@ -68,8 +66,7 @@ public class EventServiceImpl implements EventService
 		return (Channel<T>) getChannelImpl(type.getType(), topic);
 	}
 
-	@SuppressWarnings("unchecked")
-	ChannelImpl<?> getChannelImpl(Type type, String topic)
+	private ChannelImpl<?> getChannelImpl(Type type, String topic)
 		throws IllegalArgumentException
 	{
 		ChannelKey key = new ChannelKey(type, topic);
@@ -90,7 +87,7 @@ public class EventServiceImpl implements EventService
 				ChannelImpl<?> channel = holder.getChannel();
 				if (channel == null)
 				{
-					channel = new ChannelImpl(type, topic, _exceptionHandler, _cleaner);
+					channel = _factory.create(type, topic);
 					holder.setChannel(channel);
 				}
 				return channel;
@@ -125,7 +122,7 @@ public class EventServiceImpl implements EventService
 		}
 	}
 	
-	static private class ChannelImplHolder
+	static public class ChannelImplHolder
 	{
 		ChannelImpl<?> getChannel()
 		{
@@ -139,15 +136,13 @@ public class EventServiceImpl implements EventService
 
 		private ChannelImpl<?> _channel;
 	}
-	
+
 	final private AnnotationProcessor _processor;
-	final private ConsumerExceptionHandler _exceptionHandler;
+	final private ChannelFactory _factory;
 
 	// Map of all registered event channels
 	final private Map<ChannelKey, ChannelImplHolder> _channels = 
 		new HashMap<ChannelKey, ChannelImplHolder>();
 	// RW lock to access _consumers
 	final private ReadWriteLock _lock = new ReentrantReadWriteLock();
-	// Active object in charge of cleaning consumer weak references in ChannelImpl
-	final private Cleaner _cleaner;
 }

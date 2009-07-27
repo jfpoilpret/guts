@@ -15,6 +15,7 @@
 package net.guts.event.internal;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -34,6 +35,7 @@ import static org.easymock.classextension.EasyMock.verify;
 
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
+import net.guts.event.ConsumerReturnHandler;
 import net.guts.event.Consumes;
 import net.guts.event.ErrorHandler;
 import net.guts.event.EventService;
@@ -58,18 +60,28 @@ public class EventServiceExecutorsTest
 		_cleaner = createNiceMock(Cleaner.class);
 		final Map<Class<? extends Annotation>, Provider<Executor>> executors =
 			new HashMap<Class<? extends Annotation>, Provider<Executor>>();
+		final Map<TypeLiteral<?>, ConsumerReturnHandler<?>> returnHandlers =
+			new HashMap<TypeLiteral<?>, ConsumerReturnHandler<?>>();
 		_exec1 = createMock(Executor.class);
 		_exec2 = createMock(Executor.class);
 		executors.put(InDeferredThread.class, new ExecutorProvider(_exec1));
 		executors.put(InEDT.class, new ExecutorProvider(_exec2));
-		AnnotationProcessorFactory factory = new AnnotationProcessorFactory()
+		AnnotationProcessorFactory processorFactory = new AnnotationProcessorFactory()
 		{
 			public AnnotationProcessor create(Set<ChannelKey> channels)
 			{
 				return new AnnotationProcessor(_errorHandler, channels, executors);
 			}
 		};
-		_service = new EventServiceImpl(factory, _exceptionHandler, _cleaner);
+		ChannelFactory channelFactory = new ChannelFactory()
+		{
+			@Override public ChannelImpl<?> create(Type eventType, String topic)
+			{
+				return new ChannelImpl<Object>(
+					eventType, topic, _exceptionHandler, _cleaner, returnHandlers);
+			}
+		};
+		_service = new EventServiceImpl(processorFactory, channelFactory);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 	}
 	

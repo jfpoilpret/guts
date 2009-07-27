@@ -12,18 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.event;
+package net.guts.event.internal;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import java.lang.reflect.Type;
 
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-@ThreadPolicy
-public @interface InCurrentThread
+public interface ChannelFactory
 {
+	public ChannelImpl<?> create(Type eventType, String topic);
 }

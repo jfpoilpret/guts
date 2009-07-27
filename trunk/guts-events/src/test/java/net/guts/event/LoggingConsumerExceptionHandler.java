@@ -16,14 +16,20 @@ package net.guts.event;
 
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
-import com.google.inject.Singleton;
-
-@Singleton
-public class DefaultErrorHandler extends AbstractErrorHandler
+public class LoggingConsumerExceptionHandler implements ConsumerExceptionHandler
 {
-	public void handleError(ConsumerClassError error, Method method, Type type, String topic)
+	static final private Logger _logger = 
+		Logger.getLogger(LoggingConsumerExceptionHandler.class.getName());
+	public void handleException(Throwable e, Method method, Object instance,
+		Type eventType, String topic)
 	{
-		throw new IllegalArgumentException(errorMessage(error, method, type, topic));
+		String message = String.format(
+			"Consumer method %s.%s of object %s for event type %s and topic '%s'",
+			method.getDeclaringClass().getName(), method.getName(), instance.toString(),
+			eventType, topic);
+		_logger.log(Level.WARNING, message, e);
 	}
 }

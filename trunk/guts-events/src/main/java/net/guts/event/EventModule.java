@@ -16,16 +16,49 @@ package net.guts.event;
 
 import net.guts.event.internal.AnnotationProcessor;
 import net.guts.event.internal.AnnotationProcessorFactory;
+import net.guts.event.internal.ChannelFactory;
+import net.guts.event.internal.ChannelImpl;
 import net.guts.event.internal.ConsumerInjectionListener;
 import net.guts.event.internal.ConsumerTypeListener;
-import net.guts.event.internal.InCurrentThreadExecutor;
 import net.guts.event.internal.InDeferredThreadExecutor;
 import net.guts.event.internal.InEDTExecutor;
 import net.guts.event.internal.Matchers;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 import com.google.inject.assistedinject.FactoryProvider;
 
+/**
+ * Guice {@link com.google.inject.Module} for GUTS-Events. This module must be added 
+ * to the list of modules passed to {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new EventModule(), ...);
+ * </pre>
+ * <p/>
+ * GUTS-Events has some default bindings that can be overridden in your own modules
+ * if required:
+ * <ul>
+ * <li>{@link ErrorHandler}: used to manage GUTS-Events configuration errors during
+ * processing of classes annotated with {@link Consumes} and {@link Filters}; default
+ * behavior is to throw {@link IllegalArgumentException}.</li>
+ * <li>{@link ConsumerExceptionHandler}: used to handle exceptions thrown by filter
+ * and consumer methods during event notification; default behavior is to echo
+ * information about the event and the exception to {@code System.err}.</li>
+ * </ul>
+ * In addition, this module also defines default bindings for Thread Policies
+ * annotations, used during event dispatching:
+ * <ul>
+ * <li>{@link InDeferredThread}: a new thread is created from when events are 
+ * dispatched to matching consumers</li>
+ * <li>{@link InEDT}: events notification is performed from within <i>Swing 
+ * Event-Dispatch Thread</i>.</li>
+ * </ul>
+ * <p/>
+ * Make sure this module doesn't get added twice to the list of modules used to
+ * create an {@link com.google.inject.Injector}.
+ * 
+ * @author Jean-Francois Poilpret
+ */
 final public class EventModule extends AbstractModule
 {
 	@Override protected void configure()
@@ -41,11 +74,29 @@ final public class EventModule extends AbstractModule
 		bind(AnnotationProcessorFactory.class).toProvider(FactoryProvider.newFactory(
 			AnnotationProcessorFactory.class, AnnotationProcessor.class));
 		
+		// Perform assisted inject for ChannelImpl
+		bind(ChannelFactory.class).toProvider(FactoryProvider.newFactory(
+			ChannelFactory.class, ChannelImpl.class));
+
 		// Initialize MultiMap to contain the dictionary of Executors to be
 		// used when @Consumes method have the matching annotations
 		// We bind all default Thread Policies supported by GUTS-Events
-		Events.bindExecutor(binder(), InCurrentThread.class, new InCurrentThreadExecutor());
-		Events.bindExecutor(binder(), InDeferredThread.class, new InDeferredThreadExecutor());
-		Events.bindExecutor(binder(), InEDT.class, new InEDTExecutor());
+		Events.bindExecutor(binder(), InDeferredThread.class)
+			.to(InDeferredThreadExecutor.class).in(Scopes.SINGLETON);
+		Events.bindExecutor(binder(), InEDT.class)
+			.to(InEDTExecutor.class).in(Scopes.SINGLETON);
+		
+		// Initialize empty MultiMap to contain handlers of results returned by consumers
+		Events.getHandlerMap(binder());
+	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof EventModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return EventModule.class.hashCode();
 	}
 }

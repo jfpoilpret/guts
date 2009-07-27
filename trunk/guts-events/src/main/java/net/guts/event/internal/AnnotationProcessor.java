@@ -28,10 +28,10 @@ import net.guts.event.ConsumerClassError;
 import net.guts.event.Consumes;
 import net.guts.event.ErrorHandler;
 import net.guts.event.Filters;
-import net.guts.event.ThreadPolicy;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
+import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.Assisted;
 
 public class AnnotationProcessor
@@ -64,52 +64,29 @@ public class AnnotationProcessor
 		List<Consumer> consumers = new ArrayList<Consumer>();
 		for (Method m: clazz.getMethods())
 		{
-			// Analyse each consumer method
+			// Analyze each consumer method
 			Consumes consumes = m.getAnnotation(Consumes.class);
-			if (consumes == null)
+			if (consumes != null)
 			{
-				continue;
-			}
-			// Check method is void and has one parameter
-			if (m.getReturnType() != void.class)
-			{
-				_handler.handleError(
-					ConsumerClassError.CONSUMES_MUST_RETURN_VOID, m, null, null);
-			}
-			else if (m.getParameterTypes().length != 1)
-			{
-				_handler.handleError(
-					ConsumerClassError.CONSUMES_MUST_HAVE_ONE_ARG, m, null, null);
-			}
-			else
-			{
-				// Check that there exists one registered Event Channel of
-				// this type!
-				Type type = m.getGenericParameterTypes()[0];
-				String topic = consumes.topic();
-				ChannelKey key = new ChannelKey(type, topic);
-				if (!_channels.contains(key))
+				ChannelKey key = analyzeMethod(false, m, consumes.topic(), consumes.type());
+				if (key != null)
 				{
-					_handler.handleError(
-						ConsumerClassError.CONSUMES_EVENT_MUST_BE_REGISTERED, m, type, topic);
-				}
-				else
-				{
-					// Temporarily store this info somewhere for later use
-					consumers.add(new Consumer(
-						key, m, consumes.priority(), searchThreadPolicy(m)));
+					// Temporarily store this info somewhere for later use by caller
+					consumers.add(new Consumer(key, m, consumes.priority(), 
+						searchThreadPolicy(m, key.getType(), key.getTopic()), 
+						consumes.filterId()));
 				}
 			}
 		}
 		return consumers;
 	}
-	
-	private Annotation searchThreadPolicy(Method method)
+
+	private Annotation searchThreadPolicy(Method method, Type type, String topic)
 	{
 		Annotation policy = null;
 		for (Annotation annotation: method.getAnnotations())
 		{
-			if (annotation.annotationType().isAnnotationPresent(ThreadPolicy.class))
+			if (_executors.containsKey(annotation.annotationType()))
 			{
 				if (policy == null)
 				{
@@ -119,7 +96,7 @@ public class AnnotationProcessor
 				{
 					_handler.handleError(
 						ConsumerClassError.CONSUMES_CANNOT_HAVE_SEVERAL_THREAD_ANNOTATIONS, 
-						method, null, null);
+						method, type, topic);
 					break;
 				}
 			}
@@ -127,45 +104,20 @@ public class AnnotationProcessor
 		return policy;
 	}
 
-	//TODO refactor commonalities between findConsumers/findFilters!
 	private List<Filter> findFilters(Class<?> clazz)
 	{
 		List<Filter> allFilters = new ArrayList<Filter>();
 		for (Method m: clazz.getMethods())
 		{
-			// Analyse each consumer method
+			// Analyze each consumer method
 			Filters filters = m.getAnnotation(Filters.class);
-			if (filters == null)
+			if (filters != null)
 			{
-				continue;
-			}
-			// Check method is boolean and has one parameter
-			if (m.getReturnType() != boolean.class && m.getReturnType() != Boolean.class)
-			{
-				_handler.handleError(
-					ConsumerClassError.FILTERS_MUST_RETURN_BOOLEAN, m, null, null);
-			}
-			else if (m.getParameterTypes().length != 1)
-			{
-				_handler.handleError(
-					ConsumerClassError.FILTERS_MUST_HAVE_ONE_ARG, m, null, null);
-			}
-			else
-			{
-				// Check that there exists one registered Event Channel of
-				// this type!
-				Type type = m.getGenericParameterTypes()[0];
-				String topic = filters.topic();
-				ChannelKey key = new ChannelKey(type, topic);
-				if (!_channels.contains(key))
-				{
-					_handler.handleError(
-						ConsumerClassError.FILTERS_EVENT_MUST_BE_REGISTERED, m, type, topic);
-				}
-				else
+				ChannelKey key = analyzeMethod(true, m, filters.topic(), filters.type());
+				if (key != null)
 				{
 					// Temporarily store this info somewhere for later use
-					allFilters.add(new Filter(key, m));
+					allFilters.add(new Filter(key, m, filters.id()));
 				}
 			}
 		}
@@ -194,7 +146,8 @@ public class AnnotationProcessor
 			boolean hasFilter = false;
 			for (Filter filter: filters)
 			{
-				if (filter._key.equals(consumer._key))
+				if (	filter._key.equals(consumer._key)
+					&&	filter._id.equals(consumer._idFilter))
 				{
 					events.add(new ConsumerFilter(consumer._key, consumer._method, 
 						filter._method, consumer._priority, executor));
@@ -210,18 +163,67 @@ public class AnnotationProcessor
 		}
 		return events;
 	}
+
+	private ChannelKey analyzeMethod(boolean isFilter, Method m, String topic, Class<?> type)
+	{
+		// Check method is void and has one parameter
+		if (isFilter && m.getReturnType() != boolean.class)
+		{
+			handleError(isFilter, InternalError.BAD_RETURN_TYPE, m, null, null);
+			return null;
+		}
+		if (m.getParameterTypes().length != 1)
+		{
+			handleError(isFilter, InternalError.BAD_ARG_NUMBER, m, null, null);
+			return null;
+		}
+
+		// Find type of event
+		TypeLiteral<?> argType = TypeLiteral.get(m.getGenericParameterTypes()[0]);
+		TypeLiteral<?> eventType = argType;
+		if (type != SameAsArgumentType.class)
+		{
+			// Check that the declared type is a superclass of the argument type
+			if (!type.isAssignableFrom(argType.getRawType()))
+			{
+				handleError(isFilter, InternalError.EXPLICIT_TYPE_NOT_ARG_SUPERTYPE, 
+					m, type, topic);
+				return null;
+			}
+			eventType = argType.getSupertype(type);
+		}
+		// Check that there exists one registered Event Channel of
+		// this type!
+		ChannelKey key = new ChannelKey(eventType.getType(), topic);
+		if (!_channels.contains(key))
+		{
+			handleError(isFilter, InternalError.EVENT_NOT_REGISTERED, 
+				m, eventType.getType(), topic);
+			return null;
+		}
+		return key;
+	}
 	
+	private void handleError(boolean isFilter,
+		InternalError error, Method m, Type type, String topic)
+	{
+		_handler.handleError(error.getError(isFilter), m, type, topic);
+	}
+
 	//CSOFF: HideUtilityClassConstructorCheck
 	static private class Consumer
 	{
-		Consumer(ChannelKey key, Method method, int priority, Annotation threadPolicy)
+		Consumer(ChannelKey key, Method method, int priority, 
+			Annotation threadPolicy, String idFilter)
 		{
+			_idFilter = idFilter;
 			_key = key;
 			_method = method;
 			_priority = priority;
 			_threadPolicy = threadPolicy;
 		}
 		
+		final private String _idFilter;
 		final private ChannelKey _key;
 		final private Method _method;
 		final private int _priority;
@@ -230,12 +232,14 @@ public class AnnotationProcessor
 	
 	static private class Filter
 	{
-		Filter(ChannelKey key, Method method)
+		Filter(ChannelKey key, Method method, String id)
 		{
+			_id = id;
 			_key = key;
 			_method = method;
 		}
-		
+
+		final private String _id;
 		final private ChannelKey _key;
 		final private Method _method;
 	}

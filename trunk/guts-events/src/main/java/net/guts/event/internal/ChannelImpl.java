@@ -31,17 +31,27 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
+import net.guts.event.ConsumerReturnHandler;
+
+import com.google.inject.Inject;
+import com.google.inject.TypeLiteral;
+import com.google.inject.assistedinject.Assisted;
+import com.google.inject.internal.Nullable;
 
 public class ChannelImpl<T> implements Channel<T>, Cleanable
 {
-	public ChannelImpl(Type eventType, String topic, 
-		ConsumerExceptionHandler exceptionHandler, Cleaner cleanup)
+	@Inject
+	public ChannelImpl(@Assisted Type eventType, @Assisted @Nullable String topic, 
+		ConsumerExceptionHandler exceptionHandler, Cleaner cleanup,
+		Map<TypeLiteral<?>, ConsumerReturnHandler<?>> returnHandlers)
 	{
 		_eventType = eventType;
+		_eventClass = TypeLiteral.get(_eventType).getRawType();
 		_topic = topic;
 		_exceptionHandler = exceptionHandler;
 		_cleanup = cleanup;
 		_cleanup.addCleanable(this);
+		_returnHandlers = returnHandlers;
 	}
 	
 	public void addConsumer(Object instance, Method consumer, int priority, Method filter, 
@@ -181,22 +191,60 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 			write.unlock();
 		}
 	}
-	
+
 	private boolean filter(Consumer consumer, T event)
 	{
+		Class<?> actualType = (event == null ? _eventClass : event.getClass());
 		if (consumer._filter != null)
 		{
-			return invoke(consumer._instance.get(), consumer._filter, event, false);
+			// Check the event type matches _filter argument type
+			Class<?> argType = consumer._filter.getParameterTypes()[0];
+			if ((!argType.isPrimitive()) && !argType.isAssignableFrom(actualType))
+			{
+				return false;
+			}
+			if (!invoke(consumer._instance.get(), consumer._filter, event, false))
+			{
+				return false;
+			}
 		}
-		else
-		{
-			return true;
-		}
+		// Check the event matches _consumer argument type
+		Class<?> argType = consumer._consumer.getParameterTypes()[0];
+		return (argType.isPrimitive() || argType.isAssignableFrom(actualType));
 	}
 	
+	//CSOFF: IllegalCatchCheck
+	@SuppressWarnings("unchecked")
 	private void notify(Consumer consumer, T event)
 	{
-		invoke(consumer._instance.get(), consumer._consumer, event, (Void) null);
+		Object instance = consumer._instance.get();
+		Object result = invoke(instance, consumer._consumer, event, null);
+		if (result != null)
+		{
+			// Check if there is a handler for the returned type of the consumer method
+			TypeLiteral<?> type = TypeLiteral.get(consumer._consumer.getGenericReturnType());
+			ConsumerReturnHandler handler = findHandler(type);
+			if (handler != null)
+			{
+				// Call the registered handler for that return type
+				try
+				{
+					handler.handle(result);
+				}
+				catch (Exception e)
+				{
+					_exceptionHandler.handleException(
+						e, consumer._consumer, instance, _eventType, _topic);
+				}
+			}
+		}
+	}
+	//CSON: IllegalCatchCheck
+
+	//TODO potential enhancements: also match generic wildcards, supertypes, interfaces
+	private ConsumerReturnHandler<?> findHandler(TypeLiteral<?> type)
+	{
+		return _returnHandlers.get(type);
 	}
 	
 	//CSOFF: IllegalCatchCheck
@@ -295,8 +343,10 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 	}
 
 	final private Type _eventType;
+	final private Class<?> _eventClass;
 	final private String _topic;
 	final private ConsumerExceptionHandler _exceptionHandler;
+	final private Map<TypeLiteral<?>, ConsumerReturnHandler<?>> _returnHandlers;
 
 	// Ordered list (by priority and registration time) of consumers for this channel
 	// (grouped by Executor)

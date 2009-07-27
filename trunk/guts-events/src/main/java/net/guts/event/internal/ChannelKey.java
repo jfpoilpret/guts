@@ -69,6 +69,13 @@ public class ChannelKey
 		}
 		return true;
 	}
+	
+	@Override public String toString()
+	{
+		return String.format("%s(_topic='%s', _type=%s)", getClass().getName(), _topic, _type);
+	}
+
+
 
 	final private Type _type;
 	final private String _topic;

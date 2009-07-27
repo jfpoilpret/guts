@@ -17,6 +17,7 @@ package net.guts.event.internal;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -52,7 +53,11 @@ public class AnnotationProcessorTest
 	@BeforeMethod public void setup()
 	{
 		Set<ChannelKey> channels = new HashSet<ChannelKey>();
+		channels.add(key(Type1.class));
+		channels.add(key(Number.class));
 		channels.add(key(Integer.class));
+		channels.add(key(int.class));
+		channels.add(key(TypeLiteral.get(int[].class)));
 		channels.add(key(Integer.class, TOPIC));
 		channels.add(key(Boolean.class));
 		channels.add(key(new TypeLiteral<List<Integer>>(){}));
@@ -65,19 +70,12 @@ public class AnnotationProcessorTest
 
 	public void checkOneConsumesInteger()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer1.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
 	}
-	
 	static public class Consumer1
 	{
 		@Consumes public void push(Integer event) {}
@@ -85,28 +83,13 @@ public class AnnotationProcessorTest
 
 	public void checkTwoConsumesList()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer2.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(2);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(new TypeLiteral<List<Integer>>(){}));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push1");
-
-		assertThat(events.get(1)).as("events[1]").isNotNull();
-		assertThat(events.get(1).getKey()).as("events[1].getKey()").isNotNull()
-			.isEqualTo(key(new TypeLiteral<List<String>>(){}));
-		assertThat(events.get(1).getFilter()).as("events[1].getFilter()").isNull();
-		assertThat(events.get(1).getPriority()).as("events[1].getPriority()").isEqualTo(0);
-		assertThat(events.get(1).getConsumer()).as("events[1].getConsumer()").isNotNull();
-		assertThat(events.get(1).getConsumer().getName()).as("events[1].getConsumer()")
-			.isEqualTo("push2");
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push1", null);
+		checkEvent(events, 1, key(new TypeLiteral<List<String>>(){}), 0, "push2", null);
 	}
-	
 	static public class Consumer2
 	{
 		@Consumes public void push1(List<Integer> event) {}
@@ -115,21 +98,12 @@ public class AnnotationProcessorTest
 
 	public void checkConsumesFiltersListInteger()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer3.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(new TypeLiteral<List<Integer>>(){}));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNotNull();
-		assertThat(events.get(0).getFilter().getName()).as("events[0].getFilter()")
-			.isEqualTo("filter");
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push", "filter");
 	}
-	
 	static public class Consumer3
 	{
 		@Consumes public void push(List<Integer> event) {}
@@ -138,19 +112,12 @@ public class AnnotationProcessorTest
 
 	public void checkConsumesListIntegerFiltersListString()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer4.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(new TypeLiteral<List<Integer>>(){}));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push", null);
 	}
-	
 	static public class Consumer4
 	{
 		@Consumes public void push(List<Integer> event) {}
@@ -159,32 +126,13 @@ public class AnnotationProcessorTest
 
 	public void checkOneConsumesTwoMatchingFilters()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer5.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(2);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNotNull();
-		assertThat(events.get(0).getFilter().getName()).as("events[0].getFilter()")
-			.isEqualTo("filter1");
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
-
-		assertThat(events.get(1)).as("events[1]").isNotNull();
-		assertThat(events.get(1).getKey()).as("events[1].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(1).getFilter()).as("events[1].getFilter()").isNotNull();
-		assertThat(events.get(1).getFilter().getName()).as("events[1].getFilter()")
-			.isEqualTo("filter2");
-		assertThat(events.get(1).getPriority()).as("events[1].getPriority()").isEqualTo(0);
-		assertThat(events.get(1).getConsumer()).as("events[1].getConsumer()").isNotNull();
-		assertThat(events.get(1).getConsumer().getName()).as("events[1].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class), 0, "push", "filter1");
+		checkEvent(events, 1, key(Integer.class), 0, "push", "filter2");
 	}
-	
 	static public class Consumer5
 	{
 		@Consumes public void push(Integer event) {}
@@ -194,19 +142,12 @@ public class AnnotationProcessorTest
 	
 	public void checkConsumesWithTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer6.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class, TOPIC));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(10);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class, TOPIC), 10, "push", null);
 	}
-	
 	static public class Consumer6
 	{
 		@Consumes(topic = TOPIC, priority = 10) 
@@ -215,28 +156,13 @@ public class AnnotationProcessorTest
 	
 	public void checkTwoConsumesWithWithoutTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer7.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(2);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class, TOPIC));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push1");
-
-		assertThat(events.get(1)).as("events[1]").isNotNull();
-		assertThat(events.get(1).getKey()).as("events[1].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(1).getFilter()).as("events[1].getFilter()").isNull();
-		assertThat(events.get(1).getPriority()).as("events[1].getPriority()").isEqualTo(0);
-		assertThat(events.get(1).getConsumer()).as("events[1].getConsumer()").isNotNull();
-		assertThat(events.get(1).getConsumer().getName()).as("events[1].getConsumer()")
-			.isEqualTo("push2");
+		checkEvent(events, 0, key(Integer.class, TOPIC), 0, "push1", null);
+		checkEvent(events, 1, key(Integer.class), 0, "push2", null);
 	}
-
 	static public class Consumer7
 	{
 		@Consumes(topic = TOPIC) public void push1(Integer event) {}
@@ -245,30 +171,13 @@ public class AnnotationProcessorTest
 	
 	public void checkConsumesFiltersWithTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer8.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(2);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class, TOPIC));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNotNull();
-		assertThat(events.get(0).getFilter().getName()).as("events[0].getFilter()")
-			.isEqualTo("filter1");
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push1");
-
-		assertThat(events.get(1)).as("events[1]").isNotNull();
-		assertThat(events.get(1).getKey()).as("events[1].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(1).getFilter()).as("events[1].getFilter()").isNull();
-		assertThat(events.get(1).getPriority()).as("events[1].getPriority()").isEqualTo(0);
-		assertThat(events.get(1).getConsumer()).as("events[1].getConsumer()").isNotNull();
-		assertThat(events.get(1).getConsumer().getName()).as("events[1].getConsumer()")
-			.isEqualTo("push2");
+		checkEvent(events, 0, key(Integer.class, TOPIC), 0, "push1", "filter1");
+		checkEvent(events, 1, key(Integer.class), 0, "push2", null);
 	}
-
 	static public class Consumer8
 	{
 		@Consumes(topic = TOPIC) public void push1(Integer event) {}
@@ -278,19 +187,12 @@ public class AnnotationProcessorTest
 	
 	public void checkConsumesTopicFiltersNoTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer9.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class, TOPIC));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class, TOPIC), 0, "push", null);
 	}
-	
 	static public class Consumer9
 	{
 		@Consumes(topic = TOPIC) public void push(Integer event) {}
@@ -299,19 +201,12 @@ public class AnnotationProcessorTest
 	
 	public void checkConsumesNoTopicFiltersTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer10.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
 	}
-	
 	static public class Consumer10
 	{
 		@Consumes public void push(Integer event) {}
@@ -320,33 +215,252 @@ public class AnnotationProcessorTest
 	
 	public void checkInheritedConsumesNoTopicFiltersTopic()
 	{
+		replay(_handler);
 		List<ConsumerFilter> events = _processor.process(Consumer11.class);
-
+		verify(_handler);
 		assertThat(events).as("events").hasSize(1);
-		assertThat(events.get(0)).as("events[0]").isNotNull();
-		assertThat(events.get(0).getKey()).as("events[0].getKey()").isNotNull()
-			.isEqualTo(key(Integer.class));
-		assertThat(events.get(0).getFilter()).as("events[0].getFilter()").isNull();
-		assertThat(events.get(0).getPriority()).as("events[0].getPriority()").isEqualTo(0);
-		assertThat(events.get(0).getConsumer()).as("events[0].getConsumer()").isNotNull();
-		assertThat(events.get(0).getConsumer().getName()).as("events[0].getConsumer()")
-			.isEqualTo("push");
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
 	}
-
 	static public class Consumer11 extends Consumer10
 	{
 	}
 	
-	public void checkIllegalConsumesReturnInt()
+	public void checkOneConsumesInt()
 	{
-		_handler.handleError(eq(ConsumerClassError.CONSUMES_MUST_RETURN_VOID), 
-			isA(Method.class), (Type) isNull(), (String) isNull());
 		replay(_handler);
-		_processor.process(ErrorConsumer1.class);
+		List<ConsumerFilter> events = _processor.process(Consumer12.class);
 		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(int.class), 0, "push", null);
+	}
+	static public class Consumer12
+	{
+		@Consumes public void push(int event) {}
+	}
+
+	public void checkOneConsumesIntFiltersInt()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer13.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(int.class), 0, "push", "filters");
+	}
+	static public class Consumer13
+	{
+		@Consumes public void push(int event) {}
+		@Filters public boolean filters(int event) {return true;}
+	}
+
+	public void checkOneConsumesIntArray()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer14.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(TypeLiteral.get(int[].class)), 0, "push", null);
+	}
+	static public class Consumer14
+	{
+		@Consumes public void push(int[] event) {}
+	}
+
+	public void checkConsumesWithTypeSameAsArgType()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer15.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
+	}
+	static public class Consumer15
+	{
+		@Consumes(type = Integer.class) public void push(Integer event) {}
 	}
 	
-	static public class ErrorConsumer1
+	public void checkConsumesWithTypeSameAsArgGenericType()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer16.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push", null);
+	}
+	static public class Consumer16
+	{
+		@Consumes(type = List.class) public void push(List<Integer> event) {}
+	}
+	
+	public void checkConsumesWithNumberTypeAndIntegerArgument()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer17.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Number.class), 0, "push", null);
+	}
+	static public class Consumer17
+	{
+		@Consumes(type = Number.class) public void push(Integer event) {}
+	}
+	
+	public void checkConsumesWithListTypeAndArrayListArgument()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer18.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push", null);
+	}
+	static public class Consumer18
+	{
+		@Consumes(type = List.class) public void push(ArrayList<Integer> event) {}
+	}
+	
+	public void checkConsumesWithListTypeAndMyListArgument()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer19.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(new TypeLiteral<List<Integer>>(){}), 0, "push", null);
+	}
+	static public class Consumer19
+	{
+		@Consumes(type = List.class) public void push(MyList event) {}
+	}
+	static public interface MyList extends List<Integer> {}
+	
+	public void checkConsumesWithType1AndType2Argument()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer20.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Type1.class), 0, "push", null);
+	}
+	static public class Consumer20
+	{
+		@Consumes(type = Type1.class) public void push(Type2<Integer> event) {}
+	}
+	static public interface Type1 {}
+	static public interface Type2<T> extends Type1 {}
+	
+	public void checkConsumesFiltersWithNumberTypeAndIntegerArgument()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer21.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Number.class), 0, "push", "filters");
+	}
+	static public class Consumer21
+	{
+		@Consumes(type = Number.class) public void push(Integer event) {}
+		@Filters(type = Number.class) public boolean filters(Integer event) {return true;}
+	}
+	
+	public void checkNamedFilterWithMatchingNamedConsumer()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer22.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Integer.class), 0, "push", "filters");
+	}
+	static public class Consumer22
+	{
+		@Consumes(filterId = ID1) public void push(Integer event) {}
+		@Filters(id = ID1) public boolean filters(Integer event) {return true;}
+	}
+
+	public void checkFilterWithNoMatchingNamedConsumer()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer23.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
+	}
+	static public class Consumer23
+	{
+		@Consumes(filterId = ID1) public void push(Integer event) {}
+		@Filters public boolean filters(Integer event) {return true;}
+	}
+
+	public void checkNamedFilterWithNoMatchingConsumer()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer24.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Integer.class), 0, "push", null);
+	}
+	static public class Consumer24
+	{
+		@Consumes public void push(Integer event) {}
+		@Filters(id = ID1) public boolean filters(Integer event) {return true;}
+	}
+
+	public void checkTwoFiltersWithTwoMatchingConsumers()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer25.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(2);
+		checkEvent(events, 0, key(Integer.class), 0, "push1", "filters1");
+		checkEvent(events, 1, key(Integer.class), 0, "push2", "filters2");
+	}
+	static public class Consumer25
+	{
+		@Consumes public void push1(Integer event) {}
+		@Filters public boolean filters1(Integer event) {return true;}
+		@Consumes(filterId = ID1) public void push2(Integer event) {}
+		@Filters(id = ID1) public boolean filters2(Integer event) {return true;}
+	}
+
+	public void checkOneNamedFilterWithTwoMatchingConsumers()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer26.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(2);
+		checkEvent(events, 0, key(Integer.class), 0, "push1", "filters");
+		checkEvent(events, 1, key(Integer.class), 0, "push2", "filters");
+	}
+	static public class Consumer26
+	{
+		@Consumes(filterId = ID1) public void push1(Integer event) {}
+		@Consumes(filterId = ID1) public void push2(Integer event) {}
+		@Filters(id = ID1) public boolean filters(Integer event) {return true;}
+	}
+
+	public void checkTwoNamedFiltersWithTwoMatchingConsumers()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer27.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(2);
+		checkEvent(events, 0, key(Integer.class), 0, "push1", "filters1");
+		checkEvent(events, 1, key(Integer.class), 0, "push2", "filters2");
+	}
+	static public class Consumer27
+	{
+		@Consumes(filterId = ID2) public void push1(Integer event) {}
+		@Filters(id = ID2) public boolean filters1(Integer event) {return true;}
+		@Consumes(filterId = ID1) public void push2(Integer event) {}
+		@Filters(id = ID1) public boolean filters2(Integer event) {return true;}
+	}
+
+	public void checkConsumesReturnInt()
+	{
+		replay(_handler);
+		List<ConsumerFilter> events = _processor.process(Consumer28.class);
+		verify(_handler);
+		assertThat(events).as("events").hasSize(1);
+		checkEvent(events, 0, key(Boolean.class), 0, "push", null);
+	}
+	static public class Consumer28
 	{
 		@Consumes public int push(Boolean event) {return 0;}
 	}
@@ -359,7 +473,6 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer2.class);
 		verify(_handler);
 	}
-	
 	static public class ErrorConsumer2
 	{
 		@Consumes public void push() {}
@@ -373,7 +486,6 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer3.class);
 		verify(_handler);
 	}
-	
 	static public class ErrorConsumer3
 	{
 		@Consumes public void push(Integer a, Integer b) {}
@@ -387,7 +499,6 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer4.class);
 		verify(_handler);
 	}
-	
 	static public class ErrorConsumer4
 	{
 		@Consumes public void push(Integer event) {}
@@ -402,7 +513,6 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer5.class);
 		verify(_handler);
 	}
-	
 	static public class ErrorConsumer5
 	{
 		@Consumes public void push(Integer event) {}
@@ -417,14 +527,11 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer6.class);
 		verify(_handler);
 	}
-	
-	// Error because no registered channel for Long type
 	static public class ErrorConsumer6
 	{
 		@Consumes public void push(Long event) {}
 	}
 
-	//FIXME this TC is incorrect (although the tested code is fine!!!)
 	public void checkIllegalConsumesForUnregisteredTopicChannel()
 	{
 		_handler.handleError(eq(ConsumerClassError.CONSUMES_EVENT_MUST_BE_REGISTERED), 
@@ -433,8 +540,6 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer7.class);
 		verify(_handler);
 	}
-	
-	// Error because no registered channel for topic
 	static public class ErrorConsumer7
 	{
 		@Consumes(topic = BAD_TOPIC) public void push(Integer event) {}
@@ -448,13 +553,73 @@ public class AnnotationProcessorTest
 		_processor.process(ErrorConsumer8.class);
 		verify(_handler);
 	}
-	
 	static public class ErrorConsumer8
 	{
 		@Consumes public void push(Integer event) {}
 		@Filters public int filter(Integer event) {return 0;}
 	}
 
+	public void checkIllegalConsumesWithTypeIntegerAndLongArgument()
+	{
+		_handler.handleError(eq(ConsumerClassError.CONSUMES_TYPE_MUST_BE_ARG_SUPERTYPE), 
+			isA(Method.class), eq(Integer.class), eq(""));
+		replay(_handler);
+		_processor.process(ErrorConsumer9.class);
+		verify(_handler);
+	}
+	static public class ErrorConsumer9
+	{
+		@Consumes(type = Integer.class) public void push(Long event) {}
+	}
+
+	public void checkIllegalConsumesWithTypeIntegerAndNumberArgument()
+	{
+		_handler.handleError(eq(ConsumerClassError.CONSUMES_TYPE_MUST_BE_ARG_SUPERTYPE), 
+			isA(Method.class), eq(Integer.class), eq(""));
+		replay(_handler);
+		_processor.process(ErrorConsumer10.class);
+		verify(_handler);
+	}
+	static public class ErrorConsumer10
+	{
+		@Consumes(type = Integer.class) public void push(Number event) {}
+	}
+
+	public void checkIllegalFiltersWithTypeIntegerAndNumberArgument()
+	{
+		_handler.handleError(eq(ConsumerClassError.FILTERS_TYPE_MUST_BE_ARG_SUPERTYPE), 
+			isA(Method.class), eq(Integer.class), eq(""));
+		replay(_handler);
+		_processor.process(ErrorConsumer11.class);
+		verify(_handler);
+	}
+	static public class ErrorConsumer11
+	{
+		@Consumes public void push(Number event) {}
+		@Filters(type = Integer.class) public boolean filters(Number event) {return true;}
+	}
+
+	static private void checkEvent(List<ConsumerFilter> events, int index, ChannelKey key, 
+		int priority, String consumer, String filter)
+	{
+		ConsumerFilter event = events.get(index);
+		String label = "events[" + index + "]";
+		assertThat(event).as(label).isNotNull();
+		assertThat(event.getKey()).as(label + ".getKey()").isNotNull().isEqualTo(key);
+		assertThat(event.getPriority()).as(label + ".getPriority()").isEqualTo(priority);
+		assertThat(event.getConsumer()).as(label + ".getConsumer()").isNotNull();
+		assertThat(event.getConsumer().getName()).as(label + ".getConsumer()").isEqualTo(consumer);
+		if (filter == null)
+		{
+			assertThat(event.getFilter()).as(label + ".getFilter()").isNull();
+		}
+		else
+		{
+			assertThat(event.getFilter()).as(label + ".getFilter()").isNotNull();
+			assertThat(event.getFilter().getName()).as(label + ".getFilter()").isEqualTo(filter);
+		}
+	}
+		
 	static private <T> ChannelKey key(Class<T> type)
 	{
 		return key(type, null);
@@ -477,6 +642,8 @@ public class AnnotationProcessorTest
 
 	static private final String TOPIC = "dummy";
 	static private final String BAD_TOPIC = "unexisting";
+	static private final String ID1 = "FILTER1";
+	static private final String ID2 = "FILTER2";
 	private AnnotationProcessor _processor;
 	private ErrorHandler _handler;
 }

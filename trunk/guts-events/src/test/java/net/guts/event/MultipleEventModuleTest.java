@@ -14,22 +14,16 @@
 
 package net.guts.event;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.testng.annotations.Test;
 
-import com.google.inject.BindingAnnotation;
+import com.google.inject.Guice;
 
-/**
- * TODO more details here
- * 
- * @author Jean-Francois Poilpret
- */
-@BindingAnnotation
-@Target({ElementType.FIELD, ElementType.PARAMETER, ElementType.METHOD}) 
-@Retention(RetentionPolicy.RUNTIME)
-public @interface Topic
+@Test(groups = "itest")
+public class MultipleEventModuleTest
 {
-	public String value();
+	public void checkCreateInjectorWithManyEventModules()
+	{
+		// Creating a Guice injector with more than one EventModule should be OK
+		Guice.createInjector(new EventModule(), new EventModule());
+	}
 }

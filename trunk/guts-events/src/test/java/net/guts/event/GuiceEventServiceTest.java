@@ -20,18 +20,18 @@ import java.util.concurrent.Executor;
 
 import org.testng.annotations.Test;
 
-import static org.easymock.classextension.EasyMock.createMock;
 import static org.fest.assertions.Assertions.assertThat;
 
 import net.guts.event.Channel;
-import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
 import net.guts.event.EventService;
 import net.guts.event.Events;
-import net.guts.event.Topic;
+import net.guts.event.Event;
 import net.guts.event.internal.AnnotationProcessor;
 import net.guts.event.internal.AnnotationProcessorFactory;
+import net.guts.event.internal.ChannelFactory;
+import net.guts.event.internal.ChannelImpl;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.ConfigurationException;
@@ -55,14 +55,14 @@ public class GuiceEventServiceTest
 
 	public void checkEventServiceInjection()
 	{
-		EventService service = Guice.createInjector(_minimumModule, _executorModule)
+		EventService service = Guice.createInjector(_executorModule)
 			.getInstance(EventService.class);
 		assertThat(service).as("EventService").isNotNull();
 	}
 
 	public void checkChannelsBindings()
 	{
-		_injector = Guice.createInjector(_minimumModule, _executorModule, new AbstractModule()
+		_injector = Guice.createInjector(_executorModule, new AbstractModule()
 		{
 			@Override protected void configure()
 			{
@@ -92,15 +92,14 @@ public class GuiceEventServiceTest
 	
 	public void checkEventModule()
 	{
-		EventService service = Guice.createInjector(_minimumModule, new EventModule())
+		EventService service = Guice.createInjector(new EventModule())
 			.getInstance(EventService.class);
 		assertThat(service).as("EventService").isNotNull();
 	}
 
 	public void checkEventModuleConsumerProcessing()
 	{
-		Injector injector = Guice.createInjector(
-			_minimumModule, new EventModule(), new AbstractModule()
+		Injector injector = Guice.createInjector(new EventModule(), new AbstractModule()
 		{
 			@Override protected void configure()
 			{
@@ -114,16 +113,14 @@ public class GuiceEventServiceTest
 	
 	static public class Consumer1
 	{
-		@Consumes
-		public void push(Integer event)
+		@Consumes public void push(Integer event)
 		{
 		}
 	}
 
 	public void checkTopicChannelInjection()
 	{
-		Injector injector = Guice.createInjector(
-			_minimumModule, new EventModule(), new AbstractModule()
+		Injector injector = Guice.createInjector(new EventModule(), new AbstractModule()
 		{
 			@Override protected void configure()
 			{
@@ -141,7 +138,7 @@ public class GuiceEventServiceTest
 	static public class ChannelInjected
 	{
 		@Inject public ChannelInjected(
-			Channel<Integer> typeChannel, @Topic(TOPIC) Channel<Integer> topicChannel)
+			Channel<Integer> typeChannel, @Event(topic = TOPIC) Channel<Integer> topicChannel)
 		{
 			_typeChannel = typeChannel;
 			_topicChannel = topicChannel;
@@ -160,26 +157,20 @@ public class GuiceEventServiceTest
 	private TypeLiteral<List<String>> _typeListString = 
 		new TypeLiteral<List<String>>(){};
 	private Injector _injector;
-	private ConsumerExceptionHandler _exceptionHandler = 
-		createMock(ConsumerExceptionHandler.class);
-	private Module _minimumModule = new AbstractModule()
-	{
-		@Override protected void configure()
-		{
-			bind(ConsumerExceptionHandler.class).toInstance(_exceptionHandler);
-		}
-	};
 	private Module _executorModule = new AbstractModule()
 	{
 		@Override protected void configure()
 		{
-			TypeLiteral<Class<? extends Annotation>> keyType = 
-				new TypeLiteral<Class<? extends Annotation>>() {};
-			TypeLiteral<Executor> valueType = 
-				new TypeLiteral<Executor>() {};
-			MapBinder.newMapBinder(binder(), keyType, valueType);
+			MapBinder.newMapBinder(binder(), 
+				new TypeLiteral<Class<? extends Annotation>>() {}, 
+				new TypeLiteral<Executor>() {});
+			MapBinder.newMapBinder(binder(), 
+				new TypeLiteral<TypeLiteral<?>>() {}, 
+				new TypeLiteral<ConsumerReturnHandler<?>>() {});
 			bind(AnnotationProcessorFactory.class).toProvider(FactoryProvider.newFactory(
 				AnnotationProcessorFactory.class, AnnotationProcessor.class));
+			bind(ChannelFactory.class).toProvider(FactoryProvider.newFactory(
+				ChannelFactory.class, ChannelImpl.class));
 		}
 	};
 }
