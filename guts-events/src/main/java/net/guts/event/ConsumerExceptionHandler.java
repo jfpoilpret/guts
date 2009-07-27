@@ -17,8 +17,43 @@ package net.guts.event;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 
+import net.guts.event.internal.DefaultConsumerExceptionHandler;
+
+import com.google.inject.ImplementedBy;
+
+/**
+ * Interface which implementation, if bound with Guice, will get notified of
+ * exceptions thrown by event consumer methods upon notification of events sent
+ * by a supplier.
+ * <p/>
+ * Default implementation simply swallows any exception. It is advised to define
+ * your own implementation in order, at least, to log exceptions thrown by
+ * consumer methods.
+ * <p/>
+ * To bind your own implementation, include the following code in one of your
+ * Guice {@link com.google.inject.Module}s:
+ * <pre>
+ * bind(ConsumerExceptionHandler.class).to(MyConsumerExceptionHandler.class);
+ * </pre>
+ * 
+ * @author Jean-Francois Poilpret
+ */
+@ImplementedBy(DefaultConsumerExceptionHandler.class)
 public interface ConsumerExceptionHandler
 {
+	/**
+	 * This method is called whenever an event consumer method throws an exception.
+	 * You may use this method to log the thrown exception or throw another exception,
+	 * which would then interrupt the event notification process and be rethrown to
+	 * the initial event supplier.
+	 * 
+	 * @param e exception thrown by {@code method} of {@code instance}
+	 * @param method {@code @Consumes} or {@code @Filters} method which has thrown 
+	 * {@code e}
+	 * @param instance object from which {@code method} has thrown {@code e}
+	 * @param eventType the event type for which {@code method} was called
+	 * @param topic the event topic for which {@code method} was called
+	 */
 	public void handleException(
 		Throwable e, Method method, Object instance, Type eventType, String topic);
 }

@@ -14,21 +14,19 @@
 
 package net.guts.event.internal;
 
-import java.util.concurrent.Executor;
+import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 
-import javax.swing.SwingUtilities;
+import net.guts.event.ConsumerClassError;
+import net.guts.event.ErrorHandler;
 
-public final class InEDTExecutor implements Executor
+import com.google.inject.Singleton;
+
+@Singleton
+public class DefaultErrorHandler implements ErrorHandler
 {
-	public void execute(Runnable command)
+	public void handleError(ConsumerClassError error, Method method, Type type, String topic)
 	{
-		if (!SwingUtilities.isEventDispatchThread())
-		{
-			SwingUtilities.invokeLater(command);
-		}
-		else
-		{
-			command.run();
-		}
+		throw new IllegalArgumentException(error.errorMessage(method, type, topic));
 	}
 }

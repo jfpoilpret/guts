@@ -14,17 +14,16 @@
 
 package net.guts.event;
 
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.List;
 
+import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
+import static org.easymock.EasyMock.createMock;
 import static org.fest.assertions.Assertions.assertThat;
 
 import net.guts.event.Channel;
-import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
@@ -41,19 +40,21 @@ public class RealUseCasesTest
 {
 	public void checkInjectPublishFilterConsume()
 	{
+		final ConsumerExceptionHandler handler = createMock(ConsumerExceptionHandler.class);
 		// Create Guice injector
 		Injector injector = Guice.createInjector(new EventModule(), new AbstractModule()
 		{
 			@Override protected void configure()
 			{
-				bind(ConsumerExceptionHandler.class).to(ExceptionHandler.class);
+				bind(ConsumerExceptionHandler.class).toInstance(handler);
 				Events.bindChannel(binder(), new TypeLiteral<List<Integer>>(){});
 			}
 		});
+		EasyMock.replay(handler);
 		// Get Consumer & Suppliers
 		Consumer1 consumer1 = injector.getInstance(Consumer1.class);
 		Consumer2 consumer2 = injector.getInstance(Consumer2.class);
-		Supplier supplier = injector.getInstance(Supplier.class);
+		Supplier1 supplier = injector.getInstance(Supplier1.class);
 		// Check that initial list is null
 		assertThat(consumer1.selection()).as("consumer1 initial selection").isNull();
 		assertThat(consumer2.selection()).as("consumer2 initial selection").isNull();
@@ -70,6 +71,7 @@ public class RealUseCasesTest
 		supplier.generate(9);
 		assertThat(consumer1.selection()).as("consumer1 pushed selection(9)").containsSequence(9);
 		assertThat(consumer2.selection()).as("consumer2 pushed selection(9)").containsSequence(9);
+		EasyMock.verify(handler);
 	}
 
 	static public class Consumer1
@@ -107,9 +109,9 @@ public class RealUseCasesTest
 		private List<Integer> _selection;
 	}
 	
-	static public class Supplier
+	static public class Supplier1
 	{
-		@Inject public Supplier(Channel<List<Integer>> channel)
+		@Inject public Supplier1(Channel<List<Integer>> channel)
 		{
 			_channel = channel;
 		}
@@ -120,14 +122,5 @@ public class RealUseCasesTest
 		}
 		
 		final private Channel<List<Integer>> _channel;
-	}
-	
-	static public class ExceptionHandler implements ConsumerExceptionHandler
-	{
-		public void handleException(
-			Throwable e, Method method, Object instance, Type eventType, String topic)
-		{
-			// Normally we would log e there!
-		}
 	}
 }

@@ -12,19 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.event;
+package net.guts.event.internal;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-// Marker interface for annotations that mark a thread policy for @Consumes
-// methods
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.ANNOTATION_TYPE)
-public @interface ThreadPolicy
+// This class serves as the default type in @Consumes annotation; when used,
+// it means that the annotated method consumes events of the exact type of
+// its argument.
+public class SameAsArgumentType
 {
 }

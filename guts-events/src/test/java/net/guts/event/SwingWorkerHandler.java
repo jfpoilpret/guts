@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.event.internal;
+package net.guts.event;
 
-import java.util.concurrent.Executor;
+import javax.swing.SwingWorker;
 
-import javax.swing.SwingUtilities;
-
-public final class InEDTExecutor implements Executor
+public class SwingWorkerHandler implements ConsumerReturnHandler<SwingWorker<?, ?>>
 {
-	public void execute(Runnable command)
+	@Override public void handle(SwingWorker<?, ?> result)
 	{
-		if (!SwingUtilities.isEventDispatchThread())
-		{
-			SwingUtilities.invokeLater(command);
-		}
-		else
-		{
-			command.run();
-		}
+		result.execute();
 	}
 }

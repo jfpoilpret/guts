@@ -16,48 +16,57 @@ package net.guts.event.internal;
 
 import java.lang.annotation.Annotation;
 
-import net.guts.event.Topic;
+import net.guts.event.Event;
 
-public class TopicImpl implements Topic
+public class EventImpl implements Event
 {
-	public TopicImpl(String value)
+	public EventImpl(String value, boolean primitive)
 	{
-		_value = value;
+		_topic = value;
+		_primitive = primitive;
 	}
 	
-	public String value()
+	public String topic()
 	{
-		return _value;
+		return _topic;
+	}
+	
+	public boolean primitive()
+	{
+		return _primitive;
 	}
 
 	public Class<? extends Annotation> annotationType()
 	{
-		return Topic.class;
+		return Event.class;
 	}
 
 	//CSOFF: MagicNumberCheck
 	@Override public int hashCode()
 	{
 		// This is specified in java.lang.Annotation.
-		return (127 * "value".hashCode()) ^ _value.hashCode();
+		return	((127 * "topic".hashCode()) ^ _topic.hashCode()) + 
+				((127 * "primitive".hashCode() ^ Boolean.valueOf(_primitive).hashCode()));
 	}
 	//CSON: MagicNumberCheck
 
 	@Override public boolean equals(Object o)
 	{
-		if (!(o instanceof Topic))
+		if (!(o instanceof Event))
 		{
 			return false;
 		}
 		
-		Topic other = (Topic) o;
-		return _value.equals(other.value());
+		Event other = (Event) o;
+		return _topic.equals(other.topic()) && _primitive == other.primitive();
 	}
 
 	@Override public String toString()
 	{
-		return "@" + Topic.class.getName() + "(value=" + _value + ")";
+		return "@" + Event.class.getName() + 
+			"(topic=" + _topic + ", primitive=" + _primitive + ")";
 	}
 
-	final private String _value;
+	final private String _topic;
+	final private boolean _primitive;
 }

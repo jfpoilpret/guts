@@ -20,17 +20,17 @@ import org.easymock.classextension.EasyMock;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import static org.easymock.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.reset;
 import static org.easymock.classextension.EasyMock.verify;
 
 import net.guts.event.Channel;
-import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
-import net.guts.event.InCurrentThread;
+import net.guts.event.InEDT;
 import net.guts.event.InDeferredThread;
 
 import com.google.inject.AbstractModule;
@@ -45,11 +45,12 @@ public class GuiceEventServiceThreadsTest
 	@BeforeMethod
 	public void initInjectorChannelAndConsumers()
 	{
+		_handler = createMock(ConsumerExceptionHandler.class);
 		_injector = Guice.createInjector(new EventModule(), new AbstractModule()
 		{
 			@Override protected void configure()
 			{
-				bind(ConsumerExceptionHandler.class).toInstance(_exceptionHandler);
+				bind(ConsumerExceptionHandler.class).toInstance(_handler);
 				Events.bindChannel(binder(), Integer.class);
 			}
 		});
@@ -63,14 +64,13 @@ public class GuiceEventServiceThreadsTest
 		Integer event = 1;
 		reset(_mock);
 		EasyMock.makeThreadSafe(_mock, true);
-		_mock.push(event, InCurrentThread.class);
+		_mock.push(event, InEDT.class);
 		_mock.push(event, InDeferredThread.class);
 		
-		replay(_mock);
+		replay(_mock, _handler);
 		_channel.publish(event);
 		Thread.sleep(100);
-		
-		verify(_mock);
+		verify(_mock, _handler);
 	}
 	
 	static public interface Consumer1
@@ -85,10 +85,10 @@ public class GuiceEventServiceThreadsTest
 			_mock = mock;
 		}
 
-		@Consumes @InCurrentThread
+		@Consumes @InEDT
 		public void push1(Integer event)
 		{
-			_mock.push(event, InCurrentThread.class);
+			_mock.push(event, InEDT.class);
 		}
 
 		@Consumes @InDeferredThread
@@ -100,10 +100,9 @@ public class GuiceEventServiceThreadsTest
 		private Consumer1 _mock;
 	}
 
-	private ConsumerExceptionHandler _exceptionHandler = 
-		createMock(ConsumerExceptionHandler.class);
 	private Injector _injector;
 	private Channel<Integer> _channel;
+	private ConsumerExceptionHandler _handler;
 	private Consumer1 _mock = createMock(Consumer1.class);
 	private Consumer2 _consumer;
 }

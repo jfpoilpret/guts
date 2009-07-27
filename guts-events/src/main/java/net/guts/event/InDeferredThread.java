@@ -20,10 +20,28 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotates an event consumer method (already annotated with {@link Consumes}) to
+ * indicate that it should not be notified of new events from the {@link Thread} that 
+ * has been used by the events supplier, but from a new {@link Thread}.
+ * <p/>
+ * Here is a typical usage:
+ * <pre>
+ * public class Consumer {
+ *     &#64;Consumes &#64;InDeferredThread public void consumes(Integer event) {...}
+ * }
+ * </pre>
+ * <p/>
+ * Note that if, for the same event, several consumer methods (even in different 
+ * classes and instances) use this annotation, all of them will be called in one
+ * <b>same</b> new {@link Thread}, different from the one which the event supplier
+ * sent the event from.
+ * 
+ * @author Jean-Francois Poilpret
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.METHOD)
-@ThreadPolicy
 public @interface InDeferredThread
 {
 }
