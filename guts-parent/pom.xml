@@ -1,0 +1,335 @@
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<groupId>net.guts</groupId>
+	<artifactId>guts-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1-SNAPSHOT</version>
+
+	<name>Parent pom for all GUTS projects</name>
+	<inceptionYear>2009</inceptionYear>
+
+	<properties>
+		<javaVersion>1.6</javaVersion>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding> 
+		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding> 
+	</properties>
+
+	<!-- TODO Add plugin management with versions for all plugins? -->
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>${javaVersion}</source>
+					<target>${javaVersion}</target>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<configuration>
+					<groups>utest,itest</groups>
+				</configuration>
+			</plugin>
+			<!-- Also generate a source jar to be installed into the repository -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+							<goal>test-jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- Also generate a javadoc jar to be installed into the repository -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<quiet>true</quiet>
+					<verbose>false</verbose>
+					<links>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+						<show>public</show>
+					</links>
+				</configuration>
+				<executions>
+					<execution>
+						<id>attach-javadoc</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+ 			</plugin>
+			<!--
+				Download source and javadoc from all dependencies and make them 
+				available within eclipse.
+				Requires explicit call to: mvn eclipse:eclipse
+			 -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.6</version>
+				<configuration>
+					<addVersionToProjectName>true</addVersionToProjectName>
+					<downloadSources>true</downloadSources>
+					<downloadJavadocs>true</downloadJavadocs>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>cobertura-maven-plugin</artifactId>
+				<configuration>
+					<formats>
+						<format>xml</format>
+						<format>html</format>
+					</formats>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-project-info-reports-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>index</report>
+							<report>summary</report>
+							<report>dependencies</report>
+							<report>project-team</report>
+							<report>license</report>
+							<report>issue-tracking</report>
+							<report>mailing-list</report>
+							<report>scm</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<artifactId>maven-jxr-plugin</artifactId>
+			</plugin>
+			<!-- Generate javadoc only for source, not for test -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<quiet>true</quiet>
+					<verbose>false</verbose>
+					<links>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+						<show>public</show>
+					</links>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>javadoc</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+ 			</plugin>
+			<plugin>
+				<artifactId>maven-surefire-report-plugin</artifactId>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>report-only</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+			<plugin>
+				<!-- TODO won't work except if we copy config/ for every child project! -->
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<configuration>
+					<configLocation>config/checkstyle/checkstyle_checks.xml</configLocation>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>findbugs-maven-plugin</artifactId>
+				<version>1.2</version>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-pmd-plugin</artifactId>
+				<version>2.3</version>
+				<configuration>
+					<linkXref>true</linkXref>
+					<minimumTokens>40</minimumTokens>
+					<targetJdk>${javaVersion}</targetJdk>
+				</configuration>
+				<reportSets>
+					<reportSet>
+						<reports>
+							<report>cpd</report>
+						</reports>
+					</reportSet>
+				</reportSets>
+			</plugin>
+		</plugins>
+	</reporting>
+
+	<repositories>
+		<repository>
+			<id>guts</id>
+			<name>GUTS repository</name>
+			<url>http://kenai.com/svn/guts~guts-maven-repository/releases/</url>
+		</repository>
+		<repository>
+			<id>fest</id>
+			<name>FEST repository</name>
+			<url>http://svn.codehaus.org/fest/m2/repo</url>
+		</repository>
+		<repository>
+			<id>java.net</id>
+			<name>Java.net repository</name>
+			<url>http://download.java.net/maven/2</url>
+		</repository>
+	</repositories>
+	
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>com.google.inject.extensions</groupId>
+				<artifactId>guice-multibindings</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.inject.extensions</groupId>
+				<artifactId>guice-assisted-inject</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.inject</groupId>
+				<artifactId>guice</artifactId>
+				<version>2.0</version>
+			</dependency>
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>5.8</version>
+				<classifier>jdk15</classifier>
+			</dependency>
+			<dependency>
+				<groupId>org.easytesting</groupId>
+				<artifactId>fest-assert</artifactId>
+				<version>1.1</version>
+			</dependency>
+			<dependency>
+				<groupId>org.easytesting</groupId>
+				<artifactId>fest-swing</artifactId>
+				<version>TODO</version>
+			</dependency>
+			<dependency>
+				<groupId>org.easytesting</groupId>
+				<artifactId>fest-swing-testng</artifactId>
+				<version>TODO</version>
+			</dependency>
+			<dependency>
+				<groupId>org.easymock</groupId>
+				<artifactId>easymockclassextension</artifactId>
+				<version>2.4</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	
+	<dependencies>
+		<dependency>
+			<groupId>com.google.inject</groupId>
+			<artifactId>guice</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.testng</groupId>
+			<artifactId>testng</artifactId>
+			<classifier>jdk15</classifier>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-assert</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymockclassextension</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>guts-releases</id>
+			<name>GUTS Release Repository</name>
+			<uniqueVersion>false</uniqueVersion>
+			<url>file:C:/dev/guts~guts-maven-repository/releases/</url>
+		</repository>
+		<snapshotRepository>
+			<id>guts-snapshots</id>
+			<name>GUTS Snapshot Repository</name>
+			<uniqueVersion>true</uniqueVersion>
+			<url>file:C:/dev/guts~guts-maven-repository/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+	<licenses>
+		<license>
+			<name>Apache 2</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+			<comments>A business-friendly Open Source Software license</comments>
+		</license>
+	</licenses>
+
+	<issueManagement>
+		<system>JIRA Issue Tracker</system>
+		<url>http://kenai.com/jira/browse/GUTS</url>
+	</issueManagement>
+	
+	<!-- TODO -->
+	<mailingLists>
+		<!--
+		<mailingList>
+			<name>GUTS Users list</name>
+			<archive>http://designgridlayout.dev.java.net/servlets/SummarizeList?listName=announce</archive>
+			<subscribe>mailto:announce-subscribe@designgridlayout.dev.java.net</subscribe>
+			<unsubscribe>mailto:announce-unsubscribe@designgridlayout.dev.java.net</unsubscribe>
+		</mailingList>
+		-->
+	</mailingLists>
+
+	<scm>
+		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</connection>
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</developerConnection>
+		<tag>/trunk</tag>
+		<url>http://kenai.com/projects/guts/sources/guts-events/show</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<id>jfpoilpret</id>
+			<name>Jean-Francois Poilpret</name>
+			<email>jfpoilpret@gmail.com</email>
+			<url>http://jfpoilpret.blogspot.com</url>
+			<roles>
+				<role>project owner</role>
+				<role>developer</role>
+			</roles>
+			<timezone>+7</timezone>
+		</developer>
+	</developers>
+</project>
