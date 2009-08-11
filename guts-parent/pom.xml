@@ -186,9 +186,26 @@
 
 	<repositories>
 		<repository>
-			<id>guts</id>
-			<name>GUTS repository</name>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
+			<id>guts-releases</id>
+			<name>GUTS Releases Repository</name>
 			<url>http://kenai.com/svn/guts~guts-maven-repository/releases/</url>
+		</repository>
+		<repository>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+			<id>guts-snapshots</id>
+			<name>GUTS Snapshots Repository</name>
+			<url>http://kenai.com/svn/guts~guts-maven-repository/snapshots/</url>
 		</repository>
 		<repository>
 			<id>fest</id>
