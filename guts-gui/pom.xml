@@ -1,0 +1,98 @@
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.guts</groupId>
+		<artifactId>guts-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>../guts-parent</relativePath>
+	</parent>
+	<artifactId>guts-gui</artifactId>
+	<packaging>jar</packaging>
+
+	<name>GUTS-GUI</name>
+	<description>
+		Guts-GUI is a light Guice-based framework for rich GUI (Swing-based) 
+		applications, mainly based on the Swing Application Framework by Sun 
+		(JSR-296).
+	</description>
+	<url>http://kenai.com/projects/guts</url>
+
+	<build>
+		<plugins>
+			<!-- Also generate a javadoc jar to be installed into the repository -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.gui.action.impl:net.guts.gui.application.impl:net.guts.gui.dialog.impl:net.guts.gui.menu.impl:net.guts.gui.message.impl</excludePackageNames>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.gui.action.impl:net.guts.gui.application.impl:net.guts.gui.dialog.impl:net.guts.gui.menu.impl:net.guts.gui.message.impl</excludePackageNames>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</reporting>
+
+	<dependencies>
+		<!-- Swing AppFramework and its dependencies -->
+		<dependency>
+			<groupId>org.jdesktop.application</groupId>
+			<artifactId>AppFramework</artifactId>
+			<version>1.03-patch-jfpoilpret</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.swinglabs</groupId> 
+			<artifactId>swing-worker</artifactId> 
+			<version>1.1</version> 
+		</dependency>
+
+		<!-- GUTS-Events -->
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-events</artifactId>
+			<version>0.1-SNAPSHOT</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- swing-layout and DesignGridLayout -->
+		<dependency>
+			<groupId>net.java.dev.designgridlayout</groupId>
+			<artifactId>designgridlayout</artifactId>
+			<version>1.1p1</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- TODO Take latest update (check also if in central maven repo) -->
+		<dependency>
+			<groupId>net.java.dev.glazedlists</groupId> 
+			<artifactId>glazedlists_java15</artifactId> 
+			<version>1.7.0</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- TODO remove MyDoggy -->
+		<!-- My Doggy: not in any maven repo... -->
+		<!-- Best way is to build it from source with `mvn install`	-->
+		<!-- as of 28.05.2008, 1.4.3 does not exist but is built from SVN trunk -->
+		<!--
+		<dependency>
+			<groupId>org.noos.xing</groupId>
+			<artifactId>mydoggy-plaf</artifactId>
+			<version>1.4.3</version>
+			<optional>true</optional>
+		</dependency>
+		-->
+	</dependencies>
+</project>

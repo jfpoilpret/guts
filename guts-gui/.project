@@ -1,0 +1,19 @@
+<projectDescription>
+  <name>guts-gui-0.1-SNAPSHOT</name>
+  <comment>Guts-GUI is a light Guice-based framework for rich GUI (Swing-based) 
+		applications, mainly based on the Swing Application Framework by Sun 
+		(JSR-296).</comment>
+  <projects/>
+  <buildSpec>
+    <buildCommand>
+      <name>org.eclipse.jdt.core.javabuilder</name>
+    </buildCommand>
+    <buildCommand>
+      <name>de.mvmsoft.checkclipse.CheckclipseBuilder</name>
+    </buildCommand>
+  </buildSpec>
+  <natures>
+    <nature>de.mvmsoft.checkclipse.CheckclipseNature</nature>
+    <nature>org.eclipse.jdt.core.javanature</nature>
+  </natures>
+</projectDescription>

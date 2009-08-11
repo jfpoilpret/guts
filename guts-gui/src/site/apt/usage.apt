@@ -1,0 +1,256 @@
+							----------------------
+									Usage
+							----------------------
+							Jean-Francois Poilpret
+							----------------------
+
+Dependency Injection in POJOs
+
+	If you use HiveMind, you are probably convinced of the benefits of 
+	Dependency Injection.
+	
+	However, one problem with HiveMind is that:
+	
+	*	you cannot inject dependencies in normal POJOs (you need to define an 
+		interface)
+
+	*	defining a HiveMind service requires quite a lot of xml
+	
+	[]
+	When <<<hivegui>>> module development was started, the need to define a lot 
+	of objects (commands, dialogs, panels, tables...) came. Many of these 
+	objects needed to:
+	
+	*	access other objects, services, or configuration points
+
+	*	be easily defined outside of Java code (for easy modification of some 
+		look & feel aspects for instance)
+	
+	[]
+	In addition, some objects would need to have many instances while others 
+	would be better singletons that can be cached in order to make the 
+	application faster. 
+	
+	Finally, some would not only need to access some dependencies but would also 
+	have extra arguments at construction-time.
+	
+	The <<<hiveutils.ObjectBuilder>>> service is used just for that: creating 
+	(and optionally caching) objects, allowing dependency injection and optional 
+	runtime arguments to be passed as well.
+	
+	All such objects must have a unique name and be defined as a contribution to 
+	the <<<hiveutils.ObjectBuilderObjects>>> configuration point:
+	
++------------------------------------------------------------------------------
+<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+    <object name="modify-board-panel" cached="false"
+            class="net.sourceforge.hiveboard.dialog.BoardPanel">
+        <inject object="object:AccountsParticipantTable"/>
+        <inject object="service:hiveboard.shared.WhiteBoardUserService"/>
+        <inject-arg/>
+    </object>
+</contribution>
++------------------------------------------------------------------------------
+	
+	In the example above, an object named "modify-board-panel" is declared. This 
+	object will not be cached (<<<ObjectBuilder>>> will create a new one 
+	everytime it is requested that object). This object is injected 3 arguments 
+	(in its constructor), the 2 first arguments are dependencies (one other 
+	object and one HiveMind service), while the third argument must be 
+	explicitely passed to <<<ObjectBuilder>>>.
+	
+	The following snippet shows how to get access to this object:
+	
++------------------------------------------------------------------------------
+ObjectBuilder builder = ...;
+Integer idBoard = ...;
+JPanel boardPanel = (JPanel) builder.create("modify-board-panel", idBoard);
++------------------------------------------------------------------------------
+	
+	For objects that do not have specific arguments (only real injected 
+	dependencies), it is not necessary to call <<<ObjectBuilder>>> to access 
+	them, these objects can be also injected into any other component defined in 
+	<<<hivemodule.xml>>>, thanks to the new "<<<object:>>>" 
+	<<<hivemind.ObjectProvider>>> directly provided by <<<hiveutils>>> module. 
+	This was used in the example above where an object named 
+	"AccountsParticipantTable" was injected into the "modify-board-panel" object.
+	
+	It is worth to note that <<<ObjectBuilder>>> also supports setter-injection, 
+	as in the next example:
+	
++------------------------------------------------------------------------------
+<contribution configuration-id="hiveutils.ObjectBuilderObjects">
+    <object name="modify-board-panel" cached="false"
+            class="net.sourceforge.hiveboard.dialog.BoardPanel">
+        <inject name="participantTable" object="object:AccountsParticipantTable"/>
+        <inject name="userService" object="service:hiveboard.shared.WhiteBoardUserService"/>
+    </object>
+</contribution>
++------------------------------------------------------------------------------
+
+	
+AdapterBuilderFactory
+		
+	The <<<AdapterBuilderFactory>>> is a special factory that enables to use a 
+	service class that does not really implement the service interface. It is 
+	particularly useful in the following situations:
+	
+	*	you have a legacy class that you would like to use as a HiveMind service, 
+		but this class does not implement any interface. HiveMind 
+		<<<BuilderFactory>>> prevents you from using this class as a service 
+		implementation. Now you can declare an interface with all public methods 
+		you want to use from the legacy class (possibly all of them) and then 
+		define your service implementation in HiveMind through the 
+		<<<AdapterBuilderFactory>>>.
+
+	*	you have a legacy class that implements an interface but which methods 
+		all throw checked exceptions which you do not consider recoverable, and 
+		thus would better be unchecked. You can declare an equivalent interface 
+		but remove all offending code{throws} clauses and then define your 
+		service implementation in HiveMind through the 
+		<<<AdapterBuilderFactory>>>.
+
+	[]
+	<<<AdapterBuilderFactory>>> takes exactly the same arguments as HiveMind 
+	<<<BuilderFactory>>> plus additional arguments to declare how thrown 
+	exceptions should be translated into different exceptions (if necessary).
+	
+	The following xml snippet shows an example:
+
++------------------------------------------------------------------------------
+<service-point id="MyLegacyService" interface="example.AnotherInterface">
+    <invoke-factory service-id="hiveutils.AdapterBuilderFactory">
+        <construct class="example.MyLegacyClass">
+            <log/>
+            <int>123</int>
+        </construct>
+        <exception-mapping  from="example.LegacyCheckedException" 
+                            to="java.lang.RuntimeException"/>
+    </invoke-factory>
+</contribution>
++------------------------------------------------------------------------------
+	
+	In the above example, <<<example.AnotherInterface>>> is a new interface, 
+	independent from <<<example.MyLegacyClass>>>. The example above is used to 
+	"convert" all <<<LegacyCheckedException>>>s into less cumbersome java 
+	<<<RuntimeException>>>s. It is possible to define several 
+	<<<\<exception-mapping\>>>> tags to define different mappings based on the 
+	original exception type, mappings are tried in the order they are defined.
+	
+	Another convenient usage is foreseeable for DAO implementations. Indeed, 
+	most libraries you can use in your DAO implementations to manage persistence 
+	of your business objects (JDBC, iBATIS...) have methods that are declared to 
+	throw checked exceptions (<<<SQLException>>>...) Obviously you do not want 
+	your DAO interfaces to declare methods that throw such exceptions. On the 
+	other hand, it is boring to copy/paste all boilerplate code inside your DAO 
+	implementations to try/catch/throw in order to change the checked exceptions 
+	into unchecked ones. Hence you can declare your DAO interface with no 
+	checked exception, code DAO implementations with methods directly throwing 
+	checked exceptions thrown by the persistence library that you use. Finally 
+	you just have to use <<<AdapterBuilderFactory>>> to build your DAO 
+	implementation.
+
+
+Externalizing properties outside the war file
+
+	It is not uncommon to need externalizing some properties (like database url, 
+	user, password) outside of a war file, so that it gets easy to deploy that 
+	war file on different environments without having to rebuild it.
+	
+	HiveMind already provides <<<SymbolSource>>> to put some properties outside 
+	of <<<hivemodule.xml>>> files. However, the only <<<SymbolSource>>> services 
+	provided by HiveMind do not directly allow you to get properties from a 
+	property file.
+	
+	In <<<hiveutils>>> module, there is a special <<<SymbolSource>>> 
+	(<<<PropertyFileSymbolSource>>>), that just does that: it allows you to 
+	define the path of a property file that will contain symbols to be replaced 
+	in <<<hivemodule.xml>>> files.
+	
+	When using <<<hiveutils>>> module in your application, 
+	<<<PropertyFileSymbolSource>>> is automatically registered to HiveMind as a 
+	<<<SymbolSource>>> that will be used before all other registered 
+	<<<SymbolSource>>>s.
+	
+	What you just need to do is to add contributions to the 
+	<<<hiveutils.PropertyFileSources>>> configuration point in order to indicate 
+	which property file(s) must be used to resolve symbols.
+	
+	You may just define an absolute path to your property file:
+	
++------------------------------------------------------------------------------
+<contribution configuration-id="hiveutils.PropertyFileSources">
+    <property-source file="c:/mysettings.properties"/>
+</contribution>
++------------------------------------------------------------------------------
+	
+	or you may decide that the path will be provided through a Java System 
+	property (almost every servlet container allows you to specify such 
+	properties in command line):
+	
++------------------------------------------------------------------------------
+<contribution configuration-id="hiveutils.PropertyFileSources">
+    <property-source property="mysettingspath"/>
+</contribution>
++------------------------------------------------------------------------------
+	
+	If your container does not support setting system properties for a given war, 
+	or if it is not convenient to you, then you may also use 
+	<<<SystemPropertyInitListener>>> servlet listener in <<<hiveutils>>> to 
+	initialize system properties, based on <<<context-param>>> as defined in 
+	<<<web.xml>>>. Of course, you may wonder "what is the point in defining that 
+	path in <<<web.xml>>>, if I want to change it, I need to rebuild the war!!!" 
+	That is right, in a sense. However, some servlet containers (like Jakarta 
+	Tomcat) allow you to define such parameters in a <<<context.xml>>> file that 
+	is <<outside>> of the war.
+	
+	To add the servlet listener to your web application, add the following to 
+	you <<<web.xml>>> file:
+	
++------------------------------------------------------------------------------
+<listener>
+    <listener-class>net.sourceforge.hiveutils.web.util.SystemPropertyInitListener</listener-class>
+</listener>
++------------------------------------------------------------------------------
+	
+	With this listener installed, any <<<context-param>>> which name starts with 
+	"init." will be added to the System properties (after "init." has been 
+	removed from its name). You could define this parameter in your 
+	<<<web.xml>>> this way:
+	
++------------------------------------------------------------------------------
+<context-param>
+    <param-name>init.mysettingspath</param-name>
+    <param-value>c:/mysettings.properties</param-value>
+</context-param>
++------------------------------------------------------------------------------
+	
+	And if you use Jakarta Tomcat, you can create a <<<context.xml>>> for your 
+	web application. This would look like:
+	
++------------------------------------------------------------------------------
+<Context    path="/mywebapp" 
+            docBase="/mydocbase"
+            debug="0" 
+            privileged="false">
+    <!-- Set specific properties -->
+    <Parameter  name="init.mysettingspath" 
+                value="d:/mysettings.properties"
+                override="false" />
+</Context>
++------------------------------------------------------------------------------
+	
+	For more information about <<<context.xml>>>, please refer to Tomcat 
+	documentation.
+
+
+Where to go next?
+
+	*	check examples configuration (code has nothing really special)
+
+	*	check source code of HiveBoard project for effective use of most 
+		HiveMind Utilities (in particular HiveUtils and HiveGUI)
+
+	*	{{{hivedocs/index.html}Hivedoc}}
+
+	*	{{{apidocs/index.html}Javadoc}}
