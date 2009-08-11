@@ -17,7 +17,7 @@
  * {@link net.guts.gui.dialog} package.
  * <p/>
  * Although classes in this package are public, they are not part of the 
- * Guice-GUI framework API and hence should normally not been directly used 
+ * Guts-GUI framework API and hence should normally not been directly used 
  * anywhere in your own application classes.
  * <p/>
  * {@link net.guts.gui.dialog.impl.DefaultDialogFactory} creates instances 

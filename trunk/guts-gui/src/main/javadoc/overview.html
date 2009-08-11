@@ -1,10 +1,10 @@
 <body>
-Guice-GUI is a GUI framework based on Google Guice dependency injection library and the Swing Application Framework (JSR-296).
+Guts-GUI is a GUI framework based on Google Guice dependency injection library and the Swing Application Framework (JSR-296).
 
-<h3>Guice GUI framework API roadmap</h3>
-{@link net.sf.guice.gui.application} package contains the core classes to start a new application. As of version ${version}, there are 2 possible main classes to derive from in order to build your own application. You can choose to either build an application with a main frame (and possibly secondary frames) and put whatever you want in this main frame (MDI or SDI), or build a docking-based application with a single main frame containing dockable "views", allowing the end user to set the layout of views the way he wants. In both cases, the framework provides exception handling facilities (as described in section ####).
+<h3>Guts GUI framework API roadmap</h3>
+{@link net.guts.gui.application} package contains the core classes to start a new application. As of version ${version}, there is only one possible main class to derive from in order to build your own application. For the time being, you can build an application with a main frame (and possibly secondary frames) and put whatever you want in this main frame (MDI or SDI). In the future, Guts-GUI will allow you to build a docking-based application with a single main frame containing dockable "views", allowing the end user to set the layout of views the way he wants. In any case, the framework provides exception handling facilities (as described in section ####).
 <p/>
-In order to effectively use Guice-GUI framework, you'll have to know a little bit about Swing Application Framework upon which Guice-GUI is based.
+In order to effectively use Guts-GUI framework, you'll have to know a little bit about Swing Application Framework upon which Guts-GUI is based.
 In particular you will need to know about:
 <ul>
 	<li>Application lifecycle, in particular the following methods:
@@ -21,44 +21,39 @@ The following links provide a good and quick introduction to Swing Application F
 	<li><a href="http://java.sun.com/developer/technicalArticles/javase/swingappfr/">Using the Swing Application Framework (JSR 296)</a>: very good introduction article by John O'Conner</li>
 	<li><a href="http://weblogs.java.net/blog/diverson/archive/2007/04/swing_applicati.html">Dean Iverson's tutorial</a></li>
 </ul>
-Moreover, you may take a look at <a href="http://jazoon.com/download/presentations/3360.pdf">this Jazoon'08 talk</a> for deeper coverage of Swing Application Framework based on real-life usage (part of Guice-GUI framework was developed for this presentation).
+Moreover, you may take a look at <a href="http://jazoon.com/download/presentations/3360.pdf">this Jazoon'08 talk</a> for deeper coverage of Swing Application Framework based on real-life usage (part of Guts-GUI framework was developed for this presentation).
 <p/>
-Additionally, you need to have some basic knowledge about Guice Depedency Injection library (from Google) which is at the core of Guice-GUI framework. In particular, you need to understand the {@code @Inject} annotation and the notion of {@code Module}s.
+Additionally, you need to have some basic knowledge about Guice Depedency Injection library (from Google) which is at the core of Guts-GUI framework. In particular, you need to understand the {@code @Inject} annotation and the notion of {@code Module}s.
 The following links provide good startup material on Guice:
 <ul>
-	<li><a href="http://crazybob.org/2007/06/introduction-to-guice-video-redux.html">Guice presentation by its authors</a></li>
-	<li><a href="http://google-guice.googlecode.com/files/Guice%201.0%20User%27s%20Guide.pdf">Guice user's guide</a></li>
+	<li><a href="http://code.google.com/p/google-guice/">Guice presentation by one Guice committer</a></li>
+	<li><a href="http://code.google.com/docreader/#p=google-guice">Guice user's guide</a></li>
 </ul>
 <p/>
-Besides, Guice-GUI provides several facilities as "services" (defined and accessed by their interface) that will help you:
+Besides, Guts-GUI provides several facilities as "services" (defined and accessed by their interface) that will help you:
 <ul>
 	<li>Manage your {@code @Action} methods easily</li>
 	<li>Easily create menus and popups linked to {@code @Action} methods</li>
 	<li>Easily create and display internationalized dialogs with a consistent look &amp; feel</li>
 	<li>Create and show internationalized messages boxes</li>
 </ul>
-Plus, a few utility classes gathered in package {@link net.sf.guice.gui.util}.
+Plus, a few utility classes gathered in package {@link net.guts.gui.util}.
 <p/>
 The following sections present more details on:
 <ul>
 	<li>Creating a new application (without docking)</li>
-	<li>Creating a new docking-enabled application</li>
 	<li>Creating dialogs and message boxes</li>
-	<li>Useful extensions (3rd party open source libraries) to Guice-GUI</li>
+	<li>Useful extensions (3rd party open source libraries) to Guts-GUI</li>
 </ul>
 
-<h3>Creating a new single frame application (without docking)</h3>
+<h3>Creating a new single frame application</h3>
 ####
 main class hierarchy, methods, menus, properties, exception handling
-
-<h3>Creating a new single frame application (with docking)</h3>
-####
-main class hierarchy, methods, [menus], docking setup, properties
 
 <h3>Creating dialogs and message boxes</h3>
 ####
 
-<h3>Beyond Guice-GUI</h3>
+<h3>Beyond Guts-GUI</h3>
 ####
 Other useful libraries: glazedlists...
 
@@ -66,5 +61,4 @@ Other useful libraries: glazedlists...
 @version ${version}
 @see <a href="http://code.google.com/p/google-guice/">Google Guice</a>
 @see <a href="http://appframework.dev.java.net/">Swing Application Framework</a>
-@see <a href="http://mydoggy.sourceforge.net/">MyDoggy</a>
 </body>

@@ -1,7 +1,7 @@
-<project name="Guice GUI">
+<project name="GUTS GUI">
 	<bannerLeft>
-		<name>Guice GUI</name>
-		<href>http://sourceforge.net/projects/guice-gui/</href>
+		<name>GUTS GUI</name>
+		<href>http://kenai.com/projects/guts/</href>
 	</bannerLeft>
 <!--	
 	<bannerRight>
@@ -11,7 +11,6 @@
 -->
 	<poweredBy>
 		<logo name="Built by Maven" href="http://maven.apache.org" img="http://maven.apache.org/images/logos/build-by-maven-black.png" />
-		<logo name="Hosted on SourceForge.net" href="http://sourceforge.net" img="http://sflogo.sourceforge.net/sflogo.php?group_id=234125&amp;type=3" />
 	</poweredBy>
 	
 	<body>

@@ -6,7 +6,7 @@
 							
 Introduction
 
-	<<Guice-GUI>> is a light framework for rich GUI (Swing-based) applications,
+	<<Guts-GUI>> is a light framework for rich GUI (Swing-based) applications,
 	mainly based on the Swing Application Framework by Sun (JSR-296).
 	
 	It dramatically eases development of rich client applications based on Java
@@ -14,32 +14,32 @@ Introduction
 	
 	Based on Sun's Reference Implementation of JSR-296, also known as 
 	"{{{http://appframework.dev.java.net/}Swing Application Framework}}",
-	<<Guice-GUI>> integrates at its core 
+	<<Guts-GUI>> integrates at its core 
 	{{{http://code.google.com/p/google-guice/}Guice}}, the Dependency Injection 
 	library from Google.
 	
 	Complete documentation with code snippets is available directly in 
-	<<Guice-GUI>> {{{apidocs/index.html}Javadoc}}.
+	<<Guts-GUI>> {{{apidocs/index.html}Javadoc}}.
 	
 	Additionally, source code comes with a sample Address Book application
-	which sole purpose is to demonstrate normal <<Guice-GUI>> usage in a "real"
+	which sole purpose is to demonstrate normal <<Guts-GUI>> usage in a "real"
 	application. This demo is available as part of the test source code, you can
 	directly browse the demo source code {{{xref-test/index.html}here}}.
 	
 Building from source
 
-	If you want to build <<Guice-GUI>> from source code, you will first need to
+	If you want to build <<Guts-GUI>> from source code, you will first need to
 	have the following tools installed on your computer:
 	
 	*	Sun JDK 5.0 or later
 
-	*	{{{http://maven.apache.org/}Apache Maven}} 2.0.8 or later version
+	*	{{{http://maven.apache.org/}Apache Maven}} 2.0.10 or later version
 
 	[]
 	
 	Basic knowledge of Maven is assumed in the following.
 	
-	#### setup soruce code dir, setup settings.xml, set up local repo, 
+	#### setup source code dir, setup settings.xml, set up local repo, 
 	building source, various patches applied (take either prepared jar or apply
 	provided patch to source and rebuild dep)
 	
