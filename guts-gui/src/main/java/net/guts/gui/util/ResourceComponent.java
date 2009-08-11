@@ -24,13 +24,13 @@ import com.google.inject.Inject;
 
 /**
  * Special Swing {@link JComponent} used to inject special properties needed 
- * by some Guice-GUI classes like {@link net.sf.guice.gui.docking.DockingManager}
+ * by some Guts-GUI classes like {@link net.sf.guice.gui.docking.DockingManager}
  * or {@link net.guts.gui.dialog.support.AbstractTabbedPanel}. This component
  * is never actually added to any container.
  * <p/>
  * This class is declared {@code public} because Swing Application Framework can
  * inject resources only into public classes. Although you may use it in your
- * application, it is currently <b>NOT</b> part of the official API of Guice-GUI 
+ * application, it is currently <b>NOT</b> part of the official API of Guts-GUI 
  * framework, hence its API may evolve in future versions.
  * <p/>
  * This component allows injection of two new properties (additionally to all

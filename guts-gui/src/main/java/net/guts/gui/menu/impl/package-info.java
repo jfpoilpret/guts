@@ -16,7 +16,7 @@
  * This package contains implementation classes for services of 
  * {@link net.guts.gui.menu} package.
  * <p/>
- * Although classes in this package are public, none is part of the Guice-GUI 
+ * Although classes in this package are public, none is part of the Guts-GUI 
  * framework API and hence should normally not been directly used anywhere in 
  * your own application classes.
  */

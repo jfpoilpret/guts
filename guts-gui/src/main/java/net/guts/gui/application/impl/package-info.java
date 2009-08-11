@@ -17,7 +17,7 @@
  * {@link net.guts.gui.application} package.
  * <p/>
  * Although many classes in this package are public, none of them is part of the 
- * Guice-GUI framework API and hence should normally not been directly used 
+ * Guts-GUI framework API and hence should normally not been directly used 
  * anywhere in your own application classes.
  */
 package net.guts.gui.application.impl;
