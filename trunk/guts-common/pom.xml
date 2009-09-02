@@ -1,0 +1,55 @@
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.guts</groupId>
+		<artifactId>guts-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>../guts-parent</relativePath>
+	</parent>
+	<artifactId>guts-common</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Simple utilities for Guice and all Guts modules</name>
+	<url>http://kenai.com/projects/guts</url>
+	
+	<build>
+		<plugins>
+			<!-- Also generate a javadoc jar to be installed into the repository -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.common.internal</excludePackageNames>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.common.internal</excludePackageNames>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</reporting>
+<!--
+	<dependencies>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-multibindings</artifactId>
+			<version>2.0</version>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assisted-inject</artifactId>
+			<version>2.0</version>
+		</dependency>
+	</dependencies>
+-->
+</project>
