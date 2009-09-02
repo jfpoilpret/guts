@@ -262,6 +262,16 @@
 				<artifactId>easymockclassextension</artifactId>
 				<version>2.4</version>
 			</dependency>
+			<dependency>
+				<groupId>net.guts</groupId>
+				<artifactId>guts-common</artifactId>
+				<version>${version}</version>
+			</dependency>
+			<dependency>
+				<groupId>net.guts</groupId>
+				<artifactId>guts-events</artifactId>
+				<version>${version}</version>
+			</dependency>
 		</dependencies>
 	</dependencyManagement>
 	
