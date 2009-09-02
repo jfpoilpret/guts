@@ -14,15 +14,15 @@
 
 package net.guts.event;
 
+import net.guts.common.injection.Matchers;
+import net.guts.common.injection.OneTypeListener;
 import net.guts.event.internal.AnnotationProcessor;
 import net.guts.event.internal.AnnotationProcessorFactory;
 import net.guts.event.internal.ChannelFactory;
 import net.guts.event.internal.ChannelImpl;
 import net.guts.event.internal.ConsumerInjectionListener;
-import net.guts.event.internal.ConsumerTypeListener;
 import net.guts.event.internal.InDeferredThreadExecutor;
 import net.guts.event.internal.InEDTExecutor;
-import net.guts.event.internal.Matchers;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -67,8 +67,9 @@ final public class EventModule extends AbstractModule
 		// any instance created by Guice
 		ConsumerInjectionListener injectionListener = new ConsumerInjectionListener();
 		requestInjection(injectionListener);
-		ConsumerTypeListener typeListener = new ConsumerTypeListener(injectionListener);
-		bindListener(Matchers.consumer(), typeListener);
+		OneTypeListener<Object> typeListener = 
+			new OneTypeListener<Object>(Object.class, injectionListener);
+		bindListener(Matchers.hasMethodAnnotatedWith(Consumes.class), typeListener);
 		
 		// Perform assisted inject for AnnotationProcessor
 		bind(AnnotationProcessorFactory.class).toProvider(FactoryProvider.newFactory(

@@ -38,10 +38,10 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.reset;
 import static org.easymock.classextension.EasyMock.verify;
 
+import net.guts.common.cleaner.Cleaner;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
 import net.guts.event.internal.ChannelImpl;
-import net.guts.event.internal.Cleaner;
 
 @Test(groups = "utest")
 public class ChannelImplTest

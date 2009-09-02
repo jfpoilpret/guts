@@ -12,27 +12,37 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.event.internal;
+package net.guts.common.injection;
+
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Method;
 
 import com.google.inject.TypeLiteral;
-import com.google.inject.spi.InjectionListener;
-import com.google.inject.spi.TypeEncounter;
-import com.google.inject.spi.TypeListener;
+import com.google.inject.matcher.AbstractMatcher;
+import com.google.inject.matcher.Matcher;
 
-// This class "listens" to Guice injectable types to detect types that include
-// @Consumes annotations, for later automatic processing
-public class ConsumerTypeListener implements TypeListener
+public final class Matchers
 {
-	public ConsumerTypeListener(InjectionListener<Object> injectionListener)
+	private Matchers()
 	{
-		_injectionListener = injectionListener;
 	}
 	
-	public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter)
+	static final public Matcher<TypeLiteral<?>> hasMethodAnnotatedWith(
+		final Class<? extends Annotation> annotation)
 	{
-		encounter.register(_injectionListener);
+		return new AbstractMatcher<TypeLiteral<?>>()
+		{
+			public boolean matches(TypeLiteral<?> type)
+			{
+				for (Method m: type.getRawType().getMethods())
+				{
+					if (m.isAnnotationPresent(annotation))
+					{
+						return true;
+					}
+				}
+				return false;
+			}
+		};
 	}
-	
-	final private InjectionListener<Object> _injectionListener; 
 }
-

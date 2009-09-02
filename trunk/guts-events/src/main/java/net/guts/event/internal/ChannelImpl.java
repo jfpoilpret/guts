@@ -29,6 +29,8 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.guts.common.cleaner.Cleanable;
+import net.guts.common.cleaner.Cleaner;
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
