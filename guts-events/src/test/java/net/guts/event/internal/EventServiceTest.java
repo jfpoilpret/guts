@@ -33,6 +33,7 @@ import static org.easymock.classextension.EasyMock.same;
 import static org.easymock.classextension.EasyMock.verify;
 import static org.fest.assertions.Assertions.assertThat;
 
+import net.guts.common.cleaner.Cleaner;
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
@@ -43,7 +44,6 @@ import net.guts.event.Filters;
 import net.guts.event.internal.AnnotationProcessor;
 import net.guts.event.internal.AnnotationProcessorFactory;
 import net.guts.event.internal.ChannelKey;
-import net.guts.event.internal.Cleaner;
 import net.guts.event.internal.EventServiceImpl;
 
 import com.google.inject.Provider;
