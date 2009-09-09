@@ -14,6 +14,8 @@
 
 package net.guts.common.injection;
 
+import net.guts.common.type.TypeHelper;
+
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
@@ -44,21 +46,12 @@ public class OneTypeListener<T> implements TypeListener
 	public <I> void hear(TypeLiteral<I> type, TypeEncounter<I> encounter)
 	{
 		// Check that type is assignable to _type
-		if (typeMatches(type))
+		if (TypeHelper.typeIsSubtypeOf(type, _type))
 		{
 			encounter.register((InjectionListener<? super I>) _listener);
 		}
 	}
 	
-	protected <I> boolean typeMatches(TypeLiteral<I> type)
-	{
-		// First check that raw types are compatible
-		// Then check that generic types are compatible! HOW????
-		return (	_type.equals(type)
-			||	(	_type.getRawType().isAssignableFrom(type.getRawType())
-				&&	_type.equals(type.getSupertype(_type.getRawType()))));
-	}
-
 	final private TypeLiteral<T> _type;
 	final private InjectionListener<T> _listener;
 }

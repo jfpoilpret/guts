@@ -15,12 +15,11 @@
 package net.guts.gui.application.impl;
 
 import java.lang.reflect.InvocationTargetException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Set;
 
 import net.guts.gui.application.ExceptionHandler;
-import net.guts.gui.application.ExceptionHandlerManager;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 /**
@@ -32,17 +31,15 @@ import com.google.inject.Singleton;
  * @author Jean-Francois Poilpret
  */
 @Singleton
-public class DefaultExceptionHandlerManager implements ExceptionHandlerManager
+public class ExceptionHandlerDispatcher implements ExceptionHandler
 {
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.application.ExceptionHandlerManager#addExceptionHandler(net.sf.guice.gui.application.ExceptionHandler)
-	 */
-	public void addExceptionHandler(ExceptionHandler handler)
+	//TODO Make it package-private?
+	@Inject
+	public ExceptionHandlerDispatcher(Set<ExceptionHandler> handlers)
 	{
-		_handlers.add(handler);
+		_handlers = handlers;
 	}
-
+	
 	/*
 	 * (non-Javadoc)
 	 * @see net.sf.guice.gui.application.ExceptionHandler#handle(java.lang.Throwable)
@@ -82,5 +79,5 @@ public class DefaultExceptionHandlerManager implements ExceptionHandlerManager
 		return false;
 	}
 
-	final private List<ExceptionHandler> _handlers = new ArrayList<ExceptionHandler>();
+	final private Set<ExceptionHandler> _handlers;
 }

@@ -21,10 +21,12 @@ import java.util.logging.Logger;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.ResourceConverter;
 import org.jdesktop.application.SingleFrameApplication;
+import org.jdesktop.application.Application.ExitListener;
 
 import net.guts.gui.application.impl.CursorConverter;
 import net.guts.gui.application.impl.CursorInfoConverter;
 import net.guts.gui.application.impl.DefaultActiveWindowHolder;
+import net.guts.gui.application.impl.ExceptionHandlerDispatcher;
 import net.guts.gui.application.impl.ImageConverter;
 import net.guts.gui.application.impl.ShutdownHelper;
 import net.guts.gui.application.impl.SwingExceptionHandler;
@@ -33,8 +35,10 @@ import net.guts.gui.util.TableHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
+import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Module;
+import com.google.inject.multibindings.Multibinder;
 
 /**
  * Superclass for all Guice-enabled applications based on Swing Application
@@ -199,14 +203,28 @@ abstract public class AbstractGuiceApplication extends SingleFrameApplication
 			// Make Application and Context injectable
 			bind(ApplicationContext.class).toInstance(getContext());
 			bind(AbstractGuiceApplication.class).toInstance(AbstractGuiceApplication.this);
+			
+			// Initialize Exception Handling
+			requestStaticInjection(SwingExceptionHandler.class);
+			Multibinder.newSetBinder(binder(), ExceptionHandler.class);
+			bind(ExceptionHandler.class).to(ExceptionHandlerDispatcher.class);
+
+			// Initialize ExitListener bindings
+			Multibinder.newSetBinder(binder(), ExitListener.class);
+			//TODO finish the work!
+			
 			// Initialize ActiveWindowHolder
 			bind(ActiveWindowHolder.class)
 				.to(DefaultActiveWindowHolder.class).asEagerSingleton();
 
 			// Static injection of a few special classes
-			requestStaticInjection(
-				SwingExceptionHandler.class, TableHelper.class, ResourceComponent.class);
+			requestStaticInjection(TableHelper.class, ResourceComponent.class);
 		}
+	}
+	
+	@Inject void initExitListeners()
+	{
+		
 	}
 	
 	final private Logger _logger =
