@@ -17,6 +17,8 @@ package net.guts.common.injection;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Method;
 
+import net.guts.common.type.TypeHelper;
+
 import com.google.inject.TypeLiteral;
 import com.google.inject.matcher.AbstractMatcher;
 import com.google.inject.matcher.Matcher;
@@ -25,6 +27,22 @@ public final class Matchers
 {
 	private Matchers()
 	{
+	}
+	
+	static final public Matcher<TypeLiteral<?>> isSubtypeOf(final Class<?> supertype)
+	{
+		return isSubtypeOf(TypeLiteral.get(supertype));
+	}
+	
+	static final public Matcher<TypeLiteral<?>> isSubtypeOf(final TypeLiteral<?> supertype)
+	{
+		return new AbstractMatcher<TypeLiteral<?>>()
+		{
+			@Override public boolean matches(TypeLiteral<?> type)
+			{
+				return TypeHelper.typeIsSubtypeOf(type, supertype);
+			}
+		};
 	}
 	
 	static final public Matcher<TypeLiteral<?>> hasMethodAnnotatedWith(

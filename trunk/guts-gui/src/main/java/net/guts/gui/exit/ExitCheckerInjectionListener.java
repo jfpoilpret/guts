@@ -12,28 +12,27 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.event.internal;
+package net.guts.gui.exit;
 
 import net.guts.common.injection.AbstractInjectionListener;
-import net.guts.event.EventService;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
-public class ConsumerInjectionListener extends AbstractInjectionListener<Object>
+class ExitCheckerInjectionListener extends AbstractInjectionListener<ExitChecker>
 {
 	// Guice Injector is injected as a "trick" in order to delay the call to this method
 	// as late as possible during Guice.createInjector()
-	@Inject public void setEventService(EventService service, Injector injector)
+	@Inject void setExitController(ExitController controller, Injector injector)
 	{
-		_service = service;
+		_controller = controller;
 		flush();
 	}
-	
-	@Override protected void registerInjectee(Object injectee)
+
+	@Override protected void registerInjectee(ExitChecker injectee)
 	{
-		_service.registerConsumers(injectee);
+		_controller.registerExitChecker(injectee);
 	}
 	
-	private EventService _service = null;
+	private ExitController _controller = null;
 }

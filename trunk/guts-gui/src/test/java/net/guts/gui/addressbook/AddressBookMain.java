@@ -26,9 +26,9 @@ import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AbstractGuiceApplication;
 import net.guts.gui.application.ExceptionHandler;
-import net.guts.gui.application.ExceptionHandlerManager;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
+import net.guts.gui.util.GuiModuleHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -74,6 +74,7 @@ public class AddressBookMain extends AbstractGuiceApplication implements Excepti
 		show(getMainFrame());
 	}
 
+	// Should be a better way to declare an object as an ActionSource (annotation + processing?)
 	@SuppressWarnings("unused")
 	@Inject private void initActionSources(
 		ActionManager manager, ContactActions contacts)
@@ -81,12 +82,6 @@ public class AddressBookMain extends AbstractGuiceApplication implements Excepti
 		manager.addActionSource(contacts);
 	}
 
-	// Initialize Exception handling ASAP
-	@Inject protected void initExceptionHandling(ExceptionHandlerManager manager)
-	{
-		manager.addExceptionHandler(this);
-	}
-	
 	// CSOFF: GenericIllegalRegexp
 	// Handle exceptions on the EDT
 	public boolean handle(Throwable e)
@@ -105,10 +100,12 @@ public class AddressBookMain extends AbstractGuiceApplication implements Excepti
 		throw new IllegalArgumentException("Some message here");
 	}
 	
-	static private class AddressBookModule extends AbstractModule
+	private class AddressBookModule extends AbstractModule
 	{
 		@Override protected void configure()
 		{
+			// Add binding to this as an ExceptionHandler
+			GuiModuleHelper.bindExceptionHandler(binder()).toInstance(AddressBookMain.this);
 			// Add binding for "contact selection" events
 			Events.bindChannel(binder(), Contact.class);
 		}

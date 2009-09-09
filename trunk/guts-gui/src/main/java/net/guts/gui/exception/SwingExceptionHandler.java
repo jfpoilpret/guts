@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.impl;
-
-import net.guts.gui.application.ExceptionHandler;
+package net.guts.gui.exception;
 
 import com.google.inject.Inject;
 
+//TODO can we make this class package-private????
 /**
  * Special handler for all exceptions thrown inside the EDT. This handler simply
  * delegates all exception handling to {@link ExceptionHandlerManager}.
@@ -35,7 +34,7 @@ public class SwingExceptionHandler
 	
 	public void	handle(Throwable e)
 	{
-		_manager.handle(e);
+		_manager.handleException(e);
 	}
 
 	/**
@@ -44,10 +43,10 @@ public class SwingExceptionHandler
 	 * @param manager the {@link ExceptionHandlerManager} service to which 
 	 * exception handling is delegated
 	 */
-	@Inject static void setExceptionHandler(ExceptionHandler manager)
+	@Inject static void setExceptionHandler(ExceptionHandlerManager manager)
 	{
 		_manager = manager;
 	}
 
-	static private ExceptionHandler _manager;
+	static private ExceptionHandlerManager _manager;
 }

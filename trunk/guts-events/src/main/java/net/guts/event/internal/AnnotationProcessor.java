@@ -44,7 +44,8 @@ public class AnnotationProcessor
 		_channels = channels;
 		_executors = executors;
 	}
-	
+
+	//TODO synchronization?
 	public List<ConsumerFilter> process(Class<?> clazz)
 	{
 		// First check if clazz has been processed already
@@ -172,6 +173,7 @@ public class AnnotationProcessor
 			handleError(isFilter, InternalError.BAD_RETURN_TYPE, m, null, null);
 			return null;
 		}
+		//TODO allow 0-arg meaning Void type
 		if (m.getParameterTypes().length != 1)
 		{
 			handleError(isFilter, InternalError.BAD_ARG_NUMBER, m, null, null);
