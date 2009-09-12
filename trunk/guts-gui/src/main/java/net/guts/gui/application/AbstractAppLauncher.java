@@ -19,13 +19,23 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.jdesktop.application.ApplicationContext;
+import org.jdesktop.application.GutsApplicationContext;
+import org.jdesktop.application.ResourceConverter;
 
+import net.guts.common.injection.InjectionListeners;
+import net.guts.gui.action.ActionModule;
+import net.guts.gui.application.impl.CursorConverter;
+import net.guts.gui.application.impl.CursorInfoConverter;
+import net.guts.gui.application.impl.ImageConverter;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
+import net.guts.gui.util.ResourceComponent;
+import net.guts.gui.util.TableHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Module;
 
 // Derive from this abstract launcher to start your Guts-GUI application
@@ -69,14 +79,21 @@ public abstract class AbstractAppLauncher
 	{
 		try
 		{
+			//TODO replace with special resource Guice module
+			// Register a few useful resource converters
+			ResourceConverter.register(new ImageConverter());
+			ResourceConverter.register(new CursorInfoConverter());
+			ResourceConverter.register(new CursorConverter());
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
-			modules.add(new AppModule());
+			modules.add(new ActionModule());
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
+			modules.add(new AppModule());
 			modules.addAll(getModules(args));
 			
-			Guice.createInjector(modules);
+			Injector injector = Guice.createInjector(modules);
+			InjectionListeners.injectListeners(injector);
 			
 			// Now we can start the GUI initialization
 			_lifecycle.startup(args);
@@ -93,6 +110,7 @@ public abstract class AbstractAppLauncher
 		catch (Exception e)
 		{
 			//TODO fail graciously with Message Box!
+			e.printStackTrace();
 		}
 	}
 	
@@ -102,7 +120,14 @@ public abstract class AbstractAppLauncher
 		{
 			// Make sure that we get ourselves injected: we'll soon need AppLifecycle!
 			requestInjection(AbstractAppLauncher.this);
-			bind(ApplicationContext.class).toInstance(new ApplicationContext(){});
+			// FIXME remove asap!
+			GutsApplication application = new GutsApplication();
+			requestInjection(application);
+			bind(ApplicationContext.class).toInstance(
+				new GutsApplicationContext(application));
+			requestStaticInjection(ResourceComponent.class);
+			//FIXME Add necessary bindings (and replace later with their own modules?)
+			requestStaticInjection(TableHelper.class);
 		}
 	}
 	

@@ -19,8 +19,6 @@ import java.util.List;
 
 import org.testng.annotations.Test;
 
-import net.guts.common.injection.OneTypeListener;
-
 import static org.fest.assertions.Assertions.assertThat;
 
 import com.google.inject.TypeLiteral;

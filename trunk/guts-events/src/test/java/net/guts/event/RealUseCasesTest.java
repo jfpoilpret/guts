@@ -23,6 +23,7 @@ import org.testng.annotations.Test;
 import static org.easymock.EasyMock.createMock;
 import static org.fest.assertions.Assertions.assertThat;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
@@ -50,6 +51,7 @@ public class RealUseCasesTest
 				Events.bindChannel(binder(), new TypeLiteral<List<Integer>>(){});
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		EasyMock.replay(handler);
 		// Get Consumer & Suppliers
 		Consumer1 consumer1 = injector.getInstance(Consumer1.class);

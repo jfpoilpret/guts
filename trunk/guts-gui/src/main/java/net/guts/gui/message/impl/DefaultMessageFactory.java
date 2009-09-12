@@ -27,7 +27,7 @@ import org.jdesktop.application.Resource;
 import org.jdesktop.application.ResourceConverter;
 import org.jdesktop.application.ResourceMap;
 
-import net.guts.gui.application.ActiveWindowHolder;
+import net.guts.gui.application.WindowController;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.MessageType;
 import net.guts.gui.message.OptionType;
@@ -49,10 +49,10 @@ import com.google.inject.Singleton;
 public class DefaultMessageFactory implements MessageFactory
 {
 	@Inject public DefaultMessageFactory(Logger logger, 
-		ActiveWindowHolder activeWindow, ApplicationContext context)
+		WindowController windowController, ApplicationContext context)
 	{
 		_logger = logger;
-		_activeWindow = activeWindow;
+		_windowController = windowController;
 		_map = context.getResourceMap(getClass());
 		ResourceConverter.register(new EnumConverter<MessageType>(MessageType.class));
 		ResourceConverter.register(new EnumConverter<OptionType>(OptionType.class));
@@ -74,7 +74,7 @@ public class DefaultMessageFactory implements MessageFactory
 												_messageType.value(),
 												_optionType.value());
 			pane.setName("message-" + id);
-			Window parent = _activeWindow.getActiveWindow();
+			Window parent = _windowController.getActiveWindow();
 			JDialog box;
 			if (parent instanceof JFrame)
 			{
@@ -108,7 +108,7 @@ public class DefaultMessageFactory implements MessageFactory
 	}
 
 	final private Logger _logger;
-	final private ActiveWindowHolder _activeWindow;
+	final private WindowController _windowController;
 	final private ResourceMap _map;
 	@Resource(key = "messageType") private MessageType _messageType;
 	@Resource(key = "optionType") private OptionType _optionType;

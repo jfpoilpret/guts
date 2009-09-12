@@ -23,6 +23,7 @@ import org.testng.annotations.Test;
 import static org.easymock.EasyMock.createMock;
 import static org.easymock.classextension.EasyMock.createMock;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
@@ -51,6 +52,7 @@ public class ConsumerReturnHandlersTest
 				Events.bindHandler(binder(), int.class).toInstance(handler);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		
 		handler.handle(10);
 		handler.handle(20);
@@ -86,6 +88,7 @@ public class ConsumerReturnHandlersTest
 				Events.bindHandler(binder(), String.class).toInstance(handler);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		
 		handler.handle("10");
 		handler.handle("20");
@@ -121,6 +124,7 @@ public class ConsumerReturnHandlersTest
 				Events.bindHandler(binder(), new TypeLiteral<List<Integer>>(){}).toInstance(handler);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		
 		handler.handle(Arrays.asList(10));
 		handler.handle(Arrays.asList(20));
@@ -156,6 +160,7 @@ public class ConsumerReturnHandlersTest
 				Events.bindHandler(binder(), new TypeLiteral<List<?>>(){}).toInstance(handler);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		
 		handler.handle(Arrays.asList(10));
 		handler.handle(Arrays.asList(20));

@@ -26,6 +26,7 @@ import static org.easymock.classextension.EasyMock.replay;
 import static org.easymock.classextension.EasyMock.reset;
 import static org.easymock.classextension.EasyMock.verify;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
@@ -54,6 +55,7 @@ public class GuiceEventServiceThreadsTest
 				Events.bindChannel(binder(), Integer.class);
 			}
 		});
+		InjectionListeners.injectListeners(_injector);
 		_channel = _injector.getInstance(Key.get(new TypeLiteral<Channel<Integer>>(){}));
 		_consumer = _injector.getInstance(Consumer2.class);
 		_consumer.setMock(_mock);

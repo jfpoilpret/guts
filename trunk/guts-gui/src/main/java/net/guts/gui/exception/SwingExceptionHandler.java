@@ -34,7 +34,14 @@ public class SwingExceptionHandler
 	
 	public void	handle(Throwable e)
 	{
-		_manager.handleException(e);
+		if (_manager != null)
+		{
+			_manager.handleException(e);
+		}
+		else
+		{
+			e.printStackTrace();
+		}
 	}
 
 	/**

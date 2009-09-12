@@ -23,7 +23,6 @@ import javax.swing.JComponent;
 import org.jdesktop.application.ApplicationContext;
 
 import net.guts.gui.action.ActionManager;
-import net.guts.gui.application.AbstractGuiceApplication;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -39,11 +38,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultActionManager implements ActionManager
 {
-	@Inject public DefaultActionManager(
-		AbstractGuiceApplication application, ApplicationContext context)
+	@Inject public DefaultActionManager(ApplicationContext context)
 	{
 		_context = context;
-		addActionSource(application);
+//		addActionSource(application);
 	}
 	
 	/*

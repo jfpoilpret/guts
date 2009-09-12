@@ -40,7 +40,8 @@ public final class Matchers
 		{
 			@Override public boolean matches(TypeLiteral<?> type)
 			{
-				return TypeHelper.typeIsSubtypeOf(type, supertype);
+				boolean match = TypeHelper.typeIsSubtypeOf(type, supertype);
+				return match;
 			}
 		};
 	}
