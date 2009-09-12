@@ -41,17 +41,16 @@ class WindowControllerImpl implements WindowController
 	WindowControllerImpl()
 	{
 		_current = null;
-		//TODO AWTEvent.WINDOW_EVENT_MASK will pass ALL WindowEvent?
-		// (eg even for COMPONENT_RESIZED?)
-		// => not clear in the javadoc: have to trace and check!
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
 		{
-			public void eventDispatched(AWTEvent e)
+			public void eventDispatched(AWTEvent event)
 			{
-				System.out.printf("eventDispatched(%d)\n", e.getID());
-				WindowControllerImpl.this.eventDispatched(e);
+				if (event instanceof WindowEvent)
+				{
+					WindowControllerImpl.this.eventDispatched((WindowEvent) event);
+				}
 			}
-		}, AWTEvent.WINDOW_EVENT_MASK);
+		}, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
 	}
 	
 	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
@@ -97,7 +96,8 @@ class WindowControllerImpl implements WindowController
 	{
 		if (!EventQueue.isDispatchThread())
 		{
-			throw new IllegalStateException("WindowController.show() must be called from the EDT!");
+			throw new IllegalStateException(
+				"WindowController.show() must be called from the EDT!");
 		}
 		// Perform i18n if not done already
 		injectResources(container);
@@ -117,6 +117,7 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 	
+	//TODO call pack() when needed, ie when no session, and no setup of bounds
 	private void initSize(RootPaneContainer container)
 	{
 		try
@@ -149,13 +150,12 @@ class WindowControllerImpl implements WindowController
 		return (name == null ? "" : name + ".session.xml");
 	}
 
-	private void eventDispatched(AWTEvent e)
+	private void eventDispatched(WindowEvent event)
 	{
-		WindowEvent we = (WindowEvent) e;
-		switch (e.getID())
+		switch (event.getID())
 		{
 			case WindowEvent.WINDOW_ACTIVATED:
-			_current = we.getWindow();
+			_current = event.getWindow();
 			break;
 
 			case WindowEvent.WINDOW_DEACTIVATED:
@@ -164,10 +164,10 @@ class WindowControllerImpl implements WindowController
 
 			case WindowEvent.COMPONENT_RESIZED:
 			// Save window bounds (as client property?)
-			if (we.getWindow() instanceof JFrame)
+			if (event.getWindow() instanceof JFrame)
 			{
 				System.out.printf("WINDOW_RESIZED\n");
-				JFrame frame = (JFrame) we.getWindow();
+				JFrame frame = (JFrame) event.getWindow();
 				frame.getRootPane().putClientProperty(SAVED_BOUNDS, frame.getBounds());
 			}
 			break;
@@ -176,7 +176,7 @@ class WindowControllerImpl implements WindowController
 			case WindowEvent.WINDOW_CLOSED:
 			System.out.printf("WINDOW_CLOSED\n");
 			// Save window state in session storage
-			saveSize((RootPaneContainer) we.getWindow());
+			saveSize((RootPaneContainer) event.getWindow());
 			break;
 				
 			default:

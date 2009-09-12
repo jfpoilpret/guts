@@ -71,5 +71,5 @@ public class CursorConverter extends ResourceConverter
 		return ((CursorInfo) _infoConverter.parseString(s, r)).getCursor();
 	}
 	
-	private ResourceConverter _infoConverter;
+	final private ResourceConverter _infoConverter;
 }
