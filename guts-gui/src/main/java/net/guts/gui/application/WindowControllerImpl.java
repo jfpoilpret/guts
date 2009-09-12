@@ -54,8 +54,10 @@ class WindowControllerImpl implements WindowController
 		}, AWTEvent.WINDOW_EVENT_MASK);
 	}
 	
-	@Consumes(topic = ExitController.SHUTDOWN_EVENT) void shutdown(Void nothing)
+	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
+	public void shutdown(Void nothing)
 	{
+		System.out.printf("shutdown()\n");
 		// Find all visible windows and save session for each
 		for (Window window: Window.getWindows())
 		{
@@ -108,7 +110,7 @@ class WindowControllerImpl implements WindowController
 	{
 		// First check if resources have already been injected
 		JComponent root = container.getRootPane();
-		if (root.getClientProperty(RESOURCES_INJECTED) != null)
+		if (root.getClientProperty(RESOURCES_INJECTED) == null)
 		{
 			_context.getResourceMap().injectComponents(root.getParent());
 			root.putClientProperty(RESOURCES_INJECTED, Boolean.TRUE);
@@ -164,6 +166,7 @@ class WindowControllerImpl implements WindowController
 			// Save window bounds (as client property?)
 			if (we.getWindow() instanceof JFrame)
 			{
+				System.out.printf("WINDOW_RESIZED\n");
 				JFrame frame = (JFrame) we.getWindow();
 				frame.getRootPane().putClientProperty(SAVED_BOUNDS, frame.getBounds());
 			}
@@ -171,6 +174,7 @@ class WindowControllerImpl implements WindowController
 			
 			case WindowEvent.COMPONENT_HIDDEN:
 			case WindowEvent.WINDOW_CLOSED:
+			System.out.printf("WINDOW_CLOSED\n");
 			// Save window state in session storage
 			saveSize((RootPaneContainer) we.getWindow());
 			break;

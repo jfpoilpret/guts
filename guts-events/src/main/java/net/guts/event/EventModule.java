@@ -14,6 +14,7 @@
 
 package net.guts.event;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 import net.guts.event.internal.AnnotationProcessor;
@@ -65,8 +66,8 @@ final public class EventModule extends AbstractModule
 	{
 		// Make sure @Consumes annotation get automatically processed for
 		// any instance created by Guice
-		ConsumerInjectionListener injectionListener = new ConsumerInjectionListener();
-		requestInjection(injectionListener);
+		ConsumerInjectionListener injectionListener = 
+			InjectionListeners.requestInjection(binder(), new ConsumerInjectionListener());
 		OneTypeListener<Object> typeListener = 
 			new OneTypeListener<Object>(Object.class, injectionListener);
 		bindListener(Matchers.hasMethodAnnotatedWith(Consumes.class), typeListener);

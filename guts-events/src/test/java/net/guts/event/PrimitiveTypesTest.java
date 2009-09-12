@@ -19,6 +19,7 @@ import static org.easymock.EasyMock.createMock;
 import org.easymock.EasyMock;
 import org.testng.annotations.Test;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
@@ -45,6 +46,7 @@ public class PrimitiveTypesTest
 				Events.bindChannel(binder(), int.class);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		// Get Consumer & Suppliers
 		Consumer1 consumer1 = EasyMock.createMock(Consumer1.class);
 		Consumer2 consumer2 = injector.getInstance(Consumer2.class);
@@ -121,6 +123,7 @@ public class PrimitiveTypesTest
 				Events.bindChannel(binder(), Integer.class);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		// Get Consumer & Suppliers
 		Consumer3 consumer1 = EasyMock.createMock(Consumer3.class);
 		Consumer4 consumer2 = injector.getInstance(Consumer4.class);
@@ -233,6 +236,7 @@ public class PrimitiveTypesTest
 				Events.bindChannel(binder(), int.class, TOPIC);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		// Get Consumer & Suppliers
 		Consumer5 consumer1 = EasyMock.createMock(Consumer5.class);
 		Consumer6 consumer2 = injector.getInstance(Consumer6.class);

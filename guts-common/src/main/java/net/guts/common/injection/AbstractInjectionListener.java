@@ -24,14 +24,13 @@ import com.google.inject.spi.InjectionListener;
  *
  * @author Jean-Francois Poilpret
  */
-public abstract class AbstractInjectionListener<T> implements InjectionListener<T>
+public abstract class AbstractInjectionListener<T> implements InjectableInjectionListener<T>
 {
-	// Guice Injector must be injected as a "trick" in order to delay the call to this method
-	// as late as possible during Guice.createInjector()
-	/**
-	 * 
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.common.injection.InjectableInjectionListener#flush()
 	 */
-	final protected void flush()
+	@Override final public void flush()
 	{
 		// Register all pending instances with the newly injected EventService
 		for (T injectee: _pendingInjectees)

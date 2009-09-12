@@ -22,6 +22,7 @@ import org.testng.annotations.Test;
 
 import static org.fest.assertions.Assertions.assertThat;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
@@ -107,6 +108,7 @@ public class GuiceEventServiceTest
 				Events.bindChannel(binder(), _typeListString);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		Consumer1 consumer = injector.getInstance(Consumer1.class);
 		assertThat(consumer).as("Consumer").isNotNull();
 	}
@@ -128,6 +130,7 @@ public class GuiceEventServiceTest
 				Events.bindChannel(binder(), Integer.class, TOPIC);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		ChannelInjected instance = injector.getInstance(ChannelInjected.class);
 		assertThat(instance).as("ChannelInjected").isNotNull();
 		assertThat(instance._topicChannel).as("injected topic channel").isNotNull();

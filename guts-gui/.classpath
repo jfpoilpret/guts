@@ -5,7 +5,7 @@
   <classpathentry kind="src" path="src/main/resources" excluding="**/*.java"/>
   <classpathentry kind="output" path="target/classes"/>
   <classpathentry kind="var" path="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0.jar" sourcepath="M2_REPO/aopalliance/aopalliance/1.0/aopalliance-1.0-sources.jar"/>
-  <classpathentry kind="var" path="M2_REPO/org/jdesktop/application/AppFramework/1.03-patch-jfpoilpret/AppFramework-1.03-patch-jfpoilpret.jar"/>
+  <classpathentry kind="var" path="M2_REPO/org/jdesktop/application/AppFramework/1.03-patch-jfpoilpret/AppFramework-1.03-patch-jfpoilpret.jar" sourcepath="M2_REPO/org/jdesktop/application/AppFramework/1.03-patch-jfpoilpret/AppFramework-1.03-patch-jfpoilpret-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3.jar" sourcepath="M2_REPO/cglib/cglib-nodep/2.1_3/cglib-nodep-2.1_3-sources.jar"/>
   <classpathentry kind="var" path="M2_REPO/net/java/dev/designgridlayout/designgridlayout/1.1p1/designgridlayout-1.1p1.jar" sourcepath="M2_REPO/net/java/dev/designgridlayout/designgridlayout/1.1p1/designgridlayout-1.1p1-sources.jar">
     <attributes>

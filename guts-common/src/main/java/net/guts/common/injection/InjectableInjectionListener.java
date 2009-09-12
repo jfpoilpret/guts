@@ -12,25 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application;
+package net.guts.common.injection;
 
-import java.awt.Window;
+import com.google.inject.spi.InjectionListener;
 
-/**
- * Service that tracks the current foreground Window and gives access to it to
- * other services (e.g. {@link net.guts.gui.dialog.DialogFactory} or
- * {@link net.guts.gui.message.MessageFactory}).
- * <p/>
- * This service is directly injectable through Guice facilities.
- * 
- * @author Jean-Francois Poilpret
- */
-public interface ActiveWindowHolder
+public interface InjectableInjectionListener<T> extends InjectionListener<T>
 {
-	/**
-	 * Get the current active foreground window in the application.
-	 * 
-	 * @return the current active foreground window
-	 */
-	public Window	getActiveWindow();
+	public void flush();
 }

@@ -12,23 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.exception;
+package org.jdesktop.application;
 
-import java.lang.annotation.Documented;
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-@Documented
-@Retention(RetentionPolicy.RUNTIME)
-@Target(ElementType.METHOD)
-public @interface HandlesException
+//FIXME remove asap (when don't need SAF anymore)
+public class GutsApplicationContext extends ApplicationContext
 {
-	int priority() default 0;
+	public<T extends Application> GutsApplicationContext(T application)
+	{
+		setApplicationClass(application.getClass());
+		setApplication(application);
+	}
 }

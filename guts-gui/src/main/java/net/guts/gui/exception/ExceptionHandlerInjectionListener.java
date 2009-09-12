@@ -17,16 +17,14 @@ package net.guts.gui.exception;
 import net.guts.common.injection.AbstractInjectionListener;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 class ExceptionHandlerInjectionListener extends AbstractInjectionListener<Object>
 {
 	// Guice Injector is injected as a "trick" in order to delay the call to this method
 	// as late as possible during Guice.createInjector()
-	@Inject void setExceptionManager(ExceptionHandlerManager manager, Injector injector)
+	@Inject void setExceptionManager(ExceptionHandlerManager manager)
 	{
 		_manager = manager;
-		flush();
 	}
 
 	@Override protected void registerInjectee(Object injectee)

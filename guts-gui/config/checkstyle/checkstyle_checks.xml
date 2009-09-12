@@ -419,7 +419,10 @@
 			<property name="severity" value="warning"/>
 		</module>
 		<!--	<module name="FinalParameters"/>-->
-		<module name="Indentation"/>
+		<!-- FIXME: this check doesn't work well with case in switch! -->
+		<module name="Indentation">
+			<property name="severity" value="ignore"/>
+		</module>
 		<module name="TrailingComment">
 			<property name="severity" value="warning"/>
 		</module>

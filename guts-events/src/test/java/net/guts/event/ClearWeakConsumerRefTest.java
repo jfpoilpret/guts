@@ -26,6 +26,7 @@ import static org.easymock.EasyMock.verify;
 
 import org.testng.annotations.Test;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.Consumes;
@@ -53,6 +54,7 @@ public class ClearWeakConsumerRefTest
 				Events.bindChannel(binder(), Integer.class);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		// Get Consumer & Suppliers
 		Consumer consumer = injector.getInstance(Consumer.class);
 		Channel<Integer> supplier = injector.getInstance(Key.get(new TypeLiteral<Channel<Integer>>(){}));
@@ -76,6 +78,7 @@ public class ClearWeakConsumerRefTest
 				Events.bindChannel(binder(), Integer.class);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		// Get Consumer & Suppliers
 		Consumer consumer = injector.getInstance(Consumer.class);
 		Channel<Integer> supplier = injector.getInstance(Key.get(new TypeLiteral<Channel<Integer>>(){}));

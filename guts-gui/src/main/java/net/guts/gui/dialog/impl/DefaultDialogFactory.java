@@ -20,8 +20,7 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.application.AbstractGuiceApplication;
-import net.guts.gui.application.ActiveWindowHolder;
+import net.guts.gui.application.WindowController;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.Resettable;
@@ -41,12 +40,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultDialogFactory implements DialogFactory
 {
-	@Inject public DefaultDialogFactory(Injector injector, 
-		AbstractGuiceApplication application, ActiveWindowHolder activeWindow)
+	@Inject public DefaultDialogFactory(
+		Injector injector, WindowController windowController)
 	{
 		_injector = injector;
-		_application = application;
-		_activeWindow = activeWindow;
+		_windowController = windowController;
 	}
 	
 	/*
@@ -97,7 +95,7 @@ public class DefaultDialogFactory implements DialogFactory
 	private boolean show(JComponent panel)
 	{
 		// Find right parent first
-		Window active = _activeWindow.getActiveWindow();
+		Window active = _windowController.getActiveWindow();
 		GDialog dialog;
 		if (active instanceof JDialog)
 		{
@@ -113,11 +111,10 @@ public class DefaultDialogFactory implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_application.show(dialog);
+		_windowController.show(dialog);
 		return !dialog.wasCancelled();
 	}
 
 	final private Injector _injector;
-	final private AbstractGuiceApplication _application;
-	final private ActiveWindowHolder _activeWindow;
+	final private WindowController _windowController;
 }

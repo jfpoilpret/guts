@@ -20,6 +20,7 @@ import org.testng.annotations.Test;
 import static org.easymock.EasyMock.createMock;
 import static org.fest.assertions.Assertions.assertThat;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.Consumes;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
@@ -47,6 +48,7 @@ public class EventModuleTypeListenerBugTest
 				bind(InjectedMain.class).toInstance(main);
 			}
 		});
+		InjectionListeners.injectListeners(injector);
 		assertThat(main._consumer).as("Injected consumer").isNotNull();
 	}
 	static public class Consumer

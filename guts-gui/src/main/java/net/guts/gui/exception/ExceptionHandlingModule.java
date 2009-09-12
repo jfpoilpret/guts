@@ -14,6 +14,7 @@
 
 package net.guts.gui.exception;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 
@@ -33,8 +34,8 @@ public final class ExceptionHandlingModule extends AbstractModule
 		// Add automatic listeners to automatically add HandlesException method
 		// instances to the ExceptionHandlerManager
 		ExceptionHandlerInjectionListener injectionListener = 
-			new ExceptionHandlerInjectionListener();
-		requestInjection(injectionListener);
+			InjectionListeners.requestInjection(
+				binder(), new ExceptionHandlerInjectionListener());
 		OneTypeListener<Object> typeListener = 
 			new OneTypeListener<Object>(Object.class, injectionListener);
 		bindListener(

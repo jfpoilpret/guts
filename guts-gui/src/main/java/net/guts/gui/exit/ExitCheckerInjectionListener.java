@@ -17,16 +17,14 @@ package net.guts.gui.exit;
 import net.guts.common.injection.AbstractInjectionListener;
 
 import com.google.inject.Inject;
-import com.google.inject.Injector;
 
 class ExitCheckerInjectionListener extends AbstractInjectionListener<ExitChecker>
 {
 	// Guice Injector is injected as a "trick" in order to delay the call to this method
 	// as late as possible during Guice.createInjector()
-	@Inject void setExitController(ExitController controller, Injector injector)
+	@Inject void setExitController(ExitController controller)
 	{
 		_controller = controller;
-		flush();
 	}
 
 	@Override protected void registerInjectee(ExitChecker injectee)

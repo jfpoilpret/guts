@@ -12,38 +12,35 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.exit;
+package net.guts.gui.action;
+
+import org.jdesktop.application.Action;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
-import net.guts.event.EventModule;
-import net.guts.event.Events;
 
 import com.google.inject.AbstractModule;
 
 /**
  * TODO
+ *
  * @author Jean-Francois Poilpret
  */
-public final class ExitModule extends AbstractModule
+public final class ActionModule extends AbstractModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
 	 */
 	@Override protected void configure()
 	{
-		// Make sure EventModule is installed
-		install(new EventModule());
-		// Declare event published at shutdown time
-		Events.bindChannel(binder(), Void.class, ExitController.SHUTDOWN_EVENT);
-		// Add automatic listeners to automatically add ExitChecker instances to 
-		// the ExitController
-		ExitCheckerInjectionListener injectionListener = 
+		// Add type listener to automatically register @Action methods of
+		// Guice-instantiated objects
+		ActionRegisterInjectionListener injectionListener = 
 			InjectionListeners.requestInjection(
-				binder(), new ExitCheckerInjectionListener());
-		OneTypeListener<ExitChecker> typeListener = 
-			new OneTypeListener<ExitChecker>(ExitChecker.class, injectionListener);
-		bindListener(Matchers.isSubtypeOf(ExitChecker.class), typeListener);
+				binder(), new ActionRegisterInjectionListener());
+		OneTypeListener<Object> typeListener = 
+			new OneTypeListener<Object>(Object.class, injectionListener);
+		bindListener(Matchers.hasMethodAnnotatedWith(Action.class), typeListener);
 	}
 }

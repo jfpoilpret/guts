@@ -259,6 +259,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		}
 		try
 		{
+			method.setAccessible(true);
 			return (U) method.invoke(instance, event);
 		}
 		catch (InvocationTargetException e)
