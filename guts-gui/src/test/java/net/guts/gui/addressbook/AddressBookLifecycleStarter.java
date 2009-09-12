@@ -14,17 +14,19 @@
 
 package net.guts.gui.addressbook;
 
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import org.jdesktop.application.Action;
 
-import net.guts.gui.action.ActionManager;
-import net.guts.gui.addressbook.action.ContactActions;
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.WindowController;
 import net.guts.gui.exception.HandlesException;
+import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
 
@@ -44,11 +46,21 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 			"modifyContact", "modifyContactWithTabs", "modifyContactWithWizard", 
 			"deleteContact"));
 		JFrame mainFrame = new JFrame();
-		mainFrame.setJMenuBar(menuBar);
-		
+		mainFrame.setName("mainFrame");
+		//TODO Guts-GUI should always provide this somehow
+		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+		mainFrame.addWindowListener(new WindowAdapter()
+		{
+			@Override public void windowClosing(WindowEvent arg0)
+			{
+				_exitController.shutdown();
+			}
+		});
+
 		// Initialize the main frame content: 3 panels are there, separated by JSplitPanes
+		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(_view);
-//		mainFrame.pack();
+		mainFrame.pack();
 		_windowController.show(mainFrame);
 	}
 	
@@ -88,4 +100,5 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	@Inject private WindowController _windowController;
 	@Inject private MenuFactory _menuFactory;
 	@Inject private MessageFactory _messageFactory;
+	@Inject private ExitController _exitController;
 }

@@ -36,7 +36,7 @@ public class ImageConverter extends ResourceConverter
 	public ImageConverter()
 	{
 		super(Image.class);
-		_iconConverter = forType(ImageIcon.class);
+//		_iconConverter = forType(ImageIcon.class);
 	}
 	
 	/*
@@ -46,9 +46,10 @@ public class ImageConverter extends ResourceConverter
 	@Override public Object parseString(String s, ResourceMap r)
 		throws ResourceConverterException
 	{
-		ImageIcon icon = (ImageIcon) _iconConverter.parseString(s, r);
+//		ImageIcon icon = (ImageIcon) _iconConverter.parseString(s, r);
+		ImageIcon icon = (ImageIcon) forType(ImageIcon.class).parseString(s, r);
 		return icon.getImage();
 	}
 
-	private final ResourceConverter _iconConverter;
+//	private final ResourceConverter _iconConverter;
 }

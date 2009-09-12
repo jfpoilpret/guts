@@ -47,7 +47,7 @@ public class CursorInfoConverter extends ResourceConverter
 	public CursorInfoConverter()
 	{
 		super(CursorInfo.class);
-		_iconConverter = forType(ImageIcon.class);
+//		_iconConverter = forType(ImageIcon.class);
 	}
 	
 	/*
@@ -76,7 +76,8 @@ public class CursorInfoConverter extends ResourceConverter
 						"Bad format, expected: \"icon[,hotspotx[,hotspoty]]", s);
 				}
 				ImageIcon icon = 
-					(ImageIcon) _iconConverter.parseString(tokenize.nextToken(), r);
+					(ImageIcon) forType(ImageIcon.class).parseString(tokenize.nextToken(), r);
+//				(ImageIcon) _iconConverter.parseString(tokenize.nextToken(), r);
 				double x = getHotspotRate(tokenize);
 				double y = getHotspotRate(tokenize);
 				info = CursorHelper.buildCursor(icon, x, y);
@@ -115,6 +116,6 @@ public class CursorInfoConverter extends ResourceConverter
 	static private final double	MAX_COORDINATE	= 0.99;
 	static private final double	MEAN_COORDINATE	= 0.5;
 	
-	private final ResourceConverter _iconConverter;
+//	private final ResourceConverter _iconConverter;
 	private final Map<String, CursorInfo> _cursors = new HashMap<String, CursorInfo>();
 }

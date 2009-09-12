@@ -21,6 +21,7 @@ import java.util.List;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.GutsApplicationContext;
 import org.jdesktop.application.ResourceConverter;
+import org.jdesktop.application.ResourceMap;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.gui.action.ActionModule;
@@ -79,11 +80,6 @@ public abstract class AbstractAppLauncher
 	{
 		try
 		{
-			//TODO replace with special resource Guice module
-			// Register a few useful resource converters
-			ResourceConverter.register(new ImageConverter());
-			ResourceConverter.register(new CursorInfoConverter());
-			ResourceConverter.register(new CursorConverter());
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
 			modules.add(new ActionModule());
@@ -126,6 +122,14 @@ public abstract class AbstractAppLauncher
 			bind(ApplicationContext.class).toInstance(
 				new GutsApplicationContext(application));
 			requestStaticInjection(ResourceComponent.class);
+			//TODO replace with special resource Guice module
+			// The following line is a trick to enforce registration of default converters
+//			Class<?> useless = ResourceMap.class;
+//			System.out.println(useless);
+			// Register a few useful resource converters
+			ResourceConverter.register(new ImageConverter());
+			ResourceConverter.register(new CursorInfoConverter());
+			ResourceConverter.register(new CursorConverter());
 			//FIXME Add necessary bindings (and replace later with their own modules?)
 			requestStaticInjection(TableHelper.class);
 		}
