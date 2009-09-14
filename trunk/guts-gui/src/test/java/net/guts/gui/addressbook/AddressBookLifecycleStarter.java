@@ -25,6 +25,7 @@ import org.jdesktop.application.Action;
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.WindowController;
+import static net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;
@@ -60,8 +61,8 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		// Initialize the main frame content: 3 panels are there, separated by JSplitPanes
 		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(_view);
-		mainFrame.pack();
-		_windowController.show(mainFrame);
+//		mainFrame.pack();
+		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER);
 	}
 	
 	@Override public void ready()

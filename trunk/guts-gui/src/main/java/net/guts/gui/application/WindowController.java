@@ -30,8 +30,16 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(WindowControllerImpl.class)
 public interface WindowController
 {
-	public void show(JFrame frame);
-	public void show(JDialog dialog);
+	public enum BoundsPolicy
+	{
+		PACK_AND_CENTER,
+		PACK_ONLY,
+		CENTER_ONLY,
+		KEEP_ORIGINAL_BOUNDS
+	};
+	
+	public void show(JFrame frame, BoundsPolicy policy);
+	public void show(JDialog dialog, BoundsPolicy policy);
 
 	/**
 	 * Get the current active foreground window in the application.
