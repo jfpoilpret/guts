@@ -21,6 +21,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import net.guts.gui.application.WindowController;
+import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.Resettable;
@@ -111,7 +112,7 @@ public class DefaultDialogFactory implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_windowController.show(dialog);
+		_windowController.show(dialog, BoundsPolicy.PACK_AND_CENTER);
 		return !dialog.wasCancelled();
 	}
 

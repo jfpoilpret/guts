@@ -79,20 +79,21 @@ class WindowControllerImpl implements WindowController
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JFrame)
 	 */
-	@Override public void show(JFrame frame)
+	@Override public void show(JFrame frame, BoundsPolicy policy)
 	{
-		showWindow(frame);
+		showWindow(frame, policy);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JDialog)
 	 */
-	@Override public void show(JDialog dialog)
+	@Override public void show(JDialog dialog, BoundsPolicy policy)
 	{
-		showWindow(dialog);
+		showWindow(dialog, policy);
 	}
 
-	private void showWindow(RootPaneContainer container)
+	private <T extends Window & RootPaneContainer> void showWindow(
+		T container, BoundsPolicy policy)
 	{
 		if (!EventQueue.isDispatchThread())
 		{
@@ -102,7 +103,7 @@ class WindowControllerImpl implements WindowController
 		// Perform i18n if not done already
 		injectResources(container);
 		// Calculate size (based on existing session state)
-		initSize(container);
+		initBounds(container, policy);
 		container.getRootPane().getParent().setVisible(true);
 	}
 	
@@ -117,12 +118,24 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 	
-	//TODO call pack() when needed, ie when no session, and no setup of bounds
-	private void initSize(RootPaneContainer container)
+	private <T extends Window & RootPaneContainer> void initBounds(
+		T container, BoundsPolicy policy)
 	{
 		try
 		{
 			JComponent root = container.getRootPane();
+
+			// Initialize location and size according to policy
+			if (policy == BoundsPolicy.PACK_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
+			{
+				container.pack();
+			}
+			if (policy == BoundsPolicy.CENTER_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
+			{
+				container.setLocationRelativeTo(getActiveWindow());
+			}
+			
+			// Restore size from session storage if any
 			_context.getSessionStorage().restore(root.getParent(), sessionFileName(container));
 		}
 		catch (IOException e)
