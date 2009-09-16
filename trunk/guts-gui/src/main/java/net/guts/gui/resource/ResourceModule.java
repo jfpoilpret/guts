@@ -17,6 +17,8 @@ package net.guts.gui.resource;
 import java.awt.Color;
 import java.awt.Font;
 
+import javax.swing.JComponent;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
@@ -37,12 +39,17 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Integer.class, IntConverter.class);
 		bindConverter(Color.class, ColorConverter.class);
 		bindConverter(Font.class, FontConverter.class);
-		
+
+		// Bind default ComponentInjector
+		Resources.bindComponentInjector(binder(), JComponent.class).to(BeanPropertiesInjector.class);
+		// TODO bind injectors for more specific components
+
 		//TODO
 		// Add type listener for automatic injection of GUI
 	}
 	
-	private <T> void bindConverter(Class<T> type, Class<? extends ResourceConverter<T>> converter)
+	private <T> void bindConverter(
+		Class<T> type, Class<? extends ResourceConverter<T>> converter)
 	{
 		Resources.bindConverter(binder(), type).to(converter).asEagerSingleton();
 	}

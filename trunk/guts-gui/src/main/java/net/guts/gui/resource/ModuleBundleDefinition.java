@@ -14,19 +14,14 @@
 
 package net.guts.gui.resource;
 
-import javax.swing.JComponent;
-
-import com.google.inject.ImplementedBy;
-
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-@ImplementedBy(ResourceInjectorImpl.class)
-public interface ResourceInjector
+final class ModuleBundleDefinition
 {
-	public void injectComponent(JComponent component);
-	public void injectHierarchy(JComponent component);
-//	public void injectInstance(Object instance);
+	ModuleBundleDefinition(Package module, Package... dependencies)
+	{
+		this.module = module;
+		this.dependencies = dependencies;
+	}
+	
+	final Package module;
+	final Package[] dependencies;
 }

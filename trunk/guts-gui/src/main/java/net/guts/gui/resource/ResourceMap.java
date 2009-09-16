@@ -14,19 +14,18 @@
 
 package net.guts.gui.resource;
 
-import javax.swing.JComponent;
+import java.util.Set;
 
-import com.google.inject.ImplementedBy;
-
+// NB: useful only for ComponentInjector implementers (for extensibility purposes) 
 /**
  * TODO
  *
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(ResourceInjectorImpl.class)
-public interface ResourceInjector
+public interface ResourceMap
 {
-	public void injectComponent(JComponent component);
-	public void injectHierarchy(JComponent component);
-//	public void injectInstance(Object instance);
+	// Returns all resource keys starting with prefix. Prefix has been removed from all keys
+	// in the returned set (for ease of use)
+	public Set<String> keys(String prefix);
+	public <T> T getValue(String prefix, String key, Class<T> type);
 }
