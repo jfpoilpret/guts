@@ -14,58 +14,46 @@
 
 package net.guts.gui.resource;
 
+import java.util.List;
 import java.util.Map;
+import java.util.ResourceBundle;
+import java.util.Set;
 
-import javax.swing.JComponent;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.TypeLiteral;
 
+// This implements search of resources across all bundles
 @Singleton
-class ResourceInjectorImpl implements ResourceInjector
+class DefaultResourceMap implements ResourceMap
 {
-	@Inject
-	public ResourceInjectorImpl(Map<Class<?>, ComponentInjector<?>> injectors,
+	// Should we use ResourceBundle here? Not so sure!
+	@Inject DefaultResourceMap(List<ResourceBundle> bundles, 
 		Map<TypeLiteral<?>, ResourceConverter<?>> converters)
 	{
-		_injectors = injectors;
+		_bundles = bundles;
 		_converters = converters;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.guts.gui.resource.ResourceInjector#injectComponent(javax.swing.JComponent)
+	 * @see net.guts.gui.resource.spi.ResourceMap#getValue(java.lang.String, java.lang.Class)
 	 */
-	@Override public void injectComponent(JComponent component)
+	@Override public <T> T getValue(String prefix, String key, Class<T> type)
 	{
 		// TODO Auto-generated method stub
-		//TODO Find the most specific ComponentInjector for component
-		// This code already exists somewhere else, try to refactor!
-		Class<?> type = component.getClass();
-		ComponentInjector<?> injector = null;
-		while (true)
-		{
-			injector = _injectors.get(type);
-			if (injector != null)
-			{
-				break;
-			}
-			type = type.getSuperclass();
-			//TODO Should we handle interfaces as well?
-		}
-		//TODO get hold of a ResourceMap!
-//		injector.inject(component, resources);
+		return null;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.guts.gui.resource.ResourceInjector#injectComponents(javax.swing.JComponent)
+	 * @see net.guts.gui.resource.spi.ResourceMap#keys()
 	 */
-	@Override public void injectHierarchy(JComponent component)
+	@Override public Set<String> keys(String prefix)
 	{
 		// TODO Auto-generated method stub
-
+		return null;
 	}
 
-	final private Map<Class<?>, ComponentInjector<?>> _injectors;
+	final private List<ResourceBundle> _bundles;
 	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
 }

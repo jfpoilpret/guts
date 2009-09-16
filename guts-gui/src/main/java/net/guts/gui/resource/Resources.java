@@ -18,6 +18,7 @@ import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
+import com.google.inject.multibindings.Multibinder;
 
 /**
  * TODO
@@ -44,13 +45,41 @@ public final class Resources
 		return bindConverter(binder, TypeLiteral.get(type));
 	}
 	
-	static private MapBinder<TypeLiteral<?>, ResourceConverter<?>> converters(Binder binder)
+	@SuppressWarnings("unchecked")
+	static public <T> LinkedBindingBuilder<ComponentInjector<T>> bindComponentInjector(
+		Binder binder, Class<T> type)
 	{
-		return MapBinder.newMapBinder(binder, KEY_TYPE, VALUE_TYPE);
+		LinkedBindingBuilder builder = injectors(binder).addBinding(type);
+		return builder;
 	}
 	
-	static private final TypeLiteral<TypeLiteral<?>> KEY_TYPE =
+	static public void registerBundle(Binder binder, Package module, Package... dependencies)
+	{
+		bundles(binder).addBinding().toInstance(
+			new ModuleBundleDefinition(module, dependencies));
+	}
+	
+	static private Multibinder<ModuleBundleDefinition> bundles(Binder binder)
+	{
+		return Multibinder.newSetBinder(binder, ModuleBundleDefinition.class);
+	}
+	
+	static private MapBinder<TypeLiteral<?>, ResourceConverter<?>> converters(Binder binder)
+	{
+		return MapBinder.newMapBinder(binder, CONVERTER_KEY_TYPE, CONVERTER_VALUE_TYPE);
+	}
+	
+	static private MapBinder<Class<?>, ComponentInjector<?>> injectors(Binder binder)
+	{
+		return MapBinder.newMapBinder(binder, INJECTOR_KEY_TYPE, INJECTOR_VALUE_TYPE);
+	}
+	
+	static private final TypeLiteral<TypeLiteral<?>> CONVERTER_KEY_TYPE =
 		new TypeLiteral<TypeLiteral<?>>() {};
-	static private final TypeLiteral<ResourceConverter<?>> VALUE_TYPE =
+	static private final TypeLiteral<ResourceConverter<?>> CONVERTER_VALUE_TYPE =
 		new TypeLiteral<ResourceConverter<?>>() {};
+	static private final TypeLiteral<Class<?>> INJECTOR_KEY_TYPE =
+		new TypeLiteral<Class<?>>() {};
+	static private final TypeLiteral<ComponentInjector<?>> INJECTOR_VALUE_TYPE = 
+		new TypeLiteral<ComponentInjector<?>>() {};
 }
