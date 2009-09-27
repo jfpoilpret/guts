@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
@@ -28,6 +31,9 @@ import com.google.inject.Singleton;
 @Singleton
 class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 {
+	static final private Logger _logger = 
+		LoggerFactory.getLogger(ExceptionHandlerManagerImpl.class);
+	
 	@Inject
 	public ExceptionHandlerManagerImpl(AnnotationProcessor processor)
 	{
@@ -73,6 +79,7 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 		}
 	}
 	
+	// CSOFF: IllegalCatchCheck
 	private boolean handle(Object instance, Method method, Throwable e)
 	{
 		try
@@ -81,10 +88,13 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 		}
 		catch (Exception exc)
 		{
-			//TODO call some hook?
+			String msg = String.format("Failed to invoke `%1$s` on `%2$s` instance.", 
+				method.getName(), instance);
+			_logger.info(msg, e);
 			return false;
 		}
 	}
+	// CSON: IllegalCatchCheck
 	
 	static private class Handler implements Comparable<Handler>
 	{
