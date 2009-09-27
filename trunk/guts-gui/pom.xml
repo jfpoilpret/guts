@@ -13,7 +13,7 @@
 	<artifactId>guts-gui</artifactId>
 	<packaging>jar</packaging>
 
-	<name>GUTS-GUI</name>
+	<name>Guts-GUI</name>
 	<description>
 		Guts-GUI is a light Guice-based framework for rich GUI (Swing-based) 
 		applications, mainly based on the Swing Application Framework by Sun 
@@ -70,6 +70,27 @@
 			<artifactId>designgridlayout</artifactId>
 			<version>1.1p1</version>
 			<optional>true</optional>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-simple</artifactId>
+<!--
+			<artifactId>slf4j-log4j12</artifactId>
+-->
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Reflection utilities -->
+		<dependency>
+			<groupId>cglib</groupId>
+			<artifactId>cglib-nodep</artifactId>
 		</dependency>
 
 		<!-- TODO Take latest update (check also if in central maven repo) -->
