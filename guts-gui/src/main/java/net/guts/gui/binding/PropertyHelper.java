@@ -23,6 +23,7 @@ final class PropertyHelper
 	{
 	}
 	
+	// CSOFF: IllegalCatchCheck
 	static public void set(Object bean, PropertyDescriptor property, Object value)
 	{
 		try
@@ -34,7 +35,9 @@ final class PropertyHelper
 			throw convert(e);
 		}
 	}
+	// CSON: IllegalCatchCheck
 	
+	// CSOFF: IllegalCatchCheck
 	static public Object get(Object bean, PropertyDescriptor property)
 	{
 		try
@@ -46,6 +49,7 @@ final class PropertyHelper
 			throw convert(e);
 		}
 	}
+	// CSON: IllegalCatchCheck
 
 	static private RuntimeException convert(Throwable e)
 	{
