@@ -14,8 +14,14 @@
 
 package net.guts.gui.resource;
 
+import java.awt.Component;
+import java.util.HashMap;
+import java.util.Map;
 
-import javax.swing.JComponent;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.sf.cglib.beans.BeanMap;
 
 
 //TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
@@ -37,23 +43,61 @@ public interface ComponentInjector<T>
 }
 
 // Default component injector
-class BeanPropertiesInjector implements ComponentInjector<JComponent>
+class BeanPropertiesInjector implements ComponentInjector<Component>
 {
-	@Override public void inject(JComponent component, ResourceMap resources)
+	static final private Logger _logger = 
+		LoggerFactory.getLogger(BeanPropertiesInjector.class);
+	
+	@Override public void inject(Component component, ResourceMap resources)
 	{
 		String prefix = component.getName();
+		Class<?> componentType = component.getClass();
 		if (prefix == null)
 		{
+			String msg = String.format("Component has no name: %d", component);
+			_logger.info(msg);
 			return;
 		}
+		// Get the right BeanMap for that component
+		BeanMap bean = _beans.get(componentType);
+		if (bean == null)
+		{
+			bean = BeanMap.create(component);
+			bean.setBean(null);
+			_beans.put(componentType, bean);
+		}
+//		else
+//		{
+//			bean.setBean(component);
+//		}
 		// For each injectable resource
 		for (String key: resources.keys(prefix))
 		{
-			//TODO
+			//TODO Use cglib ReflectUtils.getBeanSetters? 
+			// -> Does it cover all class hierarchy?
+			// -> Should the result be cached in a Map<Class, PropertyDescriptor>
+			// Can we use BulkBean?
+			// Or better to use BeanMap => seems not bad!
+
 			// Check that this property exists
-			// Check the expected type of that property
+			Class<?> type = bean.getPropertyType(key);
+			if (type == null)
+			{
+				String msg = String.format("Unknow property `%s` of type `%s`", 
+					key, componentType);
+				_logger.info(msg);
+				continue;
+			}
 			// Get the value in the correct type
+			Object value = resources.getValue(prefix, key, type);
 			// Set the property with the resource value
+			bean.put(component, key, value);
 		}
 	}
+
+	//FIXME probably not a terrific idea:
+	// - requires cglib in classpath (in addition to "guice cglib"
+	// - holds a reference to a component forever!
+	// Good enough for a first prototype however!
+	final private Map<Class<?>, BeanMap> _beans = new HashMap<Class<?>, BeanMap>();
 }

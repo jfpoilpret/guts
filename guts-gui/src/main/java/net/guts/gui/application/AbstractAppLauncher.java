@@ -21,7 +21,8 @@ import java.util.List;
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.GutsApplicationContext;
 import org.jdesktop.application.ResourceConverter;
-import org.jdesktop.application.ResourceMap;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.gui.action.ActionModule;
@@ -30,6 +31,7 @@ import net.guts.gui.application.impl.CursorInfoConverter;
 import net.guts.gui.application.impl.ImageConverter;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
+import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.util.ResourceComponent;
 import net.guts.gui.util.TableHelper;
 
@@ -43,6 +45,8 @@ import com.google.inject.Module;
 // or use one of the existing default implementations...
 public abstract class AbstractAppLauncher
 {
+	static final private Logger _logger = LoggerFactory.getLogger(AbstractAppLauncher.class);
+
 	abstract protected List<Module> getModules(String[] args);
 
 	/**
@@ -76,12 +80,15 @@ public abstract class AbstractAppLauncher
 		});
 	}
 	
+	// CSOFF: IllegalCatchCheck
 	private void launchInEDT(String[] args)
 	{
 		try
 		{
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
+			//TODO add new resource management!
+//			modules.add(new ResourceModule());
 			modules.add(new ActionModule());
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
@@ -106,9 +113,10 @@ public abstract class AbstractAppLauncher
 		catch (Exception e)
 		{
 			//TODO fail graciously with Message Box!
-			e.printStackTrace();
+			_logger.error("Could not start application", e);
 		}
 	}
+	// CSON: IllegalCatchCheck
 	
 	private class AppModule extends AbstractModule
 	{
@@ -123,15 +131,14 @@ public abstract class AbstractAppLauncher
 				new GutsApplicationContext(application));
 			requestStaticInjection(ResourceComponent.class);
 			//TODO replace with special resource Guice module
-			// The following line is a trick to enforce registration of default converters
-//			Class<?> useless = ResourceMap.class;
-//			System.out.println(useless);
 			// Register a few useful resource converters
 			ResourceConverter.register(new ImageConverter());
 			ResourceConverter.register(new CursorInfoConverter());
 			ResourceConverter.register(new CursorConverter());
 			//FIXME Add necessary bindings (and replace later with their own modules?)
 			requestStaticInjection(TableHelper.class);
+			
+			//TODO add new resource management!
 		}
 	}
 	

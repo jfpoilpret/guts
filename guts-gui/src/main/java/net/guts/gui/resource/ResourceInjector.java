@@ -14,7 +14,8 @@
 
 package net.guts.gui.resource;
 
-import javax.swing.JComponent;
+import java.awt.Component;
+
 
 import com.google.inject.ImplementedBy;
 
@@ -26,7 +27,7 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(ResourceInjectorImpl.class)
 public interface ResourceInjector
 {
-	public void injectComponent(JComponent component);
-	public void injectHierarchy(JComponent component);
+	public void injectComponent(Component component);
+	public void injectHierarchy(Component component);
 //	public void injectInstance(Object instance);
 }

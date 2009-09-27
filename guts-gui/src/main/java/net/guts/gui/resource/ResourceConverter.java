@@ -43,7 +43,7 @@ class IntConverter implements ResourceConverter<Integer>
 {
 	@Override public Integer convert(String value)
 	{
-		return null;
+		return Integer.decode(value);
 	}
 }
 
@@ -51,8 +51,8 @@ class ColorConverter implements ResourceConverter<Color>
 {
 	@Override public Color convert(String value)
 	{
-		//TODO
-		return null;
+		//TODO Check if this works also with Alpha channel (I think not)
+		return Color.decode(value);
 	}
 }
 
@@ -60,8 +60,7 @@ class FontConverter implements ResourceConverter<Font>
 {
 	@Override public Font convert(String value)
 	{
-		// TODO Auto-generated method stub
-		return null;
+		return Font.decode(value);
 	}
 }
 
@@ -74,4 +73,4 @@ class IconConverter implements ResourceConverter<Icon>
 	}
 }
 
-
+//TODO missing resource types: ImageIcon, Cursor...
