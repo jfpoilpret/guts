@@ -14,6 +14,9 @@
 
 package net.guts.gui.exception;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 
 //TODO can we make this class package-private????
@@ -25,6 +28,7 @@ import com.google.inject.Inject;
  */
 public class SwingExceptionHandler
 {
+	static private final Logger _logger = LoggerFactory.getLogger(SwingExceptionHandler.class);
 	static private final String	HANDLER_PROPERTY = "sun.awt.exception.handler";
 
 	static
@@ -40,7 +44,10 @@ public class SwingExceptionHandler
 		}
 		else
 		{
-			e.printStackTrace();
+			String msg = String.format(
+				"Impossible to hanled exception `%1$s` because _manager is null.", 
+				e.getMessage());
+			_logger.warn(msg);
 		}
 	}
 
