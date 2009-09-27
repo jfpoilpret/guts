@@ -14,14 +14,34 @@
 
 package net.guts.gui.resource;
 
-final class ModuleBundleDefinition
+/**
+ * TODO
+ *
+ * @author Jean-Francois Poilpret
+ */
+public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 {
-	ModuleBundleDefinition(Package module, Package... dependencies)
+	public EnumConverter(Class<T> enumType)
 	{
-		this.module = module;
-		this.dependencies = dependencies;
+		_enumType = enumType;
+		_enumValues = enumType.getEnumConstants();
 	}
-	
-	final Package module;
-	final Package[] dependencies;
+
+	/* (non-Javadoc)
+	 * @see net.guts.gui.resource.ResourceConverter#convert(java.lang.String)
+	 */
+	@Override public T convert(String value)
+	{
+		for (T enumValue: _enumValues)
+		{
+			if (enumValue.name().equals(value))
+			{
+				return enumValue;
+			}
+		}
+		return null;
+	}
+
+	final private Class<T> _enumType;
+	final private T[] _enumValues;
 }

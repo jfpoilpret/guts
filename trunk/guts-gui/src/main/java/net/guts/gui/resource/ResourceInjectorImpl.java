@@ -14,58 +14,55 @@
 
 package net.guts.gui.resource;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.util.Map;
-
-import javax.swing.JComponent;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 
 @Singleton
 class ResourceInjectorImpl implements ResourceInjector
 {
 	@Inject
-	public ResourceInjectorImpl(Map<Class<?>, ComponentInjector<?>> injectors,
-		Map<TypeLiteral<?>, ResourceConverter<?>> converters)
+	public ResourceInjectorImpl(
+		ResourceBundleRegistry registry, Map<Class<?>, ComponentInjector<?>> injectors)
 	{
+		_registry = registry;
 		_injectors = injectors;
-		_converters = converters;
 	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.resource.ResourceInjector#injectComponent(javax.swing.JComponent)
 	 */
-	@Override public void injectComponent(JComponent component)
+	@SuppressWarnings("unchecked") @Override 
+	public void injectComponent(Component component)
 	{
-		// TODO Auto-generated method stub
-		//TODO Find the most specific ComponentInjector for component
-		// This code already exists somewhere else, try to refactor!
-		Class<?> type = component.getClass();
-		ComponentInjector<?> injector = null;
-		while (true)
-		{
-			injector = _injectors.get(type);
-			if (injector != null)
-			{
-				break;
-			}
-			type = type.getSuperclass();
-			//TODO Should we handle interfaces as well?
-		}
-		//TODO get hold of a ResourceMap!
-//		injector.inject(component, resources);
+		// Find the most specific ComponentInjector for component
+		Class<? extends Component> type = component.getClass();
+		ComponentInjector<Component> injector = (ComponentInjector<Component>) 
+			TypeHelper.findBestMatchInTypeHierarchy(_injectors, type);
+		ResourceMap resources = _registry.getBundle(type);
+		injector.inject(component, resources);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.resource.ResourceInjector#injectComponents(javax.swing.JComponent)
 	 */
-	@Override public void injectHierarchy(JComponent component)
+	@Override public void injectHierarchy(Component component)
 	{
-		// TODO Auto-generated method stub
-
+		// First inject component itself
+		injectComponent(component);
+		// Then recursively inject all its children
+		if (component instanceof Container)
+		{
+			for (Component child: ((Container) component).getComponents())
+			{
+				injectHierarchy(child);
+			}
+		}
 	}
 
+	final private ResourceBundleRegistry _registry;
 	final private Map<Class<?>, ComponentInjector<?>> _injectors;
-	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
 }

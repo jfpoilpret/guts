@@ -14,21 +14,21 @@
 
 package net.guts.gui.resource;
 
-import java.util.Set;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import com.google.inject.TypeLiteral;
-
-// NB: useful only for ComponentInjector implementers (for extensibility purposes) 
 /**
  * TODO
  *
  * @author Jean-Francois Poilpret
  */
-public interface ResourceMap
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.TYPE, ElementType.PACKAGE})
+public @interface UsesBundles
 {
-	// Returns all resource keys starting with prefix. Prefix has been removed from all keys
-	// in the returned set (for ease of use)
-	public Set<String> keys(String prefix);
-	public <T> T getValue(String prefix, String key, Class<T> type);
-	public <T> T getValue(String prefix, String key, TypeLiteral<T> type);
+	Class<?>[] value() default {};
 }

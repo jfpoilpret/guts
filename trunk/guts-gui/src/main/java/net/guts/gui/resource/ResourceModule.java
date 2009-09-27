@@ -15,12 +15,10 @@
 package net.guts.gui.resource;
 
 import java.awt.Color;
+import java.awt.Component;
 import java.awt.Font;
 
-import javax.swing.JComponent;
-
 import com.google.inject.AbstractModule;
-import com.google.inject.TypeLiteral;
 
 /**
  * TODO
@@ -41,7 +39,8 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Font.class, FontConverter.class);
 
 		// Bind default ComponentInjector
-		Resources.bindComponentInjector(binder(), JComponent.class).to(BeanPropertiesInjector.class);
+		Resources.bindComponentInjector(binder(), Component.class)
+			.to(BeanPropertiesInjector.class);
 		// TODO bind injectors for more specific components
 
 		//TODO
