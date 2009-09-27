@@ -28,6 +28,8 @@ import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
 
 import org.jdesktop.application.ApplicationContext;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
@@ -38,6 +40,8 @@ import com.google.inject.Singleton;
 @Singleton
 class WindowControllerImpl implements WindowController
 {
+	static final private Logger _logger = LoggerFactory.getLogger(WindowControllerImpl.class);
+	
 	WindowControllerImpl()
 	{
 		_current = null;
@@ -140,7 +144,9 @@ class WindowControllerImpl implements WindowController
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			String msg = String.format("Could not restore window state from %1$s", 
+				sessionFileName(container));
+			_logger.warn(msg, e);
 		}
 	}
 	
@@ -153,7 +159,9 @@ class WindowControllerImpl implements WindowController
 		}
 		catch (IOException e)
 		{
-			e.printStackTrace();
+			String msg = String.format("Could not restore window state from %1$s", 
+				sessionFileName(container));
+			_logger.warn(msg, e);
 		}
 	}
 	

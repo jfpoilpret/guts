@@ -21,8 +21,13 @@ import java.awt.event.PaintEvent;
 
 import javax.swing.JPanel;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 final class EdtHelper
 {
+	static final private Logger _logger = LoggerFactory.getLogger(EdtHelper.class);
+	
 	private EdtHelper()
 	{
 	}
@@ -56,6 +61,7 @@ final class EdtHelper
 							catch (InterruptedException e)
 							{
 								// Not expected
+								_logger.info("Unexpected exception", e);
 							}
 						}
 						emptyQueue = event._isQueueEmpty;
