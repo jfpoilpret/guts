@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 
 import net.sf.cglib.beans.BeanMap;
 
-
 //TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
 //TODO create impl that simply injects through bean properties
 //TODO there must be some recursivity here (because components can contain other components)
@@ -66,19 +65,9 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 			bean.setBean(null);
 			_beans.put(componentType, bean);
 		}
-//		else
-//		{
-//			bean.setBean(component);
-//		}
 		// For each injectable resource
 		for (String key: resources.keys(prefix))
 		{
-			//TODO Use cglib ReflectUtils.getBeanSetters? 
-			// -> Does it cover all class hierarchy?
-			// -> Should the result be cached in a Map<Class, PropertyDescriptor>
-			// Can we use BulkBean?
-			// Or better to use BeanMap => seems not bad!
-
 			// Check that this property exists
 			Class<?> type = bean.getPropertyType(key);
 			if (type == null)
@@ -96,8 +85,6 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 	}
 
 	//FIXME probably not a terrific idea:
-	// - requires cglib in classpath (in addition to "guice cglib"
-	// - holds a reference to a component forever!
-	// Good enough for a first prototype however!
+	// - requires cglib in classpath (in addition to "guice cglib")
 	final private Map<Class<?>, BeanMap> _beans = new HashMap<Class<?>, BeanMap>();
 }
