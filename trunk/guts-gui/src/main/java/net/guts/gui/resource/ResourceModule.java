@@ -34,7 +34,10 @@ public final class ResourceModule extends AbstractModule
 	{
 		// Bind ResourceConverters for various default types: String, boolean, int, Color...
 		bindConverter(String.class, StringConverter.class);
+		bindConverter(Boolean.class, BooleanConverter.class);
+		bindConverter(boolean.class, BooleanConverter.class);
 		bindConverter(Integer.class, IntConverter.class);
+		bindConverter(int.class, IntConverter.class);
 		bindConverter(Color.class, ColorConverter.class);
 		bindConverter(Font.class, FontConverter.class);
 
