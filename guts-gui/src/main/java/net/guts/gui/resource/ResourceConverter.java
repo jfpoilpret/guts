@@ -39,6 +39,14 @@ class StringConverter implements ResourceConverter<String>
 	}
 }
 
+class BooleanConverter implements ResourceConverter<Boolean>
+{
+	@Override public Boolean convert(String value)
+	{
+		return Boolean.valueOf(value);
+	}
+}
+
 class IntConverter implements ResourceConverter<Integer>
 {
 	@Override public Integer convert(String value)
