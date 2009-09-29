@@ -15,6 +15,7 @@
 package net.guts.gui.resource;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -79,8 +80,31 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 			}
 			// Get the value in the correct type
 			Object value = resources.getValue(prefix, key, type);
-			// Set the property with the resource value
-			bean.put(component, key, value);
+			// Special handling for mnemonics
+			if ("text".equals(key) && value instanceof String)
+			{
+				MnemonicInfo info = MnemonicInfo.extract((String) value);
+				if (info != null)
+				{
+					//FIXME what if component doesn't have mnemonic or displayedMnemonicIndex property?
+					// Set the property with the resource value
+					bean.put(component, "text", info.getText());
+					bean.put(component, "displayedMnemonic", info.getMnemonic());
+					bean.put(component, "displayedMnemonicIndex", info.getMnemonicIndex());
+				}
+				else
+				{
+					// Set the property with the resource value
+					bean.put(component, "text", value);
+					bean.put(component, "displayedMnemonic", KeyEvent.VK_UNDEFINED);
+					bean.put(component, "displayedMnemonicIndex", -1);
+				}
+			}
+			else
+			{
+				// Set the property with the resource value
+				bean.put(component, key, value);
+			}
 		}
 	}
 

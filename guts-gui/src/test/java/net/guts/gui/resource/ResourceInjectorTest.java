@@ -16,6 +16,7 @@ package net.guts.gui.resource;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.event.KeyEvent;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -66,6 +67,16 @@ public class ResourceInjectorTest
 		JLabel label = createAndInjectLabel("test5-label");
 		// Check injection has worked
 		Assertions.assertThat(label.getFont()).as("label.font").isEqualTo(Font.decode("Dialog-BOLD-14"));
+	}
+	
+	public void checkMnemonicInjectionOneComponent()
+	{
+		JLabel label = createAndInjectLabel("test6-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getText()).as("label.text").isEqualTo("Save As...");
+		Assertions.assertThat(label.getDisplayedMnemonic()).as("label.displayedMnemonic").isEqualTo(KeyEvent.VK_A);
+		Assertions.assertThat(label.getDisplayedMnemonicIndex()).as("label.displayedMnemonicIndex")
+			.isEqualTo(5);
 	}
 	
 //	label.setCursor(cursor);
