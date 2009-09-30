@@ -59,7 +59,7 @@ public class ResourceInjectorTest
 	{
 		JLabel label = createAndInjectLabel("test4-label");
 		// Check injection has worked
-		Assertions.assertThat(label.getForeground()).as("label.foreground").isEqualTo(new Color(0x4080C0));
+		Assertions.assertThat(label.getForeground()).as("label.foreground").isEqualTo(new Color(0x4080C0, true));
 	}
 	
 	public void checkFontInjectionOneComponent()
@@ -99,7 +99,7 @@ public class ResourceInjectorTest
 		panel.add(label3);
 		injector.injectHierarchy(panel);
 		// Check injection has worked on every component in panel
-		Assertions.assertThat(panel.getForeground()).as("panel.foreground").isEqualTo(new Color(0x4080C0));
+		Assertions.assertThat(panel.getForeground()).as("panel.foreground").isEqualTo(new Color(0x4080C0, true));
 		Assertions.assertThat(label1.getText()).as("label1.text").isEqualTo("LABEL1");
 		Assertions.assertThat(label2.getText()).as("label2.text").isEqualTo("LABEL2");
 		Assertions.assertThat(label3.getText()).as("label3.text").isEqualTo("LABEL3");

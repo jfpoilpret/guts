@@ -16,8 +16,10 @@ package net.guts.gui.resource;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.io.File;
 
 import javax.swing.Icon;
+import javax.swing.ImageIcon;
 
 /**
  * TODO
@@ -59,8 +61,8 @@ class ColorConverter implements ResourceConverter<Color>
 {
 	@Override public Color convert(String value)
 	{
-		//TODO Check if this works also with Alpha channel (I think not)
-		return Color.decode(value);
+		int color = Integer.decode(value);
+		return new Color(color, true);
 	}
 }
 
@@ -76,8 +78,17 @@ class IconConverter implements ResourceConverter<Icon>
 {
 	@Override public Icon convert(String value)
 	{
-		// TODO Auto-generated method stub
-		return null;
+//		//TODO First check that the file exists in the classpath
+//		File file = new File(value);
+//		if (file.exists() && file.isFile() && file.canRead())
+//		{
+//			return new ImageIcon(value);
+//		}
+//		else
+		{
+			//TODO log?
+			return null;
+		}
 	}
 }
 
