@@ -14,8 +14,6 @@
 
 package net.guts.gui.resource;
 
-import java.awt.event.KeyEvent;
-
 /**
  * TODO
  *
