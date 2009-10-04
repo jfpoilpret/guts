@@ -29,7 +29,7 @@ final class ResourceMapImpl implements ResourceMap
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceMapImpl.class);
 
-	ResourceMapImpl(NavigableMap<String, String> resources, 
+	ResourceMapImpl(NavigableMap<String, ResourceEntry> resources, 
 		Map<TypeLiteral<?>, ResourceConverter<?>> converters)
 	{
 		_resources = resources;
@@ -37,7 +37,7 @@ final class ResourceMapImpl implements ResourceMap
 	}
 
 	@SuppressWarnings("unchecked") @Override 
-	public <T> T getValue(String prefix, String key, TypeLiteral<T> type)
+	public <T> T getValue(Key key, TypeLiteral<T> type)
 	{
 		ResourceConverter<T> converter = 
 			(ResourceConverter<T>) _converters.get(type);
@@ -45,11 +45,11 @@ final class ResourceMapImpl implements ResourceMap
 		{
 			String msg = String.format(
 				"getValue(prefix = `%s`, key = `%s`) can't find converter for type %s", 
-				prefix, key, type);
+				key.prefix(), key.key(), type);
 			_logger.info(msg);
 			return null;
 		}
-		String value = _resources.get(prefix + "." + key);
+		ResourceEntry value = _resources.get(key.prefix() + "." + key.key());
 		if (value == null)
 		{
 			return null;
@@ -57,28 +57,28 @@ final class ResourceMapImpl implements ResourceMap
 		return converter.convert(value);
 	}
 
-	@Override public <T> T getValue(String prefix, String key, Class<T> type)
+	@Override public <T> T getValue(Key key, Class<T> type)
 	{
-		return getValue(prefix, key, TypeLiteral.get(type));
+		return getValue(key, TypeLiteral.get(type));
 	}
 
-	@Override public Set<String> keys(String prefix)
+	@Override public Set<Key> keys(String prefix)
 	{
 		return new KeySet(
 			prefix, _resources.navigableKeySet().subSet(prefix + ".", prefix + "/"));
 	}
-
+	
 	// The classes below are used to dynamically remove prefix from the property keys
 	// set returned by keys(prefix) method.
-	static private class KeySet extends AbstractSet<String>
+	static private class KeySet extends AbstractSet<Key>
 	{
 		KeySet(String prefix, Set<String> keys)
 		{
-			_prefix = prefix + ".";
+			_prefix = prefix;
 			_keys = keys;
 		}
-
-		@Override public Iterator<String> iterator()
+		
+		@Override public Iterator<Key> iterator()
 		{
 			return new KeyIterator(_prefix, _keys.iterator());
 		}
@@ -92,11 +92,12 @@ final class ResourceMapImpl implements ResourceMap
 		private final Set<String> _keys;
 	}
 	
-	static private class KeyIterator implements Iterator<String>
+	static private class KeyIterator implements Iterator<Key>
 	{
 		KeyIterator(String prefix, Iterator<String> iterator)
 		{
 			_prefix = prefix;
+			_fullPrefix = _prefix + ".";
 			_iterator = iterator;
 		}
 		
@@ -105,16 +106,16 @@ final class ResourceMapImpl implements ResourceMap
 			return _iterator.hasNext();
 		}
 
-		@Override public String next()
+		@Override public Key next()
 		{
 			String next = _iterator.next();
-			if (next.startsWith(_prefix))
+			if (next.startsWith(_fullPrefix))
 			{
-				return next.substring(_prefix.length());
+				return new KeyImpl(next.substring(_fullPrefix.length()), _prefix);
 			}
 			else
 			{
-				return next;
+				return null;
 			}
 		}
 
@@ -124,9 +125,32 @@ final class ResourceMapImpl implements ResourceMap
 		}
 		
 		final private String _prefix;
+		final private String _fullPrefix;
 		final private Iterator<String> _iterator;
 	}
 	
-	final private NavigableMap<String, String> _resources;
+	static final private class KeyImpl implements Key
+	{
+		private KeyImpl(String key, String prefix)
+		{
+			_key = key;
+			_prefix = prefix;
+		}
+
+		@Override public String key()
+		{
+			return _key;
+		}
+
+		@Override public String prefix()
+		{
+			return _prefix;
+		}
+		
+		final private String _key;
+		final private String _prefix;
+	}
+	
+	final private NavigableMap<String, ResourceEntry> _resources;
 	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
 }

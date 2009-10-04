@@ -66,7 +66,6 @@ public final class Resources
 			return null;
 		}
 		bundle = bundle.substring(0, bundle.lastIndexOf('.'));
-		bundle += ".resources";
 		return bundle;
 	}
 
