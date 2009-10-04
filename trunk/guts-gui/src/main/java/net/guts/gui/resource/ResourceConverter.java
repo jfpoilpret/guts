@@ -78,17 +78,7 @@ class IconConverter implements ResourceConverter<Icon>
 {
 	@Override public Icon convert(ResourceEntry entry)
 	{
-		// Build path to resource if not absolute
-		String path;
-		if (entry.value().startsWith("/"))
-		{
-			path = entry.value().substring(1);
-		}
-		else
-		{
-			path = entry.source().replaceAll("\\.", "\\/") + "/" + entry.value();
-		}
-		URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+		URL url = entry.valueAsUrl();
 		if (url != null)
 		{
 			return new ImageIcon(url);

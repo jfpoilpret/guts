@@ -14,7 +14,9 @@
 
 package net.guts.gui.resource;
 
-final class ResourceEntry
+import java.net.URL;
+
+public final class ResourceEntry
 {
 	ResourceEntry(String value, String source)
 	{
@@ -27,11 +29,21 @@ final class ResourceEntry
 		return _value;
 	}
 	
-	public String source()
+	public URL valueAsUrl()
 	{
-		return _source;
+		// Build path to resource if not absolute
+		String path;
+		if (_value.startsWith("/"))
+		{
+			path = _value.substring(1);
+		}
+		else
+		{
+			path = _source.replaceAll("\\.", "\\/") + "/" + _value;
+		}
+		return Thread.currentThread().getContextClassLoader().getResource(path);
 	}
-	
+
 	final private String _value;
 	final private String _source;
 }
