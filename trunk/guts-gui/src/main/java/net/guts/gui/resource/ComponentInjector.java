@@ -25,9 +25,6 @@ import org.slf4j.LoggerFactory;
 import net.sf.cglib.beans.BeanMap;
 
 //TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
-//TODO create impl that simply injects through bean properties
-//TODO there must be some recursivity here (because components can contain other components)
-// Maybe need to pass a map of ComponentInjectors?
 /**
  * TODO
  *
@@ -67,10 +64,10 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 			_beans.put(componentType, bean);
 		}
 		// For each injectable resource
-		for (String key: resources.keys(prefix))
+		for (ResourceMap.Key key: resources.keys(prefix))
 		{
 			// Check that this property exists
-			Class<?> type = bean.getPropertyType(key);
+			Class<?> type = bean.getPropertyType(key.key());
 			if (type == null)
 			{
 				String msg = String.format("Unknow property `%s` of type `%s`", 
@@ -79,9 +76,9 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 				continue;
 			}
 			// Get the value in the correct type
-			Object value = resources.getValue(prefix, key, type);
+			Object value = resources.getValue(key, type);
 			// Special handling for mnemonics
-			if ("text".equals(key) && value instanceof String)
+			if ("text".equals(key.key()) && value instanceof String)
 			{
 				MnemonicInfo info = MnemonicInfo.extract((String) value);
 				if (info != null)
@@ -103,7 +100,7 @@ class BeanPropertiesInjector implements ComponentInjector<Component>
 			else
 			{
 				// Set the property with the resource value
-				bean.put(component, key, value);
+				bean.put(component, key.key(), value);
 			}
 		}
 	}

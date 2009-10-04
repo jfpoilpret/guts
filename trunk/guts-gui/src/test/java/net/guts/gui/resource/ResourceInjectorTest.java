@@ -16,8 +16,13 @@ package net.guts.gui.resource;
 
 import java.awt.Color;
 import java.awt.Font;
+import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
+import java.net.URL;
 
+import javax.swing.Icon;
+import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -79,12 +84,24 @@ public class ResourceInjectorTest
 			.isEqualTo(5);
 	}
 	
-//	label.setCursor(cursor);
-//	label.setIcon(icon);
-	//TODO test component injection of Icon
+	public void checkIconInjectionOneComponent()
+	{
+		JLabel label = createAndInjectLabel("test7-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getIcon()).as("label.icon").isNotNull();
+		BufferedImage actual = createImageFromIcon(label.getIcon());
+		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
+		Assertions.assertThat(actual).as("label.icon").isEqualTo(expected);
+
+		label = createAndInjectLabel("test8-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getIcon()).as("label.icon").isNotNull();
+		actual = createImageFromIcon(label.getIcon());
+		Assertions.assertThat(actual).as("label.icon").isEqualTo(expected);
+	}
+	
+	//	label.setCursor(cursor);
 	//TODO test component injection of Cursor
-	//TODO test mnemonics handling for text injection
-	//TODO test component injection of Alpha Color
 
 	public void checkInjectionHierarchy()
 	{
@@ -131,5 +148,27 @@ public class ResourceInjectorTest
 		});
 		ResourceInjector resourceInjector = injector.getInstance(ResourceInjector.class);
 		return resourceInjector;
+	}
+	
+	static private BufferedImage createImageFromIcon(String path)
+	{
+		URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+		return createImageFromIcon(new ImageIcon(url));
+	}
+	
+	static private BufferedImage createImageFromIcon(Icon icon)
+	{
+		BufferedImage image = new BufferedImage(
+			icon.getIconWidth(), icon.getIconHeight(), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graf = image.createGraphics();
+		try
+		{
+			icon.paintIcon(null, graf, 0, 0);
+			return image;
+		}
+		finally
+		{
+			graf.dispose();
+		}
 	}
 }

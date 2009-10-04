@@ -14,34 +14,24 @@
 
 package net.guts.gui.resource;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
+final class ResourceEntry
 {
-	public EnumConverter(Class<T> enumType)
+	ResourceEntry(String value, String source)
 	{
-		_enumType = enumType;
-		_enumValues = enumType.getEnumConstants();
+		_value = value;
+		_source = source;
 	}
-
-	/* (non-Javadoc)
-	 * @see net.guts.gui.resource.ResourceConverter#convert(java.lang.String)
-	 */
-	@Override public T convert(ResourceEntry value)
+	
+	public String value()
 	{
-		for (T enumValue: _enumValues)
-		{
-			if (enumValue.name().equals(value.value()))
-			{
-				return enumValue;
-			}
-		}
-		return null;
+		return _value;
 	}
-
-	final private Class<T> _enumType;
-	final private T[] _enumValues;
+	
+	public String source()
+	{
+		return _source;
+	}
+	
+	final private String _value;
+	final private String _source;
 }

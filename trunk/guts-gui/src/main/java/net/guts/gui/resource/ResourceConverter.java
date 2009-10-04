@@ -16,7 +16,7 @@ package net.guts.gui.resource;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.io.File;
+import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -28,63 +28,72 @@ import javax.swing.ImageIcon;
  */
 public interface ResourceConverter<T>
 {
-	public T convert(String value);
+	public T convert(ResourceEntry entry);
 }
 
 // All default Resource Converters are there:
 
 class StringConverter implements ResourceConverter<String>
 {
-	@Override public String convert(String value)
+	@Override public String convert(ResourceEntry entry)
 	{
-		return value;
+		return entry.value();
 	}
 }
 
 class BooleanConverter implements ResourceConverter<Boolean>
 {
-	@Override public Boolean convert(String value)
+	@Override public Boolean convert(ResourceEntry entry)
 	{
-		return Boolean.valueOf(value);
+		return Boolean.valueOf(entry.value());
 	}
 }
 
 class IntConverter implements ResourceConverter<Integer>
 {
-	@Override public Integer convert(String value)
+	@Override public Integer convert(ResourceEntry entry)
 	{
-		return Integer.decode(value);
+		return Integer.decode(entry.value());
 	}
 }
 
 class ColorConverter implements ResourceConverter<Color>
 {
-	@Override public Color convert(String value)
+	@Override public Color convert(ResourceEntry entry)
 	{
-		int color = Integer.decode(value);
+		int color = Integer.decode(entry.value());
 		return new Color(color, true);
 	}
 }
 
 class FontConverter implements ResourceConverter<Font>
 {
-	@Override public Font convert(String value)
+	@Override public Font convert(ResourceEntry entry)
 	{
-		return Font.decode(value);
+		return Font.decode(entry.value());
 	}
 }
 
 class IconConverter implements ResourceConverter<Icon>
 {
-	@Override public Icon convert(String value)
+	@Override public Icon convert(ResourceEntry entry)
 	{
-//		//TODO First check that the file exists in the classpath
-//		File file = new File(value);
-//		if (file.exists() && file.isFile() && file.canRead())
-//		{
-//			return new ImageIcon(value);
-//		}
-//		else
+		// Build path to resource if not absolute
+		String path;
+		if (entry.value().startsWith("/"))
+		{
+			path = entry.value().substring(1);
+		}
+		else
+		{
+			path = entry.source().replaceAll("\\.", "\\/") + "/" + entry.value();
+		}
+		URL url = Thread.currentThread().getContextClassLoader().getResource(path);
+		if (url != null)
+		{
+			return new ImageIcon(url);
+		}
+		else
 		{
 			//TODO log?
 			return null;
@@ -92,4 +101,4 @@ class IconConverter implements ResourceConverter<Icon>
 	}
 }
 
-//TODO missing resource types: ImageIcon, Cursor...
+//TODO missing resource types: Image, Cursor...

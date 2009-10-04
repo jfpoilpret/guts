@@ -18,6 +18,8 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Font;
 
+import javax.swing.Icon;
+
 import com.google.inject.AbstractModule;
 
 /**
@@ -40,6 +42,7 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(int.class, IntConverter.class);
 		bindConverter(Color.class, ColorConverter.class);
 		bindConverter(Font.class, FontConverter.class);
+		bindConverter(Icon.class, IconConverter.class);
 
 		// Bind default ComponentInjector
 		Resources.bindComponentInjector(binder(), Component.class)

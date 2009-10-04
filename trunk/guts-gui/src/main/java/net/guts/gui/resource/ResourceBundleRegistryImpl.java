@@ -44,64 +44,36 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		@RootBundle @Nullable String root)
 	{
 		_converters = converters;
-		_root = root;
+		_root = getBundle(root);
 	}
 	
-	// TODO Add own resourcebundle control to deal with Locale fallback correctly?
-	// Or fully remove ResourceBundle and replace by own mechanism?
-	private List<ResourceBundle> convertNamesToBundles(List<String> names)
-	{
-		// Check all bundles exist in classpath
-		List<ResourceBundle> bundles = new ArrayList<ResourceBundle>();
-		for (String name: names)
-		{
-			try
-			{
-				ResourceBundle bundle = ResourceBundle.getBundle(name);
-				bundles.add(bundle);
-			}
-			catch (MissingResourceException e)
-			{
-				String msg = String.format("Bundle `%1$s` doesn't exist.", name);
-				_logger.warn(msg, e);
-			}
-		}
-		return bundles;
-	}
-
 	@Override public ResourceMap getBundle(Class<? extends Component> component)
 	{
 		// Ask for the sorted list of ResourceBundle matching the component type
-		List<String> bundles = getBundleNames(component);
-		// Add main application bundle
-		if (_root != null)
-		{
-			bundles.add(_root);
-		}
+		List<Bundle> bundles = getBundleNames(component);
 
-		// Build Map<String, String> values from all bundles
-		List<ResourceBundle> resourceBundles = convertNamesToBundles(bundles);
-		NavigableMap<String, String> values = new TreeMap<String, String>();
-		for (ResourceBundle bundle: resourceBundles)
+		NavigableMap<String, ResourceEntry> values = new TreeMap<String, ResourceEntry>();
+		for (Bundle bundle: bundles)
 		{
-			for (String key: bundle.keySet())
+			for (String key: bundle.bundle().keySet())
 			{
-				values.put(key, bundle.getString(key));
+				values.put(key, 
+					new ResourceEntry(bundle.bundle().getString(key), bundle.source()));
 			}
 		}
 		return new ResourceMapImpl(values, _converters);
 	}
 	
-	private List<String> getBundleNames(Class<?> type)
+	private List<Bundle> getBundleNames(Class<?> type)
 	{
-		List<String> bundles = _bundlesPerClass.get(type);
+		List<Bundle> bundles = _bundlesPerClass.get(type);
 		if (bundles == null)
 		{
 			// If type has @UsesBundles annotation,process it
 			bundles = extractBundles(type.getAnnotation(UsesBundles.class));
 			_bundlesPerClass.put(type, bundles);
 		}
-		if (bundles == NO_DEF_BUNDLE)
+		if (bundles.size() <= 1)
 		{
 			// If there is no bundles dependency defined at class level, check package level
 			Package pack = type.getPackage();
@@ -116,34 +88,94 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 				}
 			}
 		}
-		// Always return a copy of the original list (to be modified by caller
-		return new ArrayList<String>(bundles);
+		return bundles;
 	}
 	
-	static private List<String> extractBundles(UsesBundles uses)
+	private List<Bundle> extractBundles(UsesBundles uses)
 	{
-		List<String> bundles = NO_DEF_BUNDLE;
+		List<Bundle> bundles = new ArrayList<Bundle>();
 		if (uses != null)
 		{
-			bundles = new ArrayList<String>();
 			for (Class<?> name: uses.value())
 			{
-				String bundle = Resources.bundlePath(name);
-				if (bundle != null && !bundles.contains(bundle))
+				String bundlePath = Resources.bundlePath(name);
+				if (bundlePath != null && !bundles.contains(bundlePath))
 				{
-					bundles.add(bundle);
+					Bundle bundle = getBundle(bundlePath);
+					if (bundle != null)
+					{
+						bundles.add(bundle);
+					}
 				}
 			}
 			Collections.reverse(bundles);
 		}
+		if (_root != null)
+		{
+			bundles.add(_root);
+		}
 		return bundles;
 	}
+	
+	static private Bundle getBundle(String path)
+	{
+		if (path == null)
+		{
+			return null;
+		}
+		try
+		{
+			return new Bundle(path, ResourceBundle.getBundle(path + ".resources"));
+		}
+		catch (MissingResourceException e)
+		{
+			String msg = String.format("Bundle `%1$s` doesn't exist.", path + ".resources");
+			_logger.warn(msg, e);
+			return null;
+		}
+	}
+	
+	static private class Bundle
+	{
+		Bundle(String source, ResourceBundle bundle)
+		{
+			_source = source;
+			_bundle = bundle;
+		}
+		
+		String source()
+		{
+			return _source;
+		}
+		
+		ResourceBundle bundle()
+		{
+			return _bundle;
+		}
+		
+		@Override public int hashCode()
+		{
+			return _source.hashCode();
+		}
 
-	static final private List<String> NO_DEF_BUNDLE = Collections.emptyList();
-	final private String _root;
-	final private Map<Class<?>, List<String>> _bundlesPerClass = 
-		new HashMap<Class<?>, List<String>>();
-	final private Map<Package, List<String>> _bundlesPerPackage = 
-		new HashMap<Package, List<String>>();
+		@Override public boolean equals(Object o)
+		{
+			if (!(o instanceof Bundle))
+			{
+				return false;
+			}
+			Bundle that = (Bundle) o;
+			return this._source.equals(that._source);
+		}
+
+		final private String _source;
+		final private ResourceBundle _bundle;
+	}
+
+	final private Bundle _root;
+	final private Map<Class<?>, List<Bundle>> _bundlesPerClass = 
+		new HashMap<Class<?>, List<Bundle>>();
+	final private Map<Package, List<Bundle>> _bundlesPerPackage = 
+		new HashMap<Package, List<Bundle>>();
 	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
 }
