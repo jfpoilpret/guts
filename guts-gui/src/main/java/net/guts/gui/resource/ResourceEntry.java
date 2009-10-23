@@ -24,6 +24,11 @@ public final class ResourceEntry
 		_source = source;
 	}
 	
+	public ResourceEntry derive(String value)
+	{
+		return new ResourceEntry(value, _source);
+	}
+	
 	public String value()
 	{
 		return _value;

@@ -16,7 +16,6 @@ package net.guts.gui.resource;
 
 import java.util.AbstractSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.NavigableMap;
 import java.util.Set;
 
@@ -30,17 +29,15 @@ final class ResourceMapImpl implements ResourceMap
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceMapImpl.class);
 
 	ResourceMapImpl(NavigableMap<String, ResourceEntry> resources, 
-		Map<TypeLiteral<?>, ResourceConverter<?>> converters)
+		ResourceConverterFinder finder)
 	{
 		_resources = resources;
-		_converters = converters;
+		_finder = finder;
 	}
 
-	@SuppressWarnings("unchecked") @Override 
-	public <T> T getValue(Key key, TypeLiteral<T> type)
+	@Override public <T> T getValue(Key key, TypeLiteral<T> type)
 	{
-		ResourceConverter<T> converter = 
-			(ResourceConverter<T>) _converters.get(type);
+		ResourceConverter<T> converter = _finder.getConverter(type);
 		if (converter == null)
 		{
 			String msg = String.format(
@@ -152,5 +149,5 @@ final class ResourceMapImpl implements ResourceMap
 	}
 	
 	final private NavigableMap<String, ResourceEntry> _resources;
-	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
+	final private ResourceConverterFinder _finder;
 }

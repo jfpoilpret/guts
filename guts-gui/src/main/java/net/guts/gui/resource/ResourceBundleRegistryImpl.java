@@ -30,7 +30,6 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.TypeLiteral;
 import com.google.inject.internal.Nullable;
 
 @Singleton
@@ -40,10 +39,10 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		LoggerFactory.getLogger(ResourceBundleRegistryImpl.class);
 
 	@Inject
-	ResourceBundleRegistryImpl(Map<TypeLiteral<?>, ResourceConverter<?>> converters,
+	ResourceBundleRegistryImpl(ResourceConverterFinder finder,
 		@RootBundle @Nullable String root)
 	{
-		_converters = converters;
+		_finder = finder;
 		_root = getBundle(root);
 	}
 	
@@ -61,7 +60,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 					new ResourceEntry(bundle.bundle().getString(key), bundle.source()));
 			}
 		}
-		return new ResourceMapImpl(values, _converters);
+		return new ResourceMapImpl(values, _finder);
 	}
 	
 	private List<Bundle> getBundleNames(Class<?> type)
@@ -177,5 +176,5 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		new HashMap<Class<?>, List<Bundle>>();
 	final private Map<Package, List<Bundle>> _bundlesPerPackage = 
 		new HashMap<Package, List<Bundle>>();
-	final private Map<TypeLiteral<?>, ResourceConverter<?>> _converters;
+	final private ResourceConverterFinder _finder;
 }
