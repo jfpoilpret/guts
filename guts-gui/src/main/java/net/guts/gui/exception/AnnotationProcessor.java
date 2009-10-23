@@ -63,7 +63,6 @@ class AnnotationProcessor
 		return handlers;
 	}
 
-	@SuppressWarnings("unchecked") 
 	private ExceptionHandler analyzeMethod(Method m, int priority)
 	{
 		// Check method is void and has one parameter
