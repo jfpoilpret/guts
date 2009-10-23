@@ -88,10 +88,16 @@
 		</dependency>
 
 		<!-- Reflection utilities -->
+<!--
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-reflect</artifactId>
+		</dependency>
 		<dependency>
 			<groupId>cglib</groupId>
 			<artifactId>cglib-nodep</artifactId>
 		</dependency>
+-->
 
 		<!-- TODO Take latest update (check also if in central maven repo) -->
 		<dependency>
