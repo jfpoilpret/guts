@@ -15,6 +15,7 @@
 package net.guts.gui.resource;
 
 import java.awt.Color;
+import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -23,11 +24,14 @@ import java.net.URL;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import org.fest.assertions.Assertions;
 import org.testng.annotations.Test;
+
+import sun.awt.image.ToolkitImage;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -100,9 +104,38 @@ public class ResourceInjectorTest
 		Assertions.assertThat(actual).as("label.icon").isEqualTo(expected);
 	}
 	
-	//	label.setCursor(cursor);
-	//TODO test component injection of Cursor
+	public void checkCursorInjectionOneComponent()
+	{
+		JLabel label = createAndInjectLabel("test9-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getCursor()).as("label.cursor").isNotNull();
+		Assertions.assertThat(label.getCursor()).as("label.cursor")
+			.isEqualTo(Cursor.getPredefinedCursor(Cursor.CROSSHAIR_CURSOR));
+	}
+	
+	public void checkImageInjectionOneComponent()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		JFrame frame = new JFrame();
+		frame.setName(NAME + "-" + "test-image");
+		resourceInjector.injectComponent(frame);
 
+		// Check injection has worked
+		Assertions.assertThat(frame.getIconImage()).as("frame.iconImage").isNotNull();
+		BufferedImage actual = null;
+		// Ugly hack!
+		if (frame.getIconImage() instanceof BufferedImage)
+		{
+			actual = (BufferedImage) frame.getIconImage();
+		}
+		else if (frame.getIconImage() instanceof ToolkitImage)
+		{
+			actual = ((ToolkitImage) frame.getIconImage()).getBufferedImage();
+		}
+		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
+		Assertions.assertThat(actual).as("frame.iconImage").isEqualTo(expected);
+	}
+	
 	public void checkInjectionHierarchy()
 	{
 		ResourceInjector injector = createInjector();

@@ -16,9 +16,13 @@ package net.guts.gui.resource;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Cursor;
 import java.awt.Font;
+import java.awt.Image;
 
 import javax.swing.Icon;
+
+import net.guts.gui.util.CursorInfo;
 
 import com.google.inject.AbstractModule;
 
@@ -35,14 +39,17 @@ public final class ResourceModule extends AbstractModule
 	@Override protected void configure()
 	{
 		// Bind ResourceConverters for various default types: String, boolean, int, Color...
-		bindConverter(String.class, StringConverter.class);
-		bindConverter(Boolean.class, BooleanConverter.class);
-		bindConverter(boolean.class, BooleanConverter.class);
-		bindConverter(Integer.class, IntConverter.class);
-		bindConverter(int.class, IntConverter.class);
-		bindConverter(Color.class, ColorConverter.class);
-		bindConverter(Font.class, FontConverter.class);
-		bindConverter(Icon.class, IconConverter.class);
+		bindConverter(String.class,		StringConverter.class);
+		bindConverter(Boolean.class,	BooleanConverter.class);
+		bindConverter(boolean.class,	BooleanConverter.class);
+		bindConverter(Integer.class,	IntConverter.class);
+		bindConverter(int.class,		IntConverter.class);
+		bindConverter(Color.class,		ColorConverter.class);
+		bindConverter(Font.class,		FontConverter.class);
+		bindConverter(Icon.class,		IconConverter.class);
+		bindConverter(Image.class,		ImageConverter.class);
+		bindConverter(CursorInfo.class,	CursorInfoConverter.class);
+		bindConverter(Cursor.class,		CursorConverter.class);
 
 		// Bind default ComponentInjector
 		Resources.bindComponentInjector(binder(), Component.class)
