@@ -14,11 +14,8 @@
 
 package net.guts.gui.resource;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
+import java.awt.event.KeyEvent;
+
 public final class MnemonicInfo
 {
 	static public MnemonicInfo extract(String text)
@@ -33,7 +30,8 @@ public final class MnemonicInfo
 		}
 		else
 		{
-			return null;
+			// Return a "default" instance that is directly usable by the caller!
+			return new MnemonicInfo(text, -1);
 		}
 	}
 	
@@ -55,10 +53,18 @@ public final class MnemonicInfo
 	
 	public int getMnemonic()
 	{
-		//FIXME convert to official KeyEvent constants!
-		return _text.charAt(_index);
+		if (_index < 0)
+		{
+			return KeyEvent.VK_UNDEFINED;
+		}
+		else
+		{
+			//FIXME convert to official KeyEvent constants!
+			int mnemonic = Character.toUpperCase(_text.charAt(_index));
+			return mnemonic;
+		}
 	}
-	
+
 	final private String _text;
 	final private int _index;
 }

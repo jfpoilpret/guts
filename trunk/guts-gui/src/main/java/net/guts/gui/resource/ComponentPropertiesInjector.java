@@ -45,20 +45,10 @@ class ComponentPropertiesInjector extends AbstractComponentInjector<Component>
 			if ("text".equals(key.key()) && value instanceof String)
 			{
 				MnemonicInfo info = MnemonicInfo.extract((String) value);
-				if (info != null)
-				{
-					// Set the property with the resource value
-					setProperty(component, "text", info.getText());
-					setProperty(component, "displayedMnemonic", info.getMnemonic());
-					setProperty(component, "displayedMnemonicIndex", info.getMnemonicIndex());
-				}
-				else
-				{
-					// Set the property with the resource value
-					setProperty(component, "text", value);
-					setProperty(component, "displayedMnemonic", KeyEvent.VK_UNDEFINED);
-					setProperty(component, "displayedMnemonicIndex", -1);
-				}
+				// Set the property with the resource value
+				setProperty(component, "text", info.getText());
+				setProperty(component, "displayedMnemonic", info.getMnemonic());
+				setProperty(component, "displayedMnemonicIndex", info.getMnemonicIndex());
 			}
 			else
 			{

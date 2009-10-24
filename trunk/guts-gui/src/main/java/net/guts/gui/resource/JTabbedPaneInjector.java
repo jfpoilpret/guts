@@ -15,14 +15,12 @@
 package net.guts.gui.resource;
 
 import java.awt.Component;
+import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 
 import net.guts.common.bean.UntypedProperty;
 
@@ -99,7 +97,10 @@ class JTabbedPaneInjector extends AbstractComponentInjector<JTabbedPane>
 		{
 			@Override public void setValue(JTabbedPane tabs, int tab, Object value)
 			{
-				tabs.setTitleAt(tab, (String) value);
+				MnemonicInfo info = MnemonicInfo.extract((String) value);
+				tabs.setTitleAt(tab, info.getText());
+				tabs.setMnemonicAt(tab, info.getMnemonic());
+				tabs.setDisplayedMnemonicIndexAt(tab, info.getMnemonicIndex());
 			}
 		},
 		ICON("icon", Icon.class)
