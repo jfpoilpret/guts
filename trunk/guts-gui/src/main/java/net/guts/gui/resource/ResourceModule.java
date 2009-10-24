@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.JFileChooser;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
@@ -54,10 +55,11 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Cursor.class,		CursorConverter.class);
 
 		// Bind default ComponentInjector
-		bindInjector(Component.class,	ComponentPropertiesInjector.class);
+		bindInjector(Component.class,		ComponentPropertiesInjector.class);
 		//TODO Bind injectors for more specific components
-		bindInjector(JTable.class,		JTableInjector.class);
-		bindInjector(JTabbedPane.class,	JTabbedPaneInjector.class);
+		bindInjector(JTable.class,			JTableInjector.class);
+		bindInjector(JTabbedPane.class,		JTabbedPaneInjector.class);
+		bindInjector(JFileChooser.class,	JFileChooserInjector.class);
 
 		//TODO
 		// Add type listener for automatic injection of GUI
