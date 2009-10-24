@@ -15,7 +15,6 @@
 package net.guts.gui.resource;
 
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
