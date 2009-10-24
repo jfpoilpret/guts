@@ -27,6 +27,10 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableColumnModel;
+import javax.swing.table.TableModel;
 
 import org.fest.assertions.Assertions;
 import org.testng.annotations.Test;
@@ -134,6 +138,21 @@ public class ResourceInjectorTest
 		}
 		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
 		Assertions.assertThat(actual).as("frame.iconImage").isEqualTo(expected);
+	}
+	
+	public void checkJTableInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		JTable table = new JTable();
+		table.setModel(new DefaultTableModel(new Object[]{"","",""}, 0));
+		table.setName(NAME + "-" + "test-jtable");
+		resourceInjector.injectComponent(table);
+
+		// Check injection has worked
+		TableColumnModel model = table.getColumnModel();
+		Assertions.assertThat(model.getColumn(0).getHeaderValue()).as("table.header0").isEqualTo("Column 0");
+		Assertions.assertThat(model.getColumn(1).getHeaderValue()).as("table.header1").isEqualTo("Column 1");
+		Assertions.assertThat(model.getColumn(2).getHeaderValue()).as("table.header2").isEqualTo("Column 2");
 	}
 	
 	public void checkInjectionHierarchy()
