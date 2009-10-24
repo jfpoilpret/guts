@@ -27,6 +27,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
@@ -153,6 +154,30 @@ public class ResourceInjectorTest
 		Assertions.assertThat(model.getColumn(0).getHeaderValue()).as("table.header0").isEqualTo("Column 0");
 		Assertions.assertThat(model.getColumn(1).getHeaderValue()).as("table.header1").isEqualTo("Column 1");
 		Assertions.assertThat(model.getColumn(2).getHeaderValue()).as("table.header2").isEqualTo("Column 2");
+	}
+	
+	public void checkJTabbedPaneInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		JTabbedPane tabs = new JTabbedPane();
+		tabs.setName(NAME + "-" + "test-jtabbedpane");
+		// Add tabs!
+		tabs.add(new JPanel());
+		tabs.add(new JPanel());
+		resourceInjector.injectComponent(tabs);
+
+		// Check injection has worked
+		Assertions.assertThat(tabs.getTitleAt(0)).as("tabbedpane.tab0-title").isEqualTo("Tab 0");
+		Assertions.assertThat(tabs.getTitleAt(1)).as("tabbedpane.tab1-title").isEqualTo("Tab 1");
+		Assertions.assertThat(tabs.getToolTipTextAt(0)).as("tabbedpane.tab0-toolTipText").isEqualTo("Tooltip 0");
+		Assertions.assertThat(tabs.getToolTipTextAt(1)).as("tabbedpane.tab1-toolTipText").isEqualTo("Tooltip 1");
+		BufferedImage actual = createImageFromIcon(tabs.getIconAt(0));
+		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
+		Assertions.assertThat(actual).as("tabbedpane.tab0-icon").isEqualTo(expected);
+		actual = createImageFromIcon(tabs.getDisabledIconAt(0));
+		Assertions.assertThat(actual).as("tabbedpane.tab0-disabledIcon").isEqualTo(expected);
+		Assertions.assertThat(tabs.getIconAt(1)).as("tabbedpane.tab1-icon").isNull();
+		Assertions.assertThat(tabs.getDisabledIconAt(1)).as("tabbedpane.tab1-disabledIcon").isNull();
 	}
 	
 	public void checkInjectionHierarchy()

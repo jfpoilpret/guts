@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 import net.guts.gui.util.CursorInfo;
@@ -56,6 +57,7 @@ public final class ResourceModule extends AbstractModule
 		bindInjector(Component.class,	ComponentPropertiesInjector.class);
 		//TODO Bind injectors for more specific components
 		bindInjector(JTable.class,		JTableInjector.class);
+		bindInjector(JTabbedPane.class,	JTabbedPaneInjector.class);
 
 		//TODO
 		// Add type listener for automatic injection of GUI
