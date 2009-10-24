@@ -16,10 +16,9 @@ package net.guts.event;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Type;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.concurrent.Executor;
 
+import static net.guts.common.type.PrimitiveHelper.toWrapper;
 import net.guts.event.internal.ChannelProvider;
 import net.guts.event.internal.EventImpl;
 
@@ -138,12 +137,11 @@ public final class Events
 	static public <T> void bindChannel(Binder binder, TypeLiteral<T> eventType, String topic)
 	{
 		// Special handling of primitive event types
-		boolean isPrimitive = true;
-		Type realType = PRIMITIVE_WRAPPERS.get(eventType.getRawType());
-		if (realType == null)
+		Type realType = toWrapper(eventType.getRawType());
+		boolean isPrimitive = (realType != eventType.getRawType());
+		if (!isPrimitive)
 		{
 			realType = eventType.getType();
-			isPrimitive = false;
 		}
 		Type channelType = Types.newParameterizedType(Channel.class, realType);
 		AnnotatedBindingBuilder<Channel<T>> binding = binder.bind(
@@ -263,17 +261,4 @@ public final class Events
 		new TypeLiteral<TypeLiteral<?>>() {};
 	static final private TypeLiteral<ConsumerReturnHandler<?>> HANDLERS_VALUE = 
 		new TypeLiteral<ConsumerReturnHandler<?>>() {};
-	static final private Map<Class<?>, Class<?>> PRIMITIVE_WRAPPERS =
-		new HashMap<Class<?>, Class<?>>();
-	static
-	{
-		PRIMITIVE_WRAPPERS.put(boolean.class, Boolean.class);
-		PRIMITIVE_WRAPPERS.put(char.class, Character.class);
-		PRIMITIVE_WRAPPERS.put(byte.class, Byte.class);
-		PRIMITIVE_WRAPPERS.put(short.class, Short.class);
-		PRIMITIVE_WRAPPERS.put(int.class, Integer.class);
-		PRIMITIVE_WRAPPERS.put(long.class, Long.class);
-		PRIMITIVE_WRAPPERS.put(float.class, Float.class);
-		PRIMITIVE_WRAPPERS.put(double.class, Double.class);
-	}
 }
