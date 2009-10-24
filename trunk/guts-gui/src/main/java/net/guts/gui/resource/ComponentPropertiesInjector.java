@@ -15,7 +15,6 @@
 package net.guts.gui.resource;
 
 import java.awt.Component;
-import java.awt.event.KeyEvent;
 
 import net.guts.common.bean.UntypedProperty;
 
