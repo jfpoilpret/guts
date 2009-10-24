@@ -171,6 +171,13 @@ public class ResourceInjectorTest
 		Assertions.assertThat(tabs.getTitleAt(1)).as("tabbedpane.tab1-title").isEqualTo("Tab 1");
 		Assertions.assertThat(tabs.getToolTipTextAt(0)).as("tabbedpane.tab0-toolTipText").isEqualTo("Tooltip 0");
 		Assertions.assertThat(tabs.getToolTipTextAt(1)).as("tabbedpane.tab1-toolTipText").isEqualTo("Tooltip 1");
+		//TODO Check mnemonics!
+		Assertions.assertThat(tabs.getMnemonicAt(0)).as("tabbedpane.tab0-mnemonic").isEqualTo(KeyEvent.VK_T);
+		Assertions.assertThat(tabs.getDisplayedMnemonicIndexAt(0)).as("tabbedpane.tab0-displayedMnemonicIndex").isEqualTo(0);
+		Assertions.assertThat(tabs.getMnemonicAt(1)).as("tabbedpane.tab1-mnemonic").isEqualTo(KeyEvent.VK_A);
+		Assertions.assertThat(tabs.getDisplayedMnemonicIndexAt(1)).as("tabbedpane.tab1-displayedMnemonicIndex").isEqualTo(1);
+
+		// Check icons
 		BufferedImage actual = createImageFromIcon(tabs.getIconAt(0));
 		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
 		Assertions.assertThat(actual).as("tabbedpane.tab0-icon").isEqualTo(expected);
