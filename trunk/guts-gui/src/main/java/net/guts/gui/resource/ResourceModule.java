@@ -21,6 +21,7 @@ import java.awt.Font;
 import java.awt.Image;
 
 import javax.swing.Icon;
+import javax.swing.JTable;
 
 import net.guts.gui.util.CursorInfo;
 
@@ -52,9 +53,9 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Cursor.class,		CursorConverter.class);
 
 		// Bind default ComponentInjector
-		Resources.bindComponentInjector(binder(), Component.class)
-			.to(BeanPropertiesInjector.class);
-		// TODO bind injectors for more specific components
+		bindInjector(Component.class,	ComponentPropertiesInjector.class);
+		//TODO Bind injectors for more specific components
+		bindInjector(JTable.class,		JTableInjector.class);
 
 		//TODO
 		// Add type listener for automatic injection of GUI
@@ -64,5 +65,11 @@ public final class ResourceModule extends AbstractModule
 		Class<T> type, Class<? extends ResourceConverter<T>> converter)
 	{
 		Resources.bindConverter(binder(), type).to(converter).asEagerSingleton();
+	}
+	
+	private <T> void bindInjector(
+		Class<T> type, Class<? extends ComponentInjector<T>> converter)
+	{
+		Resources.bindComponentInjector(binder(), type).to(converter).asEagerSingleton();
 	}
 }

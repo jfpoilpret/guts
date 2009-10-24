@@ -14,17 +14,24 @@
 
 package net.guts.gui.resource;
 
-//TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
+import java.awt.Component;
+
 /**
  * TODO
  *
  * @author Jean-Francois Poilpret
  */
-public interface ComponentInjector<T>
+abstract public class AbstractComponentInjector<T extends Component> 
+	extends AbstractBeanInjector<T>
 {
-	// resources is the list of all resources (strongly typed) for this
-	// component
-	// Implementations of this method should iterate through resources and
-	// inject each individual resource into component
-	public void inject(T component, ResourceMap resources);
+	protected String prefix(T component)
+	{
+		String prefix = component.getName();
+		if (prefix == null)
+		{
+			String msg = String.format("Component has no name: %d", component);
+			_logger.info(msg);
+		}
+		return prefix;
+	}
 }
