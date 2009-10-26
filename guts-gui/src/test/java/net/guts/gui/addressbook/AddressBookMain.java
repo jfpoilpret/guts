@@ -22,6 +22,7 @@ import net.guts.gui.addressbook.action.ContactActions;
 import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.application.AbstractAppLauncher;
 import net.guts.gui.application.AppLifecycleStarter;
+import net.guts.gui.message.MessageModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -45,6 +46,7 @@ public class AddressBookMain extends AbstractAppLauncher
 		// Finally, add our specific module
 		//TODO avoid creation of List<Module> by passing it as arg!
 		List<Module> modules = new ArrayList<Module>();
+		modules.add(new MessageModule());
 		modules.add(new AddressBookModule());
 		return modules;
 	}

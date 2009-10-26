@@ -26,7 +26,6 @@ import javax.swing.event.ListSelectionListener;
 import net.guts.event.Channel;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.domain.Contact;
-import net.guts.gui.util.TableHelper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -58,7 +57,6 @@ public class ContactsListView extends JPanel
 		final EventTableModel<Contact> model =
 			new EventTableModel<Contact>(_contacts, format);
 		_table.setModel(model);
-		TableHelper.injectColumnNames(_table);
 		
 		// Add selection listener to publish events
 		_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
