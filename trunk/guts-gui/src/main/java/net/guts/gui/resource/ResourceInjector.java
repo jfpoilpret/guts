@@ -19,15 +19,11 @@ import java.awt.Component;
 
 import com.google.inject.ImplementedBy;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(ResourceInjectorImpl.class)
 public interface ResourceInjector
 {
 	public void injectComponent(Component component);
 	public void injectHierarchy(Component component);
-//	public void injectInstance(Object instance);
+	public <T> void injectInstance(T instance);
+	public <T> void injectInstance(T instance, String name);
 }

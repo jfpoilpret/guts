@@ -14,7 +14,6 @@
 
 package net.guts.gui.resource;
 
-import java.awt.Component;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -46,10 +45,10 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		_root = getBundle(root);
 	}
 	
-	@Override public ResourceMap getBundle(Class<? extends Component> component)
+	@Override public ResourceMap getBundle(Class<?> clazz)
 	{
 		// Ask for the sorted list of ResourceBundle matching the component type
-		List<Bundle> bundles = getBundleNames(component);
+		List<Bundle> bundles = getBundleNames(clazz);
 
 		NavigableMap<String, ResourceEntry> values = new TreeMap<String, ResourceEntry>();
 		for (Bundle bundle: bundles)
