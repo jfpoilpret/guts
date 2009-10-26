@@ -33,6 +33,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
+import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -42,8 +43,9 @@ class WindowControllerImpl implements WindowController
 {
 	static final private Logger _logger = LoggerFactory.getLogger(WindowControllerImpl.class);
 	
-	WindowControllerImpl()
+	@Inject WindowControllerImpl(ResourceInjector injector)
 	{
+		_injector = injector;
 		_current = null;
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
 		{
@@ -117,7 +119,8 @@ class WindowControllerImpl implements WindowController
 		JComponent root = container.getRootPane();
 		if (root.getClientProperty(RESOURCES_INJECTED) == null)
 		{
-			_context.getResourceMap().injectComponents(root.getParent());
+//			_context.getResourceMap().injectComponents(root.getParent());
+			_injector.injectHierarchy(root.getParent());
 			root.putClientProperty(RESOURCES_INJECTED, Boolean.TRUE);
 		}
 	}
@@ -214,5 +217,6 @@ class WindowControllerImpl implements WindowController
 
 	//TODO replace with RootPaneContainer exclusively?
 	private Window _current;
+	final private ResourceInjector _injector;
 	@Inject private ApplicationContext _context;
 }
