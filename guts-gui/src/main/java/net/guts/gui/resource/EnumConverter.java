@@ -23,7 +23,6 @@ public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 {
 	public EnumConverter(Class<T> enumType)
 	{
-		_enumType = enumType;
 		_enumValues = enumType.getEnumConstants();
 	}
 
@@ -42,6 +41,5 @@ public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 		return null;
 	}
 
-	final private Class<T> _enumType;
 	final private T[] _enumValues;
 }
