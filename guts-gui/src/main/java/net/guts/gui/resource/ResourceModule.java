@@ -56,7 +56,7 @@ public final class ResourceModule extends AbstractModule
 
 		// Bind default ComponentInjector
 		bindInjector(Component.class,		ComponentPropertiesInjector.class);
-		//TODO Bind injectors for more specific components
+		// Bind injectors for more specific components
 		bindInjector(JTable.class,			JTableInjector.class);
 		bindInjector(JTabbedPane.class,		JTabbedPaneInjector.class);
 		bindInjector(JFileChooser.class,	JFileChooserInjector.class);
