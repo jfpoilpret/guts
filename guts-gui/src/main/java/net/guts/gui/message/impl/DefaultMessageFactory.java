@@ -15,28 +15,22 @@
 package net.guts.gui.message.impl;
 
 import java.awt.Window;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
-
-import org.jdesktop.application.ApplicationContext;
-import org.jdesktop.application.Resource;
-import org.jdesktop.application.ResourceConverter;
-import org.jdesktop.application.ResourceMap;
 
 import net.guts.gui.application.WindowController;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.MessageType;
 import net.guts.gui.message.OptionType;
 import net.guts.gui.message.UserChoice;
-import net.guts.gui.util.EnumConverter;
+import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+//TODO change package and make it package private!
 /**
  * Default implementation of {@link MessageFactory} service.
  * <p/>
@@ -48,14 +42,11 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultMessageFactory implements MessageFactory
 {
-	@Inject public DefaultMessageFactory(Logger logger, 
-		WindowController windowController, ApplicationContext context)
+	@Inject public DefaultMessageFactory(
+		WindowController windowController, ResourceInjector injector)
 	{
-		_logger = logger;
 		_windowController = windowController;
-		_map = context.getResourceMap(getClass());
-		ResourceConverter.register(new EnumConverter<MessageType>(MessageType.class));
-		ResourceConverter.register(new EnumConverter<OptionType>(OptionType.class));
+		_injector = injector;
 	}
 	
 	/*
@@ -64,54 +55,91 @@ public class DefaultMessageFactory implements MessageFactory
 	 */
 	public UserChoice showMessage(String id, Object... args)
 	{
-		try
+		// Inject specific information into private object
+		MessageInfo info = new MessageInfo();
+		_injector.injectInstance(info, id);
+		String title = String.format(info.getTitle(), args);
+		String message = String.format(info.getMessage(), args);
+		
+		JOptionPane pane = new JOptionPane(	message,
+											info.getMessageType().value(),
+											info.getOptionType().value());
+		pane.setName("message-" + id);
+		Window parent = _windowController.getActiveWindow();
+		JDialog box;
+		if (parent instanceof JFrame)
 		{
-			_map.injectFields(this, id);
-			String title = String.format(_title, args);
-			String message = String.format(_message, args);
-			
-			JOptionPane pane = new JOptionPane(	message,
-												_messageType.value(),
-												_optionType.value());
-			pane.setName("message-" + id);
-			Window parent = _windowController.getActiveWindow();
-			JDialog box;
-			if (parent instanceof JFrame)
-			{
-				box = pane.createDialog(parent, title);
-			}
-			else if (parent instanceof JDialog)
-			{
-				box = pane.createDialog(parent, title);
-			}
-			else
-			{
-				box = pane.createDialog((JFrame) null, title);
-			}
-			box.setLocationRelativeTo(parent);
-			box.setVisible(true);
-			Integer result = (Integer) pane.getValue();
-			if (result == null)
-			{
-				return UserChoice.CANCEL;
-			}
-			else
-			{
-				return UserChoice.get(result.intValue());
-			}
+			box = pane.createDialog(parent, title);
 		}
-		catch (ResourceMap.InjectFieldException e)
+		else if (parent instanceof JDialog)
 		{
-			_logger.log(Level.SEVERE, "message() unexisting id <" + id + ">", e);
-			return null;
+			box = pane.createDialog(parent, title);
+		}
+		else
+		{
+			box = pane.createDialog((JFrame) null, title);
+		}
+		box.setLocationRelativeTo(parent);
+		box.setVisible(true);
+		Integer result = (Integer) pane.getValue();
+		if (result == null)
+		{
+			return UserChoice.CANCEL;
+		}
+		else
+		{
+			return UserChoice.get(result.intValue());
 		}
 	}
+	
+	static final private class MessageInfo
+	{
+		public MessageType getMessageType()
+		{
+			return _messageType;
+		}
 
-	final private Logger _logger;
+		public void setMessageType(MessageType messageType)
+		{
+			_messageType = messageType;
+		}
+		
+		public OptionType getOptionType()
+		{
+			return _optionType;
+		}
+		
+		public void setOptionType(OptionType optionType)
+		{
+			_optionType = optionType;
+		}
+		
+		public String getTitle()
+		{
+			return _title;
+		}
+		
+		public void setTitle(String title)
+		{
+			_title = title;
+		}
+		
+		public String getMessage()
+		{
+			return _message;
+		}
+		
+		public void setMessage(String message)
+		{
+			_message = message;
+		}
+		
+		private MessageType _messageType;
+		private OptionType _optionType;
+		private String _title;
+		private String _message;
+	}
+
 	final private WindowController _windowController;
-	final private ResourceMap _map;
-	@Resource(key = "messageType") private MessageType _messageType;
-	@Resource(key = "optionType") private OptionType _optionType;
-	@Resource(key = "title") private String _title;
-	@Resource(key = "message") private String _message;
+	final private ResourceInjector _injector;
 }
