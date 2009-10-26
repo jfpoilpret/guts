@@ -72,6 +72,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 			bundles = extractBundles(type.getAnnotation(UsesBundles.class));
 			_bundlesPerClass.put(type, bundles);
 		}
+		//FIXME this test is incorrect when _root == null!
 		if (bundles.size() <= 1)
 		{
 			// If there is no bundles dependency defined at class level, check package level
@@ -107,6 +108,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 					}
 				}
 			}
+			//TODO if uses.value() is empty, then take current class/package as bundle
 			Collections.reverse(bundles);
 		}
 		if (_root != null)
