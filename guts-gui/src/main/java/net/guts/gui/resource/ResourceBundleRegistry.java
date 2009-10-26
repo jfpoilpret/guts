@@ -14,13 +14,10 @@
 
 package net.guts.gui.resource;
 
-import java.awt.Component;
-
-
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(ResourceBundleRegistryImpl.class)
 interface ResourceBundleRegistry
 {
-	public ResourceMap getBundle(Class<? extends Component> component);
+	public ResourceMap getBundle(Class<?> clazz);
 }

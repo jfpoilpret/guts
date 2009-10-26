@@ -35,15 +35,16 @@ class ResourceInjectorImpl implements ResourceInjector
 	/* (non-Javadoc)
 	 * @see net.guts.gui.resource.ResourceInjector#injectComponent(javax.swing.JComponent)
 	 */
-	@SuppressWarnings("unchecked") @Override 
-	public void injectComponent(Component component)
+	@Override public void injectComponent(Component component)
 	{
-		// Find the most specific ComponentInjector for component
-		Class<? extends Component> type = component.getClass();
-		ComponentInjector<Component> injector = (ComponentInjector<Component>) 
-			TypeHelper.findBestMatchInTypeHierarchy(_injectors, type);
-		ResourceMap resources = _registry.getBundle(type);
-		injector.inject(component, resources);
+		if (component != null)
+		{
+			// Find the most specific ComponentInjector for component
+			Class<? extends Component> type = component.getClass();
+			ComponentInjector<Component> injector = findComponentInjector(type);
+			ResourceMap resources = _registry.getBundle(type);
+			injector.inject(component, resources);
+		}
 	}
 
 	/* (non-Javadoc)
@@ -51,18 +52,55 @@ class ResourceInjectorImpl implements ResourceInjector
 	 */
 	@Override public void injectHierarchy(Component component)
 	{
-		// First inject component itself
-		injectComponent(component);
-		// Then recursively inject all its children
-		if (component instanceof Container)
+		if (component != null)
 		{
-			for (Component child: ((Container) component).getComponents())
+			// First inject component itself
+			injectComponent(component);
+			// Then recursively inject all its children
+			if (component instanceof Container)
 			{
-				injectHierarchy(child);
+				for (Component child: ((Container) component).getComponents())
+				{
+					injectHierarchy(child);
+				}
 			}
 		}
 	}
 
+	public <T> void injectInstance(T instance)
+	{
+		if (instance != null)
+		{
+			injectInstance(instance, instance.getClass().getSimpleName());
+		}
+	}
+	
+	public <T> void injectInstance(T instance, String name)
+	{
+		if (instance != null)
+		{
+			// Find the most specific ComponentInjector for component
+			Class<? extends T> type = getClass(instance);
+			ComponentInjector<T> injector = findComponentInjector(type);
+			ResourceMap resources = _registry.getBundle(type);
+			injector.inject(instance, resources);
+		}
+	}
+
+	@SuppressWarnings("unchecked") 
+	private <T> Class<? extends T> getClass(T instance)
+	{
+		return (Class<? extends T>) instance.getClass();
+	}
+	
+	@SuppressWarnings("unchecked") 
+	private <T> ComponentInjector<T> findComponentInjector(Class<? extends T> type)
+	{
+		ComponentInjector<?> injector = 
+			TypeHelper.findBestMatchInTypeHierarchy(_injectors, type);
+		return (ComponentInjector<T>) injector;
+	}
+	
 	final private ResourceBundleRegistry _registry;
 	final private Map<Class<?>, ComponentInjector<?>> _injectors;
 }
