@@ -20,20 +20,14 @@ import java.util.List;
 
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.GutsApplicationContext;
-import org.jdesktop.application.ResourceConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.gui.action.ActionModule;
-import net.guts.gui.application.impl.CursorConverter;
-import net.guts.gui.application.impl.CursorInfoConverter;
-import net.guts.gui.application.impl.ImageConverter;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
 import net.guts.gui.resource.ResourceModule;
-import net.guts.gui.util.ResourceComponent;
-import net.guts.gui.util.TableHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -87,8 +81,7 @@ public abstract class AbstractAppLauncher
 		{
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
-			//TODO add new resource management!
-//			modules.add(new ResourceModule());
+			modules.add(new ResourceModule());
 			modules.add(new ActionModule());
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
@@ -129,16 +122,6 @@ public abstract class AbstractAppLauncher
 			requestInjection(application);
 			bind(ApplicationContext.class).toInstance(
 				new GutsApplicationContext(application));
-			requestStaticInjection(ResourceComponent.class);
-			//TODO replace with special resource Guice module
-			// Register a few useful resource converters
-			ResourceConverter.register(new ImageConverter());
-			ResourceConverter.register(new CursorInfoConverter());
-			ResourceConverter.register(new CursorConverter());
-			//FIXME Add necessary bindings (and replace later with their own modules?)
-			requestStaticInjection(TableHelper.class);
-			
-			//TODO add new resource management!
 		}
 	}
 	
