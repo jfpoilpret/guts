@@ -26,5 +26,5 @@ public interface ComponentInjector<T>
 	// component
 	// Implementations of this method should iterate through resources and
 	// inject each individual resource into component
-	public void inject(T component, ResourceMap resources);
+	public void inject(T component, String prefix, ResourceMap resources);
 }

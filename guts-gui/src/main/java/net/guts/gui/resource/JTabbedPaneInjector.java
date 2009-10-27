@@ -14,48 +14,18 @@
 
 package net.guts.gui.resource;
 
-import java.awt.Component;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import javax.swing.Icon;
 import javax.swing.JTabbedPane;
 
-import net.guts.common.bean.UntypedProperty;
+import net.guts.gui.resource.ResourceMap.Key;
 
-class JTabbedPaneInjector extends AbstractComponentInjector<JTabbedPane>
+class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 {
-	@Override public void inject(JTabbedPane tabs, ResourceMap resources)
-	{
-		String prefix = prefix(tabs);
-		if (prefix == null)
-		{
-			return;
-		}
-		Class<? extends Component> componentType = tabs.getClass();
-		// For each injectable resource
-		for (ResourceMap.Key key: resources.keys(prefix))
-		{
-			String name = key.key();
-			// Check if key is a special JTabbedPane property
-			if (!handleTabProperty(tabs, key, resources))
-			{
-				// Check that this property exists
-				UntypedProperty property = writableProperty(name, componentType);
-				if (property != null)
-				{
-					Class<?> type = property.type();
-					// Get the value in the correct type
-					Object value = resources.getValue(key, type);
-					// Set the property with the resource value
-					property.set(tabs, value);
-				}
-			}
-		}
-	}
-	
-	private boolean handleTabProperty(
-		JTabbedPane tabs, ResourceMap.Key key, ResourceMap resources)
+	@Override protected boolean handleSpecialProperty(
+		JTabbedPane tabs, Key key, ResourceMap resources)
 	{
 		String name = key.key();
 		Matcher matcher = _tabsTagPattern.matcher(name);

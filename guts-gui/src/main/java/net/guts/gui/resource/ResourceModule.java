@@ -20,20 +20,18 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
 
+import javax.swing.AbstractButton;
 import javax.swing.Icon;
 import javax.swing.JFileChooser;
+import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
 import net.guts.gui.util.CursorInfo;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public final class ResourceModule extends AbstractModule
 {
 	/* (non-Javadoc)
@@ -55,8 +53,13 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Cursor.class,		CursorConverter.class);
 
 		// Bind default ComponentInjector
-		bindInjector(Component.class,		ComponentPropertiesInjector.class);
+		bindInjector(Component.class, 
+			new TypeLiteral<BeanPropertiesInjector<Component>>(){});
+		bindInjector(Object.class, 
+			new TypeLiteral<BeanPropertiesInjector<Object>>(){});
 		// Bind injectors for more specific components
+		bindInjector(JLabel.class,			JLabelInjector.class);
+		bindInjector(AbstractButton.class,	AbstractButtonInjector.class);
 		bindInjector(JTable.class,			JTableInjector.class);
 		bindInjector(JTabbedPane.class,		JTabbedPaneInjector.class);
 		bindInjector(JFileChooser.class,	JFileChooserInjector.class);
@@ -73,6 +76,12 @@ public final class ResourceModule extends AbstractModule
 	
 	private <T> void bindInjector(
 		Class<T> type, Class<? extends ComponentInjector<T>> converter)
+	{
+		Resources.bindComponentInjector(binder(), type).to(converter).asEagerSingleton();
+	}
+
+	private <T> void bindInjector(
+		Class<T> type, TypeLiteral<? extends ComponentInjector<T>> converter)
 	{
 		Resources.bindComponentInjector(binder(), type).to(converter).asEagerSingleton();
 	}

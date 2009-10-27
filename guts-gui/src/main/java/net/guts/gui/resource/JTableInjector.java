@@ -14,54 +14,32 @@
 
 package net.guts.gui.resource;
 
-import java.awt.Component;
-
 import javax.swing.JTable;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
-import net.guts.common.bean.UntypedProperty;
+import net.guts.gui.resource.ResourceMap.Key;
 
-class JTableInjector extends AbstractComponentInjector<JTable>
+class JTableInjector extends BeanPropertiesInjector<JTable>
 {
-	@Override public void inject(JTable table, ResourceMap resources)
+	@Override protected boolean handleSpecialProperty(
+		JTable table, Key key, ResourceMap resources)
 	{
-		String prefix = prefix(table);
-		if (prefix == null)
-		{
-			return;
-		}
-		Class<? extends Component> componentType = table.getClass();
 		// Prepare injection of column header text
 		TableColumnModel model = table.getColumnModel();
-		// For each injectable resource
-		for (ResourceMap.Key key: resources.keys(prefix))
+		String name = key.key();
+		// Check if key is a special JTable property
+		TableColumn column = column(name, model);
+		if (column != null)
 		{
-			String name = key.key();
-			// Check if key is a special JTable property
-			TableColumn column = column(name, model);
-			if (column != null)
-			{
-				// Yes, inject directly into JTable column
-				String value = resources.getValue(key, String.class);
-				column.setHeaderValue(value);
-			}
-			else
-			{
-				// Check that this property exists
-				UntypedProperty property = writableProperty(name, componentType);
-				if (property != null)
-				{
-					Class<?> type = property.type();
-					// Get the value in the correct type
-					Object value = resources.getValue(key, type);
-					// Set the property with the resource value
-					property.set(table, value);
-				}
-			}
+			// Yes, inject directly into JTable column
+			String value = resources.getValue(key, String.class);
+			column.setHeaderValue(value);
+			return true;
 		}
+		return false;
 	}
-	
+
 	private TableColumn column(String name, TableColumnModel model)
 	{
 		if (!name.startsWith(HEADER_TAG))

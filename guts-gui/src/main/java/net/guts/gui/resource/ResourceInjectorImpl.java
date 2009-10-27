@@ -18,38 +18,40 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 class ResourceInjectorImpl implements ResourceInjector
 {
-	@Inject
-	public ResourceInjectorImpl(
+	static final private Logger _logger = LoggerFactory.getLogger(ResourceInjectorImpl.class);
+
+	@Inject	public ResourceInjectorImpl(
 		ResourceBundleRegistry registry, Map<Class<?>, ComponentInjector<?>> injectors)
 	{
 		_registry = registry;
 		_injectors = injectors;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.resource.ResourceInjector#injectComponent(javax.swing.JComponent)
-	 */
 	@Override public void injectComponent(Component component)
 	{
 		if (component != null)
 		{
-			// Find the most specific ComponentInjector for component
-			Class<? extends Component> type = component.getClass();
-			ComponentInjector<Component> injector = findComponentInjector(type);
-			ResourceMap resources = _registry.getBundle(type);
-			injector.inject(component, resources);
+			String prefix = prefix(component);
+			if (prefix != null)
+			{
+				// Find the most specific ComponentInjector for component
+				Class<? extends Component> type = component.getClass();
+				ComponentInjector<Component> injector = findComponentInjector(type);
+				ResourceMap resources = _registry.getBundle(type);
+				injector.inject(component, prefix, resources);
+			}
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.resource.ResourceInjector#injectComponents(javax.swing.JComponent)
-	 */
 	@Override public void injectHierarchy(Component component)
 	{
 		if (component != null)
@@ -67,7 +69,7 @@ class ResourceInjectorImpl implements ResourceInjector
 		}
 	}
 
-	public <T> void injectInstance(T instance)
+	@Override public <T> void injectInstance(T instance)
 	{
 		if (instance != null)
 		{
@@ -75,7 +77,7 @@ class ResourceInjectorImpl implements ResourceInjector
 		}
 	}
 	
-	public <T> void injectInstance(T instance, String name)
+	@Override public <T> void injectInstance(T instance, String name)
 	{
 		if (instance != null)
 		{
@@ -83,7 +85,7 @@ class ResourceInjectorImpl implements ResourceInjector
 			Class<? extends T> type = getClass(instance);
 			ComponentInjector<T> injector = findComponentInjector(type);
 			ResourceMap resources = _registry.getBundle(type);
-			injector.inject(instance, resources);
+			injector.inject(instance, name, resources);
 		}
 	}
 
@@ -101,6 +103,16 @@ class ResourceInjectorImpl implements ResourceInjector
 		return (ComponentInjector<T>) injector;
 	}
 	
+	private String prefix(Component component)
+	{
+		String prefix = component.getName();
+		if (prefix == null)
+		{
+			_logger.debug("Component has no name: {}", component);
+		}
+		return prefix;
+	}
+
 	final private ResourceBundleRegistry _registry;
 	final private Map<Class<?>, ComponentInjector<?>> _injectors;
 }

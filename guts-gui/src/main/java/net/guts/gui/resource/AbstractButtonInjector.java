@@ -14,25 +14,26 @@
 
 package net.guts.gui.resource;
 
-import javax.swing.JFileChooser;
+import javax.swing.AbstractButton;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
-class JFileChooserInjector extends BeanPropertiesInjector<JFileChooser>
+class AbstractButtonInjector extends BeanPropertiesInjector<AbstractButton>
 {
 	@Override protected boolean handleSpecialProperty(
-		JFileChooser chooser, Key key, ResourceMap resources)
+		AbstractButton button, Key key, ResourceMap resources)
 	{
-		if (APPROVE_TAG.equals(key.key()))
+		// Special handling for mnemonics
+		if ("text".equals(key.key()))
 		{
-			String text = resources.getValue(key, String.class);
-			MnemonicInfo info = MnemonicInfo.extract(text);
-			chooser.setApproveButtonText(info.getText());
-			chooser.setApproveButtonMnemonic(info.getMnemonic());
+			String value = resources.getValue(key, String.class);
+			MnemonicInfo info = MnemonicInfo.extract(value);
+			// Set the property with the resource value
+			button.setText(info.getText());
+			button.setMnemonic(info.getMnemonic());
+			button.setDisplayedMnemonicIndex(info.getMnemonicIndex());
 			return true;
 		}
 		return false;
 	}
-	
-	static final private String APPROVE_TAG = "approveButtonText";
 }

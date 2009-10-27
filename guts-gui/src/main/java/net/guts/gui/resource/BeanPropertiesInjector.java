@@ -19,29 +19,62 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.common.bean.UntypedProperty;
 import net.guts.common.bean.UntypedPropertyFactory;
+import net.guts.gui.resource.ResourceMap.Key;
+
 import static net.guts.common.type.PrimitiveHelper.toWrapper;
 
 import com.google.inject.Inject;
 
-
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-abstract public class AbstractBeanInjector<T> implements ComponentInjector<T>
+public class BeanPropertiesInjector<T> implements ComponentInjector<T>
 {
-	@Inject void setPropertyFactory(UntypedPropertyFactory properties)
+	@Inject final void setPropertyFactory(UntypedPropertyFactory properties)
 	{
 		_properties = properties;
 	}
 
-	protected UntypedPropertyFactory properties()
+	@Override public final void inject(T component, String prefix, ResourceMap resources)
+	{
+		// For each injectable resource
+		for (Key key: resources.keys(prefix))
+		{
+			if (!handleSpecialProperty(component, key, resources))
+			{
+				injectProperty(component, key, resources);
+			}
+		}
+	}
+	
+	protected boolean handleSpecialProperty(
+		T component, ResourceMap.Key key, ResourceMap resources)
+	{
+		return false;
+	}
+
+	protected void injectProperty(T component, Key key, ResourceMap resources)
+	{
+		// Check that this property exists
+		UntypedProperty property = writableProperty(key.key(), component.getClass());
+		if (property != null)
+		{
+			Class<?> type = property.type();
+			// Get the value in the correct type
+			Object value = resources.getValue(key, type);
+			// Set the property with the resource value
+			injectProperty(component, property, value);
+		}
+	}
+
+	protected void injectProperty(T component, UntypedProperty property, Object value)
+	{
+		property.set(component, value);
+	}
+	
+	final protected UntypedPropertyFactory properties()
 	{
 		return _properties;
 	}
 
-	protected UntypedProperty writableProperty(String name, Class<?> bean)
+	final protected UntypedProperty writableProperty(String name, Class<?> bean)
 	{
 		UntypedProperty property = _properties.property(name, bean);
 		if (property == null || !property.isWritable())
@@ -53,7 +86,7 @@ abstract public class AbstractBeanInjector<T> implements ComponentInjector<T>
 		return property;
 	}
 	
-	protected void setProperty(T bean, String name, Object value)
+	final protected void setProperty(T bean, String name, Object value)
 	{
 		Class<?> type = bean.getClass();
 		UntypedProperty property = _properties.property(name, type);
