@@ -117,7 +117,7 @@ public abstract class AbstractAppLauncher
 		{
 			// Make sure that we get ourselves injected: we'll soon need AppLifecycle!
 			requestInjection(AbstractAppLauncher.this);
-			// FIXME remove asap!
+			// The following code will be removed when SAF is completely replaced
 			GutsApplication application = new GutsApplication();
 			requestInjection(application);
 			bind(ApplicationContext.class).toInstance(
