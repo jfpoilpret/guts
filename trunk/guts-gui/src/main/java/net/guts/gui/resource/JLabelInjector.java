@@ -14,24 +14,26 @@
 
 package net.guts.gui.resource;
 
-import java.awt.Component;
+import javax.swing.JLabel;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-abstract public class AbstractComponentInjector<T extends Component> 
-	extends AbstractBeanInjector<T>
+import net.guts.gui.resource.ResourceMap.Key;
+
+class JLabelInjector extends BeanPropertiesInjector<JLabel>
 {
-	protected String prefix(T component)
+	@Override protected boolean handleSpecialProperty(
+		JLabel label, Key key, ResourceMap resources)
 	{
-		String prefix = component.getName();
-		if (prefix == null)
+		// Special handling for mnemonics
+		if ("text".equals(key.key()))
 		{
-			String msg = String.format("Component has no name: %d", component);
-			_logger.info(msg);
+			String value = resources.getValue(key, String.class);
+			MnemonicInfo info = MnemonicInfo.extract(value);
+			// Set the property with the resource value
+			label.setText(info.getText());
+			label.setDisplayedMnemonic(info.getMnemonic());
+			label.setDisplayedMnemonicIndex(info.getMnemonicIndex());
+			return true;
 		}
-		return prefix;
+		return false;
 	}
 }

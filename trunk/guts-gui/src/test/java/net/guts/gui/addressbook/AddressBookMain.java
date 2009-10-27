@@ -23,6 +23,7 @@ import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.application.AbstractAppLauncher;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
+import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -60,6 +61,8 @@ public class AddressBookMain extends AbstractAppLauncher
 			// Add binding for "contact selection" events
 			Events.bindChannel(binder(), Contact.class);
 			bind(ContactActions.class).asEagerSingleton();
+			// Setup ResourceModule root bundle
+			Resources.bindRootBundle(binder(), AddressBookMain.class);
 		}
 	}
 }
