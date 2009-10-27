@@ -21,7 +21,12 @@ import java.util.Map;
 //TODO refactor in guts-common and reuse everywhere (guts-event, guts-qui)
 public final class TypeHelper
 {
+	private TypeHelper()
+	{
+	}
+	
 	//TODO also deal with interfaces?
+	//CSOFF: ParameterAssignmentCheck
 	static public <T> T findBestMatchInTypeHierarchy(Map<Class<?>, T> map, Class<?> type)
 	{
 		T value = null;
@@ -39,8 +44,10 @@ public final class TypeHelper
 			}
 		}
 	}
+	//CSON: ParameterAssignmentCheck
 
 	//TODO also deal with interfaces?
+	//CSOFF: ParameterAssignmentCheck
 	static public <T> List<T> findAllMatchesInTypeHierarchy(
 		Map<Class<?>, T> map, Class<?> type)
 	{
@@ -59,4 +66,5 @@ public final class TypeHelper
 			}
 		}
 	}
+	//CSON: ParameterAssignmentCheck
 }
