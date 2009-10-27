@@ -79,11 +79,12 @@ final class EdtHelper
 		EventQueue.invokeLater(ready);
 	}
 	
+	@SuppressWarnings("serial") 
 	static private class IdleEvent extends PaintEvent implements ActiveEvent
 	{
-		public IdleEvent(JPanel source)
+		public IdleEvent(JPanel eventSource)
 		{
-			super(source, UPDATE, null);
+			super(eventSource, UPDATE, null);
 		}
 
 		@Override public void dispatch()

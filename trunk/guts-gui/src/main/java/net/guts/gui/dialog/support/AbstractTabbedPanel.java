@@ -188,42 +188,10 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		};
     }
 
-//	static private class TabsListListener extends ContainerAdapter
-//	{
-//		@Override public void componentAdded(ContainerEvent e)
-//        {
-//			if (	e.getChild() instanceof JComponent
-//				&&	e.getContainer() instanceof JTabbedPane)
-//			{
-//				JComponent child = (JComponent) e.getChild();
-//				JTabbedPane parent = (JTabbedPane) e.getContainer();
-//				// Find the added tab in the parent
-//				int index = parent.indexOfComponent(child);
-//				if (index >= 0)
-//				{
-//					//FIXME mnemonics are not converted! (SAF issue)
-//					// Inject wrapper with tab additional info
-//					ResourceComponent wrapper = new ResourceComponent(
-//						child, TAB_NAME_SUFFIX);
-//					String title = wrapper.getTitle();
-//					Icon icon = wrapper.getIcon();
-//					String tip = wrapper.getToolTipText();
-//					// Sets extra info for the new tab
-//					parent.setTitleAt(index, title);
-//					parent.setIconAt(index, icon);
-//					parent.setToolTipTextAt(index, tip);
-//				}
-//			}
-//        }
-//	}
-
 	private static final long serialVersionUID = -4667291820304038305L;
 
 	static final private int INSETS = 4;
 	static final private String TABPANE_NAME_SUFFIX = "-tabs";
-//	static final private String TAB_NAME_SUFFIX = "-TAB";
-	
-//	static final private TabsListListener _listener = new TabsListListener();
 
 	/**
 	 * The actual {@link JTabbedPane} used by this panel. You will use it to
