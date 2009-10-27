@@ -359,9 +359,16 @@ public abstract class AbstractPanel extends JPanel
 	 * Swing Application Framework resource injection works only with
 	 * {@code public} bean properties.
 	 */
-	final public void setTitle(String title)
+	public void setTitle(String title)
 	{
 		_title = title;
+	}
+	
+	//TODO to be removed later on after enhancing guts-common UntypedPropertyFactoryImpl
+	// to work with write-only properties and also private accessors.
+	public String getTitle()
+	{
+		return _title;
 	}
 
 	/**
