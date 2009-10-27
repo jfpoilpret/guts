@@ -23,8 +23,7 @@ import javax.swing.ImageIcon;
 
 /**
  * Class wrapping a {@link Cursor} and various information about it. This type
- * is directly injectable by the framework (from properties files) thanks to
- * {@link net.guts.gui.application.impl.CursorInfoConverter}.
+ * is directly injectable by the framework (from properties files).
  * 
  * @author Jean-Francois Poilpret
  */

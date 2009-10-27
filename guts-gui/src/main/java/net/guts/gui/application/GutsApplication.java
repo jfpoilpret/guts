@@ -16,7 +16,6 @@ package net.guts.gui.application;
 
 import org.jdesktop.application.Action;
 import org.jdesktop.application.Application;
-import org.jdesktop.application.SingleFrameApplication;
 
 import net.guts.gui.action.ActionManager;
 import net.guts.gui.exit.ExitController;

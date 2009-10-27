@@ -43,35 +43,40 @@ final class EdtHelper
 		{
 			@Override public void run()
 			{
-				//  Post marker events until the EDT is idle
-				EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
-				boolean emptyQueue = false;
-				while (!emptyQueue)
-				{
-					IdleEvent event = new IdleEvent(source);
-					queue.postEvent(event);
-					synchronized (event)
-					{
-						while (!event._isDispatched)
-						{
-							try
-							{
-								event.wait();
-							}
-							catch (InterruptedException e)
-							{
-								// Not expected
-								_logger.info("Unexpected exception", e);
-							}
-						}
-						emptyQueue = event._isQueueEmpty;
-					}
-				}
-				// Then call ready() from the EDT
-				EventQueue.invokeLater(ready);
+				waitingLoop(source, ready);
 			}
 		};
 		loop.start();
+	}
+	
+	static private void waitingLoop(final JPanel source, final Runnable ready)
+	{
+		//  Post marker events until the EDT is idle
+		EventQueue queue = Toolkit.getDefaultToolkit().getSystemEventQueue();
+		boolean emptyQueue = false;
+		while (!emptyQueue)
+		{
+			IdleEvent event = new IdleEvent(source);
+			queue.postEvent(event);
+			synchronized (event)
+			{
+				while (!event._isDispatched)
+				{
+					try
+					{
+						event.wait();
+					}
+					catch (InterruptedException e)
+					{
+						// Not expected
+						_logger.info("Unexpected exception", e);
+					}
+				}
+				emptyQueue = event._isQueueEmpty;
+			}
+		}
+		// Then call ready() from the EDT
+		EventQueue.invokeLater(ready);
 	}
 	
 	static private class IdleEvent extends PaintEvent implements ActiveEvent

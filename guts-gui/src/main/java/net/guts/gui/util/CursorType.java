@@ -20,9 +20,8 @@ import java.awt.Cursor;
  * A type of predefined {@link Cursor}. All available predefined types are
  * defined in {@link Cursor}.
  * <p/>
- * This enum is used by {@link net.guts.gui.application.impl.CursorConverter}
- * to inject {@link Cursor}s from properties files, based on their logical name
- * as defined by this enum.
+ * This enum is used to inject {@link Cursor}s from properties files, based on 
+ * their logical name as defined by this enum.
  * 
  * @author Jean-Francois Poilpret
  */

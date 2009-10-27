@@ -66,7 +66,7 @@ class IntConverter implements ResourceConverter<Integer>
 	@Override public Integer convert(ResourceEntry entry)
 	{
 		// Trick to support "unsigned" Hex values like 0xFF0000FF
-		return (int)(long) Long.decode(entry.value());
+		return (int) (long) Long.decode(entry.value());
 	}
 }
 
@@ -75,7 +75,7 @@ class ColorConverter implements ResourceConverter<Color>
 	@Override public Color convert(ResourceEntry entry)
 	{
 		// Trick to support Hex RGBA values like 0xFF0000FF
-		int color = (int)(long) Long.decode(entry.value());
+		int color = (int) (long) Long.decode(entry.value());
 		return new Color(color, true);
 	}
 }
