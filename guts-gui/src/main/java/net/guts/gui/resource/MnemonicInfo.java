@@ -15,6 +15,8 @@
 package net.guts.gui.resource;
 
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
+import java.util.Map;
 
 public final class MnemonicInfo
 {
@@ -59,12 +61,80 @@ public final class MnemonicInfo
 		}
 		else
 		{
-			//FIXME convert to official KeyEvent constants!
-			int mnemonic = Character.toUpperCase(_text.charAt(_index));
-			return mnemonic;
+			char text = Character.toUpperCase(_text.charAt(_index));
+			Integer mnemonic = _keyCodes.get(text);
+			return (mnemonic != null ? mnemonic : KeyEvent.VK_UNDEFINED);
 		}
 	}
 
+	static final private Map<Character, Integer> _keyCodes = 
+		new HashMap<Character, Integer>();
+	// CSOFF: ExecutableStatementCountCheck
+	static
+	{
+		for (char c = 'a'; c <= 'z'; c++)
+		{
+			_keyCodes.put(c, KeyEvent.VK_A + c - 'a');
+		}
+		for (char c = 'A'; c <= 'Z'; c++)
+		{
+			_keyCodes.put(c, KeyEvent.VK_A + c - 'A');
+		}
+		for (char c = '0'; c <= '9'; c++)
+		{
+			_keyCodes.put(c, KeyEvent.VK_0 + c - '0');
+		}
+		_keyCodes.put(',', KeyEvent.VK_COMMA);
+		_keyCodes.put('<', KeyEvent.VK_LESS);
+
+		_keyCodes.put('.', KeyEvent.VK_PERIOD);
+		_keyCodes.put('>', KeyEvent.VK_GREATER);
+		
+		_keyCodes.put('?', KeyEvent.VK_HELP);
+		_keyCodes.put('/', KeyEvent.VK_SLASH);
+		
+		_keyCodes.put(';', KeyEvent.VK_SEMICOLON);
+		_keyCodes.put(':', KeyEvent.VK_COLON);
+		
+		_keyCodes.put('\'', KeyEvent.VK_QUOTE);
+		_keyCodes.put('"', KeyEvent.VK_QUOTEDBL);
+		
+		_keyCodes.put('[', KeyEvent.VK_OPEN_BRACKET);
+		_keyCodes.put('{', KeyEvent.VK_BRACELEFT);
+		
+		_keyCodes.put(']', KeyEvent.VK_CLOSE_BRACKET);
+		_keyCodes.put('}', KeyEvent.VK_BRACERIGHT);
+	
+		// No VK for "|"?
+//		_keyCodes.put('|', KeyEvent.VK_);
+		_keyCodes.put('\\', KeyEvent.VK_BACK_SLASH);
+		
+		_keyCodes.put('+', KeyEvent.VK_PLUS);
+		_keyCodes.put('=', KeyEvent.VK_EQUALS);
+
+		_keyCodes.put('_', KeyEvent.VK_UNDERSCORE);
+		_keyCodes.put('-', KeyEvent.VK_MINUS);
+
+		_keyCodes.put('~', KeyEvent.VK_DEAD_TILDE);
+		_keyCodes.put('`', KeyEvent.VK_BACK_QUOTE);
+
+		_keyCodes.put('!', KeyEvent.VK_EXCLAMATION_MARK);
+		_keyCodes.put('@', KeyEvent.VK_AT);
+		_keyCodes.put('#', KeyEvent.VK_NUMBER_SIGN);
+		_keyCodes.put('$', KeyEvent.VK_DOLLAR);
+//		_keyCodes.put('%', KeyEvent.VK_);
+		_keyCodes.put('^', KeyEvent.VK_CIRCUMFLEX);
+		_keyCodes.put('&', KeyEvent.VK_AMPERSAND);
+		_keyCodes.put('*', KeyEvent.VK_ASTERISK);
+		_keyCodes.put('(', KeyEvent.VK_LEFT_PARENTHESIS);
+		_keyCodes.put(')', KeyEvent.VK_RIGHT_PARENTHESIS);
+
+		_keyCodes.put(' ', KeyEvent.VK_SPACE);
+		_keyCodes.put('€', KeyEvent.VK_EURO_SIGN);
+		_keyCodes.put('¡', KeyEvent.VK_INVERTED_EXCLAMATION_MARK);
+	}
+	// CSON: ExecutableStatementCountCheck
+	
 	final private String _text;
 	final private int _index;
 }
