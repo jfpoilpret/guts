@@ -51,7 +51,7 @@ import com.google.inject.ImplementedBy;
  * 
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(DefaultMessageFactory.class)
+@ImplementedBy(MessageFactoryImpl.class)
 public interface MessageFactory
 {
 	/**

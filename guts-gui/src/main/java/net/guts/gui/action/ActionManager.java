@@ -34,7 +34,7 @@ import com.google.inject.ImplementedBy;
  * 
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(DefaultActionManager.class)
+@ImplementedBy(ActionManagerImpl.class)
 public interface ActionManager
 {
 	/**

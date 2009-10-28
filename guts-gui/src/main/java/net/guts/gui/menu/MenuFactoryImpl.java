@@ -25,18 +25,10 @@ import net.guts.gui.action.ActionManager;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * Default implementation of {@link MenuFactory} service.
- * <p/>
- * Normally, there is no need to override it or change it for another
- * implementation.
- * 
- * @author Jean-Francois Poilpret
- */
 @Singleton
-public class DefaultMenuFactory implements MenuFactory
+class MenuFactoryImpl implements MenuFactory
 {
-	@Inject public DefaultMenuFactory(ActionManager actionManager)
+	@Inject MenuFactoryImpl(ActionManager actionManager)
 	{
 		_actionManager = actionManager;
 	}

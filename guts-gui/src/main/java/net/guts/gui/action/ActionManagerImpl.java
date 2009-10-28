@@ -26,18 +26,10 @@ import org.jdesktop.application.ApplicationContext;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-/**
- * Default implementation of {@link ActionManager} service.
- * <p/>
- * Normally, there is no need to override it or change it for another
- * implementation.
- * 
- * @author Jean-Francois Poilpret
- */
 @Singleton
-public class DefaultActionManager implements ActionManager
+class ActionManagerImpl implements ActionManager
 {
-	@Inject public DefaultActionManager(ApplicationContext context)
+	@Inject ActionManagerImpl(ApplicationContext context)
 	{
 		_context = context;
 //		addActionSource(application);

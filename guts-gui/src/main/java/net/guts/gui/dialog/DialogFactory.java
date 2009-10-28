@@ -16,7 +16,6 @@ package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
 
-import net.guts.gui.application.DefaultDialogFactory;
 
 import com.google.inject.ImplementedBy;
 
