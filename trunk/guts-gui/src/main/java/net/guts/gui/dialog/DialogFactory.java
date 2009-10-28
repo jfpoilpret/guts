@@ -27,7 +27,7 @@ import com.google.inject.ImplementedBy;
  * 
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(DefaultDialogFactory.class)
+@ImplementedBy(DialogFactoryImpl.class)
 public interface DialogFactory
 {
 	/**

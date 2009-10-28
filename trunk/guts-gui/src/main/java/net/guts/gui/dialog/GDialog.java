@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application;
+package net.guts.gui.dialog;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -22,11 +22,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.dialog.Closable;
-import net.guts.gui.dialog.DefaultButtonHolder;
-import net.guts.gui.dialog.ParentDialog;
-import net.guts.gui.dialog.ParentDialogAware;
-import net.guts.gui.dialog.TitleDialogProvider;
 
 /**
  * All dialogs shown by {@link net.guts.gui.dialog.DialogFactory} are 

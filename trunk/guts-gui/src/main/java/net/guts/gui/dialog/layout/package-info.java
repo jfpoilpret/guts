@@ -14,7 +14,7 @@
 
 /**
  * This package contains various useful classes related to layout management in
- * dialogs created by {@link net.guts.gui.dialog.DefaultDialogFactory}.
+ * dialogs created by {@link net.guts.gui.dialog.DialogFactoryImpl}.
  * <p/>
  * The core of the package is the interface 
  * {@link net.guts.gui.dialog.layout.ButtonsPanelAdder} which is used
