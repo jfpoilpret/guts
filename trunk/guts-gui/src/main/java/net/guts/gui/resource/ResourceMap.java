@@ -19,11 +19,6 @@ import java.util.Set;
 import com.google.inject.TypeLiteral;
 
 // NB: useful only for ComponentInjector implementers (for extensibility purposes) 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public interface ResourceMap
 {
 	// Returns all resource keys starting with prefix. Prefix has been removed from all keys
@@ -32,8 +27,6 @@ public interface ResourceMap
 	public <T> T getValue(Key key, Class<T> type);
 	public <T> T getValue(Key key, TypeLiteral<T> type);
 	
-	//TODO make this interface more functional as API (don't reveal implementation details!)
-	//TODO shouldn't it be a public class instead?
 	static public interface Key
 	{
 		public String key();

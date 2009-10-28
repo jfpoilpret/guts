@@ -33,11 +33,6 @@ import net.guts.gui.util.CursorType;
 import com.google.inject.Inject;
 import com.google.inject.TypeLiteral;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public interface ResourceConverter<T>
 {
 	public T convert(ResourceEntry entry);

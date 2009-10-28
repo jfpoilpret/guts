@@ -16,11 +16,6 @@ package net.guts.gui.exit;
 
 import com.google.inject.ImplementedBy;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(DefaultExitPerformer.class)
 public interface ExitPerformer
 {

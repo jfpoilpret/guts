@@ -22,10 +22,6 @@ import net.guts.event.Events;
 
 import com.google.inject.AbstractModule;
 
-/**
- * TODO
- * @author Jean-Francois Poilpret
- */
 public final class ExitModule extends AbstractModule
 {
 	/* (non-Javadoc)

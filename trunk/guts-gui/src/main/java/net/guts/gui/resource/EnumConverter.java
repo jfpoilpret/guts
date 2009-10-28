@@ -14,11 +14,6 @@
 
 package net.guts.gui.resource;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 {
 	public EnumConverter(Class<T> enumType)

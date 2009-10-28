@@ -17,11 +17,6 @@ package net.guts.gui.resource;
 import com.google.inject.ImplementedBy;
 import com.google.inject.TypeLiteral;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(ResourceConverterFinderImpl.class)
 public interface ResourceConverterFinder
 {

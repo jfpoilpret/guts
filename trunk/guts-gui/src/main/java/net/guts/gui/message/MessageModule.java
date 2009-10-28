@@ -26,8 +26,6 @@ public final class MessageModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
-		//TODO add explicit binding for MessageFactory (rather than implicit!)
-		
 		// Bind special ResourceConverter used by MessageFactoryImpl
 		Resources.bindConverter(binder(), MessageType.class)
 			.toInstance(new EnumConverter<MessageType>(MessageType.class));

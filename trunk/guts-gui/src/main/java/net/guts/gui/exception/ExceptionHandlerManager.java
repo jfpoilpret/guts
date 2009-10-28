@@ -16,11 +16,6 @@ package net.guts.gui.exception;
 
 import com.google.inject.ImplementedBy;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(ExceptionHandlerManagerImpl.class)
 public interface ExceptionHandlerManager
 {

@@ -16,11 +16,6 @@ package net.guts.gui.exit;
 
 import com.google.inject.Singleton;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @Singleton
 class DefaultExitPerformer implements ExitPerformer
 {
