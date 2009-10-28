@@ -34,9 +34,7 @@ import com.google.inject.TypeLiteral;
 	@SuppressWarnings("unchecked") 
 	public <T> ResourceConverter<T> getConverter(TypeLiteral<T> type)
 	{
-		//TODO more sophisticated search (superclass traversal)?
-		ResourceConverter<T> converter = 
-			(ResourceConverter<T>) _converters.get(type);
+		ResourceConverter<T> converter = (ResourceConverter<T>) _converters.get(type);
 		return converter;
 	}
 
