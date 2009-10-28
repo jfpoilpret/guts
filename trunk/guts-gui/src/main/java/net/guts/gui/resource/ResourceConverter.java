@@ -26,6 +26,9 @@ import java.util.StringTokenizer;
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.guts.gui.util.CursorHelper;
 import net.guts.gui.util.CursorInfo;
 import net.guts.gui.util.CursorType;
@@ -85,6 +88,8 @@ class FontConverter implements ResourceConverter<Font>
 
 class IconConverter implements ResourceConverter<Icon>
 {
+	static private final Logger _logger = LoggerFactory.getLogger(IconConverter.class);
+	
 	@Override public Icon convert(ResourceEntry entry)
 	{
 		URL url = entry.valueAsUrl();
@@ -94,7 +99,7 @@ class IconConverter implements ResourceConverter<Icon>
 		}
 		else
 		{
-			//TODO log?
+			_logger.debug("Could not convert {} to a valid Icon URL!", entry.value());
 			return null;
 		}
 	}
@@ -123,6 +128,8 @@ abstract class AbstractResourceConverterFinderHolder
 class ImageConverter extends AbstractResourceConverterFinderHolder
 	implements ResourceConverter<Image>
 {
+	static private final Logger _logger = LoggerFactory.getLogger(ImageConverter.class);
+	
 	@Override public Image convert(ResourceEntry entry)
 	{
 		Icon icon = converter(Icon.class).convert(entry);
@@ -132,7 +139,7 @@ class ImageConverter extends AbstractResourceConverterFinderHolder
 		}
 		else
 		{
-			//TODO log?
+			_logger.debug("Could not convert {} to a valid Image URL!", entry.value());
 			return null;
 		}
 	}
@@ -141,6 +148,8 @@ class ImageConverter extends AbstractResourceConverterFinderHolder
 class CursorInfoConverter extends AbstractResourceConverterFinderHolder
 	implements ResourceConverter<CursorInfo>
 {
+	static private final Logger _logger = LoggerFactory.getLogger(CursorInfoConverter.class);
+	
 	@Override public CursorInfo convert(ResourceEntry entry)
 	{
 		CursorInfo info = _cursors.get(entry.value());
@@ -156,11 +165,12 @@ class CursorInfoConverter extends AbstractResourceConverterFinderHolder
 			{
 				// Split s into: iconfile, hotspotx, hotspoty
 				StringTokenizer tokenize = new StringTokenizer(entry.value(), ",");
+				//FIXME the following condition smells bad!!!
 				if (tokenize.countTokens() != 0 && tokenize.countTokens() != MAX_TOKENS)
 				{
-					//TODO log?
-//					throw new ResourceConverterException(
-//						"Bad format, expected: \"icon[,hotspotx[,hotspoty]]", s);
+					_logger.debug(
+						"Bad cursor format: {}; expected: \"icon[,hotspotx[,hotspoty]]\".",
+						entry.value());
 					return null;
 				}
 				ImageIcon icon = (ImageIcon) converter(Icon.class).convert(

@@ -26,10 +26,9 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		JTable table, Key key, ResourceMap resources)
 	{
 		// Prepare injection of column header text
-		TableColumnModel model = table.getColumnModel();
 		String name = key.key();
 		// Check if key is a special JTable property
-		TableColumn column = column(name, model);
+		TableColumn column = column(name, table);
 		if (column != null)
 		{
 			// Yes, inject directly into JTable column
@@ -40,7 +39,7 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		return false;
 	}
 
-	private TableColumn column(String name, TableColumnModel model)
+	private TableColumn column(String name, JTable table)
 	{
 		if (!name.startsWith(HEADER_TAG))
 		{
@@ -48,11 +47,14 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		}
 		try
 		{
+			TableColumnModel model = table.getColumnModel();
 			String suffix = name.substring(HEADER_TAG_LEN);
 			int index = Integer.parseInt(suffix);
 			if (index < 0 || index >= model.getColumnCount())
 			{
-				//TODO log something
+				_logger.debug(
+					"JTable {} has only {} columns, so property {} can't be matched.",
+					new Object[]{table.getName(), model.getColumnCount(), name});
 				return null;
 			}
 			else
@@ -62,6 +64,7 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		}
 		catch (NumberFormatException e)
 		{
+			_logger.warn("Normally impossible to get this exception with property {}", name);
 			return null;
 		}
 	}

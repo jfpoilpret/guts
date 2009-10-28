@@ -39,13 +39,15 @@ class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 			int tab = Integer.parseInt(matcher.group(1));
 			if (tab < 0 || tab >= tabs.getTabCount())
 			{
-				//TODO log something
+				_logger.debug(
+					"JTabbedPane {} has only {} tabs, so property {} can't be matched.",
+					new Object[]{tabs.getName(), tabs.getTabCount(), name});
 				return true;
 			}
 			TabProperty property = TabProperty.fromName(matcher.group(2));
 			if (property == null)
 			{
-				//TODO log something
+				_logger.debug("Property {} isn't valid for a JTabbedPane.", name);
 				return true;
 			}
 			// Convert the value to the expected type for that tab property
@@ -56,7 +58,7 @@ class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 		}
 		catch (NumberFormatException e)
 		{
-			//TODO log something
+			_logger.warn("Normally impossible to get this exception with property {}", name);
 			return true;
 		}
 	}
