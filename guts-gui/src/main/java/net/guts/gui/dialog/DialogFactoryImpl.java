@@ -20,26 +20,17 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.application.GDialog;
 import net.guts.gui.application.WindowController;
+import net.guts.gui.application.WindowController.BoundsPolicy;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-/**
- * Default implementation of {@link DialogFactory} service.
- * <p/>
- * Normally, there is no need to override it or change it for another
- * implementation.
- * 
- * @author Jean-Francois Poilpret
- */
 @Singleton
-public class DefaultDialogFactory implements DialogFactory
+class DialogFactoryImpl implements DialogFactory
 {
-	@Inject public DefaultDialogFactory(
-		Injector injector, WindowController windowController)
+	@Inject DialogFactoryImpl(Injector injector, WindowController windowController)
 	{
 		_injector = injector;
 		_windowController = windowController;
