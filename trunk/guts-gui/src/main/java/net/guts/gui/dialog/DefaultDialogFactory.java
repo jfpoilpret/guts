@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application;
+package net.guts.gui.dialog;
 
 import java.awt.Window;
 
@@ -20,9 +20,8 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.dialog.ComponentInitializer;
-import net.guts.gui.dialog.DialogFactory;
-import net.guts.gui.dialog.Resettable;
+import net.guts.gui.application.GDialog;
+import net.guts.gui.application.WindowController;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;

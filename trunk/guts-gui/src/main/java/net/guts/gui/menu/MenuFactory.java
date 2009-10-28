@@ -33,7 +33,7 @@ import com.google.inject.ImplementedBy;
  * 
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(DefaultMenuFactory.class)
+@ImplementedBy(MenuFactoryImpl.class)
 public interface MenuFactory
 {
 	/**

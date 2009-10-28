@@ -26,19 +26,10 @@ import net.guts.gui.resource.ResourceInjector;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-//TODO change package and make it package private!
-/**
- * Default implementation of {@link MessageFactory} service.
- * <p/>
- * Normally, there is no need to override it or change it for another
- * implementation.
- * 
- * @author Jean-Francois Poilpret
- */
 @Singleton
-public class DefaultMessageFactory implements MessageFactory
+class MessageFactoryImpl implements MessageFactory
 {
-	@Inject public DefaultMessageFactory(
+	@Inject MessageFactoryImpl(
 		WindowController windowController, ResourceInjector injector)
 	{
 		_windowController = windowController;
