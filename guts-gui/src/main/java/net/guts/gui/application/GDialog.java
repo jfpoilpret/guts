@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.impl;
+package net.guts.gui.application;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;

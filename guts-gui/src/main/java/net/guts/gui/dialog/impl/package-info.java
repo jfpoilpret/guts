@@ -20,8 +20,8 @@
  * Guts-GUI framework API and hence should normally not been directly used 
  * anywhere in your own application classes.
  * <p/>
- * {@link net.guts.gui.dialog.impl.DefaultDialogFactory} creates instances 
- * of {@link net.guts.gui.dialog.impl.GDialog} in order to manage the 
+ * {@link net.guts.gui.application.DefaultDialogFactory} creates instances 
+ * of {@link net.guts.gui.application.GDialog} in order to manage the 
  * coupling generally required between {@link javax.swing.JDialog} and its 
  * embedded panel.
  */

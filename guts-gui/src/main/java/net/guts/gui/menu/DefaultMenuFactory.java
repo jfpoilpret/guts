@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.menu.impl;
+package net.guts.gui.menu;
 
 import javax.swing.JComponent;
 import javax.swing.JMenu;
@@ -21,7 +21,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
 import net.guts.gui.action.ActionManager;
-import net.guts.gui.menu.MenuFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

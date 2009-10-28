@@ -14,7 +14,6 @@
 
 package net.guts.gui.message;
 
-import net.guts.gui.message.impl.DefaultMessageFactory;
 
 import com.google.inject.ImplementedBy;
 

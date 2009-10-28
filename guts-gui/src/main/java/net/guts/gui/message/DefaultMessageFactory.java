@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.message.impl;
+package net.guts.gui.message;
 
 import java.awt.Window;
 
@@ -21,10 +21,6 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import net.guts.gui.application.WindowController;
-import net.guts.gui.message.MessageFactory;
-import net.guts.gui.message.MessageType;
-import net.guts.gui.message.OptionType;
-import net.guts.gui.message.UserChoice;
 import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
