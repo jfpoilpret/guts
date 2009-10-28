@@ -17,6 +17,9 @@ package net.guts.gui.application;
 import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
+
+import javax.swing.JOptionPane;
 
 import org.jdesktop.application.ApplicationContext;
 import org.jdesktop.application.GutsApplicationContext;
@@ -40,8 +43,10 @@ import com.google.inject.Module;
 public abstract class AbstractAppLauncher
 {
 	static final private Logger _logger = LoggerFactory.getLogger(AbstractAppLauncher.class);
+	static final private String ERROR_INIT_GUI = "initialization-error";
 
-	abstract protected List<Module> getModules(String[] args);
+	//TODO javadoc!
+	abstract protected void initModules(String[] args, List<Module> modules);
 
 	/**
 	 * Should be called from your {@code main} method to actually launch the 
@@ -62,8 +67,6 @@ public abstract class AbstractAppLauncher
 	 */
 	protected void launch(final String[] args)
 	{
-		//TODO Manage initialization errors somehow!
-		
 		// Now startup the GUI in the EDT
 		EventQueue.invokeLater(new Runnable()
 		{
@@ -86,7 +89,9 @@ public abstract class AbstractAppLauncher
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
 			modules.add(new AppModule());
-			modules.addAll(getModules(args));
+			List<Module> applicationModules = new ArrayList<Module>();
+			initModules(args, applicationModules);
+			modules.addAll(applicationModules);
 			
 			Injector injector = Guice.createInjector(modules);
 			InjectionListeners.injectListeners(injector);
@@ -105,11 +110,23 @@ public abstract class AbstractAppLauncher
 		}
 		catch (Exception e)
 		{
-			//TODO fail graciously with Message Box!
 			_logger.error("Could not start application", e);
+			fatalError(ERROR_INIT_GUI, e);
 		}
 	}
 	// CSON: IllegalCatchCheck
+
+	static private void fatalError(String id, Exception e)
+	{
+		//TODO create the necessary default bundle!
+		// Fail graciously with Message Box!
+		// Needs a special bundle with system-level fatal error messages
+		ResourceBundle bundle = ResourceBundle.getBundle("guts-gui");
+		String title = String.format(bundle.getString(id + ".title"), e);
+		String message = String.format(bundle.getString(id + ".message"), e);
+		JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+		System.exit(-1);
+	}
 	
 	private class AppModule extends AbstractModule
 	{

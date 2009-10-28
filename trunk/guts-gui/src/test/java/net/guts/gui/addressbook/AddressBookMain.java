@@ -14,7 +14,6 @@
 
 package net.guts.gui.addressbook;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import net.guts.event.Events;
@@ -35,7 +34,7 @@ public class AddressBookMain extends AbstractAppLauncher
 		new AddressBookMain().launch(args);
 	}
 	
-	@Override protected List<Module> getModules(String[] args)
+	@Override protected void initModules(String[] args, List<Module> modules)
 	{
 		// Make sure frames & dialogs are decorated by the current PLAF (substance)
 //		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -46,10 +45,8 @@ public class AddressBookMain extends AbstractAppLauncher
 //		UIManager.put(LafWidget.TEXT_SELECT_ON_FOCUS, Boolean.TRUE);
 		// Finally, add our specific module
 		//TODO avoid creation of List<Module> by passing it as arg!
-		List<Module> modules = new ArrayList<Module>();
 		modules.add(new MessageModule());
 		modules.add(new AddressBookModule());
-		return modules;
 	}
 
 	private class AddressBookModule extends AbstractModule
