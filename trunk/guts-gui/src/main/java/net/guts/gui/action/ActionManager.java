@@ -16,7 +16,6 @@ package net.guts.gui.action;
 
 import javax.swing.Action;
 
-import net.guts.gui.action.impl.DefaultActionManager;
 
 import com.google.inject.ImplementedBy;
 

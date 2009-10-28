@@ -17,7 +17,6 @@ package net.guts.gui.menu;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
-import net.guts.gui.menu.impl.DefaultMenuFactory;
 
 import com.google.inject.ImplementedBy;
 

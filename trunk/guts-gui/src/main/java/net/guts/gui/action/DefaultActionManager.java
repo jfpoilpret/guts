@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action.impl;
+package net.guts.gui.action;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +22,6 @@ import javax.swing.JComponent;
 
 import org.jdesktop.application.ApplicationContext;
 
-import net.guts.gui.action.ActionManager;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

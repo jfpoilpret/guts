@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.impl;
+package net.guts.gui.application;
 
 import java.awt.Window;
 
@@ -20,8 +20,6 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.application.WindowController;
-import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.Resettable;
