@@ -31,11 +31,10 @@ final class EdtHelper
 	private EdtHelper()
 	{
 	}
-	
+
+	// Note that this must be called from the EDT
 	static void waitForIdle(final Runnable ready)
 	{
-		//TODO check this is called from EDT?
-		
 		final JPanel source = new JPanel();
 		// Create a new Thread to post marker events to the EDT until no other 
 		// event is queued
