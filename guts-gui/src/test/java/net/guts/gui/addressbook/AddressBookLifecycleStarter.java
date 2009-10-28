@@ -21,6 +21,8 @@ import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
 import org.jdesktop.application.Action;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
@@ -35,6 +37,22 @@ import com.google.inject.Inject;
 
 public class AddressBookLifecycleStarter implements AppLifecycleStarter
 {
+	static private final Logger _logger = 
+		LoggerFactory.getLogger(AddressBookLifecycleStarter.class);
+	
+	@Inject
+	public AddressBookLifecycleStarter(WindowController windowController, 
+		MenuFactory menuFactory, MessageFactory messageFactory, 
+		ExitController exitController, AddressBookMainView mainView)
+	{
+		_mainView =  mainView;
+		_windowController = windowController;
+		_menuFactory = menuFactory;
+		_messageFactory = messageFactory;
+		_exitController = exitController;
+		
+	}
+	
 	@Override public void startup(String[] args)
 	{
 		// Create menus
@@ -60,7 +78,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 
 		// Initialize the main frame content: 3 panels are there, separated by JSplitPanes
 		mainFrame.setJMenuBar(menuBar);
-		mainFrame.setContentPane(_view);
+		mainFrame.setContentPane(_mainView);
 //		mainFrame.pack();
 		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER);
 	}
@@ -83,7 +101,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	public boolean handle(Throwable e)
 	{
 		// Log the exception
-		e.printStackTrace();
+		_logger.info("Exception has occurred!", e);
 		// Show Message to the end user
 		_messageFactory.showMessage("unexpected-error", e, e.getMessage());
 		return true;
@@ -96,10 +114,9 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		throw new IllegalArgumentException("Some message here");
 	}
 
-	//TODO replace by ctor-injection and final fields!
-	@Inject private AddressBookMainView _view;
-	@Inject private WindowController _windowController;
-	@Inject private MenuFactory _menuFactory;
-	@Inject private MessageFactory _messageFactory;
-	@Inject private ExitController _exitController;
+	final private AddressBookMainView _mainView;
+	final private WindowController _windowController;
+	final private MenuFactory _menuFactory;
+	final private MessageFactory _messageFactory;
+	final private ExitController _exitController;
 }
