@@ -77,10 +77,14 @@ public class BeanPropertiesInjector<T> implements ComponentInjector<T>
 	final protected UntypedProperty writableProperty(String name, Class<?> bean)
 	{
 		UntypedProperty property = _properties.property(name, bean);
-		if (property == null || !property.isWritable())
+		if (property == null)
 		{
-			String msg = String.format("Unknown property `%s` of type `%s`", name, bean);
-			_logger.info(msg);
+			_logger.debug("Property {} in class {} doesn't exist.", name, bean);
+			return null;
+		}
+		if (!property.isWritable())
+		{
+			_logger.debug("Property {} in class {} isn't writable.", name, bean);
 			return null;
 		}
 		return property;
@@ -89,15 +93,15 @@ public class BeanPropertiesInjector<T> implements ComponentInjector<T>
 	final protected void setProperty(T bean, String name, Object value)
 	{
 		Class<?> type = bean.getClass();
-		UntypedProperty property = _properties.property(name, type);
-		if (property == null || !property.isWritable())
+		UntypedProperty property = writableProperty(name, type);
+		if (property == null)
 		{
-			//TODO log something
 			return;
 		}
 		if (value != null && !toWrapper(property.type()).isAssignableFrom(value.getClass()))
 		{
-			//TODO log something
+			_logger.debug("Value {} is not assignable to property {} in class {}.", 
+				new Object[]{value, name, type});
 			return;
 		}
 		property.set(bean, value);
