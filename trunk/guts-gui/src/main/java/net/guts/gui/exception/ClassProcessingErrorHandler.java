@@ -18,11 +18,6 @@ import java.lang.reflect.Method;
 
 import com.google.inject.ImplementedBy;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(DefaultClassProcessingErrorHandler.class)
 public interface ClassProcessingErrorHandler
 {

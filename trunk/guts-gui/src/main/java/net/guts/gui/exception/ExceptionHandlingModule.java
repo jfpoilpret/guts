@@ -20,10 +20,6 @@ import net.guts.common.injection.OneTypeListener;
 
 import com.google.inject.AbstractModule;
 
-/**
- * TODO
- * @author Jean-Francois Poilpret
- */
 public final class ExceptionHandlingModule extends AbstractModule
 {
 	/* (non-Javadoc)

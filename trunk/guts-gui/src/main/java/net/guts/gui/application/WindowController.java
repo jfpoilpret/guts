@@ -22,11 +22,6 @@ import javax.swing.JFrame;
 import com.google.inject.ImplementedBy;
 
 // Deals with windows display, including managing i18n and session storage
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 @ImplementedBy(WindowControllerImpl.class)
 public interface WindowController
 {
