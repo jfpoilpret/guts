@@ -15,11 +15,6 @@
 package net.guts.gui.resource;
 
 //TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public interface ComponentInjector<T>
 {
 	// resources is the list of all resources (strongly typed) for this

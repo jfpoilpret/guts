@@ -24,6 +24,7 @@ import net.guts.gui.resource.ResourceMap.Key;
 
 class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 {
+	// CSOFF: ReturnCountCheck
 	@Override protected boolean handleSpecialProperty(
 		JTabbedPane tabs, Key key, ResourceMap resources)
 	{
@@ -59,6 +60,7 @@ class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 			return true;
 		}
 	}
+	// CSON: ReturnCountCheck
 	
 	static private enum TabProperty
 	{

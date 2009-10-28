@@ -19,11 +19,6 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public final class Resources
 {
 	private Resources()
