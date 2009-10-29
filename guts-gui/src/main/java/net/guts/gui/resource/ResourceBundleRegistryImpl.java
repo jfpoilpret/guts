@@ -41,6 +41,15 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 	ResourceBundleRegistryImpl(ResourceConverterFinder finder,
 		@RootBundle @Nullable String root)
 	{
+		if (root == null)
+		{
+			// Log this fact because it is likely to be a developer's mistake, but not
+			// necessarily.
+			_logger.debug(
+				"There is no root bundle defined (with Resources.bindRootBundle()); " +
+				"hence ResourceInjector will work only for classes or packages " +
+				"annotated with @UsesBundles.");
+		}
 		_finder = finder;
 		_root = getBundle(root);
 	}
@@ -68,11 +77,11 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		if (bundles == null)
 		{
 			// If type has @UsesBundles annotation,process it
-			bundles = extractBundles(type.getAnnotation(UsesBundles.class));
+			bundles = extractBundles(type, type.getAnnotation(UsesBundles.class));
 			_bundlesPerClass.put(type, bundles);
 		}
-		//FIXME this test is incorrect when _root == null!
-		if (bundles.size() <= 1)
+
+		if (bundles.size() == 0 || (bundles.size() == 1 && _root != null))
 		{
 			// If there is no bundles dependency defined at class level, check package level
 			Package pack = type.getPackage();
@@ -82,7 +91,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 				if (bundles == null)
 				{
 					// If the whole package has UsesBundles annotation, process it
-					bundles = extractBundles(pack.getAnnotation(UsesBundles.class));
+					bundles = extractBundles(type, pack.getAnnotation(UsesBundles.class));
 					_bundlesPerPackage.put(pack, bundles);
 				}
 			}
@@ -90,24 +99,20 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		return bundles;
 	}
 	
-	private List<Bundle> extractBundles(UsesBundles uses)
+	private List<Bundle> extractBundles(Class<?> type, UsesBundles uses)
 	{
 		List<Bundle> bundles = new ArrayList<Bundle>();
 		if (uses != null)
 		{
 			for (Class<?> name: uses.value())
 			{
-				String bundlePath = Resources.bundlePath(name);
-				if (bundlePath != null && !bundles.contains(bundlePath))
-				{
-					Bundle bundle = getBundle(bundlePath);
-					if (bundle != null)
-					{
-						bundles.add(bundle);
-					}
-				}
+				addBundle(bundles, name);
 			}
-			//TODO if uses.value() is empty, then take current class/package as bundle
+			// If uses.value() is empty, then take current class/package as bundle
+			if (uses.value().length == 0)
+			{
+				addBundle(bundles, type);
+			}
 			Collections.reverse(bundles);
 		}
 		if (_root != null)
@@ -115,6 +120,19 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 			bundles.add(_root);
 		}
 		return bundles;
+	}
+	
+	static private void addBundle(List<Bundle> bundles, Class<?> type)
+	{
+		String bundlePath = Resources.bundlePath(type);
+		if (bundlePath != null && !bundles.contains(bundlePath))
+		{
+			Bundle bundle = getBundle(bundlePath);
+			if (bundle != null)
+			{
+				bundles.add(bundle);
+			}
+		}
 	}
 	
 	static private Bundle getBundle(String path)
@@ -129,8 +147,8 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		}
 		catch (MissingResourceException e)
 		{
-			String msg = String.format("Bundle `%1$s` doesn't exist.", path + ".resources");
-			_logger.warn(msg, e);
+			_logger.warn(
+				"Bundle `{}.resources` doesn't exist. Caught exception: {}", path, e);
 			return null;
 		}
 	}
