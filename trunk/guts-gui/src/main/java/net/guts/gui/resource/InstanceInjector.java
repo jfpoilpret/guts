@@ -14,12 +14,11 @@
 
 package net.guts.gui.resource;
 
-//TODO find a better name like SingleResourceInjector? InstanceResourcesInjector?...
-public interface ComponentInjector<T>
+public interface InstanceInjector<T>
 {
 	// resources is the list of all resources (strongly typed) for this
-	// component
+	// object
 	// Implementations of this method should iterate through resources and
-	// inject each individual resource into component
-	public void inject(T component, String prefix, ResourceMap resources);
+	// inject each individual resource into instance
+	public void inject(T instance, String prefix, ResourceMap resources);
 }

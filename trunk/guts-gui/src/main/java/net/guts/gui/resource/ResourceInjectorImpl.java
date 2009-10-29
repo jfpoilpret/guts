@@ -32,7 +32,7 @@ class ResourceInjectorImpl implements ResourceInjector
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceInjectorImpl.class);
 
 	@Inject	public ResourceInjectorImpl(
-		ResourceBundleRegistry registry, Map<Class<?>, ComponentInjector<?>> injectors)
+		ResourceBundleRegistry registry, Map<Class<?>, InstanceInjector<?>> injectors)
 	{
 		_registry = registry;
 		_injectors = injectors;
@@ -47,7 +47,7 @@ class ResourceInjectorImpl implements ResourceInjector
 			{
 				// Find the most specific ComponentInjector for component
 				Class<? extends Component> type = component.getClass();
-				ComponentInjector<Component> injector = findComponentInjector(type);
+				InstanceInjector<Component> injector = findComponentInjector(type);
 				ResourceMap resources = _registry.getBundle(type);
 				injector.inject(component, prefix, resources);
 			}
@@ -85,7 +85,7 @@ class ResourceInjectorImpl implements ResourceInjector
 		{
 			// Find the most specific ComponentInjector for component
 			Class<? extends T> type = getClass(instance);
-			ComponentInjector<T> injector = findComponentInjector(type);
+			InstanceInjector<T> injector = findComponentInjector(type);
 			ResourceMap resources = _registry.getBundle(type);
 			injector.inject(instance, name, resources);
 		}
@@ -98,11 +98,11 @@ class ResourceInjectorImpl implements ResourceInjector
 	}
 	
 	@SuppressWarnings("unchecked") 
-	private <T> ComponentInjector<T> findComponentInjector(Class<? extends T> type)
+	private <T> InstanceInjector<T> findComponentInjector(Class<? extends T> type)
 	{
-		ComponentInjector<?> injector = 
+		InstanceInjector<?> injector = 
 			TypeHelper.findBestMatchInTypeHierarchy(_injectors, type);
-		return (ComponentInjector<T>) injector;
+		return (InstanceInjector<T>) injector;
 	}
 	
 	private String prefix(Component component)
@@ -116,5 +116,5 @@ class ResourceInjectorImpl implements ResourceInjector
 	}
 
 	final private ResourceBundleRegistry _registry;
-	final private Map<Class<?>, ComponentInjector<?>> _injectors;
+	final private Map<Class<?>, InstanceInjector<?>> _injectors;
 }

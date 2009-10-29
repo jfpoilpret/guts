@@ -19,12 +19,39 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
 
+/**
+ * Utility class to define, from within a Guice {@link com.google.inject.Module},
+ * bindings for {@link ResourceConverter}s, for {@link InstanceInjector}s, and
+ * to declare a "root bundle" location where {@link ResourceInjector} will search 
+ * for properties during resource injection.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class Resources
 {
 	private Resources()
 	{
 	}
 
+	/**
+	 * Initializes a binding between a given property type and a matching 
+	 * {@link ResourceConverter}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Resources.bindConverter(binder(), new TypeLiteral&lt;List&lt;String&gt;&gt;)
+	 *     .to(StringListConverter.class);
+	 * </pre>
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 *  
+	 * @param <T> property type to bind to a {@code ResourceConverter<T>}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type property type to bind to a {@code ResourceConverter<T>}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * property {@code type} to an {@link ResourceConverter}
+	 */
 	@SuppressWarnings("unchecked")
 	static public <T> LinkedBindingBuilder<ResourceConverter<T>> bindConverter(
 		Binder binder, TypeLiteral<T> type)
@@ -33,20 +60,75 @@ public final class Resources
 		return builder;
 	}
 	
+	/**
+	 * Initializes a binding between a given property type and a matching 
+	 * {@link ResourceConverter}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Resources.bindConverter(binder(), SomeType.class).to(SomeTypeConverter.class);
+	 * </pre>
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 *  
+	 * @param <T> property type to bind to a {@code ResourceConverter<T>}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type property type to bind to a {@code ResourceConverter<T>}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * property {@code type} to an {@link ResourceConverter}
+	 */
 	static public <T> LinkedBindingBuilder<ResourceConverter<T>> bindConverter(
 		Binder binder, Class<T> type)
 	{
 		return bindConverter(binder, TypeLiteral.get(type));
 	}
 	
+	/**
+	 * Initializes a binding between a given type of objects and a matching 
+	 * {@link InstanceInjector}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Resources.bindInstanceInjector(binder(), SomeType.class).to(SomeTypeInjector.class);
+	 * </pre>
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 *  
+	 * @param <T> class type to bind to a {@code InstanceInjector<T>}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type class type to bind to a {@code InstanceInjector<T>}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * class {@code type} to an {@link InstanceInjector}
+	 */
 	@SuppressWarnings("unchecked")
-	static public <T> LinkedBindingBuilder<ComponentInjector<T>> bindComponentInjector(
+	static public <T> LinkedBindingBuilder<InstanceInjector<T>> bindInstanceInjector(
 		Binder binder, Class<T> type)
 	{
 		LinkedBindingBuilder builder = injectors(binder).addBinding(type);
 		return builder;
 	}
-	
+
+	/**
+	 * Defines the "root bundle" location where {@link ResourceInjector} first search
+	 * for properties during resources injection.
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}:
+	 * <pre>
+	 * Resources.bindRootBundle(binder(), SomeType.class);
+	 * </pre>
+	 * <p/>
+	 * Defining a root bundle is optional but strongly advised. It is not supported
+	 * to define more than one root bundle (that would generate an error at Guice 
+	 * {@link com.google.inject.Injector} creation).
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param root a class which package defines the location of the root bundle; 
+	 * the root bundle is a file named "resources.properties" in this location on 
+	 * the classpath.
+	 */
 	static public void bindRootBundle(Binder binder, Class<?> root)
 	{
 		String bundle = bundlePath(root);
@@ -69,7 +151,7 @@ public final class Resources
 		return MapBinder.newMapBinder(binder, TYPE_LITERAL_TYPE, RESOURCE_CONVERTER_TYPE);
 	}
 	
-	static private MapBinder<Class<?>, ComponentInjector<?>> injectors(Binder binder)
+	static private MapBinder<Class<?>, InstanceInjector<?>> injectors(Binder binder)
 	{
 		return MapBinder.newMapBinder(binder, CLASS_TYPE, COMPONENT_INJECTOR_TYPE);
 	}
@@ -80,6 +162,6 @@ public final class Resources
 		new TypeLiteral<Class<?>>() {};
 	static private final TypeLiteral<ResourceConverter<?>> RESOURCE_CONVERTER_TYPE =
 		new TypeLiteral<ResourceConverter<?>>() {};
-	static private final TypeLiteral<ComponentInjector<?>> COMPONENT_INJECTOR_TYPE = 
-		new TypeLiteral<ComponentInjector<?>>() {};
+	static private final TypeLiteral<InstanceInjector<?>> COMPONENT_INJECTOR_TYPE = 
+		new TypeLiteral<InstanceInjector<?>>() {};
 }

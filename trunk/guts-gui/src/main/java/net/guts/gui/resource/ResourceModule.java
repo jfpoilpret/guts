@@ -32,6 +32,57 @@ import net.guts.gui.util.CursorInfo;
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI Resource Injection system. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new ResourceModule(), ...);
+ * </pre>
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * {@code ResourceModule} is automatically added to the list of {@code Module}s used
+ * by Guts-GUI to create Guice {@code Injector}.
+ * <p/>
+ * Hence you would care about {@code ResourceModule} only if you intend to use 
+ * Guts-GUI Resource Injection system but don't want to use the whole Guts-GUI 
+ * framework.
+ * <p/>
+ * By default, {@code ResourceModule} binds several {@link ResourceConverter}s for
+ * various types:
+ * <ul>
+ * <li>{@link String}</li>
+ * <li>{@link Boolean} and {@code boolean}</li>
+ * <li>{@link Integer} and {@code integer}</li>
+ * <li>{@link Color}</li>
+ * <li>{@link Font}</li>
+ * <li>{@link Icon}</li>
+ * <li>{@link Image}</li>
+ * <li>{@link Cursor}</li>
+ * <li>{@link CursorInfo}</li>
+ * </ul>
+ * You can add your own {@link ResourceConverter}s by using {@link Resources#bindConverter}
+ * methods.
+ * <p/>
+ * Besides, {@code ResourceModule} binds various {@link InstanceInjector}s for the
+ * following types:
+ * <ul>
+ * <li>{@link Component}: used by default for all AWT and Swing components</li>
+ * <li>{@link Object}: used by default for non GUI objects</li>
+ * <li>{@link JLabel}: special injector for {@code JLabel}s, with mnemonic support</li>
+ * <li>{@link AbstractButton}: special injector for {@code JButton}, {@code JMenu},
+ * {@code JMenuItem}... with mnemonic support</li>
+ * <li>{@link JTable}: special injector for titles of {@code JTable} column headers</li>
+ * <li>{@link JTabbedPane}: special injector with support for mnemonics, tooltips, 
+ * and icons for tabs inside a {@code JTabbedPane}</li>
+ * <li>{@link JFileChooser}: injector for {@code JFileChooser}, with special support
+ * of its "accept" button</li>
+ * </ul>
+ * You can add support for special components (such as 3rd-party widgets) by writing
+ * your own {@link InstanceInjector} and bind it through 
+ * {@link Resources#bindInstanceInjector}.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class ResourceModule extends AbstractModule
 {
 	/* (non-Javadoc)
@@ -75,14 +126,14 @@ public final class ResourceModule extends AbstractModule
 	}
 	
 	private <T> void bindInjector(
-		Class<T> type, Class<? extends ComponentInjector<T>> converter)
+		Class<T> type, Class<? extends InstanceInjector<T>> converter)
 	{
-		Resources.bindComponentInjector(binder(), type).to(converter).asEagerSingleton();
+		Resources.bindInstanceInjector(binder(), type).to(converter).asEagerSingleton();
 	}
 
 	private <T> void bindInjector(
-		Class<T> type, TypeLiteral<? extends ComponentInjector<T>> converter)
+		Class<T> type, TypeLiteral<? extends InstanceInjector<T>> converter)
 	{
-		Resources.bindComponentInjector(binder(), type).to(converter).asEagerSingleton();
+		Resources.bindInstanceInjector(binder(), type).to(converter).asEagerSingleton();
 	}
 }
