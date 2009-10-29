@@ -14,19 +14,61 @@
 
 package net.guts.common.type;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
 import com.google.inject.TypeLiteral;
 
-/**
- * 
- *
- * @author Jean-Francois Poilpret
- */
 public final class TypeHelper
 {
 	private TypeHelper()
 	{
 	}
 	
+	//TODO also deal with interfaces?
+	//CSOFF: ParameterAssignmentCheck
+	static public <T> T findBestMatchInTypeHierarchy(Map<Class<?>, T> map, Class<?> type)
+	{
+		T value = null;
+		while (true)
+		{
+			value = map.get(type);
+			if (value != null)
+			{
+				return value;
+			}
+			type = type.getSuperclass();
+			if (type == null)
+			{
+				return null;
+			}
+		}
+	}
+	//CSON: ParameterAssignmentCheck
+
+	//TODO also deal with interfaces?
+	//CSOFF: ParameterAssignmentCheck
+	static public <T> List<T> findAllMatchesInTypeHierarchy(
+		Map<Class<?>, T> map, Class<?> type)
+	{
+		List<T> values = new ArrayList<T>();
+		while (true)
+		{
+			T value = map.get(type);
+			if (value != null)
+			{
+				values.add(value);
+			}
+			type = type.getSuperclass();
+			if (type == null)
+			{
+				return values;
+			}
+		}
+	}
+	//CSON: ParameterAssignmentCheck
+
 	static public boolean typeIsSubtypeOf(
 		TypeLiteral<?> subtype, TypeLiteral<?> supertype)
 	{
