@@ -250,7 +250,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	private final WizardPanelHelper _mainPane;
 	private final WizardController _controller = new WizardControllerImpl();
-	private final HashMap<String, JComponent> _panes =  new HashMap<String, JComponent>();
+	private final Map<String, JComponent> _panes =  new HashMap<String, JComponent>();
 	private final List<String> _sequence = new ArrayList<String>();
 	private int _current = 0;
 	private boolean _previousEnabled;
