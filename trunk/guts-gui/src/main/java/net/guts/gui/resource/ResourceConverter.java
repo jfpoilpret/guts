@@ -163,10 +163,9 @@ class CursorInfoConverter extends AbstractResourceConverterFinderHolder
 			}
 			else
 			{
-				// Split s into: iconfile, hotspotx, hotspoty
+				// Split s into: iconfile[,hotspotx[,hotspoty]]
 				StringTokenizer tokenize = new StringTokenizer(entry.value(), ",");
-				//FIXME the following condition smells bad!!!
-				if (tokenize.countTokens() != 0 && tokenize.countTokens() != MAX_TOKENS)
+				if (tokenize.countTokens() < 1 || tokenize.countTokens() > MAX_TOKENS)
 				{
 					_logger.debug(
 						"Bad cursor format: {}; expected: \"icon[,hotspotx[,hotspoty]]\".",
