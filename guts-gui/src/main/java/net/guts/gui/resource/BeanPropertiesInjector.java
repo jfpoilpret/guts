@@ -25,7 +25,7 @@ import static net.guts.common.type.PrimitiveHelper.toWrapper;
 
 import com.google.inject.Inject;
 
-public class BeanPropertiesInjector<T> implements ComponentInjector<T>
+public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 {
 	@Inject final void setPropertyFactory(UntypedPropertyFactory properties)
 	{
