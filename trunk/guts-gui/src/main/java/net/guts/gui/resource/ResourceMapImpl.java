@@ -40,10 +40,9 @@ final class ResourceMapImpl implements ResourceMap
 		ResourceConverter<T> converter = _finder.getConverter(type);
 		if (converter == null)
 		{
-			String msg = String.format(
-				"getValue(prefix = `%s`, key = `%s`) can't find converter for type %s", 
-				key.prefix(), key.key(), type);
-			_logger.info(msg);
+			_logger.debug(
+				"getValue(prefix = `{}`, key = `{}`) can't find converter for type {}",
+				new Object[]{key.prefix(), key.key(), type});
 			return null;
 		}
 		ResourceEntry value = _resources.get(key.prefix() + "." + key.key());

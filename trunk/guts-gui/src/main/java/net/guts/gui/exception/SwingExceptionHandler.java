@@ -44,10 +44,7 @@ public class SwingExceptionHandler
 		}
 		else
 		{
-			String msg = String.format(
-				"Impossible to hanled exception `%1$s` because _manager is null.", 
-				e.getMessage());
-			_logger.warn(msg);
+			_logger.info("Impossible to handle exception because _manager is null.", e);
 		}
 	}
 

@@ -58,7 +58,8 @@ class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 		}
 		catch (NumberFormatException e)
 		{
-			_logger.warn("Normally impossible to get this exception with property {}", name);
+			_logger.warn(
+				"Normally impossible to get this exception with property " + name, e);
 			return true;
 		}
 	}

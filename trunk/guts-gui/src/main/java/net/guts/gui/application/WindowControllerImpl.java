@@ -147,9 +147,8 @@ class WindowControllerImpl implements WindowController
 		}
 		catch (IOException e)
 		{
-			String msg = String.format("Could not restore window state from %1$s", 
-				sessionFileName(container));
-			_logger.warn(msg, e);
+			String msg = "Could not restore window state from " + sessionFileName(container);
+			_logger.info(msg, e);
 		}
 	}
 	
@@ -162,9 +161,8 @@ class WindowControllerImpl implements WindowController
 		}
 		catch (IOException e)
 		{
-			String msg = String.format("Could not restore window state from %1$s", 
-				sessionFileName(container));
-			_logger.warn(msg, e);
+			String msg = "Could not save window state to " + sessionFileName(container);
+			_logger.info(msg, e);
 		}
 	}
 	
