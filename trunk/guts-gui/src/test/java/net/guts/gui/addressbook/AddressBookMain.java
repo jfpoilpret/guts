@@ -44,7 +44,6 @@ public class AddressBookMain extends AbstractAppLauncher
 		// Enable automatic content selection on focus gained for all text fields
 //		UIManager.put(LafWidget.TEXT_SELECT_ON_FOCUS, Boolean.TRUE);
 		// Finally, add our specific module
-		//TODO avoid creation of List<Module> by passing it as arg!
 		modules.add(new MessageModule());
 		modules.add(new AddressBookModule());
 	}
