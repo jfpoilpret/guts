@@ -36,8 +36,46 @@ import net.guts.gui.util.CursorType;
 import com.google.inject.Inject;
 import com.google.inject.TypeLiteral;
 
+/**
+ * Defines a converter of resources ({@link java.lang.String} values read from
+ * a properties file) into a given type.
+ * <p/>
+ * You would need to implement this interface if you need to add special support
+ * of a given property type to inject by {@link ResourceInjector}.
+ * <p/>
+ * Your own converter may require special conventions to the {@code String} values
+ * it can possibly convert.
+ * <p/>
+ * Custom converters can possibly use other registered {@code ResourceConverter}s, 
+ * and chain calls to them; for this they can use {@link ResourceConverterFinder}
+ * (they need to have it injected to them).
+ * <p/>
+ * Note that {@link ResourceInjector} already comes with {@code ResourceConverter}s
+ * for many types (as described in {@link ResourceModule}) and it's unlikely you
+ * would often need your own {@code ResourceConverter}.
+ * <p/>
+ * Adding your own implementation of {@code ResourceConverter} to Guts-GUI 
+ * {@link ResourceInjector} is quite straightforward, you just have to add code
+ * similar to the snippet below in one of your {@link com.google.inject.Module}s:
+ * <pre>
+ * Resources.bindConverter(binder(), SomeType.class).to(SomeTypeConverter.class);
+ * </pre>
+ * 
+ * @param <T> the type to which {@code this} converter can convert a {@code String}
+ * value
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface ResourceConverter<T>
 {
+	/**
+	 * Converts a given value (read from a resource bundle file) into type {@code T}.
+	 * 
+	 * @param entry an entry wrapping the {@code String} value to convert, with a few
+	 * utility methods that can be useful for some {@code ResourceConverter}s
+	 * @return an instance of {@code T} if the value wrapped by {@code entry} could
+	 * be successfully converted, or {@code null} otherwise
+	 */
 	public T convert(ResourceEntry entry);
 }
 
