@@ -14,6 +14,25 @@
 
 package net.guts.gui.resource;
 
+/**
+ * General implementation of {@link ResourceConverter} for java {@code enum} types.
+ * It allows you to define properties in resource bundles which value can be one of
+ * the enum values of a given enum type. During injection the enum value string is
+ * converted to the real enum instance.
+ * <p/>
+ * You must instantiate one {@code EnumConverter} per enum type you want to support,
+ * then you need to register it with Guts-GUI {@link ResourceInjector} through the
+ * use of {@link Resources} in one of your Guice {@link com.google.inject.Module}s;
+ * this can be done in just one line of code:
+ * <pre>
+ * Resources.bindConverter(binder(), MyEnum.class)
+ *     .toInstance(new EnumConverter<MyEnum>(MyEnum.class)).in(Scopes.SINGLETON);
+ * </pre>
+ * 
+ * @param <T> The type of {@code enum} for which to create a {@code ResourceConverter}
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 {
 	public EnumConverter(Class<T> enumType)
