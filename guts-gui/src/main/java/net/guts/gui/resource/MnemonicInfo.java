@@ -18,8 +18,28 @@ import java.awt.event.KeyEvent;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Utility class, used by {@link InstanceInjector} implementations to deal with
+ * mnemonics to inject into GUI components.
+ * <p/>
+ * Guts-GUI allows to define, in a resource bundle, a property that is a pure
+ * {@code String}, but that has a mnemonic character, marked by an '&amp;' before
+ * this mnemonic character, as in: {@code "Save &As..."}.
+ * <p/>
+ * {@code MnemonicInfo} will extract all necessary information from such text values.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class MnemonicInfo
 {
+	/**
+	 * Creates a {@code MnemonicInfo} instance that embeds the result of parsing 
+	 * the given {@code text} to find a mnemonic.
+	 * 
+	 * @param text the text supposed to contain a mnemonic, marked by '&amp;'
+	 * @return a {@code MenmonicInfo} instance that holds the result of parsing
+	 * {@code text}
+	 */
 	static public MnemonicInfo extract(String text)
 	{
 		// Find the first & and check that there is one letter after it
@@ -42,17 +62,38 @@ public final class MnemonicInfo
 		_text = text;
 		_index = index;
 	}
-	
+
+	/**
+	 * Returns the text from which the '&amp;' marker has been removed. E.g. for 
+	 * {@code "Save &As..."}, the result would be {@code "Save As..."}.
+	 * 
+	 * @return the original text without '&amp;'
+	 */
 	public String getText()
 	{
 		return _text;
 	}
-	
+
+	/**
+	 * Returns the position in the text returned by {@link #getText()} of the 
+	 * mnemonic character. E.g. for {@code "Save &As..."},  the returned index 
+	 * would be {@code 5}.
+	 * 
+	 * @return the position index of the mnemonic character
+	 */
 	public int getMnemonicIndex()
 	{
 		return _index;
 	}
-	
+
+	/**
+	 * Returns the key code of the mnemonic character in the text returned by 
+	 * {@link #getText()}. E.g. for {@code "Save &As..."}, the key code returned 
+	 * would be {@link java.awt.event.KeyEvent#VK_A}.
+	 * 
+	 * @see java.awt.event.KeyEvent
+	 * @return the key code of the mnemonic character
+	 */
 	public int getMnemonic()
 	{
 		if (_index < 0)
