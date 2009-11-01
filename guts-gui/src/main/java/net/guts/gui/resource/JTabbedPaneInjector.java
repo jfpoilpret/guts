@@ -28,7 +28,7 @@ class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 	@Override protected boolean handleSpecialProperty(
 		JTabbedPane tabs, Key key, ResourceMap resources)
 	{
-		String name = key.key();
+		String name = key.name();
 		Matcher matcher = _tabsTagPattern.matcher(name);
 		if (!matcher.matches())
 		{

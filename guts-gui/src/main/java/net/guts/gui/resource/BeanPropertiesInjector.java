@@ -119,7 +119,7 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	protected void injectProperty(T component, Key key, ResourceMap resources)
 	{
 		// Check that this property exists
-		UntypedProperty property = writableProperty(key.key(), component.getClass());
+		UntypedProperty property = writableProperty(key.name(), component.getClass());
 		if (property != null)
 		{
 			Class<?> type = property.type();

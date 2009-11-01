@@ -26,7 +26,7 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		JTable table, Key key, ResourceMap resources)
 	{
 		// Prepare injection of column header text
-		String name = key.key();
+		String name = key.name();
 		// Check if key is a special JTable property
 		TableColumn column = column(name, table);
 		if (column != null)
