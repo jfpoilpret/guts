@@ -23,7 +23,7 @@ class JFileChooserInjector extends BeanPropertiesInjector<JFileChooser>
 	@Override protected boolean handleSpecialProperty(
 		JFileChooser chooser, Key key, ResourceMap resources)
 	{
-		if (APPROVE_TAG.equals(key.key()))
+		if (APPROVE_TAG.equals(key.name()))
 		{
 			String text = resources.getValue(key, String.class);
 			MnemonicInfo info = MnemonicInfo.extract(text);

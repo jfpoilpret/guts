@@ -126,7 +126,6 @@ public interface ResourceMap
 		 * 
 		 * @return name of this key
 		 */
-		//TODO refactor to use "name"
-		public String key();
+		public String name();
 	}
 }

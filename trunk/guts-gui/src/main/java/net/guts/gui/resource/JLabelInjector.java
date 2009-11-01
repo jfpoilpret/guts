@@ -24,7 +24,7 @@ class JLabelInjector extends BeanPropertiesInjector<JLabel>
 		JLabel label, Key key, ResourceMap resources)
 	{
 		// Special handling for mnemonics
-		if ("text".equals(key.key()))
+		if ("text".equals(key.name()))
 		{
 			String value = resources.getValue(key, String.class);
 			MnemonicInfo info = MnemonicInfo.extract(value);

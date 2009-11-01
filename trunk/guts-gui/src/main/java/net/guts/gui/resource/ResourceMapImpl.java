@@ -42,10 +42,10 @@ final class ResourceMapImpl implements ResourceMap
 		{
 			_logger.debug(
 				"getValue(prefix = `{}`, key = `{}`) can't find converter for type {}",
-				new Object[]{key.prefix(), key.key(), type});
+				new Object[]{key.prefix(), key.name(), type});
 			return null;
 		}
-		ResourceEntry value = _resources.get(key.prefix() + "." + key.key());
+		ResourceEntry value = _resources.get(key.prefix() + "." + key.name());
 		if (value == null)
 		{
 			return null;
@@ -133,7 +133,7 @@ final class ResourceMapImpl implements ResourceMap
 			_prefix = prefix;
 		}
 
-		@Override public String key()
+		@Override public String name()
 		{
 			return _key;
 		}
