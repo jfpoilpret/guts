@@ -14,11 +14,30 @@
 
 package net.guts.gui.resource;
 
-import com.google.inject.ImplementedBy;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.TypeLiteral;
 
-@ImplementedBy(ResourceConverterFinderImpl.class)
-interface ResourceConverterFinder
+class ConverterProvider<T> implements Provider<ResourceConverter<T>>
 {
-	public <T> ResourceConverter<T> getConverter(TypeLiteral<T> type);
+	ConverterProvider(TypeLiteral<T> type)
+	{
+		_type = type;
+	}
+	
+	/* (non-Javadoc)
+	 * @see com.google.inject.Provider#get()
+	 */
+	@Override public ResourceConverter<T> get()
+	{
+		return _finder.getConverter(_type);
+	}
+
+	@Inject void setFinder(ResourceConverterFinder finder)
+	{
+		_finder = finder;
+	}
+	
+	final private TypeLiteral<T> _type;
+	private ResourceConverterFinder _finder;
 }
