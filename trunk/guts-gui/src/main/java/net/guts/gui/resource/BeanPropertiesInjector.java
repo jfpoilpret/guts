@@ -43,7 +43,25 @@ import com.google.inject.Inject;
  * Hereafter is a concrete example of a {@code BeanPropertiesInjector} subclass,
  * actually used inside Guts-GUI:
  * <pre>
- * TODO get sample of JLabelInjector?
+ * class JLabelInjector extends BeanPropertiesInjector&lt;JLabel&gt;
+ * {
+ *     @Override protected boolean handleSpecialProperty(
+ *         JLabel label, Key key, ResourceMap resources)
+ *     {
+ *         // Special handling for mnemonics
+ *         if ("text".equals(key.name()))
+ *         {
+ *             String value = resources.getValue(key, String.class);
+ *             MnemonicInfo info = MnemonicInfo.extract(value);
+ *             // Set the property with the resource value
+ *             label.setText(info.getText());
+ *             label.setDisplayedMnemonic(info.getMnemonic());
+ *             label.setDisplayedMnemonicIndex(info.getMnemonicIndex());
+ *             return true;
+ *         }
+ *         return false;
+ *     }
+ * }
  * </pre>
  * 
  * @param <T> type that can be injected
