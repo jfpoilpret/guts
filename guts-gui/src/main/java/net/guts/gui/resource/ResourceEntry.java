@@ -39,9 +39,26 @@ public final class ResourceEntry
 	 * Creates a new {@code ResourceEntry} from {@code this} one, but with a new 
 	 * value. This is useful when the original value contains several pieces of 
 	 * information, one of which is a path to a file which we need to extract as
-	 * an {@link java.net.URL}:
+	 * an {@link java.net.URL}, as in the following excerpt from 
+	 * {@code ResourceConverter<CursorInfo>} (simplified):
 	 * <pre>
-	 * TODO
+	 * @Override public CursorInfo convert(ResourceEntry entry)
+	 * {
+	 *     // First check if this is a predefined cursor
+	 *     CursorType type = CursorType.valueOf(entry.value());
+	 *     // Split s into: iconfile[,hotspotx[,hotspoty]]
+	 *     StringTokenizer tokenize = new StringTokenizer(entry.value(), ",");
+	 *     if (tokenize.countTokens() &lt; 1 || tokenize.countTokens() &gt; 3)
+	 *     {
+	 *         return null;
+	 *     }
+	 *     // Convert iconfile to an Icon with default ResourceConverter&lt;Icon&gt;
+	 *     ImageIcon icon = (ImageIcon) converter(Icon.class).convert(
+	 *         entry.derive(tokenize.nextToken()));
+	 *     double x = getHotspotRate(tokenize);
+	 *     double y = getHotspotRate(tokenize);
+	 *     return CursorHelper.buildCursor(icon, x, y);
+	 * }
 	 * </pre>
 	 * 
 	 * @param value the new value with which to create a new {@code ResourceEntry}
