@@ -34,7 +34,7 @@ import net.guts.gui.util.CursorInfo;
 import net.guts.gui.util.CursorType;
 
 import com.google.inject.Inject;
-import com.google.inject.TypeLiteral;
+import com.google.inject.Provider;
 
 /**
  * Defines a converter of resources ({@link java.lang.String} values read from
@@ -143,34 +143,18 @@ class IconConverter implements ResourceConverter<Icon>
 	}
 }
 
-abstract class AbstractResourceConverterFinderHolder
-{
-	@Inject void setFinder(ResourceConverterFinder finder)
-	{
-		_finder = finder;
-	}
-	
-	final protected <T> ResourceConverter<T> converter(Class<T> type)
-	{
-		return _finder.getConverter(TypeLiteral.get(type));
-	}
-	
-	final protected <T> ResourceConverter<T> converter(TypeLiteral<T> type)
-	{
-		return _finder.getConverter(type);
-	}
-	
-	private ResourceConverterFinder _finder;
-}
-
-class ImageConverter extends AbstractResourceConverterFinderHolder
-	implements ResourceConverter<Image>
+class ImageConverter implements ResourceConverter<Image>
 {
 	static private final Logger _logger = LoggerFactory.getLogger(ImageConverter.class);
+
+	@Inject ImageConverter(Provider<ResourceConverter<Icon>> iconConverter)
+	{
+		_iconConverter = iconConverter;
+	}
 	
 	@Override public Image convert(ResourceEntry entry)
 	{
-		Icon icon = converter(Icon.class).convert(entry);
+		Icon icon = _iconConverter.get().convert(entry);
 		if (icon != null && icon instanceof ImageIcon)
 		{
 			return ((ImageIcon) icon).getImage();
@@ -181,12 +165,18 @@ class ImageConverter extends AbstractResourceConverterFinderHolder
 			return null;
 		}
 	}
+	
+	final private Provider<ResourceConverter<Icon>> _iconConverter;
 }
 
-class CursorInfoConverter extends AbstractResourceConverterFinderHolder
-	implements ResourceConverter<CursorInfo>
+class CursorInfoConverter implements ResourceConverter<CursorInfo>
 {
 	static private final Logger _logger = LoggerFactory.getLogger(CursorInfoConverter.class);
+	
+	@Inject CursorInfoConverter(Provider<ResourceConverter<Icon>> iconConverter)
+	{
+		_iconConverter = iconConverter;
+	}
 	
 	@Override public CursorInfo convert(ResourceEntry entry)
 	{
@@ -210,7 +200,7 @@ class CursorInfoConverter extends AbstractResourceConverterFinderHolder
 						entry.value());
 					return null;
 				}
-				ImageIcon icon = (ImageIcon) converter(Icon.class).convert(
+				ImageIcon icon = (ImageIcon) _iconConverter.get().convert(
 					entry.derive(tokenize.nextToken()));
 				double x = getHotspotRate(tokenize);
 				double y = getHotspotRate(tokenize);
@@ -251,13 +241,20 @@ class CursorInfoConverter extends AbstractResourceConverterFinderHolder
 	static private final double	MEAN_COORDINATE	= 0.5;
 	
 	private final Map<String, CursorInfo> _cursors = new HashMap<String, CursorInfo>();
+	private final Provider<ResourceConverter<Icon>> _iconConverter;
 }
 
-class CursorConverter extends AbstractResourceConverterFinderHolder
-	implements ResourceConverter<Cursor>
+class CursorConverter implements ResourceConverter<Cursor>
 {
+	@Inject CursorConverter(Provider<ResourceConverter<CursorInfo>> cursorInfoConverter)
+	{
+		_cursorInfoConverter = cursorInfoConverter;
+	}
+	
 	@Override public Cursor convert(ResourceEntry entry)
 	{
-		return converter(CursorInfo.class).convert(entry).getCursor();
+		return _cursorInfoConverter.get().convert(entry).getCursor();
 	}
+	
+	private final Provider<ResourceConverter<CursorInfo>> _cursorInfoConverter;
 }

@@ -18,6 +18,7 @@ import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
+import com.google.inject.util.Types;
 
 /**
  * Utility class to define, from within a Guice {@link com.google.inject.Module},
@@ -56,6 +57,13 @@ public final class Resources
 	static public <T> LinkedBindingBuilder<ResourceConverter<T>> bindConverter(
 		Binder binder, TypeLiteral<T> type)
 	{
+		// First bind a provider for ResourceConverter<T>
+		TypeLiteral<ResourceConverter<T>> converter = converterType(type);
+		if (converter != null)
+		{
+			binder.bind(converter).toProvider(new ConverterProvider<T>(type));
+		}
+		// Then start multibinding
 		LinkedBindingBuilder builder = converters(binder).addBinding(type);
 		return builder;
 	}
@@ -144,6 +152,20 @@ public final class Resources
 		}
 		bundle = bundle.substring(0, bundle.lastIndexOf('.'));
 		return bundle;
+	}
+
+	@SuppressWarnings("unchecked") 
+	static private <T> TypeLiteral<ResourceConverter<T>> converterType(TypeLiteral<T> type)
+	{
+		if (type.getRawType().isPrimitive())
+		{
+			return null;
+		}
+		else
+		{
+			return (TypeLiteral<ResourceConverter<T>>) TypeLiteral.get(
+				Types.newParameterizedType(ResourceConverter.class, type.getType()));
+		}
 	}
 
 	static private MapBinder<TypeLiteral<?>, ResourceConverter<?>> converters(Binder binder)
