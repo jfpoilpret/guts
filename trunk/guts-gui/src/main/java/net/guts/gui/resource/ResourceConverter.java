@@ -47,8 +47,28 @@ import com.google.inject.Provider;
  * it can possibly convert.
  * <p/>
  * Custom converters can possibly use other registered {@code ResourceConverter}s, 
- * and chain calls to them; for this they can use {@link ResourceConverterFinder}
- * (they need to have it injected to them).
+ * and chain calls to them; for this they can require to be injected a
+ * {@code Provider<ResourceConverter<T>>} and then use this provider to get the
+ * needed {@code ResourceConverter<T>}, as in the following snippet (excerpted
+ * from Guts-GUI itself):
+ * <pre>
+ * class CursorConverter implements ResourceConverter&lt;Cursor&gt;
+ * {
+ *     @Inject CursorConverter(Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; cursorInfoConverter)
+ *     {
+ *         _cursorInfoConverter = cursorInfoConverter;
+ *     }
+ *     
+ *     @Override public Cursor convert(ResourceEntry entry)
+ *     {
+ *         return _cursorInfoConverter.get().convert(entry).getCursor();
+ *     }
+ *     
+ *     private final Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; _cursorInfoConverter;
+ * }
+ * </pre>
+ * Note that you should not (FIXME: cannot) directly inject a {@code ResourceConverter<T>}
+ * in your own {@code ResourceConverter}, that would trigger a circular dependency.
  * <p/>
  * Note that {@link ResourceInjector} already comes with {@code ResourceConverter}s
  * for many types (as described in {@link ResourceModule}) and it's unlikely you
