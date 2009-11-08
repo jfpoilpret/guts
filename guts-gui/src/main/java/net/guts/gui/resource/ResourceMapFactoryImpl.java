@@ -32,13 +32,13 @@ import com.google.inject.Singleton;
 import com.google.inject.internal.Nullable;
 
 @Singleton
-class ResourceBundleRegistryImpl implements ResourceBundleRegistry
+class ResourceMapFactoryImpl implements ResourceMapFactory
 {
 	static private final Logger _logger = 
-		LoggerFactory.getLogger(ResourceBundleRegistryImpl.class);
+		LoggerFactory.getLogger(ResourceMapFactoryImpl.class);
 
 	@Inject
-	ResourceBundleRegistryImpl(ResourceConverterFinder finder,
+	ResourceMapFactoryImpl(ResourceConverterFinder finder,
 		@RootBundle @Nullable String root)
 	{
 		if (root == null)
@@ -54,7 +54,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		_root = getBundle(root);
 	}
 	
-	@Override public ResourceMap getBundle(Class<?> clazz)
+	@Override public ResourceMap createResourceMap(Class<?> clazz)
 	{
 		// Ask for the sorted list of ResourceBundle matching the component type
 		List<Bundle> bundles = getBundleNames(clazz);

@@ -16,8 +16,8 @@ package net.guts.gui.resource;
 
 import com.google.inject.ImplementedBy;
 
-@ImplementedBy(ResourceBundleRegistryImpl.class)
-interface ResourceBundleRegistry
+@ImplementedBy(ResourceMapFactoryImpl.class)
+interface ResourceMapFactory
 {
-	public ResourceMap getBundle(Class<?> clazz);
+	public ResourceMap createResourceMap(Class<?> clazz);
 }
