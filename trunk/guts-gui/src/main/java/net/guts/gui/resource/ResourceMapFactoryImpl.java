@@ -18,10 +18,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.MissingResourceException;
 import java.util.NavigableMap;
-import java.util.ResourceBundle;
 import java.util.TreeMap;
 
 import org.slf4j.Logger;
@@ -62,10 +61,10 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		NavigableMap<String, ResourceEntry> values = new TreeMap<String, ResourceEntry>();
 		for (Bundle bundle: bundles)
 		{
-			for (String key: bundle.bundle().keySet())
+			for (String key: bundle.properties().keySet())
 			{
 				values.put(key, 
-					new ResourceEntry(bundle.bundle().getString(key), bundle.source()));
+					new ResourceEntry(bundle.properties().get(key), bundle.source()));
 			}
 		}
 		return new ResourceMapImpl(values, _finder);
@@ -123,7 +122,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		return bundles;
 	}
 	
-	static private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
+	private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
 	{
 		String realPath = BundleHelper.checkBundleExists(path, origin);
 		if (realPath != null && !bundles.contains(realPath))
@@ -136,65 +135,26 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 	}
 
-	//TODO soon replace with my guts-gui own mechanism to bundles!
-	static private Bundle getBundle(String path)
+	private Bundle getBundle(String path)
 	{
 		if (path == null)
 		{
 			return null;
 		}
-		//TODO temporary code (replace "/") to keep using ResourceBundle
-		String realPath = path.replaceAll("/", ".");
-		try
+		Bundle bundle = _bundles.get(path);
+		if (bundle != null)
 		{
-			return new Bundle(path, ResourceBundle.getBundle(realPath));
+			return bundle;
 		}
-		catch (MissingResourceException e)
-		{
-			_logger.warn("Bundle `{}.resources` doesn't exist. Caught exception: {}", 
-				realPath, e);
-			return null;
-		}
-	}
-	
-	static private class Bundle
-	{
-		Bundle(String source, ResourceBundle bundle)
-		{
-			_source = source.substring(0, source.lastIndexOf("/"));
-			_bundle = bundle;
-		}
-		
-		String source()
-		{
-			return _source;
-		}
-		
-		ResourceBundle bundle()
-		{
-			return _bundle;
-		}
-		
-		@Override public int hashCode()
-		{
-			return _source.hashCode();
-		}
-
-		@Override public boolean equals(Object o)
-		{
-			if (!(o instanceof Bundle))
-			{
-				return false;
-			}
-			Bundle that = (Bundle) o;
-			return this._source.equals(that._source);
-		}
-
-		final private String _source;
-		final private ResourceBundle _bundle;
+		// Create a new Bundle and cache it
+		bundle = new Bundle(path);
+		bundle.update(Locale.getDefault());
+		_bundles.put(path, bundle);
+		return bundle;
 	}
 
 	final private Bundle _root;
+	final private Map<String, Bundle> _bundles = new HashMap<String, Bundle>();
 	final private Map<Class<?>, List<Bundle>> _bundlesPerClass = 
 		new HashMap<Class<?>, List<Bundle>>();
 	final private Map<Package, List<Bundle>> _bundlesPerPackage = 
