@@ -42,7 +42,7 @@ public final class ResourceEntry
 	 * an {@link java.net.URL}, as in the following excerpt from 
 	 * {@code ResourceConverter<CursorInfo>} (simplified):
 	 * <pre>
-	 * @Override public CursorInfo convert(ResourceEntry entry)
+	 * &#64;Override public CursorInfo convert(ResourceEntry entry)
 	 * {
 	 *     // First check if this is a predefined cursor
 	 *     CursorType type = CursorType.valueOf(entry.value());
