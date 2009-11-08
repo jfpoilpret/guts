@@ -28,6 +28,8 @@ final class ResourceMapImpl implements ResourceMap
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceMapImpl.class);
 
+	//FIXME normally don't need Map<String, ResourceEntry> but Map<String, String>
+	// should be fine (can build ResourceEntry on demand!)
 	ResourceMapImpl(NavigableMap<String, ResourceEntry> resources, 
 		ResourceConverterFinder finder)
 	{
