@@ -54,12 +54,13 @@ import com.google.inject.Provider;
  * <pre>
  * class CursorConverter implements ResourceConverter&lt;Cursor&gt;
  * {
- *     @Inject CursorConverter(Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; cursorInfoConverter)
+ *     &#64;Inject CursorConverter(
+ *         Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; cursorInfoConverter)
  *     {
  *         _cursorInfoConverter = cursorInfoConverter;
  *     }
  *     
- *     @Override public Cursor convert(ResourceEntry entry)
+ *     &#64;Override public Cursor convert(ResourceEntry entry)
  *     {
  *         return _cursorInfoConverter.get().convert(entry).getCursor();
  *     }

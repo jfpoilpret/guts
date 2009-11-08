@@ -45,7 +45,7 @@ import com.google.inject.Inject;
  * <pre>
  * class JLabelInjector extends BeanPropertiesInjector&lt;JLabel&gt;
  * {
- *     @Override protected boolean handleSpecialProperty(
+ *     &#64;Override protected boolean handleSpecialProperty(
  *         JLabel label, Key key, ResourceMap resources)
  *     {
  *         // Special handling for mnemonics
@@ -81,8 +81,8 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	 * called, giving subclasses a chance, if they override that method, to perform
 	 * specific injection of the given property. If ({@link #handleSpecialProperty}
 	 * returns {@code false}, which means that the property was not injected, then
-	 * {@link #injectProperty(Object, Key, ResourceMap)} is called to inject the 
-	 * given property through bean property setters.
+	 * {@link #injectProperty} is called to inject the given property through bean 
+	 * property setters.
 	 */
 	@Override public final void inject(T component, String prefix, ResourceMap resources)
 	{
@@ -112,7 +112,7 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	 * means that all properties are injected through bean setters.
 	 */
 	protected boolean handleSpecialProperty(
-		T component, ResourceMap.Key key, ResourceMap resources)
+		T component, Key key, ResourceMap resources)
 	{
 		return false;
 	}
@@ -151,7 +151,8 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	/**
 	 * Looks for a bean property named {@code name }in {@code bean} class, and checks
 	 * it is writable. If no property exists or it exists but is not writable, this 
-	 * method logs a message (using {@linkplain SLF4J}) and returns {@code null}.
+	 * method logs a message (using <a href="http://www.slf4j.org/">SLF4J</a>) and 
+	 * returns {@code null}.
 	 * 
 	 * @param name the name of the bean property to look for
 	 * @param bean the bean class in which to look for a writable property named 

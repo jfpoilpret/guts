@@ -65,10 +65,10 @@ public interface ResourceMap
 	 * {@code String} value cannot be converted to {@code type}, then {@code null}
 	 * is returned and an error is logged through SLF4J.
 	 * 
-	 * @param <T> type to which the original {@String} property value should be
+	 * @param <T> type to which the original {@code String} property value should be
 	 * converted
 	 * @param key unique identifier of the resource to be retrieved
-	 * @param type type to which the original {@String} property value should be
+	 * @param type type to which the original {@code String} property value should be
 	 * converted
 	 * @return the value of the resource identified by {@code key} converted to
 	 * {@code type}; {@code null} will be returned if there is no property with 
@@ -86,10 +86,10 @@ public interface ResourceMap
 	 * {@code String} value cannot be converted to {@code type}, then {@code null}
 	 * is returned and an error is logged through SLF4J.
 	 * 
-	 * @param <T> type to which the original {@String} property value should be
+	 * @param <T> type to which the original {@code String} property value should be
 	 * converted
 	 * @param key unique identifier of the resource to be retrieved
-	 * @param type type to which the original {@String} property value should be
+	 * @param type type to which the original {@code String} property value should be
 	 * converted
 	 * @return the value of the resource identified by {@code key} converted to
 	 * {@code type}; {@code null} will be returned if there is no property with 
