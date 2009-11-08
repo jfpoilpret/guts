@@ -32,7 +32,7 @@ class ResourceInjectorImpl implements ResourceInjector
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceInjectorImpl.class);
 
 	@Inject	public ResourceInjectorImpl(
-		ResourceBundleRegistry registry, Map<Class<?>, InstanceInjector<?>> injectors)
+		ResourceMapFactory registry, Map<Class<?>, InstanceInjector<?>> injectors)
 	{
 		_registry = registry;
 		_injectors = injectors;
@@ -48,7 +48,7 @@ class ResourceInjectorImpl implements ResourceInjector
 				// Find the most specific ComponentInjector for component
 				Class<? extends Component> type = component.getClass();
 				InstanceInjector<Component> injector = findComponentInjector(type);
-				ResourceMap resources = _registry.getBundle(type);
+				ResourceMap resources = _registry.createResourceMap(type);
 				injector.inject(component, prefix, resources);
 			}
 		}
@@ -86,7 +86,7 @@ class ResourceInjectorImpl implements ResourceInjector
 			// Find the most specific ComponentInjector for component
 			Class<? extends T> type = getClass(instance);
 			InstanceInjector<T> injector = findComponentInjector(type);
-			ResourceMap resources = _registry.getBundle(type);
+			ResourceMap resources = _registry.createResourceMap(type);
 			injector.inject(instance, name, resources);
 		}
 	}
@@ -115,6 +115,6 @@ class ResourceInjectorImpl implements ResourceInjector
 		return prefix;
 	}
 
-	final private ResourceBundleRegistry _registry;
+	final private ResourceMapFactory _registry;
 	final private Map<Class<?>, InstanceInjector<?>> _injectors;
 }
