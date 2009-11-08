@@ -109,7 +109,7 @@ public class UsesBundleTest
 		{
 			@Override protected void configure()
 			{
-				Resources.bindRootBundle(binder(), UsesBundleTest.class);
+				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
 			}
 		});
 		ResourceInjector resourceInjector = injector.getInstance(ResourceInjector.class);

@@ -104,14 +104,15 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		List<Bundle> bundles = new ArrayList<Bundle>();
 		if (uses != null)
 		{
-			for (Class<?> name: uses.value())
+			for (String path: uses.value())
 			{
-				addBundle(bundles, name);
+				addBundle(bundles, type, path);
 			}
 			// If uses.value() is empty, then take current class/package as bundle
 			if (uses.value().length == 0)
 			{
-				addBundle(bundles, type);
+				//TODO default name? or class name?
+				addBundle(bundles, type, "resources");
 			}
 			Collections.reverse(bundles);
 		}
@@ -122,33 +123,36 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 		return bundles;
 	}
 	
-	static private void addBundle(List<Bundle> bundles, Class<?> type)
+	static private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
 	{
-		String bundlePath = Resources.bundlePath(type);
-		if (bundlePath != null && !bundles.contains(bundlePath))
+		String realPath = BundleHelper.checkBundleExists(path, origin);
+		if (realPath != null && !bundles.contains(realPath))
 		{
-			Bundle bundle = getBundle(bundlePath);
+			Bundle bundle = getBundle(realPath);
 			if (bundle != null)
 			{
 				bundles.add(bundle);
 			}
 		}
 	}
-	
+
+	//TODO soon replace with my guts-gui own mechanism to bundles!
 	static private Bundle getBundle(String path)
 	{
 		if (path == null)
 		{
 			return null;
 		}
+		//TODO temporary code (replace "/") to keep using ResourceBundle
+		String realPath = path.replaceAll("/", ".");
 		try
 		{
-			return new Bundle(path, ResourceBundle.getBundle(path + ".resources"));
+			return new Bundle(path, ResourceBundle.getBundle(realPath));
 		}
 		catch (MissingResourceException e)
 		{
-			_logger.warn(
-				"Bundle `{}.resources` doesn't exist. Caught exception: {}", path, e);
+			_logger.warn("Bundle `{}.resources` doesn't exist. Caught exception: {}", 
+				realPath, e);
 			return null;
 		}
 	}
@@ -157,7 +161,7 @@ class ResourceBundleRegistryImpl implements ResourceBundleRegistry
 	{
 		Bundle(String source, ResourceBundle bundle)
 		{
-			_source = source;
+			_source = source.substring(0, source.lastIndexOf("/"));
 			_bundle = bundle;
 		}
 		

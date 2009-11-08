@@ -16,9 +16,8 @@ package net.guts.gui.resource.bundle1;
 
 import net.guts.gui.resource.AbstractPanel;
 import net.guts.gui.resource.UsesBundles;
-import net.guts.gui.resource.bundle2.Panel21;
 
-@UsesBundles({Panel14.class, Panel21.class})
+@UsesBundles({"resources", "/net/guts/gui/resource/bundle2/resources"})
 public class Panel14 extends AbstractPanel
 {
 	private static final String NAME = "bundle1-panel14";

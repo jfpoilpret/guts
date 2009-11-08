@@ -124,7 +124,7 @@ public final class Resources
 	 * <p/>
 	 * This must be called from {@link com.google.inject.Module#configure(Binder)}:
 	 * <pre>
-	 * Resources.bindRootBundle(binder(), SomeType.class);
+	 * Resources.bindRootBundle(binder(), "/somepath/bundlename");
 	 * </pre>
 	 * <p/>
 	 * Defining a root bundle is optional but strongly advised. It is not supported
@@ -133,25 +133,17 @@ public final class Resources
 	 * 
 	 * @param binder the Guice binder passed to 
 	 * {@link com.google.inject.Module#configure(Binder)}
-	 * @param root a class which package defines the location of the root bundle; 
-	 * the root bundle is a file named "resources.properties" in this location on 
-	 * the classpath.
+	 * @param root the path to bundle file, not including the ".properties" extension; 
+	 * this file must exist on the classpath.
 	 */
-	static public void bindRootBundle(Binder binder, Class<?> root)
+	static public void bindRootBundle(Binder binder, String root)
 	{
-		String bundle = bundlePath(root);
-		binder.bind(String.class).annotatedWith(RootBundle.class).toInstance(bundle);
-	}
-
-	static String bundlePath(Class<?> name)
-	{
-		String bundle = name.getCanonicalName();
-		if (bundle == null)
+		String bundle = (root.startsWith("/") ? root : "/" + root);
+		bundle = BundleHelper.checkBundleExists(bundle, null);
+		if (bundle != null)
 		{
-			return null;
+			binder.bind(String.class).annotatedWith(RootBundle.class).toInstance(bundle);
 		}
-		bundle = bundle.substring(0, bundle.lastIndexOf('.'));
-		return bundle;
 	}
 
 	@SuppressWarnings("unchecked") 

@@ -22,20 +22,28 @@ import java.lang.annotation.Target;
 
 /**
  * Annotates a class (or a package, thus applied to all classes in that package)
- * in order to specify locations for {@link ResourceInjector} to find resource 
- * bundles that will be used when injecting instances of the annotated class.
+ * in order to specify resource bundles that {@link ResourceInjector} will use 
+ * when injecting instances of the annotated class.
  * <p/>
  * If used for a whole package and for a class in that package, then the class-level
  * annotation takes precedence (package-level annotation won't be used at all).
  * <p/>
- * In order to prevent typos in resource bundles location paths, each location is
- * determined through a {@code Class} which package determines the location path.
- * The resource bundle itself is a file, named "resources.properties", located
- * under that path (in the classpath).
+ * Resource bundles are specified as paths to properties files but <b>don't</b>
+ * include the {@code properties} extension, as in {@code /mydialog/resources},
+ * which will be mapped to a file named {@code "/mydialog/resources.properties"}.
  * <p/>
- * Note that, actually, there can be several resource bundles in one location,
+ * Resource files must be found in the classpath (not on the file system).
+ * <p/>
+ * Paths may be relative or absolute:
+ * <ul>
+ * <li>relative: TODO</li>
+ * <li>absolute: TODO</li>
+ * </ul>
+ * <p/>
+ * Note that, actually, there can be several resource bundles under the same path,
  * each for a different {@code java.util.Locale}, as defined in standard
- * {@link java.util.ResourceBundle}.
+ * {@link java.util.ResourceBundle}. E.g. for the example above, we could have
+ * {@code "/mydialog/resources.properties"} and {@code "/mydialog/resources_fr.properties"}.
  *
  * @author Jean-Francois Poilpret
  */
@@ -45,8 +53,7 @@ import java.lang.annotation.Target;
 public @interface UsesBundles
 {
 	/**
-	 * Ordered list of classes which package provide the location path to a 
-	 * resource bundle file.
+	 * Ordered list of paths which determine the location to a resource bundle file.
 	 * <p/>
 	 * During resource injection by {@link ResourceInjector}, bundles in the list 
 	 * will be searched in for injectable properties in the order of this list, 
@@ -57,9 +64,11 @@ public @interface UsesBundles
 	 * bundles defined here. This bundle is global for the whole application and
 	 * is defined by {@link Resources#bindRootBundle}.
 	 * <p/>
-	 * When the list of classes is empty, this means that the package of the
+	 * When the list of paths is empty, this means that the package of the
 	 * annotated class (or the annotated package itself) <b>is</b> the resource
 	 * bundle location path.
+	 * <p/>
+	 * TODO empty list => default name of file? "resources" or "classname"?
 	 */
-	Class<?>[] value() default {};
+	String[] value() default {};
 }

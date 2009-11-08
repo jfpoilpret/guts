@@ -12,6 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-@net.guts.gui.resource.UsesBundles(Panel21.class)
+@net.guts.gui.resource.UsesBundles("/net/guts/gui/resource/bundle2/resources")
 package net.guts.gui.resource.bundle2;
 
