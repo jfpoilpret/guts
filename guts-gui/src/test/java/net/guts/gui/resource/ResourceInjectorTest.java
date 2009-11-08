@@ -240,7 +240,7 @@ public class ResourceInjectorTest
 		{
 			@Override protected void configure()
 			{
-				Resources.bindRootBundle(binder(), ResourceInjectorTest.class);
+				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
 			}
 		});
 		ResourceInjector resourceInjector = injector.getInstance(ResourceInjector.class);

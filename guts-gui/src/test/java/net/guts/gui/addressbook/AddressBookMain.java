@@ -58,7 +58,7 @@ public class AddressBookMain extends AbstractAppLauncher
 			Events.bindChannel(binder(), Contact.class);
 			bind(ContactActions.class).asEagerSingleton();
 			// Setup ResourceModule root bundle
-			Resources.bindRootBundle(binder(), AddressBookMain.class);
+			Resources.bindRootBundle(binder(), "/net/guts/gui/addressbook/resources");
 		}
 	}
 }
