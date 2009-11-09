@@ -16,8 +16,10 @@ package net.guts.gui.resource;
 
 import java.util.AbstractSet;
 import java.util.Iterator;
-import java.util.NavigableMap;
+import java.util.List;
+import java.util.NavigableSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,12 +30,13 @@ final class ResourceMapImpl implements ResourceMap
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceMapImpl.class);
 
-	//FIXME normally don't need Map<String, ResourceEntry> but Map<String, String>
-	// should be fine (can build ResourceEntry on demand!)
-	ResourceMapImpl(NavigableMap<String, ResourceEntry> resources, 
-		ResourceConverterFinder finder)
+	ResourceMapImpl(List<Bundle> bundles, ResourceConverterFinder finder)
 	{
-		_resources = resources;
+		_bundles = bundles;
+		for (Bundle bundle: bundles)
+		{
+			_allKeys.addAll(bundle.properties().keySet());
+		}
 		_finder = finder;
 	}
 
@@ -47,12 +50,22 @@ final class ResourceMapImpl implements ResourceMap
 				new Object[]{key.prefix(), key.name(), type});
 			return null;
 		}
-		ResourceEntry value = _resources.get(key.prefix() + "." + key.name());
-		if (value == null)
+		String fullKey = key.prefix() + "." + key.name();
+		if (!_allKeys.contains(fullKey))
 		{
 			return null;
 		}
-		return converter.convert(value);
+		for (Bundle bundle: _bundles)
+		{
+			if (bundle.properties().containsKey(fullKey))
+			{
+				ResourceEntry entry = new ResourceEntry(
+					bundle.properties().get(fullKey), bundle.source());
+				return converter.convert(entry);
+			}
+		}
+		// Cannot reach this location normally
+		return null;
 	}
 
 	@Override public <T> T getValue(Key key, Class<T> type)
@@ -62,8 +75,7 @@ final class ResourceMapImpl implements ResourceMap
 
 	@Override public Set<Key> keys(String prefix)
 	{
-		return new KeySet(
-			prefix, _resources.navigableKeySet().subSet(prefix + ".", prefix + "/"));
+		return new KeySet(prefix, _allKeys.subSet(prefix + ".", prefix + "/"));
 	}
 	
 	// The classes below are used to dynamically remove prefix from the property keys
@@ -149,6 +161,7 @@ final class ResourceMapImpl implements ResourceMap
 		final private String _prefix;
 	}
 	
-	final private NavigableMap<String, ResourceEntry> _resources;
+	final private List<Bundle> _bundles;
+	final private NavigableSet<String> _allKeys = new TreeSet<String>();
 	final private ResourceConverterFinder _finder;
 }
