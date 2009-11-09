@@ -30,7 +30,7 @@ public class LocaleResourceTest
 {
 	static final private String NAME = LocaleResourceTest.class.getSimpleName();
 	
-	public void checkCorrectLocaleUsedIfAvailable()
+	public void checkCorrectLocaleUsedIfPropertyAvailable()
 	{
 		Locale.setDefault(Locale.FRENCH);
 		JLabel label = createAndInjectLabel("test1-label");
@@ -39,7 +39,7 @@ public class LocaleResourceTest
 		Assertions.assertThat(label.getToolTipText()).as("label.toolTipText").isEqualTo("Tooltip francais 1");
 	}
 	
-	public void checkDefaultLocaleUsedIfSpecificLocaleUnavailable()
+	public void checkDefaultLocaleUsedIfSpecificLocalePropertyUnavailable()
 	{
 		Locale.setDefault(Locale.FRENCH);
 		JLabel label = createAndInjectLabel("test2-label");
@@ -48,9 +48,23 @@ public class LocaleResourceTest
 		Assertions.assertThat(label.getToolTipText()).as("label.toolTipText").isEqualTo("Default Tooltip 2");
 	}
 	
-	//TODO more checks
-	// fr_CH -> fr
-	// fr_CH -> fr (even if fr_FR exists)
+	public void checkDefaultLocaleUsedIfSpecificLocaleFileUnavailable()
+	{
+		Locale.setDefault(Locale.GERMAN);
+		JLabel label = createAndInjectLabel("test2-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getText()).as("label.text").isEqualTo("Default Label 2");
+		Assertions.assertThat(label.getToolTipText()).as("label.toolTipText").isEqualTo("Default Tooltip 2");
+	}
+	
+	public void checkLanguageLocaleUsedIfCountryLocaleFileUnavailable()
+	{
+		Locale.setDefault(Locale.CANADA_FRENCH);
+		JLabel label = createAndInjectLabel("test1-label");
+		// Check injection has worked
+		Assertions.assertThat(label.getText()).as("label.text").isEqualTo("Label francais 1");
+		Assertions.assertThat(label.getToolTipText()).as("label.toolTipText").isEqualTo("Tooltip francais 1");
+	}
 	
 	static private JLabel createLabel(String name)
 	{
