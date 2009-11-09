@@ -15,13 +15,10 @@
 package net.guts.gui.resource;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.NavigableMap;
-import java.util.TreeMap;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -55,19 +52,9 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	
 	@Override public ResourceMap createResourceMap(Class<?> clazz)
 	{
-		// Ask for the sorted list of ResourceBundle matching the component type
+		// Ask for the sorted list of Bundle matching the component type
 		List<Bundle> bundles = getBundleNames(clazz);
-
-		NavigableMap<String, ResourceEntry> values = new TreeMap<String, ResourceEntry>();
-		for (Bundle bundle: bundles)
-		{
-			for (String key: bundle.properties().keySet())
-			{
-				values.put(key, 
-					new ResourceEntry(bundle.properties().get(key), bundle.source()));
-			}
-		}
-		return new ResourceMapImpl(values, _finder);
+		return new ResourceMapImpl(bundles, _finder);
 	}
 	
 	private List<Bundle> getBundleNames(Class<?> type)
@@ -101,6 +88,10 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	private List<Bundle> extractBundles(Class<?> type, UsesBundles uses)
 	{
 		List<Bundle> bundles = new ArrayList<Bundle>();
+		if (_root != null)
+		{
+			bundles.add(_root);
+		}
 		if (uses != null)
 		{
 			for (String path: uses.value())
@@ -113,11 +104,6 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 				//TODO default name? or class name?
 				addBundle(bundles, type, "resources");
 			}
-			Collections.reverse(bundles);
-		}
-		if (_root != null)
-		{
-			bundles.add(_root);
 		}
 		return bundles;
 	}
