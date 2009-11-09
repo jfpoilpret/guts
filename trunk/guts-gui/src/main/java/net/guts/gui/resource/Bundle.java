@@ -15,7 +15,6 @@
 package net.guts.gui.resource;
 
 import java.io.InputStream;
-import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -64,12 +63,13 @@ final class Bundle
 		return _source;
 	}
 	
+	@SuppressWarnings("unchecked") 
 	Map<String, String> properties()
 	{
-		return _properties;
+		return (Map<String, String>) (Map<?, ?>) _properties;
 	}
-	
-	@SuppressWarnings("unchecked") 
+
+	//TODO add support for XML-based properties files?
 	private void readProperties(String path)
 	{
 		InputStream in = Thread.currentThread().getContextClassLoader()
@@ -84,11 +84,7 @@ final class Bundle
 		// can occur but the handling code is exactly the same.
 		try
 		{
-			//FIXME possible to optimize and avoid copying everything 
-			// from properties to _properties?
-			Properties properties = new Properties();
-			properties.load(in);
-			_properties.putAll((Map<String, String>) (Map<?, ?>) properties);
+			_properties.load(in);
 		}
 		catch (Exception e)
 		{
@@ -116,5 +112,5 @@ final class Bundle
 	private Locale _locale;
 	final private String _path;
 	final private String _source;
-	final private Map<String, String> _properties = new HashMap<String, String>();
+	final private Properties _properties = new Properties();
 }
