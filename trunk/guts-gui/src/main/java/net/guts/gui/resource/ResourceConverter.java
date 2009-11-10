@@ -68,7 +68,7 @@ import com.google.inject.Provider;
  *     private final Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; _cursorInfoConverter;
  * }
  * </pre>
- * Note that you should not (FIXME: cannot) directly inject a {@code ResourceConverter<T>}
+ * Note that you should not directly inject a {@code ResourceConverter<T>}
  * in your own {@code ResourceConverter}, that would trigger a circular dependency.
  * <p/>
  * Note that {@link ResourceInjector} already comes with {@code ResourceConverter}s
