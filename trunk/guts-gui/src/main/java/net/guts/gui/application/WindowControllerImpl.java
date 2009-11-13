@@ -21,6 +21,7 @@ import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.WindowEvent;
 import java.io.IOException;
+import java.util.Locale;
 
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -62,7 +63,7 @@ class WindowControllerImpl implements WindowController
 	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
 	public void shutdown(Void nothing)
 	{
-		System.out.printf("shutdown()\n");
+		_logger.debug("shutdown()");
 		// Find all visible windows and save session for each
 		for (Window window: Window.getWindows())
 		{
@@ -70,6 +71,19 @@ class WindowControllerImpl implements WindowController
 				&&	window instanceof RootPaneContainer)
 			{
 				saveSize((RootPaneContainer) window);
+			}
+		}
+	}
+	
+	@Consumes(priority = Integer.MIN_VALUE + 1)
+	public void localeChanged(Locale locale)
+	{
+		for (Window window: Window.getWindows())
+		{
+			if (	window.isVisible()
+				&&	window instanceof RootPaneContainer)
+			{
+				injectResources((RootPaneContainer) window);
 			}
 		}
 	}
@@ -115,14 +129,7 @@ class WindowControllerImpl implements WindowController
 	
 	private void injectResources(RootPaneContainer container)
 	{
-		// First check if resources have already been injected
-		JComponent root = container.getRootPane();
-		if (root.getClientProperty(RESOURCES_INJECTED) == null)
-		{
-//			_context.getResourceMap().injectComponents(root.getParent());
-			_injector.injectHierarchy(root.getParent());
-			root.putClientProperty(RESOURCES_INJECTED, Boolean.TRUE);
-		}
+		_injector.injectHierarchy(container.getRootPane().getParent());
 	}
 	
 	private <T extends Window & RootPaneContainer> void initBounds(
@@ -188,7 +195,7 @@ class WindowControllerImpl implements WindowController
 			// Save window bounds (as client property?)
 			if (event.getWindow() instanceof JFrame)
 			{
-				System.out.printf("WINDOW_RESIZED\n");
+				_logger.debug("WINDOW_RESIZED\n");
 				JFrame frame = (JFrame) event.getWindow();
 				frame.getRootPane().putClientProperty(SAVED_BOUNDS, frame.getBounds());
 			}
@@ -196,7 +203,7 @@ class WindowControllerImpl implements WindowController
 			
 			case WindowEvent.COMPONENT_HIDDEN:
 			case WindowEvent.WINDOW_CLOSED:
-			System.out.printf("WINDOW_CLOSED\n");
+			_logger.debug("WINDOW_CLOSED\n");
 			// Save window state in session storage
 			saveSize((RootPaneContainer) event.getWindow());
 			break;
@@ -207,8 +214,6 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 
-	private static final String RESOURCES_INJECTED = 
-		WindowController.class.getCanonicalName() + ".ResourcesInjected";
 	private static final String SAVED_BOUNDS = "WindowState.normalBounds";
 //TODO add after rewriting SessionStorage
 //		WindowController.class.getCanonicalName() + ".SavedBounds";

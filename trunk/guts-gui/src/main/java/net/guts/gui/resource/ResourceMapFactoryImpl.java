@@ -23,6 +23,8 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.event.Consumes;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.google.inject.internal.Nullable;
@@ -137,6 +139,16 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		bundle.update(Locale.getDefault());
 		_bundles.put(path, bundle);
 		return bundle;
+	}
+
+	@Consumes(priority = Integer.MIN_VALUE) 
+	public void localeChanged(Locale locale)
+	{
+		// Force refresh of all Bundles
+		for (Bundle bundle: _bundles.values())
+		{
+			bundle.update(locale);
+		}
 	}
 
 	final private Bundle _root;
