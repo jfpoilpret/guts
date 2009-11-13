@@ -16,12 +16,14 @@ package net.guts.gui.resource;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.common.type.TypeHelper;
+import net.guts.event.Channel;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -31,9 +33,12 @@ class ResourceInjectorImpl implements ResourceInjector
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceInjectorImpl.class);
 
-	@Inject	public ResourceInjectorImpl(
+	@Inject	
+	public ResourceInjectorImpl(Channel<Locale> localeChanges, InjectionDecisionStrategy hooks,
 		ResourceMapFactory registry, Map<Class<?>, InstanceInjector<?>> injectors)
 	{
+		_localeChanges = localeChanges;
+		_hooks = hooks;
 		_registry = registry;
 		_injectors = injectors;
 	}
@@ -42,14 +47,13 @@ class ResourceInjectorImpl implements ResourceInjector
 	{
 		if (component != null)
 		{
-			String prefix = prefix(component);
-			if (prefix != null)
+			switch (_hooks.needsInjection(component, _locale))
 			{
-				// Find the most specific ComponentInjector for component
-				Class<? extends Component> type = component.getClass();
-				InstanceInjector<Component> injector = findComponentInjector(type);
-				ResourceMap resources = _registry.createResourceMap(type);
-				injector.inject(component, prefix, resources);
+				case INJECT_COMPONENT_ONLY:
+				case INJECT_HIERARCHY:
+				injectComponent(component, false);
+				_hooks.injectionPerformed(component, _locale);
+				break;
 			}
 		}
 	}
@@ -58,15 +62,42 @@ class ResourceInjectorImpl implements ResourceInjector
 	{
 		if (component != null)
 		{
-			// First inject component itself
-			injectComponent(component);
-			// Then recursively inject all its children
-			if (component instanceof Container)
+			long time = System.nanoTime();
+			switch (_hooks.needsInjection(component, _locale))
 			{
-				for (Component child: ((Container) component).getComponents())
-				{
-					injectHierarchy(child);
-				}
+				case INJECT_COMPONENT_ONLY:
+				injectComponent(component, false);
+				_hooks.injectionPerformed(component, _locale);
+				break;
+					
+				case INJECT_HIERARCHY:
+				injectComponent(component, true);
+				_hooks.injectionPerformed(component, _locale);
+				break;
+			}
+			time = System.nanoTime() - time;
+			_logger.info("injectHierarchy {} in {} ms", component.getName(), time / 1000000);
+		}
+	}
+	
+	private void injectComponent(Component component, boolean recursive)
+	{
+		// First inject component itself
+		String prefix = prefix(component);
+		if (prefix != null)
+		{
+			// Find the most specific ComponentInjector for component
+			Class<? extends Component> type = component.getClass();
+			InstanceInjector<Component> injector = findComponentInjector(type);
+			ResourceMap resources = _registry.createResourceMap(type);
+			injector.inject(component, prefix, resources);
+		}
+		if (recursive && component instanceof Container)
+		{
+			// Then recursively inject all its children
+			for (Component child: ((Container) component).getComponents())
+			{
+				injectComponent(child, true);
 			}
 		}
 	}
@@ -83,11 +114,31 @@ class ResourceInjectorImpl implements ResourceInjector
 	{
 		if (instance != null)
 		{
-			// Find the most specific ComponentInjector for component
-			Class<? extends T> type = getClass(instance);
-			InstanceInjector<T> injector = findComponentInjector(type);
-			ResourceMap resources = _registry.createResourceMap(type);
-			injector.inject(instance, name, resources);
+			switch (_hooks.needsInjection(instance, _locale))
+			{
+				case INJECT_COMPONENT_ONLY:
+				case INJECT_HIERARCHY:
+				// Find the most specific ComponentInjector for component
+				Class<? extends T> type = getClass(instance);
+				InstanceInjector<T> injector = findComponentInjector(type);
+				ResourceMap resources = _registry.createResourceMap(type);
+				injector.inject(instance, name, resources);
+				_hooks.injectionPerformed(instance, _locale);
+				break;
+			}
+		}
+	}
+
+	@Override public void setLocale(Locale locale)
+	{
+		if (locale != null && !locale.equals(_locale))
+		{
+			_locale = locale;
+			Locale.setDefault(_locale);
+			// Trigger Locale event, consumed by:
+			// - ResourceMapFactoryImpl to update Bundles
+			// - WindowControllerImpl to force resource injections on all visible windows
+			_localeChanges.publish(_locale);
 		}
 	}
 
@@ -115,6 +166,9 @@ class ResourceInjectorImpl implements ResourceInjector
 		return prefix;
 	}
 
+	final private Channel<Locale> _localeChanges;
+	final private InjectionDecisionStrategy _hooks;
 	final private ResourceMapFactory _registry;
 	final private Map<Class<?>, InstanceInjector<?>> _injectors;
+	private Locale _locale = Locale.getDefault();
 }

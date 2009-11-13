@@ -15,6 +15,7 @@
 package net.guts.gui.resource;
 
 import java.awt.Component;
+import java.util.Locale;
 
 import com.google.inject.ImplementedBy;
 
@@ -129,4 +130,28 @@ public interface ResourceInjector
 	 * object in the resource bundles
 	 */
 	public <T> void injectInstance(T instance, String name);
+	
+	/**
+	 * Sets the new {@link Locale} to be used for next resource injections.
+	 * <p/>
+	 * This calls {@link Locale#setDefault(Locale)}.
+	 * <p/>
+	 * Cached resource bundles (containing properties expressed in previous
+	 * {@code Locale}) are cleared and updated.
+	 * <p/>
+	 * An event is generated and pushed to {@code Channel<Locale>}. You can
+	 * hence possibly listen to that events by annotating one of your class methods 
+	 * with {@link net.guts.event.Consumes}:
+	 * <pre>
+	 * TODO snippet of listening to Locale changes
+	 * </pre>
+	 * <p/>
+	 * Note that {@link net.guts.gui.application.WindowController} already listens 
+	 * to {@code Locale} changes and force a new resource injection to all currently
+	 * visible Windows.
+	 * 
+	 * @param locale the new {@code Locale} to set as default for next resource 
+	 * injections
+	 */
+	public void setLocale(Locale locale);
 }

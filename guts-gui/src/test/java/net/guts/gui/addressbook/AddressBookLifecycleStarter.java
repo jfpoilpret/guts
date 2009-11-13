@@ -16,6 +16,7 @@ package net.guts.gui.addressbook;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.util.Locale;
 
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
@@ -32,6 +33,7 @@ import net.guts.gui.exception.HandlesException;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
+import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
 
@@ -42,13 +44,15 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	
 	@Inject
 	public AddressBookLifecycleStarter(WindowController windowController, 
-		MenuFactory menuFactory, MessageFactory messageFactory, 
-		ExitController exitController, AddressBookMainView mainView)
+		MenuFactory menuFactory, MessageFactory messageFactory,
+		ResourceInjector injector, ExitController exitController, 
+		AddressBookMainView mainView)
 	{
 		_mainView =  mainView;
 		_windowController = windowController;
 		_menuFactory = menuFactory;
 		_messageFactory = messageFactory;
+		_injector = injector;
 		_exitController = exitController;
 		
 	}
@@ -64,6 +68,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 			"createContact", "createContactWithTabs", "createContactWithWizard", 
 			"modifyContact", "modifyContactWithTabs", "modifyContactWithWizard", 
 			"deleteContact"));
+		menuBar.add(_menuFactory.createMenu("localeMenu", "french", "english"));
 		JFrame mainFrame = new JFrame();
 		mainFrame.setName("mainFrame");
 		//TODO Guts-GUI should always provide this somehow
@@ -113,10 +118,21 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	{
 		throw new IllegalArgumentException("Some message here");
 	}
+	
+	@Action public void french()
+	{
+		_injector.setLocale(Locale.FRENCH);
+	}
+
+	@Action public void english()
+	{
+		_injector.setLocale(Locale.ENGLISH);
+	}
 
 	final private AddressBookMainView _mainView;
 	final private WindowController _windowController;
 	final private MenuFactory _menuFactory;
 	final private MessageFactory _messageFactory;
+	final private ResourceInjector _injector;
 	final private ExitController _exitController;
 }

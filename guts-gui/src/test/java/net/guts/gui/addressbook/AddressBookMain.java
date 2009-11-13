@@ -22,6 +22,7 @@ import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.application.AbstractAppLauncher;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
+import net.guts.gui.resource.InjectionDecisionStrategy;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
@@ -60,6 +61,9 @@ public class AddressBookMain extends AbstractAppLauncher
 			// Setup ResourceModule root bundle
 			//TODO improve API by adding 2nd bindRootBundle() that takes Class as ref. directory?
 			Resources.bindRootBundle(binder(), "/net/guts/gui/addressbook/resources");
+
+			//TODO remvoe after resource injection tests and performance comparison
+			bind(InjectionDecisionStrategy.class).to(SimpleInjectionDecisionStrategy.class);
 		}
 	}
 }

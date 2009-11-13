@@ -19,6 +19,7 @@ import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
+import java.util.Locale;
 
 import javax.swing.AbstractButton;
 import javax.swing.Icon;
@@ -27,6 +28,8 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import net.guts.event.EventModule;
+import net.guts.event.Events;
 import net.guts.gui.util.CursorInfo;
 
 import com.google.inject.AbstractModule;
@@ -90,6 +93,10 @@ public final class ResourceModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		// Make sure EventModule is installed so that we can define Channel<Locale>
+		install(new EventModule());
+		Events.bindChannel(binder(), Locale.class);
+		
 		// Bind ResourceConverters for various default types: String, boolean, int, Color...
 		bindConverter(String.class,		StringConverter.class);
 		bindConverter(Boolean.class,	BooleanConverter.class);
