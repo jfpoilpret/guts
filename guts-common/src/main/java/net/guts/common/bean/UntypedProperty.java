@@ -30,17 +30,25 @@ import static net.guts.common.type.PrimitiveHelper.*;
  */
 public class UntypedProperty
 {
+	UntypedProperty(String name, Class<?> type, Method setter, Method getter)
+	{
+		_name = name;
+		_type = type;
+		_setter = setter;
+		_getter = getter;
+	}
+
 	UntypedProperty(PropertyDescriptor descriptor)
 	{
-		_descriptor = descriptor;
 		_name = descriptor.getName();
+		_type = descriptor.getPropertyType();
 		_setter = descriptor.getWriteMethod();
 		_getter = descriptor.getReadMethod();
 	}
 
 	public Class<?> type()
 	{
-		return _descriptor.getPropertyType();
+		return _type;
 	}
 	
 	public boolean isReadable()
@@ -153,8 +161,8 @@ public class UntypedProperty
 			});
 	}
 
-	final private PropertyDescriptor _descriptor;
 	final private String _name;
+	final private Class<?> _type;
 	final private Method _setter;
 	final private Method _getter;
 }
