@@ -24,6 +24,8 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(UntypedPropertyFactoryImpl.class)
 public interface UntypedPropertyFactory
 {
+	//TODO return a list instead? possible in case there is no getter and several setters!
+	// Or forbid having several setters for the same write-only property!
 	public UntypedProperty property(String name, Class<?> bean);
 	public UntypedProperty property(String name, Class<?> bean, Class<?> type);
 //	public UntypedProperty property(String name, Class<?> bean, TypeLiteral<?> type);

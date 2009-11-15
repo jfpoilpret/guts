@@ -14,9 +14,9 @@
 
 package net.guts.common.bean;
 
-import java.beans.IntrospectionException;
-import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
 import org.slf4j.Logger;
@@ -37,14 +37,7 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		UntypedProperty property = _properties.get(key(name, bean));
 		if (property == null && !_properties.containsKey(key))
 		{
-			try
-			{
-				property = new UntypedProperty(new PropertyDescriptor(name, bean));
-			}
-			catch (IntrospectionException e)
-			{
-				// Too bad. We just record the fact in the _descriptors cache (as null value)
-			}
+			property = findProperty(bean, name);
 			_properties.put(key, property);
 		}
 		if (property == null)
@@ -72,6 +65,84 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 			return null;
 		}
 		return property;
+	}
+	
+	static private UntypedProperty findProperty(Class<?> bean, String name)
+	{
+		// First find if there is a getter (is or get property)
+		String propertyName = capitalize(name);
+		Method getter = findMethod(bean, "is" + propertyName);
+		Method setter = null;
+		if (getter == null)
+		{
+			getter = findMethod(bean, "get" + propertyName);
+		}
+		if (getter != null)
+		{
+			// Then find a setter for that property, if exists
+			Class<?> type = getter.getReturnType();
+			setter = findMethod(bean, "set" + propertyName, type);
+			// Return a new property
+			return new UntypedProperty(name, type, setter, getter);
+		}
+
+		// Else try to find a setter (in the list of all methods)
+		setter = findAnySetter(bean, "set" + propertyName);
+		if (setter != null)
+		{
+			return new UntypedProperty(name, setter.getParameterTypes()[0], setter, null);
+		}
+		
+		return null;
+	}
+	
+	static Method findMethod(Class<?> bean, String name, Class<?>... types)
+	{
+		while (bean != null)
+		{
+			try
+			{
+				return bean.getDeclaredMethod(name, types);
+			}
+			catch (Exception e)
+			{
+				bean = bean.getSuperclass();
+			}
+		}
+		return null;
+	}
+	
+	static Method findAnySetter(Class<?> bean, String name)
+	{
+		while (bean != null)
+		{
+			try
+			{
+				for (Method method: bean.getDeclaredMethods())
+				{
+					if (	method.getName().equals(name)
+						&&	method.getParameterTypes().length == 1)
+					{
+						return method;
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				// Fall back to superclass check
+			}
+			bean = bean.getSuperclass();
+		}
+		return null;
+	}
+	
+	static private String capitalize(String name)
+	{
+		if (name == null || name.length() == 0)
+		{
+			return name; 
+		}
+		return name.substring(0, 1).toUpperCase(Locale.ENGLISH) + name.substring(1);
 	}
 
 /*
