@@ -161,7 +161,7 @@ class ResourceInjectorImpl implements ResourceInjector
 		String prefix = component.getName();
 		if (prefix == null)
 		{
-			_logger.debug("Component has no name: {}", component);
+			_logger.debug("Component has no name: {}", component.getClass().getSimpleName());
 		}
 		return prefix;
 	}
