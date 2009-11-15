@@ -351,26 +351,12 @@ public abstract class AbstractPanel extends JPanel
 		return String.format(_title, getTitleFormatArgs());
 	}
 
-	/**
-	 * This method is internally used for resource injection, it is not intended 
-	 * for actual use. 
-	 * <p/>
-	 * Unfortunately it can't be made {@code private} because
-	 * Swing Application Framework resource injection works only with
-	 * {@code public} bean properties.
-	 */
-	public void setTitle(String title)
+	// Used for resource injection
+	void setTitle(String title)
 	{
 		_title = title;
 	}
 	
-	//TODO to be removed later on after enhancing guts-common UntypedPropertyFactoryImpl
-	// to work with write-only properties and also private accessors.
-	public String getTitle()
-	{
-		return _title;
-	}
-
 	/**
 	 * This method is implicitly used by the {@link #ok()} method which 
 	 * {@code @Action} is dynamically enabled based on this property.
