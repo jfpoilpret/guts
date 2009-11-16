@@ -15,6 +15,7 @@
 package net.guts.common.bean;
 
 import java.lang.reflect.Method;
+import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Singleton;
+import com.google.inject.TypeLiteral;
 
 @Singleton
 class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
@@ -56,8 +58,28 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 			return null;
 		}
 		// Check that property type matches required type
-		Class<?> actualType = property.type();
+		Class<?> actualType = property.type().getRawType();
 		if (type != actualType)
+		{
+			_logger.info(
+				"Invalid type for property `{}` in class `{}`; expected = `{}`, actual = `{}`",
+				new Object[]{name, bean, type, actualType});
+			return null;
+		}
+		return property;
+	}
+	
+	@Override public UntypedProperty property(String name, Class<?> bean, TypeLiteral<?> type)
+	{
+		// Find matching property
+		UntypedProperty property = property(name, bean);
+		if (property == null)
+		{
+			return null;
+		}
+		// Check that property type matches required type
+		TypeLiteral<?> actualType = property.type();
+		if (!type.equals(actualType))
 		{
 			_logger.info(
 				"Invalid type for property `{}` in class `{}`; expected = `{}`, actual = `{}`",
@@ -71,38 +93,51 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 	{
 		// First find if there is a getter (is or get property)
 		String propertyName = capitalize(name);
-		Method getter = findMethod(bean, "is" + propertyName);
+		Method getter = findMethod(bean, "is" + propertyName, null);
 		Method setter = null;
 		if (getter == null)
 		{
-			getter = findMethod(bean, "get" + propertyName);
+			getter = findMethod(bean, "get" + propertyName, null);
 		}
 		if (getter != null)
 		{
 			// Then find a setter for that property, if exists
-			Class<?> type = getter.getReturnType();
-			setter = findMethod(bean, "set" + propertyName, type);
+			Type type = getter.getGenericReturnType();
+			setter = findMethod(bean, "set" + propertyName, TypeLiteral.get(type));
 			// Return a new property
-			return new UntypedProperty(name, type, setter, getter);
+			return new UntypedProperty(name, TypeLiteral.get(type), setter, getter);
 		}
 
 		// Else try to find a setter (in the list of all methods)
 		setter = findAnySetter(bean, "set" + propertyName);
 		if (setter != null)
 		{
-			return new UntypedProperty(name, setter.getParameterTypes()[0], setter, null);
+			return new UntypedProperty(
+				name, TypeLiteral.get(setter.getGenericParameterTypes()[0]), setter, null);
 		}
 		
 		return null;
 	}
 	
-	static Method findMethod(Class<?> bean, String name, Class<?>... types)
+	static private Method findMethod(Class<?> bean, String name, TypeLiteral<?> type)
 	{
 		while (bean != null)
 		{
 			try
 			{
-				return bean.getDeclaredMethod(name, types);
+				if (type == null)
+				{
+					return bean.getDeclaredMethod(name);
+				}
+				Method method =  bean.getDeclaredMethod(name, type.getRawType());
+				if (method.getGenericParameterTypes()[0].equals(type.getType()))
+				{
+					return method;
+				}
+				else
+				{
+					return null;
+				}
 			}
 			catch (Exception e)
 			{
@@ -112,7 +147,7 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		return null;
 	}
 	
-	static Method findAnySetter(Class<?> bean, String name)
+	static private Method findAnySetter(Class<?> bean, String name)
 	{
 		while (bean != null)
 		{
