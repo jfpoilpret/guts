@@ -14,14 +14,13 @@
 
 package net.guts.common.bean;
 
-import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import static net.guts.common.type.PrimitiveHelper.*;
+import com.google.inject.TypeLiteral;
 
-//TODO Later move this class to guts-common!
+import static net.guts.common.type.PrimitiveHelper.*;
 
 /**
  * TODO
@@ -30,7 +29,7 @@ import static net.guts.common.type.PrimitiveHelper.*;
  */
 public class UntypedProperty
 {
-	UntypedProperty(String name, Class<?> type, Method setter, Method getter)
+	UntypedProperty(String name, TypeLiteral<?> type, Method setter, Method getter)
 	{
 		_name = name;
 		_type = type;
@@ -38,15 +37,7 @@ public class UntypedProperty
 		_getter = getter;
 	}
 
-	UntypedProperty(PropertyDescriptor descriptor)
-	{
-		_name = descriptor.getName();
-		_type = descriptor.getPropertyType();
-		_setter = descriptor.getWriteMethod();
-		_getter = descriptor.getReadMethod();
-	}
-
-	public Class<?> type()
+	public TypeLiteral<?> type()
 	{
 		return _type;
 	}
@@ -67,8 +58,7 @@ public class UntypedProperty
 		{
 			setValue(bean, null);
 		}
-		//FIXME need to care also for primitive Vs wrapper types!
-		else if (toWrapper(type()).isAssignableFrom(value.getClass()))
+		else if (toWrapper(type().getRawType()).isAssignableFrom(value.getClass()))
 		{
 			setValue(bean, value);
 		}
@@ -162,7 +152,7 @@ public class UntypedProperty
 	}
 
 	final private String _name;
-	final private Class<?> _type;
+	final private TypeLiteral<?> _type;
 	final private Method _setter;
 	final private Method _getter;
 }

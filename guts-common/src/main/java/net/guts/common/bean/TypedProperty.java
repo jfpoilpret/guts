@@ -14,6 +14,8 @@
 
 package net.guts.common.bean;
 
+import com.google.inject.TypeLiteral;
+
 //TODO Improve to make it type-safe somehow!
 /**
  * TODO
@@ -27,12 +29,10 @@ public class TypedProperty<T, V>
 		_property = property;
 	}
 
-	//TODO do we need TypeLiteral?
-	//TODO ==> not type-safe!!!!
 	@SuppressWarnings("unchecked") 
-	public Class<? extends V> type()
+	public TypeLiteral<? extends V> type()
 	{
-		return (Class<? extends V>) _property.type();
+		return (TypeLiteral<? extends V>) _property.type();
 	}
 	
 	public boolean isReadable()
