@@ -20,6 +20,7 @@ public final class PrimitiveHelper
 	{
 	}
 	
+	@SuppressWarnings("unchecked")
 	static public <T> Class<T> toPrimitive(Class<T> clazz)
 	{
 		if (clazz == Integer.class)
@@ -60,6 +61,7 @@ public final class PrimitiveHelper
 		}
 	}
 	
+	@SuppressWarnings("unchecked")
 	static public <T> Class<T> toWrapper(Class<T> clazz)
 	{
 		if (clazz == int.class)
