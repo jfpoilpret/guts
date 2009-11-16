@@ -17,8 +17,6 @@ package net.guts.common.injection;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.google.inject.spi.InjectionListener;
-
 /**
  * TODO
  *
