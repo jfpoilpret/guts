@@ -130,9 +130,7 @@
  * you display a window.
  * <p/>
  * Injection of every single resource into an object's property is normally done through
- * the Java Bean setter for that property. [FIXME] As per the current release, Guts-GUI 
- * requires the injected properties to have a public setter and a public getter, with 
- * names following Java Bean conventions.
+ * the Java Bean setter for that property.
  * <p/>
  * More specific ways to inject resources into one object can also be defined (see 
  * <a href="#rsrc5"></a> below for more details).

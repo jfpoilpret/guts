@@ -14,7 +14,6 @@
 
 package net.guts.gui.message;
 
-import net.guts.gui.resource.EnumConverter;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
@@ -27,9 +26,7 @@ public final class MessageModule extends AbstractModule
 	@Override protected void configure()
 	{
 		// Bind special ResourceConverter used by MessageFactoryImpl
-		Resources.bindConverter(binder(), MessageType.class)
-			.toInstance(new EnumConverter<MessageType>(MessageType.class));
-		Resources.bindConverter(binder(), OptionType.class)
-			.toInstance(new EnumConverter<OptionType>(OptionType.class));
+		Resources.bindEnumConverter(binder(), MessageType.class);
+		Resources.bindEnumConverter(binder(), OptionType.class);
 	}
 }

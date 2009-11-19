@@ -21,9 +21,11 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
+import java.util.List;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -200,6 +202,44 @@ public class ResourceInjectorTest
 		Assertions.assertThat(chooser.getApproveButtonMnemonic()).as("filechooser.approveButtonMnemonic").isEqualTo(KeyEvent.VK_F);
 	}
 	
+	public void checkEnumInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		InjectableComponent component = new InjectableComponent();
+		resourceInjector.injectInstance(component, NAME + "-" + "test-enum-component");
+		
+		// Check injection has worked
+		Assertions.assertThat(component.getStatus()).as("component.status").isSameAs(Status.OK);
+	}
+	
+	public void checkClassInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		InjectableComponent component = new InjectableComponent();
+		resourceInjector.injectInstance(component, NAME + "-" + "test-class-component");
+
+		// Check injection has worked
+		Assertions.assertThat(component.getKeyType()).as("component.keyType").isSameAs(String.class);
+		Assertions.assertThat(component.getValueType()).as("component.valueType").isSameAs(JPanel.class);
+	}
+	
+	public void checkListInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		InjectableComponent component = new InjectableComponent();
+		resourceInjector.injectInstance(component, NAME + "-" + "test-list-component");
+		
+		// Check injection has worked
+		Assertions.assertThat(component.getStringsList()).as("component.stringsList").containsExactly("A", "B", "C", "D");
+		Assertions.assertThat(component.getIconsList()).as("component.iconsList").isNotNull().hasSize(2);
+		
+		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
+		BufferedImage actual = createImageFromIcon(component.getIconsList().get(0));
+		Assertions.assertThat(actual).as("component.iconsList[0]").isEqualTo(expected);
+		actual = createImageFromIcon(component.getIconsList().get(1));
+		Assertions.assertThat(actual).as("component.iconsList[1]").isEqualTo(expected);
+	}
+	
 	public void checkInjectionHierarchy()
 	{
 		ResourceInjector injector = createInjector();
@@ -240,6 +280,11 @@ public class ResourceInjectorTest
 		{
 			@Override protected void configure()
 			{
+				Resources.bindEnumConverter(binder(), Status.class);
+				Resources.bindClassConverter(binder(), Object.class);
+				Resources.bindClassConverter(binder(), JComponent.class);
+				Resources.bindListConverter(binder(), String.class);
+				Resources.bindListConverter(binder(), Icon.class);
 				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
 			}
 		});
@@ -267,5 +312,60 @@ public class ResourceInjectorTest
 		{
 			graf.dispose();
 		}
+	}
+
+	static enum Status
+	{
+		OK, 
+		KO;
+	}
+	
+	static private class InjectableComponent
+	{
+		public Class<?> getKeyType()
+		{
+			return _keyType;
+		}
+		public void setKeyType(Class<?> keyType)
+		{
+			_keyType = keyType;
+		}
+		public Class<? extends JComponent> getValueType()
+		{
+			return _valueType;
+		}
+		public void setValueType(Class<? extends JComponent> valueType)
+		{
+			_valueType = valueType;
+		}
+		public void setStringsList(List<String> stringList)
+		{
+			_stringsList = stringList;
+		}
+		public List<String> getStringsList()
+		{
+			return _stringsList;
+		}
+		public void setIconsList(List<Icon> iconsList)
+		{
+			_iconsList = iconsList;
+		}
+		public List<Icon> getIconsList()
+		{
+			return _iconsList;
+		}
+		public void setStatus(Status status)
+		{
+			_status = status;
+		}
+		public Status getStatus()
+		{
+			return _status;
+		}
+		private Status _status;
+		private Class<?> _keyType;
+		private Class<? extends JComponent> _valueType;
+		private List<String> _stringsList;
+		private List<Icon> _iconsList;
 	}
 }
