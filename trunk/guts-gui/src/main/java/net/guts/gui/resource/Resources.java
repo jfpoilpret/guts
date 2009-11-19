@@ -14,6 +14,8 @@
 
 package net.guts.gui.resource;
 
+import java.util.List;
+
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -57,13 +59,6 @@ public final class Resources
 	static public <T> LinkedBindingBuilder<ResourceConverter<T>> bindConverter(
 		Binder binder, TypeLiteral<T> type)
 	{
-		// First bind a provider for ResourceConverter<T>
-		TypeLiteral<ResourceConverter<T>> converter = converterType(type);
-		if (converter != null)
-		{
-			binder.bind(converter).toProvider(new ConverterProvider<T>(type));
-		}
-		// Then start multibinding
 		LinkedBindingBuilder builder = converters(binder).addBinding(type);
 		return builder;
 	}
@@ -91,7 +86,126 @@ public final class Resources
 	{
 		return bindConverter(binder, TypeLiteral.get(type));
 	}
-	
+
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given {@code enum} 
+	 * type.
+	 * <p/>
+	 * This allows you to define properties in resource bundles which value can be one of
+	 * the enum values of a given enum type. During injection the enum value string is
+	 * converted to the real enum instance.
+	 * 
+	 * @param <T> enum type for which to create and bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type enum type for which to create and bind a {@code ResourceConverter}
+	 */
+	static public <T extends Enum<T>> void bindEnumConverter(Binder binder, Class<T> type)
+	{
+		bindConverter(binder, type).toInstance(new EnumConverter<T>(type));
+	}
+
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given 
+	 * {@code Class<? extends T>} type.
+	 * <p/>
+	 * This allows you to define properties in resource bundles which value is the fully
+	 * qualified name of a java class.
+	 * <p/>
+	 * The snippets below show a typical usage example; first in one of your 
+	 * {@link com.google.inject.Module}s:
+	 * <pre>
+	 * Resources.bindClassConverter(binder(), javax.swing.LookAndFeel.class);
+	 * </pre>
+	 * Then, in a component that will have its resources injected by Guts-GUI:
+	 * <pre>
+	 * public MyComponent
+	 * {
+	 *     ...
+	 *     public void setLookAndFeel(Class&lt;? extends LookAndFeel&gt; laf)
+	 *     {
+	 *         ...
+	 *     }
+	 * }
+	 * </pre>
+	 * This property would be set in a resource bundle this way:
+	 * <pre>
+	 * MyComponent.lookAndFeel = org.jvnet.substance.skin.SubstanceBusinessLookAndFeel
+	 * </pre>
+	 * 
+	 * @param <T> type for which to create and bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type type for which to create and bind a {@code ResourceConverter}
+	 */
+	@SuppressWarnings("unchecked") 
+	static public <T> void bindClassConverter(Binder binder, Class<T> type)
+	{
+		TypeLiteral<Class<? extends T>> literal = (TypeLiteral<Class<? extends T>>) 
+			TypeLiteral.get(Types.newParameterizedType(Class.class, Types.subtypeOf(type)));
+		bindConverter(binder, literal).toInstance(new ClassConverter<T>(type));
+	}
+
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given 
+	 * {@code List<T>} type.
+	 * <p/>
+	 * This allows you to define properties in resource bundles which value is made of
+	 * a list of ":" separated values, each of which will be converted to type {@code T}
+	 * and added to a {@link List}.
+	 * <p/>
+	 * The snippets below show a typical usage example; first in one of your 
+	 * {@link com.google.inject.Module}s:
+	 * <pre>
+	 * Resources.bindListConverter(binder(), String.class);
+	 * </pre>
+	 * Then, in a component that will have its resources injected by Guts-GUI:
+	 * <pre>
+	 * public MyComponent
+	 * {
+	 *     ...
+	 *     public void setNames(List&lt;String&gt; names)
+	 *     {
+	 *         ...
+	 *     }
+	 * }
+	 * </pre>
+	 * This property would be set in a resource bundle this way:
+	 * <pre>
+	 * MyComponent.names = Name1:Name2:Name3
+	 * </pre>
+	 * 
+	 * @param <T> type of the items in the {@link List} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type type of the items in the {@link List} for which to create and 
+	 */
+	static public <T> void bindListConverter(Binder binder, Class<T> type)
+	{
+		bindListConverter(binder, TypeLiteral.get(type));
+	}
+
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given 
+	 * {@code List<T>} type.
+	 * 
+	 * @param <T> type of the items in the {@link List} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type type of the items in the {@link List} for which to create and 
+	 * 
+	 * @see #bindListConverter(Binder, Class)
+	 */
+	@SuppressWarnings("unchecked") 
+	static public <T> void bindListConverter(Binder binder, TypeLiteral<T> type)
+	{
+		TypeLiteral<List<T>> list = (TypeLiteral<List<T>>)
+			TypeLiteral.get(Types.listOf(type.getType()));
+		bindConverter(binder, list).toInstance(new ListConverter<T>(type));
+	}
+
 	/**
 	 * Initializes a binding between a given type of objects and a matching 
 	 * {@link InstanceInjector}.
@@ -143,20 +257,6 @@ public final class Resources
 		if (bundle != null)
 		{
 			binder.bind(String.class).annotatedWith(RootBundle.class).toInstance(bundle);
-		}
-	}
-
-	@SuppressWarnings("unchecked") 
-	static private <T> TypeLiteral<ResourceConverter<T>> converterType(TypeLiteral<T> type)
-	{
-		if (type.getRawType().isPrimitive())
-		{
-			return null;
-		}
-		else
-		{
-			return (TypeLiteral<ResourceConverter<T>>) TypeLiteral.get(
-				Types.newParameterizedType(ResourceConverter.class, type.getType()));
 		}
 	}
 

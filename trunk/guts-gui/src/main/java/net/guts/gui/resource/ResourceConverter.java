@@ -19,7 +19,9 @@ import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Image;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
@@ -33,8 +35,7 @@ import net.guts.gui.util.CursorHelper;
 import net.guts.gui.util.CursorInfo;
 import net.guts.gui.util.CursorType;
 
-import com.google.inject.Inject;
-import com.google.inject.Provider;
+import com.google.inject.TypeLiteral;
 
 /**
  * Defines a converter of resources ({@link java.lang.String} values read from
@@ -101,7 +102,7 @@ public interface ResourceConverter<T>
 }
 
 // All default Resource Converters are there:
-
+//===========================================
 class StringConverter implements ResourceConverter<String>
 {
 	@Override public String convert(ResourceEntry entry)
@@ -164,18 +165,13 @@ class IconConverter implements ResourceConverter<Icon>
 	}
 }
 
-class ImageConverter implements ResourceConverter<Image>
+class ImageConverter extends AbstractCompoundResourceConverter<Image>
 {
 	static private final Logger _logger = LoggerFactory.getLogger(ImageConverter.class);
 
-	@Inject ImageConverter(Provider<ResourceConverter<Icon>> iconConverter)
-	{
-		_iconConverter = iconConverter;
-	}
-	
 	@Override public Image convert(ResourceEntry entry)
 	{
-		Icon icon = _iconConverter.get().convert(entry);
+		Icon icon = converter(Icon.class).convert(entry);
 		if (icon != null && icon instanceof ImageIcon)
 		{
 			return ((ImageIcon) icon).getImage();
@@ -186,18 +182,11 @@ class ImageConverter implements ResourceConverter<Image>
 			return null;
 		}
 	}
-	
-	final private Provider<ResourceConverter<Icon>> _iconConverter;
 }
 
-class CursorInfoConverter implements ResourceConverter<CursorInfo>
+class CursorInfoConverter extends AbstractCompoundResourceConverter<CursorInfo>
 {
 	static private final Logger _logger = LoggerFactory.getLogger(CursorInfoConverter.class);
-	
-	@Inject CursorInfoConverter(Provider<ResourceConverter<Icon>> iconConverter)
-	{
-		_iconConverter = iconConverter;
-	}
 	
 	@Override public CursorInfo convert(ResourceEntry entry)
 	{
@@ -221,7 +210,7 @@ class CursorInfoConverter implements ResourceConverter<CursorInfo>
 						entry.value());
 					return null;
 				}
-				ImageIcon icon = (ImageIcon) _iconConverter.get().convert(
+				ImageIcon icon = (ImageIcon) converter(Icon.class).convert(
 					entry.derive(tokenize.nextToken()));
 				double x = getHotspotRate(tokenize);
 				double y = getHotspotRate(tokenize);
@@ -262,20 +251,92 @@ class CursorInfoConverter implements ResourceConverter<CursorInfo>
 	static private final double	MEAN_COORDINATE	= 0.5;
 	
 	private final Map<String, CursorInfo> _cursors = new HashMap<String, CursorInfo>();
-	private final Provider<ResourceConverter<Icon>> _iconConverter;
 }
 
-class CursorConverter implements ResourceConverter<Cursor>
+class CursorConverter extends AbstractCompoundResourceConverter<Cursor>
 {
-	@Inject CursorConverter(Provider<ResourceConverter<CursorInfo>> cursorInfoConverter)
-	{
-		_cursorInfoConverter = cursorInfoConverter;
-	}
-	
 	@Override public Cursor convert(ResourceEntry entry)
 	{
-		return _cursorInfoConverter.get().convert(entry).getCursor();
+		return converter(CursorInfo.class).convert(entry).getCursor();
+	}
+}
+
+class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
+{
+	EnumConverter(Class<T> enumType)
+	{
+		_enumValues = enumType.getEnumConstants();
+	}
+
+	@Override public T convert(ResourceEntry value)
+	{
+		for (T enumValue: _enumValues)
+		{
+			if (enumValue.name().equals(value.value()))
+			{
+				return enumValue;
+			}
+		}
+		return null;
+	}
+
+	final private T[] _enumValues;
+}
+
+class ClassConverter<T> implements ResourceConverter<Class<? extends T>>
+{
+	ClassConverter(Class<T> clazz)
+	{
+		_clazz = clazz;
 	}
 	
-	private final Provider<ResourceConverter<CursorInfo>> _cursorInfoConverter;
+	@Override public Class<? extends T> convert(ResourceEntry entry)
+	{
+		if (entry.value() != null)
+		{
+			try
+			{
+				Class<?> clazz = Class.forName(entry.value());
+				if (_clazz.isAssignableFrom(clazz))
+				{
+					return clazz.asSubclass(_clazz);
+				}
+				_logger.debug("Expected {} class (or subclass), but found: {}", 
+					_clazz.getSimpleName(), entry.value());
+			}
+			catch (ClassNotFoundException e)
+			{
+				_logger.debug("Expected {} class, found: {} which doesn't exist", 
+					_clazz.getSimpleName(), entry.value());
+			}
+		}
+		return null;
+	}
+	
+	static private final Logger _logger = LoggerFactory.getLogger(ClassConverter.class);
+	
+	private final Class<T> _clazz;
+}
+
+class ListConverter<T> extends AbstractCompoundResourceConverter<List<T>>
+{
+	ListConverter(TypeLiteral<T> type)
+	{
+		_type = type;
+	}
+	
+	@Override public List<T> convert(ResourceEntry entry)
+	{
+		// Tokenize property value
+		List<T> list = new ArrayList<T>();
+		ResourceConverter<T> converter = converter(_type);
+		StringTokenizer tokenize = new StringTokenizer(entry.value(), ":");
+		while (tokenize.hasMoreTokens())
+		{
+			list.add(converter.convert(entry.derive(tokenize.nextToken())));
+		}
+		return list;
+	}
+
+	final private TypeLiteral<T> _type;
 }

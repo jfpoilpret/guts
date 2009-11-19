@@ -22,6 +22,7 @@ import net.guts.common.bean.UntypedPropertyFactory;
 import net.guts.gui.resource.ResourceMap.Key;
 
 import com.google.inject.Inject;
+import com.google.inject.TypeLiteral;
 
 /**
  * Generic {@link InstanceInjector} implementation that can inject resources
@@ -140,7 +141,7 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 		UntypedProperty property = writableProperty(key.name(), component.getClass());
 		if (property != null)
 		{
-			Class<?> type = property.type();
+			TypeLiteral<?> type = property.type();
 			// Get the value in the correct type
 			Object value = resources.getValue(key, type);
 			// Set the property with the resource value

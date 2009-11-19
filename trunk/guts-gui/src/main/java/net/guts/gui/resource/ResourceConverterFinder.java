@@ -17,8 +17,27 @@ package net.guts.gui.resource;
 import com.google.inject.ImplementedBy;
 import com.google.inject.TypeLiteral;
 
+/**
+ * Service to lookup a {@link ResourceConverter} implementation, given a type.
+ * <p/>
+ * You normally would use this service in your own {@code ResourceConverter}s,
+ * when they need access to other {@code ResourceConverter}s.
+ * In such a case though, you might rather consider deriving from 
+ * {@link AbstractCompoundResourceConverter} class instead because it already
+ * includes methods to lookup {@code ResourceConverter}s.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(ResourceConverterFinderImpl.class)
-interface ResourceConverterFinder
+public interface ResourceConverterFinder
 {
+	/**
+	 * Finds the {@code ResourceConverter} for a given {@code type}.
+	 * 
+	 * @param <T> the type for which you want the matching {@code ResourceConverter<T>}
+	 * @param type the type for which you want the matching {@code ResourceConverter<T>}
+	 * @return the {@code ResourceConverter<T>} matching {@code type}, or {@code null}
+	 * if there is no {@code ResourceConverter} for {@code type}
+	 */
 	public <T> ResourceConverter<T> getConverter(TypeLiteral<T> type);
 }
