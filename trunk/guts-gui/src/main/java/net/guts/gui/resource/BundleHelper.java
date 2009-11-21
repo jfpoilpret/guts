@@ -37,6 +37,7 @@ final class BundleHelper
 		}
 		else
 		{
+			//FIXME problems with embedded classes!
 			String pack = origin.getName();
 			pack = pack.substring(0, pack.lastIndexOf(".")).replaceAll("\\.", "/");
 			realPath = pack + "/" + realPath;
@@ -52,12 +53,12 @@ final class BundleHelper
 		{
 			if (origin != null)
 			{
-				_logger.warn("Bundle `{}` doesn't exist in context of class {}.", 
+				_logger.warn("Bundle `{}` doesn't exist in context of class {}", 
 					path, origin.getName());
 			}
 			else
 			{
-				_logger.warn("Bundle `{}` doesn't exist.", path);
+				_logger.warn("Bundle `{}` doesn't exist", path);
 			}
 		}
 		return null;

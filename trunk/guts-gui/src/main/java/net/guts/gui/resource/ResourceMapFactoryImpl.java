@@ -37,7 +37,8 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 
 	@Inject
 	ResourceMapFactoryImpl(ResourceConverterFinder finder,
-		@RootBundle @Nullable String root)
+		@BindBundle Map<Class<?>, List<String>> classBundles,
+		@BindBundle @Nullable String root)
 	{
 		if (root == null)
 		{
@@ -50,6 +51,11 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 		_finder = finder;
 		_root = getBundle(root);
+		for (Map.Entry<Class<?>, List<String>> entry: classBundles.entrySet())
+		{
+			_bundlesPerClass.put(
+				entry.getKey(), extractBundles(entry.getKey(), entry.getValue()));
+		}
 	}
 	
 	@Override public ResourceMap createResourceMap(Class<?> clazz)
@@ -106,6 +112,26 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 				//TODO default name? or class name?
 				addBundle(bundles, type, "resources");
 			}
+		}
+		return bundles;
+	}
+	
+	private List<Bundle> extractBundles(Class<?> type, List<String> uses)
+	{
+		List<Bundle> bundles = new ArrayList<Bundle>();
+		if (_root != null)
+		{
+			bundles.add(_root);
+		}
+		for (String path: uses)
+		{
+			addBundle(bundles, type, path);
+		}
+		// If uses.value() is empty, then take current class/package as bundle
+		if (uses.size() == 0)
+		{
+			//TODO default name? or class name?
+			addBundle(bundles, type, "resources");
 		}
 		return bundles;
 	}
