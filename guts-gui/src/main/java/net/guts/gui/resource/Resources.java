@@ -14,6 +14,7 @@
 
 package net.guts.gui.resource;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.google.inject.Binder;
@@ -36,6 +37,73 @@ public final class Resources
 	{
 	}
 
+	/**
+	 * Defines the "root bundle" location where {@link ResourceInjector} first search
+	 * for properties during resources injection.
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}:
+	 * <pre>
+	 * Resources.bindRootBundle(binder(), "/somepath/bundlename");
+	 * </pre>
+	 * <p/>
+	 * Defining a root bundle is optional but strongly advised. It is not supported
+	 * to define more than one root bundle (that would generate an error at Guice 
+	 * {@link com.google.inject.Injector} creation).
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param root the path to bundle file, not including the ".properties" extension; 
+	 * this file must exist on the classpath.
+	 */
+	static public void bindRootBundle(Binder binder, String root)
+	{
+		String bundle = (root.startsWith("/") ? root : "/" + root);
+		bundle = BundleHelper.checkBundleExists(bundle, null);
+		if (bundle != null)
+		{
+			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
+		}
+	}
+
+	//TODO Need the same for a whole package?
+
+	/**
+	 * Binds a list of resource bundles (defined by paths) to a given class.
+	 * This call is fully equivalent to {@link UsesBundles} annotation applied
+	 * on the given class.
+	 * <p/>
+	 * This can be useful when reusing 3rd-party components which source code you 
+	 * can't modify, but still want to be able to inject them with a default set
+	 * of resource bundles.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type the class to which you want to bind {@code bundles}
+	 * @param bundles the list of resource bundles paths to be bound to {@code type};
+	 * each path can be absolute or relative (as explained in {@link UsesBundles}.
+	 * 
+	 * @see UsesBundles
+	 */
+	static public void bindClassBundles(Binder binder, Class<?> type, String... bundles)
+	{
+		List<String> acceptedBundles = new ArrayList<String>();
+		// First check each bundle exists
+		for (String bundle: bundles)
+		{
+			//TODO optimize to avoid calling BundleHelper.checkBundleExists() twice
+			// (once here, and once in ResourceMapFactoryImpl)
+			if (BundleHelper.checkBundleExists(bundle, type) != null)
+			{
+				acceptedBundles.add(bundle);
+			}
+		}
+		// Then add the list of Bundles to type (MapBinder)
+		if (!acceptedBundles.isEmpty())
+		{
+			classBundlesMap(binder).addBinding(type).toInstance(acceptedBundles);
+		}
+	}
+	
 	/**
 	 * Initializes a binding between a given property type and a matching 
 	 * {@link ResourceConverter}.
@@ -232,32 +300,9 @@ public final class Resources
 		return builder;
 	}
 
-	/**
-	 * Defines the "root bundle" location where {@link ResourceInjector} first search
-	 * for properties during resources injection.
-	 * <p/>
-	 * This must be called from {@link com.google.inject.Module#configure(Binder)}:
-	 * <pre>
-	 * Resources.bindRootBundle(binder(), "/somepath/bundlename");
-	 * </pre>
-	 * <p/>
-	 * Defining a root bundle is optional but strongly advised. It is not supported
-	 * to define more than one root bundle (that would generate an error at Guice 
-	 * {@link com.google.inject.Injector} creation).
-	 * 
-	 * @param binder the Guice binder passed to 
-	 * {@link com.google.inject.Module#configure(Binder)}
-	 * @param root the path to bundle file, not including the ".properties" extension; 
-	 * this file must exist on the classpath.
-	 */
-	static public void bindRootBundle(Binder binder, String root)
+	static MapBinder<Class<?>, List<String>> classBundlesMap(Binder binder)
 	{
-		String bundle = (root.startsWith("/") ? root : "/" + root);
-		bundle = BundleHelper.checkBundleExists(bundle, null);
-		if (bundle != null)
-		{
-			binder.bind(String.class).annotatedWith(RootBundle.class).toInstance(bundle);
-		}
+		return MapBinder.newMapBinder(binder, CLASS_TYPE, LIST_STRING_TYPE, BindBundle.class);
 	}
 
 	static private MapBinder<TypeLiteral<?>, ResourceConverter<?>> converters(Binder binder)
@@ -274,6 +319,8 @@ public final class Resources
 		new TypeLiteral<TypeLiteral<?>>() {};
 	static private final TypeLiteral<Class<?>> CLASS_TYPE =
 		new TypeLiteral<Class<?>>() {};
+	static private final TypeLiteral<List<String>> LIST_STRING_TYPE =
+		new TypeLiteral<List<String>>() {};
 	static private final TypeLiteral<ResourceConverter<?>> RESOURCE_CONVERTER_TYPE =
 		new TypeLiteral<ResourceConverter<?>>() {};
 	static private final TypeLiteral<InstanceInjector<?>> COMPONENT_INJECTOR_TYPE = 

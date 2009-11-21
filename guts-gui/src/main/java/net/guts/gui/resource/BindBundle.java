@@ -24,6 +24,6 @@ import com.google.inject.BindingAnnotation;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER, ElementType.FIELD})
 @BindingAnnotation
-@interface RootBundle
+@interface BindBundle
 {
 }

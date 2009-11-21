@@ -122,6 +122,9 @@ public final class ResourceModule extends AbstractModule
 		bindInjector(JTabbedPane.class,		JTabbedPaneInjector.class);
 		bindInjector(JFileChooser.class,	JFileChooserInjector.class);
 
+		// Initialize MapBinder<Class<?>, List<String>> for bundles per class
+		Resources.classBundlesMap(binder());
+
 		//TODO
 		// Add type listener for automatic injection of GUI
 	}
