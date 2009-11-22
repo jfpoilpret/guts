@@ -24,6 +24,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.common.type.TypeHelper;
 import net.guts.event.Channel;
+import net.guts.gui.resource.InjectionDecisionStrategy.InjectionDecision;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -47,12 +48,22 @@ class ResourceInjectorImpl implements ResourceInjector
 	{
 		if (component != null)
 		{
-			switch (_hooks.needsInjection(component, _locale))
+			InjectionDecision decision = _hooks.needsInjection(component, _locale);
+			switch (decision)
 			{
 				case INJECT_COMPONENT_ONLY:
 				case INJECT_HIERARCHY:
 				injectComponent(component, false);
 				_hooks.injectionPerformed(component, _locale);
+				break;
+
+				case DONT_INJECT:
+				// Do nothing
+				break;
+				
+				default:
+				_logger.warn("injectComponent() unsupported InjectionDecision enum value: {}",
+					decision);
 				break;
 			}
 		}
@@ -63,7 +74,8 @@ class ResourceInjectorImpl implements ResourceInjector
 		if (component != null)
 		{
 			long time = System.nanoTime();
-			switch (_hooks.needsInjection(component, _locale))
+			InjectionDecision decision = _hooks.needsInjection(component, _locale);
+			switch (decision)
 			{
 				case INJECT_COMPONENT_ONLY:
 				injectComponent(component, false);
@@ -74,9 +86,19 @@ class ResourceInjectorImpl implements ResourceInjector
 				injectComponent(component, true);
 				_hooks.injectionPerformed(component, _locale);
 				break;
+				
+				case DONT_INJECT:
+				// Do nothing
+				break;
+
+				default:
+				_logger.warn("injectHierarchy() unsupported InjectionDecision enum value: {}",
+					decision);
+				break;
 			}
 			time = System.nanoTime() - time;
-			_logger.info("injectHierarchy {} in {} ms", component.getName(), time / 1000000);
+			_logger.debug("injectHierarchy {} in {} ms", 
+				component.getName(), time / ONE_MS_IN_NS);
 		}
 	}
 	
@@ -114,7 +136,8 @@ class ResourceInjectorImpl implements ResourceInjector
 	{
 		if (instance != null)
 		{
-			switch (_hooks.needsInjection(instance, _locale))
+			InjectionDecision decision = _hooks.needsInjection(instance, _locale);
+			switch (decision)
 			{
 				case INJECT_COMPONENT_ONLY:
 				case INJECT_HIERARCHY:
@@ -124,6 +147,15 @@ class ResourceInjectorImpl implements ResourceInjector
 				ResourceMap resources = _registry.createResourceMap(type);
 				injector.inject(instance, name, resources);
 				_hooks.injectionPerformed(instance, _locale);
+				break;
+
+				case DONT_INJECT:
+				// Do nothing
+				break;
+
+				default:
+				_logger.warn("injectInstance() unsupported InjectionDecision enum value: {}",
+					decision);
 				break;
 			}
 		}
@@ -166,6 +198,8 @@ class ResourceInjectorImpl implements ResourceInjector
 		return prefix;
 	}
 
+	static final private long ONE_MS_IN_NS = 1000000;
+		
 	final private Channel<Locale> _localeChanges;
 	final private InjectionDecisionStrategy _hooks;
 	final private ResourceMapFactory _registry;
