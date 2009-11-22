@@ -26,6 +26,17 @@ public final class TypeHelper
 	{
 	}
 	
+	static public String getPackage(Class<?> type)
+	{
+		String pack = type.getName();
+		return pack.substring(0, pack.lastIndexOf('.'));
+	}
+	
+	static public String getPackagePath(Class<?> type)
+	{
+		return getPackage(type).replaceAll("\\.", "/");
+	}
+	
 	//TODO also deal with interfaces?
 	//CSOFF: ParameterAssignmentCheck
 	static public <T> T findBestMatchInTypeHierarchy(Map<Class<?>, T> map, Class<?> type)
