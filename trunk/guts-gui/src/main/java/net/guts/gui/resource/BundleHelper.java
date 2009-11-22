@@ -27,24 +27,24 @@ final class BundleHelper
 	{
 	}
 
-	static String checkBundleExists(String path, Class<?> origin)
+	//TODO split in 2 methods?
+	// One checks that the bundle exists
+	// The other just creates the path?
+	static String checkBundleExists(String path, String origin)
 	{
 		// Check the path exists
 		String realPath = path;
 		if (path.startsWith("/"))
 		{
-			realPath = realPath.substring(1);
+			realPath = path.substring(1);
 		}
 		else
 		{
-			//FIXME problems with embedded classes!
-			String pack = origin.getName();
-			pack = pack.substring(0, pack.lastIndexOf(".")).replaceAll("\\.", "/");
-			realPath = pack + "/" + realPath;
+			realPath = origin.replaceAll("\\.", "/") + "/" + path;
 		}
 
-		URL url = Thread.currentThread().getContextClassLoader().getResource(
-			realPath + ".properties");
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		URL url = loader.getResource(realPath + ".properties");
 		if (url != null)
 		{
 			return realPath;
@@ -53,8 +53,8 @@ final class BundleHelper
 		{
 			if (origin != null)
 			{
-				_logger.warn("Bundle `{}` doesn't exist in context of class {}", 
-					path, origin.getName());
+				_logger.warn("Bundle `{}` doesn't exist in context of {}", 
+					path, origin);
 			}
 			else
 			{

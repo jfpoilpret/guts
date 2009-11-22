@@ -17,6 +17,8 @@ package net.guts.gui.resource;
 import java.util.ArrayList;
 import java.util.List;
 
+import net.guts.common.type.TypeHelper;
+
 import com.google.inject.Binder;
 import com.google.inject.TypeLiteral;
 import com.google.inject.binder.LinkedBindingBuilder;
@@ -86,17 +88,8 @@ public final class Resources
 	 */
 	static public void bindClassBundles(Binder binder, Class<?> type, String... bundles)
 	{
-		List<String> acceptedBundles = new ArrayList<String>();
 		// First check each bundle exists
-		for (String bundle: bundles)
-		{
-			//TODO optimize to avoid calling BundleHelper.checkBundleExists() twice
-			// (once here, and once in ResourceMapFactoryImpl)
-			if (BundleHelper.checkBundleExists(bundle, type) != null)
-			{
-				acceptedBundles.add(bundle);
-			}
-		}
+		List<String> acceptedBundles = acceptedBundles(type, bundles);
 		// Then add the list of Bundles to type (MapBinder)
 		if (!acceptedBundles.isEmpty())
 		{
@@ -104,6 +97,34 @@ public final class Resources
 		}
 	}
 	
+	static public void bindPackageBundles(Binder binder, Class<?> type, String... bundles)
+	{
+		// First check each bundle exists
+		List<String> acceptedBundles = acceptedBundles(type, bundles);
+		// Then add the list of Bundles to type (MapBinder)
+		if (!acceptedBundles.isEmpty())
+		{
+			String pack = TypeHelper.getPackage(type);
+			packageBundlesMap(binder).addBinding(pack).toInstance(acceptedBundles);
+		}
+	}
+	
+	static private List<String> acceptedBundles(Class<?> type, String... bundles)
+	{
+		List<String> acceptedBundles = new ArrayList<String>();
+		// First check each bundle exists
+		for (String bundle: bundles)
+		{
+			//TODO optimize to avoid calling BundleHelper.checkBundleExists() twice
+			// (once here, and once in ResourceMapFactoryImpl)
+			if (BundleHelper.checkBundleExists(bundle, TypeHelper.getPackage(type)) != null)
+			{
+				acceptedBundles.add(bundle);
+			}
+		}
+		return acceptedBundles;
+	}
+
 	/**
 	 * Initializes a binding between a given property type and a matching 
 	 * {@link ResourceConverter}.
@@ -305,6 +326,11 @@ public final class Resources
 		return MapBinder.newMapBinder(binder, CLASS_TYPE, LIST_STRING_TYPE, BindBundle.class);
 	}
 
+	static MapBinder<String, List<String>> packageBundlesMap(Binder binder)
+	{
+		return MapBinder.newMapBinder(binder, STRING_TYPE, LIST_STRING_TYPE, BindBundle.class);
+	}
+
 	static private MapBinder<TypeLiteral<?>, ResourceConverter<?>> converters(Binder binder)
 	{
 		return MapBinder.newMapBinder(binder, TYPE_LITERAL_TYPE, RESOURCE_CONVERTER_TYPE);
@@ -319,6 +345,7 @@ public final class Resources
 		new TypeLiteral<TypeLiteral<?>>() {};
 	static private final TypeLiteral<Class<?>> CLASS_TYPE =
 		new TypeLiteral<Class<?>>() {};
+	static private final TypeLiteral<String> STRING_TYPE = TypeLiteral.get(String.class);
 	static private final TypeLiteral<List<String>> LIST_STRING_TYPE =
 		new TypeLiteral<List<String>>() {};
 	static private final TypeLiteral<ResourceConverter<?>> RESOURCE_CONVERTER_TYPE =

@@ -29,7 +29,7 @@ public class BundlesAPITest
 	public void checkBindClassToOneBundle()
 	{
 		TestPanel1 panel = new TestPanel1("checkBindClassToOneBundle");
-		injectPanel(panel, "checkBindClassToOneBundle");
+		injectClassBoundPanel(panel, "checkBindClassToOneBundle");
 		// Check injection has worked from all bundles
 		Assertions.assertThat(panel.getProperty1()).as("checkBindClassToOneBundle.property1").isEqualTo("PROPERTY-1");
 		Assertions.assertThat(panel.getProperty2()).as("checkBindClassToOneBundle.property2").isEqualTo("PROPERTY-2");
@@ -38,7 +38,7 @@ public class BundlesAPITest
 	public void checkBindClassToSeveralBundles()
 	{
 		TestPanel1 panel = new TestPanel1("checkBindClassToSeveralBundles");
-		injectPanel(panel, "checkBindClassToSeveralBundles1", "checkBindClassToSeveralBundles2");
+		injectClassBoundPanel(panel, "checkBindClassToSeveralBundles1", "checkBindClassToSeveralBundles2");
 		// Check injection has worked from all bundles
 		Assertions.assertThat(panel.getProperty1()).as("checkBindClassToSeveralBundles.property1").isEqualTo("PROPERTY-1");
 		Assertions.assertThat(panel.getProperty2()).as("checkBindClassToSeveralBundles.property2").isEqualTo("OVERRIDE-PROPERTY-2");
@@ -47,19 +47,59 @@ public class BundlesAPITest
 	public void checkBindClassBundlesOverridesUsesBundles()
 	{
 		TestPanel2 panel = new TestPanel2("checkBindClassBundlesOverridesUsesBundles");
-		injectPanel(panel, "checkBindClassBundlesOverridesUsesBundles");
+		injectClassBoundPanel(panel, "checkBindClassBundlesOverridesUsesBundles");
 		// Check injection has worked from all bundles
 		Assertions.assertThat(panel.getProperty1()).as("checkBindClassBundlesOverridesUsesBundles.property1").isEqualTo("PROPERTY-1");
 		Assertions.assertThat(panel.getProperty2()).as("checkBindClassBundlesOverridesUsesBundles.property2").isEqualTo("PROPERTY-2");
 	}
-	
-	static private void injectPanel(JPanel panel, String... bundles)
+
+	public void checkBindPackageToOneBundle()
 	{
-		ResourceInjector resourceInjector = createInjector(panel.getClass(), bundles);
+		TestPanel1 panel = new TestPanel1("checkBindPackageToOneBundle");
+		injectPackageBoundPanel(panel, "checkBindPackageToOneBundle");
+		// Check injection has worked from all bundles
+		Assertions.assertThat(panel.getProperty1()).as("checkBindPackageToOneBundle.property1").isEqualTo("PROPERTY-1");
+		Assertions.assertThat(panel.getProperty2()).as("checkBindPackageToOneBundle.property2").isEqualTo("PROPERTY-2");
+	}
+	
+	public void checkBindPackageToSeveralBundles()
+	{
+		//TODO
+	}
+
+	public void checkBindClassBundlesOverridesBindPackageBundles()
+	{
+		//TODO
+	}
+
+	static private void injectPackageBoundPanel(JPanel panel, String... bundles)
+	{
+		ResourceInjector resourceInjector = createPackageBoundInjector(panel.getClass(), bundles);
 		resourceInjector.injectComponent(panel);
 	}
 	
-	static private ResourceInjector createInjector(
+	static private ResourceInjector createPackageBoundInjector(
+		final Class<?> packType, final String... bundles)
+	{
+		Injector injector = Guice.createInjector(new ResourceModule(), new AbstractModule()
+		{
+			@Override protected void configure()
+			{
+				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources2");
+				Resources.bindPackageBundles(binder(), packType, bundles);
+			}
+		});
+		ResourceInjector resourceInjector = injector.getInstance(ResourceInjector.class);
+		return resourceInjector;
+	}
+	
+	static private void injectClassBoundPanel(JPanel panel, String... bundles)
+	{
+		ResourceInjector resourceInjector = createClassBoundInjector(panel.getClass(), bundles);
+		resourceInjector.injectComponent(panel);
+	}
+	
+	static private ResourceInjector createClassBoundInjector(
 		final Class<?> type, final String... bundles)
 	{
 		Injector injector = Guice.createInjector(new ResourceModule(), new AbstractModule()
