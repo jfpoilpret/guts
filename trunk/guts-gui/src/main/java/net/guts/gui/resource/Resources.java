@@ -67,8 +67,6 @@ public final class Resources
 		}
 	}
 
-	//TODO Need the same for a whole package?
-
 	/**
 	 * Binds a list of resource bundles (defined by paths) to a given class.
 	 * This call is fully equivalent to {@link UsesBundles} annotation applied
@@ -97,6 +95,24 @@ public final class Resources
 		}
 	}
 	
+	/**
+	 * Binds a list of resource bundles (defined by paths) to a given package.
+	 * This call is fully equivalent to {@link UsesBundles} annotation applied
+	 * on the given package (in {@code package-info.java}).
+	 * <p/>
+	 * This can be useful when reusing 3rd-party components which source code you 
+	 * can't modify, but still want to be able to inject them with a default set
+	 * of resource bundles.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param type the class defining the package to which you want to bind {@code bundles}
+	 * @param bundles the list of resource bundles paths to be bound to the package 
+	 * of {@code type}; each path can be absolute or relative (as explained in 
+	 * {@link UsesBundles}.
+	 * 
+	 * @see UsesBundles
+	 */
 	static public void bindPackageBundles(Binder binder, Class<?> type, String... bundles)
 	{
 		// First check each bundle exists
