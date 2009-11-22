@@ -23,6 +23,7 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.type.TypeHelper;
 import net.guts.event.Consumes;
 
 import com.google.inject.Inject;
@@ -38,6 +39,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	@Inject
 	ResourceMapFactoryImpl(ResourceConverterFinder finder,
 		@BindBundle Map<Class<?>, List<String>> classBundles,
+		@BindBundle Map<String, List<String>> packageBundles,
 		@BindBundle @Nullable String root)
 	{
 		if (root == null)
@@ -53,8 +55,16 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		_root = getBundle(root);
 		for (Map.Entry<Class<?>, List<String>> entry: classBundles.entrySet())
 		{
-			_bundlesPerClass.put(
-				entry.getKey(), extractBundles(entry.getKey(), entry.getValue()));
+			Class<?> type = entry.getKey();
+			String origin = TypeHelper.getPackage(type);
+			String[] bundles = entry.getValue().toArray(new String[entry.getValue().size()]);
+			_bundlesPerClass.put(type, extractBundles(origin, false, bundles));
+		}
+		for (Map.Entry<String, List<String>> entry: packageBundles.entrySet())
+		{
+			String origin = entry.getKey();
+			String[] bundles = entry.getValue().toArray(new String[entry.getValue().size()]);
+			_bundlesPerPackage.put(origin, extractBundles(origin, false, bundles));
 		}
 	}
 	
@@ -67,25 +77,28 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	
 	private List<Bundle> getBundleNames(Class<?> type)
 	{
+		String origin = TypeHelper.getPackage(type);
 		List<Bundle> bundles = _bundlesPerClass.get(type);
 		if (bundles == null)
 		{
 			// If type has @UsesBundles annotation,process it
-			bundles = extractBundles(type, type.getAnnotation(UsesBundles.class));
+			bundles = extractBundles(origin, type.getAnnotation(UsesBundles.class));
 			_bundlesPerClass.put(type, bundles);
 		}
 
 		if (bundles.size() == 0 || (bundles.size() == 1 && _root != null))
 		{
 			// If there is no bundles dependency defined at class level, check package level
-			Package pack = type.getPackage();
-			if (pack != null)
+			String pack = TypeHelper.getPackage(type);
+			bundles = _bundlesPerPackage.get(pack);
+			if (bundles == null)
 			{
-				bundles = _bundlesPerPackage.get(pack);
-				if (bundles == null)
+				Package classPackage = type.getPackage();
+				if (classPackage != null)
 				{
 					// If the whole package has UsesBundles annotation, process it
-					bundles = extractBundles(type, pack.getAnnotation(UsesBundles.class));
+					bundles = extractBundles(
+						origin, classPackage.getAnnotation(UsesBundles.class));
 					_bundlesPerPackage.put(pack, bundles);
 				}
 			}
@@ -93,30 +106,19 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		return bundles;
 	}
 	
-	private List<Bundle> extractBundles(Class<?> type, UsesBundles uses)
+	private List<Bundle> extractBundles(String origin, UsesBundles uses)
 	{
-		List<Bundle> bundles = new ArrayList<Bundle>();
-		if (_root != null)
+		if (uses == null)
 		{
-			bundles.add(_root);
+			return extractBundles(origin, false);
 		}
-		if (uses != null)
+		else
 		{
-			for (String path: uses.value())
-			{
-				addBundle(bundles, type, path);
-			}
-			// If uses.value() is empty, then take current class/package as bundle
-			if (uses.value().length == 0)
-			{
-				//TODO default name? or class name?
-				addBundle(bundles, type, "resources");
-			}
+			return extractBundles(origin, true, uses.value());
 		}
-		return bundles;
 	}
 	
-	private List<Bundle> extractBundles(Class<?> type, List<String> uses)
+	private List<Bundle> extractBundles(String origin, boolean addDefaultBundle, String... uses)
 	{
 		List<Bundle> bundles = new ArrayList<Bundle>();
 		if (_root != null)
@@ -125,18 +127,18 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 		for (String path: uses)
 		{
-			addBundle(bundles, type, path);
+			addBundle(bundles, origin, path);
 		}
 		// If uses.value() is empty, then take current class/package as bundle
-		if (uses.size() == 0)
+		if (addDefaultBundle && uses.length == 0)
 		{
 			//TODO default name? or class name?
-			addBundle(bundles, type, "resources");
+			addBundle(bundles, origin, "resources");
 		}
 		return bundles;
 	}
 	
-	private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
+	private void addBundle(List<Bundle> bundles, String origin, String path)
 	{
 		String realPath = BundleHelper.checkBundleExists(path, origin);
 		if (realPath != null && !bundles.contains(realPath))
@@ -181,7 +183,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	final private Map<String, Bundle> _bundles = new HashMap<String, Bundle>();
 	final private Map<Class<?>, List<Bundle>> _bundlesPerClass = 
 		new HashMap<Class<?>, List<Bundle>>();
-	final private Map<Package, List<Bundle>> _bundlesPerPackage = 
-		new HashMap<Package, List<Bundle>>();
+	final private Map<String, List<Bundle>> _bundlesPerPackage = 
+		new HashMap<String, List<Bundle>>();
 	final private ResourceConverterFinder _finder;
 }
