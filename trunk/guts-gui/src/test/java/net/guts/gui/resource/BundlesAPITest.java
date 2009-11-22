@@ -64,12 +64,11 @@ public class BundlesAPITest
 	
 	public void checkBindPackageToSeveralBundles()
 	{
-		//TODO
-	}
-
-	public void checkBindClassBundlesOverridesBindPackageBundles()
-	{
-		//TODO
+		TestPanel1 panel = new TestPanel1("checkBindPackageToSeveralBundles");
+		injectPackageBoundPanel(panel, "checkBindPackageToSeveralBundles1", "checkBindPackageToSeveralBundles2");
+		// Check injection has worked from all bundles
+		Assertions.assertThat(panel.getProperty1()).as("checkBindPackageToSeveralBundles.property1").isEqualTo("PROPERTY-1");
+		Assertions.assertThat(panel.getProperty2()).as("checkBindPackageToSeveralBundles.property2").isEqualTo("OVERRIDE-PROPERTY-2");
 	}
 
 	static private void injectPackageBoundPanel(JPanel panel, String... bundles)
