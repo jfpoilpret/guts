@@ -208,11 +208,6 @@
 			<url>http://kenai.com/svn/guts~guts-maven-repository/snapshots/</url>
 		</repository>
 		<repository>
-			<id>fest</id>
-			<name>FEST repository</name>
-			<url>http://svn.codehaus.org/fest/m2/repo</url>
-		</repository>
-		<repository>
 			<id>java.net</id>
 			<name>Java.net repository</name>
 			<url>http://download.java.net/maven/2</url>
