@@ -126,9 +126,6 @@ public final class ResourceModule extends AbstractModule
 		Resources.classBundlesMap(binder());
 		// Initialize MapBinder<String, List<String>> for bundles per package
 		Resources.packageBundlesMap(binder());
-
-		//TODO
-		// Add type listener for automatic injection of GUI
 	}
 	
 	private <T> void bindConverter(

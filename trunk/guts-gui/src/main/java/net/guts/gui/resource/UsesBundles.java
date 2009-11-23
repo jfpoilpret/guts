@@ -36,8 +36,11 @@ import java.lang.annotation.Target;
  * <p/>
  * Paths may be relative or absolute:
  * <ul>
- * <li>relative: TODO</li>
- * <li>absolute: TODO</li>
+ * <li>absolute: starts with {@code "/"}, the resource bundle will be looked for
+ * at this exact location in the classpath</li>
+ * <li>relative: doesn't start with {@code "/"}, the resource bundle will be
+ * looked for, in the classpath, at this location, relative to the annotated
+ * class or package</li>
  * </ul>
  * <p/>
  * Note that, actually, there can be several resource bundles under the same path,
@@ -66,9 +69,8 @@ public @interface UsesBundles
 	 * <p/>
 	 * When the list of paths is empty, this means that the package of the
 	 * annotated class (or the annotated package itself) <b>is</b> the resource
-	 * bundle location path.
-	 * <p/>
-	 * TODO empty list => default name of file? "resources" or "classname"?
+	 * bundle location path. In this case, a resources bundle named {@code "resources"}
+	 * will be added to the list of bundles for the annotated class or package.
 	 */
 	String[] value() default {};
 }

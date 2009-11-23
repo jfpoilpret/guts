@@ -24,6 +24,7 @@ import com.google.inject.Singleton;
 @Singleton
 class DefaultInjectionDecisionStrategy implements InjectionDecisionStrategy
 {
+	//CSOFF: ReturnCountCheck
 	@Override public InjectionDecision needsInjection(Object component, Locale locale)
 	{
 		// Several cases based on type of component
@@ -61,6 +62,7 @@ class DefaultInjectionDecisionStrategy implements InjectionDecisionStrategy
 			return InjectionDecision.DONT_INJECT;
 		}
 	}
+	//CSON: ReturnCountCheck
 	
 	static private boolean checkLocale(Object component, Locale locale)
 	{

@@ -132,8 +132,8 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		// If uses.value() is empty, then take current class/package as bundle
 		if (addDefaultBundle && uses.length == 0)
 		{
-			//TODO default name? or class name?
-			addBundle(bundles, origin, "resources");
+			// and use "resources" as default name
+			addBundle(bundles, origin, DEFAULT_BUNDLE_NAME);
 		}
 		return bundles;
 	}
@@ -179,6 +179,8 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 	}
 
+	static final private String DEFAULT_BUNDLE_NAME = "resources";
+	
 	final private Bundle _root;
 	final private Map<String, Bundle> _bundles = new HashMap<String, Bundle>();
 	final private Map<Class<?>, List<Bundle>> _bundlesPerClass = 
