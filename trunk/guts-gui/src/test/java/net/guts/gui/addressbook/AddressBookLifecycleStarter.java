@@ -42,6 +42,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	static private final Logger _logger = 
 		LoggerFactory.getLogger(AddressBookLifecycleStarter.class);
 	
+	//CSOFF: ParameterNumberCheck
 	@Inject
 	public AddressBookLifecycleStarter(WindowController windowController, 
 		MenuFactory menuFactory, MessageFactory messageFactory,
@@ -56,6 +57,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		_exitController = exitController;
 		
 	}
+	//CSON: ParameterNumberCheck
 	
 	@Override public void startup(String[] args)
 	{
