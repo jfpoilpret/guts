@@ -143,7 +143,10 @@ public interface ResourceInjector
 	 * hence possibly listen to that events by annotating one of your class methods 
 	 * with {@link net.guts.event.Consumes}:
 	 * <pre>
-	 * TODO snippet of listening to Locale changes
+	 * &#64;Consumes public void localeChanged(Locale newLocale)
+	 * {
+	 *     // Do whatever you need to do when Locale changes
+	 * }
 	 * </pre>
 	 * <p/>
 	 * Note that {@link net.guts.gui.application.WindowController} already listens 
