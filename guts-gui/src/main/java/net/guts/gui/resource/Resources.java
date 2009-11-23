@@ -66,7 +66,37 @@ public final class Resources
 			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
 		}
 	}
-
+	
+	/**
+	 * Defines the "root bundle" location where {@link ResourceInjector} first search
+	 * for properties during resources injection.
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}:
+	 * <pre>
+	 * Resources.bindRootBundle(binder(), this.getClass(), "bundlename");
+	 * </pre>
+	 * <p/>
+	 * Defining a root bundle is optional but strongly advised. It is not supported
+	 * to define more than one root bundle (that would generate an error at Guice 
+	 * {@link com.google.inject.Injector} creation).
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param reference the class which package location serves as a reference to
+	 * determine the relative bundle location in {@code root}
+	 * @param root the path to bundle file, not including the ".properties" extension; 
+	 * this file must exist on the classpath.
+	 */
+	static public void bindRootBundle(Binder binder, Class<?> reference, String root)
+	{
+		String bundle = BundleHelper.checkBundleExists(
+			root, TypeHelper.getPackage(reference));
+		if (bundle != null)
+		{
+			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
+		}
+	}
+	
 	/**
 	 * Binds a list of resource bundles (defined by paths) to a given class.
 	 * This call is fully equivalent to {@link UsesBundles} annotation applied
