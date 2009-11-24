@@ -67,7 +67,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	{
 		// Ask for the sorted list of Bundle matching the component type
 		List<Bundle> bundles = getBundleNames(clazz);
-		return new ResourceMapImpl(bundles, _finder);
+		return new ResourceMap(bundles, _finder);
 	}
 	
 	private List<Bundle> getBundleNames(Class<?> type)
