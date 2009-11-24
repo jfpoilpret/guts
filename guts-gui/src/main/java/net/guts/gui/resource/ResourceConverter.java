@@ -47,6 +47,8 @@ import com.google.inject.TypeLiteral;
  * Your own converter may require special conventions to the {@code String} values
  * it can possibly convert.
  * <p/>
+ * FIXME javadoc below is obsolete! Use ResourceConverterFinder or better derive
+ * from AbstractCompoundResourceConverter!
  * Custom converters can possibly use other registered {@code ResourceConverter}s, 
  * and chain calls to them; for this they can require to be injected a
  * {@code Provider<ResourceConverter<T>>} and then use this provider to get the

@@ -32,7 +32,7 @@
  * {@code contact-first-name-label.text}: the left part is the unique name of the 
  * object into which resources are to be injected (in this case, a 
  * {@link javax.swing.JLabel}), the right part is the property, in that object,
- * that will be injected with the value (here {@code &First Name}</li>
+ * that will be injected with the value (here {@code &First Name})</li>
  * <li>The value (on the right of the {@code "="} sign) is a string constant that includes a 
  * special convention to determine an optional mnemonic character (as used in 
  * {@link javax.swing.JLabel#setDisplayedMnemonic(int)}): the mnemonic character is
@@ -52,24 +52,24 @@
  * in {@code PanelName-ComponentName}.
  * <p/>
  * For objects other than Swing components, they must be given a name directly through
- * {@link net.guts.gui.resource.ResourceConverter} API (see below). Optionally, they 
- * will be given, as a default name, the simple name of their class (i.e. 
- * {@link java.lang.Class#getSimpleName()}).
+ * {@link net.guts.gui.resource.ResourceConverter} API (see <a href="#rsrc3">below</a>). 
+ * Optionally, they will be given, as a default name, the simple name of their class 
+ * (i.e. the value returned by {@link java.lang.Class#getSimpleName()}).
  * <p/>
  * As seen above, some values are to be interpreted as path to some file (such as a 
  * {@code ".png"} image) and then converted into some compatible type (such as 
  * {@code Icon}). Paths can be relative or absolute:
  * <ul>
- * <li>absolute path (starts with {@code "/"}): the file is search with this exact
+ * <li>absolute path (starts with {@code "/"}): the file is searched with this exact
  * location inside the classpath</li>
- * <li>relative path: the file is search within a directory relative to the current
+ * <li>relative path: the file is searched within a directory relative to the current
  * location of the resource bundle file where the property is defined</li>
  * </ul>
  * 
  * <p/><a name="rsrc2"></a><h3>Resources searching principles</h3>
  * As when using Java {@link java.util.ResourceBundle}s, Guts-GUI will search the most
  * specific bundle for the current {@link java.util.Locale} based on the file name, e.g.
- * for a bundle named {@code "resources"}, and french {@code Locale} being current,
+ * for a bundle named {@code "resources"}, and French {@code Locale} being current,
  * resources from the file with name {@code "resources_fr.properties"} would take 
  * precedence over those defined in {@code "resources.properties"} in the same location.
  * <p/>
@@ -118,13 +118,20 @@
  * along with associated UI. Plugins can come packaged with their own resource bundles
  * and they can be dynamically added to the application without the need to modify the
  * application or its root bundle.
+ * <p/>
+ * In some situations, you need to associate resource bundles to components but you
+ * cannot possibly modify them to use {@code @UsesBundles}. In such cases, Guts-GUI
+ * also has an API that can be used, in a Guice {@link com.google.inject.Module}, to
+ * bind a class (use {@link net.guts.gui.resource.Resources#bindClassBundles}) or a 
+ * package (use {@link net.guts.gui.resource.Resources#bindPackageBundles}) to a list 
+ * of resource bundles.
  * 
  * <p/><a name="rsrc3"></a><h3>Resources injection</h3>
  * The API to perform resource injection into a given object is defined by 
  * {@link net.guts.gui.resource.ResourceInjector} which defines a couple of methods to 
  * inject GUI components or hierarchies of components, and also any object of any type.
  * <p/>
- * For your UI components, if you use Guts-GUI as a whole framework for your application,
+ * For your UI components, if you use Guts-GUI as the whole framework for your application,
  * then you won't have to explicitly call {@code ResourceInjector}: 
  * {@link net.guts.gui.application.WindowController} automatically calls it for you when
  * you display a window.
@@ -155,7 +162,26 @@
  * {@link net.guts.gui.resource.ResourceModule} in the list of
  * {@link com.google.inject.Module}s.
  * 
- * <p/><a name="rsrc4"></a><h3>Support for different types of resources</h3>
+ * <p/><a name="rsrc4"></a><h3>Locale changes</h3>
+ * Guts-GUI {@link net.guts.gui.resource.ResourceInjector} supports changes of
+ * {@link Locale} almost transparently. Only "almost" because unfortunately Java
+ * has not listener mechanism for changes of the current {@code Locale}.
+ * <p/>
+ * Hence, Guts-GUI option is to provide an API to change the current {@code Locale};
+ * this API should be used in lieu of {@link java.util.Locale#setDefault}. By calling
+ * {@link net.guts.gui.resource.ResourceInjector#setLocale}, you:
+ * <ul>
+ * <li>implicitly change the current {@code Locale} as if calling 
+ * {@link java.util.Locale#setDefault}</li>
+ * <li>make sure that Guts-GUI internal resource caches are flushed and refreshed for the
+ * new current {@code Locale}</li>
+ * <li>automatically trigger an update of all visible windows or dialogs to display in
+ * the new {@code Locale}</li>
+ * <li>enable a mechanism for your own code to listen to {@code Locale} change events, 
+ * through a Guts-Events {@code Channel<Locale>}</li>
+ * </ul>
+ * 
+ * <p/><a name="rsrc5"></a><h3>Support for different types of resources</h3>
  * Guts-GUI is able to convert string values, read from resource bundles, into various 
  * types, as required by the property to be injected into the object, target of resource
  * injection.
@@ -168,13 +194,22 @@
  * with Guts-GUI through one of both {@link net.guts.gui.resource.Resources#bindConverter} 
  * methods.
  * <p/>
- * Guts-GUI also defines a generic {@link net.guts.gui.resource.EnumConverter} class that 
- * allows you to support conversion of a string value into a given {@code enum} instance.
+ * Guts-GUI also defines various generic converters for {@code enum T}, 
+ * {@code Class<? extends T>}, {@code List<T>} types; binding these converters for any
+ * given type {@code T} is possible through one of the numerous methods of
+ * {@link net.guts.gui.resource.Resources}:
+ * <ul>
+ * <li>{@link net.guts.gui.resource.Resources#bindEnumConverter}</li>
+ * <li>{@link net.guts.gui.resource.Resources#bindClassConverter}</li>
+ * <li>{@link net.guts.gui.resource.Resources#bindListConverter}</li>
+ * </ul>
  * 
- * <p/><a name="rsrc5"></a><h3>Support for special injection (other than bean setters)</h3>
+ * <p/><a name="rsrc6"></a><h3>Support for special injection (other than bean setters)</h3>
  * Guts-GUI is able to inject any kind of resource into any property of any object, 
- * provided that this property has public getter and setter methods, named according
- * to Java Beans specifications.
+ * provided that this property has a setter method, named according to Java Beans 
+ * specifications. Note that for a property to be injected, it doesn't need a getter and its
+ * setter doesn't even need to be {@code public}; Guts-GUI resource injection will work
+ * fine with {@code protected}, {@code private} or "package private" setters.
  * <p/>
  * Unfortunately, sometimes simply using property setters is not an option, or a
  * single resource may need to be broken down and injected into several properties
@@ -183,7 +218,30 @@
  * allows to create and register special {@link net.guts.gui.resource.InstanceInjector}s 
  * to deal with specific types of objects into which resources are to be injected.
  * <p/>
- * TODO InstanceInjector example, {@link net.guts.gui.resource.Resources#bindInstanceInjector}
+ * Most often, you will create your own {@code InstanceInjector} by subclassing
+ * {@link net.guts.gui.resource.BeanPropertiesInjector} and override one method,
+ * like in the following example from Guts-GUI internals:
+ * <pre>
+ * class JLabelInjector extends BeanPropertiesInjector&lt;JLabel&gt;
+ * {
+ *     &#64;Override protected boolean handleSpecialProperty(
+ *         JLabel label, Key key, ResourceMap resources)
+ *     {
+ *         // Special handling for mnemonics
+ *         if (&quot;text&quot;.equals(key.name()))
+ *         {
+ *             String value = resources.getValue(key, String.class);
+ *             MnemonicInfo info = MnemonicInfo.extract(value);
+ *             // Set the property with the resource value
+ *             label.setText(info.getText());
+ *             label.setDisplayedMnemonic(info.getMnemonic());
+ *             label.setDisplayedMnemonicIndex(info.getMnemonicIndex());
+ *             return true;
+ *         }
+ *         return false;
+ *     }
+ * }
+ * </pre>
  * <p/>
  * Guts-GUI supported types of components are listed in 
  * {@link net.guts.gui.resource.ResourceModule}.

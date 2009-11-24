@@ -15,12 +15,15 @@
 package net.guts.gui.resource;
 
 import java.io.InputStream;
+import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import net.guts.common.type.TypeHelper;
 
 final class Bundle
 {
@@ -107,6 +110,47 @@ final class Bundle
 		}
 		Bundle that = (Bundle) o;
 		return this._path.equals(that._path);
+	}
+
+	static String checkBundleExists(String path, Class<?> origin)
+	{
+		// Build the full path
+		String sourcePath = null;
+		if (origin != null)
+		{
+			sourcePath = TypeHelper.getPackagePath(origin);
+		}
+		// Check the path exists
+		String realPath = null;
+		if (path.startsWith("/"))
+		{
+			realPath = path.substring(1);
+		}
+		else
+		{
+			realPath = sourcePath + "/" + path;
+		}
+	
+		// Check the path exists
+		ClassLoader loader = Thread.currentThread().getContextClassLoader();
+		URL url = loader.getResource(realPath + ".properties");
+		if (url != null)
+		{
+			return realPath;
+		}
+		if (_logger.isWarnEnabled())
+		{
+			if (sourcePath != null)
+			{
+				_logger.warn("Bundle `{}` doesn't exist in context of {}", 
+					path, origin.getSimpleName());
+			}
+			else
+			{
+				_logger.warn("Bundle `{}` doesn't exist", path);
+			}
+		}
+		return null;
 	}
 
 	private Locale _locale;

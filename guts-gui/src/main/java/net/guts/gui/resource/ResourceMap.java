@@ -40,7 +40,7 @@ import com.google.inject.TypeLiteral;
 public interface ResourceMap
 {
 	/**
-	 * Returns all resource keys in {@code this} ResourceMap, starting with prefix. 
+	 * Returns all resource keys in {@code this} ResourceMap, starting with {@code prefix}. 
 	 * {@code prefix} will be searched in property names like {@code "prefix.name"};
 	 * note the presence of the dot after {@code prefix}, without it, a given property
 	 * is not retained in the returned keys.

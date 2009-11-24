@@ -47,12 +47,12 @@ import com.google.inject.ImplementedBy;
  * declared by the class, then the second, and so forth.
  * <p/>
  * In resource bundles, properties are always named according to the convention:
- * {@literal objectname.propertyname}, where:
+ * {@code objectname.propertyname}, where:
  * <ul>
- * <li>{@literal objectname} is either the name of the component as returned by 
+ * <li>{@code objectname} is either the name of the component as returned by 
  * {@link java.awt.Component#getName()} or, for another type of object, the name
  * passed to {@link #injectInstance(Object, String)}</li>
- * <li>{@literal propertyname} is the name of the java bean property to be injected 
+ * <li>{@code propertyname} is the name of the java bean property to be injected 
  * into the component.</li>
  * </ul>
  * <p/>
@@ -85,7 +85,7 @@ public interface ResourceInjector
 	 * Inject properties from resource bundles into a GUI component, using its
 	 * {@code name} as a key to discover the properties to be injected. This
 	 * method only injects {@code component} itself and doesn't care about its 
-	 * children (it {@code component} is a {@link java.awt.Container}.
+	 * children (it {@code component} is a {@link java.awt.Container}).
 	 * <p/>
 	 * If you want to inject a component and its children, then use 
 	 * {@link #injectHierarchy}.
@@ -150,7 +150,7 @@ public interface ResourceInjector
 	 * </pre>
 	 * <p/>
 	 * Note that {@link net.guts.gui.application.WindowController} already listens 
-	 * to {@code Locale} changes and force a new resource injection to all currently
+	 * to {@code Locale} changes and forces a new resource injection to all currently
 	 * visible Windows.
 	 * 
 	 * @param locale the new {@code Locale} to set as default for next resource 
