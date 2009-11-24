@@ -19,6 +19,8 @@ import java.net.URL;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.type.TypeHelper;
+
 final class BundleHelper
 {
 	static final private Logger _logger = LoggerFactory.getLogger(BundleHelper.class);
@@ -27,22 +29,26 @@ final class BundleHelper
 	{
 	}
 
-	//TODO split in 2 methods?
-	// One checks that the bundle exists
-	// The other just creates the path?
-	static String checkBundleExists(String path, String origin)
+	static String checkBundleExists(String path, Class<?> origin)
 	{
+		// Build the full path
+		String sourcePath = null;
+		if (origin != null)
+		{
+			sourcePath = TypeHelper.getPackagePath(origin);
+		}
 		// Check the path exists
-		String realPath = path;
+		String realPath = null;
 		if (path.startsWith("/"))
 		{
 			realPath = path.substring(1);
 		}
 		else
 		{
-			realPath = origin.replaceAll("\\.", "/") + "/" + path;
+			realPath = sourcePath + "/" + path;
 		}
 
+		// Check the path exists
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
 		URL url = loader.getResource(realPath + ".properties");
 		if (url != null)
@@ -51,10 +57,10 @@ final class BundleHelper
 		}
 		if (_logger.isWarnEnabled())
 		{
-			if (origin != null)
+			if (sourcePath != null)
 			{
 				_logger.warn("Bundle `{}` doesn't exist in context of {}", 
-					path, origin);
+					path, origin.getSimpleName());
 			}
 			else
 			{

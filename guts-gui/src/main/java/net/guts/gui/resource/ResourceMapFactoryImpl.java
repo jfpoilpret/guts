@@ -55,16 +55,11 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		_root = getBundle(root);
 		for (Map.Entry<Class<?>, List<String>> entry: classBundles.entrySet())
 		{
-			Class<?> type = entry.getKey();
-			String origin = TypeHelper.getPackage(type);
-			String[] bundles = entry.getValue().toArray(new String[entry.getValue().size()]);
-			_bundlesPerClass.put(type, extractBundles(origin, false, bundles));
+			_bundlesPerClass.put(entry.getKey(), getBundles(entry.getValue()));
 		}
 		for (Map.Entry<String, List<String>> entry: packageBundles.entrySet())
 		{
-			String origin = entry.getKey();
-			String[] bundles = entry.getValue().toArray(new String[entry.getValue().size()]);
-			_bundlesPerPackage.put(origin, extractBundles(origin, false, bundles));
+			_bundlesPerPackage.put(entry.getKey(), getBundles(entry.getValue()));
 		}
 	}
 	
@@ -77,12 +72,11 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	
 	private List<Bundle> getBundleNames(Class<?> type)
 	{
-		String origin = TypeHelper.getPackage(type);
 		List<Bundle> bundles = _bundlesPerClass.get(type);
 		if (bundles == null)
 		{
 			// If type has @UsesBundles annotation,process it
-			bundles = extractBundles(origin, type.getAnnotation(UsesBundles.class));
+			bundles = extractBundles(type, type.getAnnotation(UsesBundles.class));
 			_bundlesPerClass.put(type, bundles);
 		}
 
@@ -98,7 +92,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 				{
 					// If the whole package has UsesBundles annotation, process it
 					bundles = extractBundles(
-						origin, classPackage.getAnnotation(UsesBundles.class));
+						type, classPackage.getAnnotation(UsesBundles.class));
 					_bundlesPerPackage.put(pack, bundles);
 				}
 			}
@@ -106,39 +100,31 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		return bundles;
 	}
 	
-	private List<Bundle> extractBundles(String origin, UsesBundles uses)
-	{
-		if (uses == null)
-		{
-			return extractBundles(origin, false);
-		}
-		else
-		{
-			return extractBundles(origin, true, uses.value());
-		}
-	}
-	
-	private List<Bundle> extractBundles(String origin, boolean addDefaultBundle, String... uses)
+	private List<Bundle> extractBundles(Class<?> origin, UsesBundles uses)
 	{
 		List<Bundle> bundles = new ArrayList<Bundle>();
 		if (_root != null)
 		{
 			bundles.add(_root);
 		}
-		for (String path: uses)
+
+		if (uses != null)
 		{
-			addBundle(bundles, origin, path);
-		}
-		// If uses.value() is empty, then take current class/package as bundle
-		if (addDefaultBundle && uses.length == 0)
-		{
-			// and use "resources" as default name
-			addBundle(bundles, origin, DEFAULT_BUNDLE_NAME);
+			for (String path: uses.value())
+			{
+				addBundle(bundles, origin, path);
+			}
+			// If uses.value() is empty, then take current class/package as bundle
+			if (uses.value().length == 0)
+			{
+				// and use "resources" as default name
+				addBundle(bundles, origin, DEFAULT_BUNDLE_NAME);
+			}
 		}
 		return bundles;
 	}
 	
-	private void addBundle(List<Bundle> bundles, String origin, String path)
+	private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
 	{
 		String realPath = BundleHelper.checkBundleExists(path, origin);
 		if (realPath != null && !bundles.contains(realPath))
@@ -151,6 +137,19 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 	}
 
+	private List<Bundle> getBundles(List<String> fullPathBundles)
+	{
+		List<Bundle> bundles = new ArrayList<Bundle>(fullPathBundles.size());
+		if (_root != null)
+		{
+			bundles.add(_root);
+		}
+		for (String bundle: fullPathBundles)
+		{
+			bundles.add(getBundle(bundle));
+		}
+		return bundles;
+	}
 	private Bundle getBundle(String path)
 	{
 		if (path == null)

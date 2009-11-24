@@ -89,8 +89,7 @@ public final class Resources
 	 */
 	static public void bindRootBundle(Binder binder, Class<?> reference, String root)
 	{
-		String bundle = BundleHelper.checkBundleExists(
-			root, TypeHelper.getPackage(reference));
+		String bundle = BundleHelper.checkBundleExists(root, reference);
 		if (bundle != null)
 		{
 			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
@@ -161,11 +160,10 @@ public final class Resources
 		// First check each bundle exists
 		for (String bundle: bundles)
 		{
-			//TODO optimize to avoid calling BundleHelper.checkBundleExists() twice
-			// (once here, and once in ResourceMapFactoryImpl)
-			if (BundleHelper.checkBundleExists(bundle, TypeHelper.getPackage(type)) != null)
+			String fullPathBundle = BundleHelper.checkBundleExists(bundle, type);
+			if (fullPathBundle != null)
 			{
-				acceptedBundles.add(bundle);
+				acceptedBundles.add(fullPathBundle);
 			}
 		}
 		return acceptedBundles;
