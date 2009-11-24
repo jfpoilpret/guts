@@ -60,7 +60,7 @@ public final class Resources
 	static public void bindRootBundle(Binder binder, String root)
 	{
 		String bundle = (root.startsWith("/") ? root : "/" + root);
-		bundle = BundleHelper.checkBundleExists(bundle, null);
+		bundle = Bundle.checkBundleExists(bundle, null);
 		if (bundle != null)
 		{
 			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
@@ -89,7 +89,7 @@ public final class Resources
 	 */
 	static public void bindRootBundle(Binder binder, Class<?> reference, String root)
 	{
-		String bundle = BundleHelper.checkBundleExists(root, reference);
+		String bundle = Bundle.checkBundleExists(root, reference);
 		if (bundle != null)
 		{
 			binder.bind(String.class).annotatedWith(BindBundle.class).toInstance(bundle);
@@ -160,7 +160,7 @@ public final class Resources
 		// First check each bundle exists
 		for (String bundle: bundles)
 		{
-			String fullPathBundle = BundleHelper.checkBundleExists(bundle, type);
+			String fullPathBundle = Bundle.checkBundleExists(bundle, type);
 			if (fullPathBundle != null)
 			{
 				acceptedBundles.add(fullPathBundle);

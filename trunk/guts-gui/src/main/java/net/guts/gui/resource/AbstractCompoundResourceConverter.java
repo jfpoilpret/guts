@@ -32,6 +32,10 @@ import com.google.inject.TypeLiteral;
  */
 public abstract class AbstractCompoundResourceConverter<T> implements ResourceConverter<T>
 {
+	protected AbstractCompoundResourceConverter()
+	{
+	}
+	
 	@Inject void setFinder(ResourceConverterFinder finder)
 	{
 		_finder = finder;

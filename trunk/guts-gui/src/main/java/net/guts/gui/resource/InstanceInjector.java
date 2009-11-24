@@ -79,7 +79,8 @@ public interface InstanceInjector<T>
 	 * relevant resources properties from {@code resources}
 	 * @param resources the list of all resources available from the resource bundles
 	 * used by the class of {@code instance} (as defined by the {@link UsesBundles}
-	 * annotation on that class
+	 * annotation on that class, or as arguments passed to {@link Resources#bindClassBundles}
+	 * called for that class)
 	 */
 	public void inject(T instance, String prefix, ResourceMap resources);
 }
