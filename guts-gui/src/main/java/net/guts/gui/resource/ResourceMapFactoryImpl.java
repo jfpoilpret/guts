@@ -38,6 +38,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 
 	@Inject
 	ResourceMapFactoryImpl(ResourceConverterFinder finder,
+		ResourcePreprocessor preprocessor,
 		@BindBundle Map<Class<?>, List<String>> classBundles,
 		@BindBundle Map<String, List<String>> packageBundles,
 		@BindBundle @Nullable String root)
@@ -52,6 +53,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 				"annotated with @UsesBundles.");
 		}
 		_finder = finder;
+		_preprocessor = preprocessor;
 		_root = getBundle(root);
 		for (Map.Entry<Class<?>, List<String>> entry: classBundles.entrySet())
 		{
@@ -67,7 +69,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	{
 		// Ask for the sorted list of Bundle matching the component type
 		List<Bundle> bundles = getBundleNames(clazz);
-		return new ResourceMap(bundles, _finder);
+		return new ResourceMap(bundles, _finder, _preprocessor);
 	}
 	
 	private List<Bundle> getBundleNames(Class<?> type)
@@ -187,4 +189,5 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	final private Map<String, List<Bundle>> _bundlesPerPackage = 
 		new HashMap<String, List<Bundle>>();
 	final private ResourceConverterFinder _finder;
+	final private ResourcePreprocessor _preprocessor;
 }

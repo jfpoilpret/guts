@@ -365,6 +365,32 @@ public final class Resources
 		return builder;
 	}
 
+	/**
+	 * Overrides the default {@link InjectionDecisionStrategy} used by 
+	 * {@link ResourceInjector}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Resources.bindInjectionStrategy(binder()).to(MyStrategy.class);
+	 * </pre>
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 * <p/>
+	 * Note that you normally won't need to override Guts-GUI default strategy that,
+	 * for Swing components, checks if the component was already injected for the
+	 * given {@code Locale}, and forces injection only if needed.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * to an {@link InjectionDecisionStrategy}
+	 */
+	static public LinkedBindingBuilder<InjectionDecisionStrategy> bindInjectionStrategy(
+		Binder binder)
+	{
+		return binder.bind(InjectionDecisionStrategy.class);
+	}
+
 	static MapBinder<Class<?>, List<String>> classBundlesMap(Binder binder)
 	{
 		return MapBinder.newMapBinder(binder, CLASS_TYPE, LIST_STRING_TYPE, BindBundle.class);
