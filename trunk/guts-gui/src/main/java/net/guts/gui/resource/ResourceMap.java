@@ -49,7 +49,8 @@ final public class ResourceMap
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ResourceMap.class);
 
-	ResourceMap(List<Bundle> bundles, ResourceConverterFinder finder)
+	ResourceMap(List<Bundle> bundles, ResourceConverterFinder finder, 
+		ResourcePreprocessor preprocessor)
 	{
 		_bundles = bundles;
 		for (Bundle bundle: bundles)
@@ -57,8 +58,28 @@ final public class ResourceMap
 			_allKeys.addAll(bundle.properties().keySet());
 		}
 		_finder = finder;
+		_preprocessor = preprocessor;
 	}
 
+	/**
+	 * Returns all resource keys in {@code this} ResourceMap, starting with {@code prefix}. 
+	 * {@code prefix} will be searched in property names like {@code "prefix.name"};
+	 * note the presence of the dot after {@code prefix}, without it, a given property
+	 * is not retained in the returned keys.
+	 * <p/>
+	 * For a GUI component, {@code prefix} is its name as set by 
+	 * {@link java.awt.Component#setName}; for other objects, it is, by default, the
+	 * name of that object class, but it can be different if explicitly required in
+	 * {@link ResourceInjector#injectInstance(Object, String)}.
+	 * 
+	 * @param prefix the prefix on which to filter out the returned set of keys
+	 * @return the set of keys that match {@code prefix} in {@code this} ResourceMap
+	 */
+	public Set<Key> keys(String prefix)
+	{
+		return new KeySet(prefix, _allKeys.subSet(prefix + ".", prefix + "/"));
+	}
+	
 	/**
 	 * Retrieves the value of the property with the given {@code key}.
 	 * The original {@code String} value from the resource bundle is converted
@@ -80,15 +101,14 @@ final public class ResourceMap
 	 */
 	public <T> T getValue(Key key, TypeLiteral<T> type)
 	{
+		String fullKey = key.fullKey();
 		ResourceConverter<T> converter = _finder.getConverter(type);
 		if (converter == null)
 		{
-			_logger.debug(
-				"getValue(prefix = `{}`, key = `{}`) can't find converter for type {}",
-				new Object[]{key.prefix(), key.name(), type});
+			_logger.debug("getValue(key = `{}`) can't find converter for type {}", 
+				fullKey, type);
 			return null;
 		}
-		String fullKey = key.prefix() + "." + key.name();
 		if (!_allKeys.contains(fullKey))
 		{
 			return null;
@@ -97,12 +117,16 @@ final public class ResourceMap
 		{
 			if (bundle.properties().containsKey(fullKey))
 			{
-				ResourceEntry entry = new ResourceEntry(
-					bundle.properties().get(fullKey), bundle.source());
+				// First pre-process raw string value
+				String value = _preprocessor.convert(this, bundle.properties().get(fullKey));
+				// Then require conversion
+				ResourceEntry entry = new ResourceEntry(value, bundle.source());
 				return converter.convert(entry);
 			}
 		}
 		// Cannot reach this location normally
+		_logger.error(
+			"Impossible error! getValue() for key `{}` couldn't find property", fullKey);
 		return null;
 	}
 
@@ -131,22 +155,69 @@ final public class ResourceMap
 	}
 
 	/**
-	 * Returns all resource keys in {@code this} ResourceMap, starting with {@code prefix}. 
-	 * {@code prefix} will be searched in property names like {@code "prefix.name"};
-	 * note the presence of the dot after {@code prefix}, without it, a given property
-	 * is not retained in the returned keys.
+	 * Get a general {@link Key} given a complete {@code name}. This allows to:
+	 * <ul>
+	 * <li>check that this {@code ResourceMap} contains a property which complete name
+	 * is {@code name}</li>
+	 * <li>obtain a {@link Key} referring to that property, whcih can then be used with other
+	 * {@code ResourceMap} methods, like {@link #getValue(Key, Class)}</li>
+	 * </ul>
 	 * <p/>
-	 * For a GUI component, {@code prefix} is its name as set by 
-	 * {@link java.awt.Component#setName}; for other objects, it is, by default, the
-	 * name of that object class, but it can be different if explicitly required in
-	 * {@link ResourceInjector#injectInstance(Object, String)}.
+	 * You normally won't need to use this method, except if you are writing your own
+	 * implementation of {@link ResourcePreprocessor}.
 	 * 
-	 * @param prefix the prefix on which to filter out the returned set of keys
-	 * @return the set of keys that match {@code prefix} in {@code this} ResourceMap
+	 * @param name the full name of the property we want to look up in this 
+	 * {@code ResourceMap}
+	 * @return a new {@code Key} that points to property with name {@code name}, or 
+	 * {@code null} if there is no property named {@code name}
 	 */
-	public Set<Key> keys(String prefix)
+	public Key getKey(String name)
 	{
-		return new KeySet(prefix, _allKeys.subSet(prefix + ".", prefix + "/"));
+		if (_allKeys.contains(name))
+		{
+			return new Key(name, null);
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	/**
+	 * The unique identifier of a resource property in a {@code ResourceMap}.
+	 *
+	 * @author Jean-Francois Poilpret
+	 */
+	static final public class Key
+	{
+		private Key(String key, String prefix)
+		{
+			_key = key;
+			_prefix = prefix;
+		}
+
+		/**
+		 * Name part of {@code this} resource key. This is the name of the bean
+		 * property to be injected into an object.
+		 * <p/>
+		 * Used by {@link InstanceInjector}s to find out which method to call
+		 * to set the property value in the objects they must inject resources 
+		 * into.
+		 * 
+		 * @return name of this key
+		 */
+		public String name()
+		{
+			return _key;
+		}
+
+		private String fullKey()
+		{
+			return (_prefix == null ? "" : _prefix) + "." + _key;
+		}
+		
+		final private String _key;
+		final private String _prefix;
 	}
 	
 	// The classes below are used to dynamically remove prefix from the property keys
@@ -210,54 +281,8 @@ final public class ResourceMap
 		final private Iterator<String> _iterator;
 	}
 	
-	/**
-	 * The unique identifier of a resource property in a {@code ResourceMap}.
-	 *
-	 * @author Jean-Francois Poilpret
-	 */
-	static final public class Key
-	{
-		private Key(String key, String prefix)
-		{
-			_key = key;
-			_prefix = prefix;
-		}
-
-		/**
-		 * Name part of {@code this} resource key. This is the name of the bean
-		 * property to be injected into an object.
-		 * <p/>
-		 * Used by {@link InstanceInjector}s to find out which method to call
-		 * to set the property value in the objects they must inject resources 
-		 * into.
-		 * 
-		 * @return name of this key
-		 */
-		public String name()
-		{
-			return _key;
-		}
-
-		/**
-		 * Prefix part of {@code this} resource key. This is the same as the 
-		 * {@code prefix} argument passed to {@link ResourceMap#keys(String)},
-		 * from which this {@code Key} is issued.
-		 * <p/>
-		 * The prefix of a resource matches the name of an object to be injected
-		 * with its resources.
-		 * 
-		 * @return the prefix of this key
-		 */
-		public String prefix()
-		{
-			return _prefix;
-		}
-		
-		final private String _key;
-		final private String _prefix;
-	}
-	
 	final private List<Bundle> _bundles;
 	final private NavigableSet<String> _allKeys = new TreeSet<String>();
 	final private ResourceConverterFinder _finder;
+	final private ResourcePreprocessor _preprocessor;
 }
