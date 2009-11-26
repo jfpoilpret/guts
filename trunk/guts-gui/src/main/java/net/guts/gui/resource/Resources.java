@@ -391,6 +391,13 @@ public final class Resources
 		return binder.bind(InjectionDecisionStrategy.class);
 	}
 
+	//TODO javadoc
+	static public LinkedBindingBuilder<ResourcePreprocessor> bindResourcePreprocessor(
+		Binder binder)
+	{
+		return binder.bind(ResourcePreprocessor.class);
+	}
+
 	static MapBinder<Class<?>, List<String>> classBundlesMap(Binder binder)
 	{
 		return MapBinder.newMapBinder(binder, CLASS_TYPE, LIST_STRING_TYPE, BindBundle.class);
