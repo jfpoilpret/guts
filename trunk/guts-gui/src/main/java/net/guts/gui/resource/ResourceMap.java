@@ -213,7 +213,7 @@ final public class ResourceMap
 
 		private String fullKey()
 		{
-			return (_prefix == null ? "" : _prefix) + "." + _key;
+			return (_prefix == null ? "" : _prefix + ".")+ _key;
 		}
 		
 		final private String _key;
