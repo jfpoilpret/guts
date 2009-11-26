@@ -46,6 +46,16 @@ public class ResourceWithSymbolsInjectionTest
 		Assertions.assertThat(component.getProperty()).as("component.property").isEqualTo("VALUE-SYMBOL");
 	}
 
+	public void checkMultiLevelSymbolIndirection()
+	{
+		ResourceInjector injector = createInjector(false);
+		InjectableComponent component = new InjectableComponent();
+		injector.injectInstance(component, NAME + "-checkMultiLevelSymbolIndirection");
+		
+		// Check injection has worked
+		Assertions.assertThat(component.getProperty()).as("component.property").isEqualTo("VALUE-SOMETHING-ELSE");
+	}
+	
 	static private ResourceInjector createInjector(final boolean addBundle)
 	{
 		Injector injector = Guice.createInjector(new ResourceModule(), new AbstractModule()
