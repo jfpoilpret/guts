@@ -391,7 +391,22 @@ public final class Resources
 		return binder.bind(InjectionDecisionStrategy.class);
 	}
 
-	//TODO javadoc
+	/**
+	 * Overrides the default {@link ResourcePreprocessor} used by 
+	 * {@link ResourceInjector}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Resources.bindResourcePreprocessor(binder()).to(MyPreprocessor.class);
+	 * </pre>
+	 * <p/>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * to a {@link ResourceInjector}
+	 */
 	static public LinkedBindingBuilder<ResourcePreprocessor> bindResourcePreprocessor(
 		Binder binder)
 	{
