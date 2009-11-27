@@ -283,8 +283,8 @@ public class ResourceInjectorTest
 				Resources.bindEnumConverter(binder(), Status.class);
 				Resources.bindClassConverter(binder(), Object.class);
 				Resources.bindClassConverter(binder(), JComponent.class);
-				Resources.bindListConverter(binder(), String.class);
-				Resources.bindListConverter(binder(), Icon.class);
+				Resources.bindListConverter(binder(), String.class, ":");
+				Resources.bindListConverter(binder(), Icon.class, ":");
 				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
 			}
 		});

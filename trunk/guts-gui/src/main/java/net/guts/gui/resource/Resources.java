@@ -313,10 +313,13 @@ public final class Resources
 	 * @param binder the Guice binder passed to 
 	 * {@link com.google.inject.Module#configure(Binder)}
 	 * @param type type of the items in the {@link List} for which to create and 
+	 * @param delimiters list of delimiters characters that should be used to extract
+	 * each item of the list in the original resource string value
 	 */
-	static public <T> void bindListConverter(Binder binder, Class<T> type)
+	static public <T> void bindListConverter(
+		Binder binder, Class<T> type, String delimiters)
 	{
-		bindListConverter(binder, TypeLiteral.get(type));
+		bindListConverter(binder, TypeLiteral.get(type), delimiters);
 	}
 
 	/**
@@ -328,15 +331,18 @@ public final class Resources
 	 * @param binder the Guice binder passed to 
 	 * {@link com.google.inject.Module#configure(Binder)}
 	 * @param type type of the items in the {@link List} for which to create and 
+	 * @param delimiters list of delimiters characters that should be used to extract
+	 * each item of the list in the original resource string value
 	 * 
 	 * @see #bindListConverter(Binder, Class)
 	 */
 	@SuppressWarnings("unchecked") 
-	static public <T> void bindListConverter(Binder binder, TypeLiteral<T> type)
+	static public <T> void bindListConverter(
+		Binder binder, TypeLiteral<T> type, String delimiters)
 	{
 		TypeLiteral<List<T>> list = (TypeLiteral<List<T>>)
 			TypeLiteral.get(Types.listOf(type.getType()));
-		bindConverter(binder, list).toInstance(new ListConverter<T>(type));
+		bindConverter(binder, list).toInstance(new ListConverter<T>(type, delimiters));
 	}
 
 	/**
