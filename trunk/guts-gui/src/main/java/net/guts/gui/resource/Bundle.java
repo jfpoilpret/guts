@@ -15,7 +15,6 @@
 package net.guts.gui.resource;
 
 import java.io.InputStream;
-import java.net.URL;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
@@ -72,22 +71,29 @@ final class Bundle
 		return (Map<String, String>) (Map<?, ?>) _properties;
 	}
 
-	//TODO add support for XML-based properties files?
+	//CSOFF: InnerAssignmentCheck
+	// Inner assignment allows more readable code in this method.
 	private void readProperties(String path)
 	{
-		InputStream in = Thread.currentThread().getContextClassLoader()
-			.getResourceAsStream(path + ".properties");
-		if (in == null)
-		{
-			_logger.debug("Bundle `{}.properties` doesn't exist", path); 
-			return;
-		}
 		// CSOFF: IllegalCatchCheck
 		// catch Exception allowed because both IOException and IllegalArgumentException
 		// can occur but the handling code is exactly the same.
 		try
 		{
-			_properties.load(in);
+			ClassLoader loader = Thread.currentThread().getContextClassLoader();
+			InputStream in = loader.getResourceAsStream(path + ".xml");
+			if ((in = loader.getResourceAsStream(path + ".xml")) != null)
+			{
+				_properties.loadFromXML(in);
+			}
+			else if ((in = loader.getResourceAsStream(path + ".properties")) != null)
+			{
+				_properties.load(in);
+			}
+			else
+			{
+				_logger.debug("Bundle `{}.properties` doesn't exist", path); 
+			}
 		}
 		catch (Exception e)
 		{
@@ -96,6 +102,7 @@ final class Bundle
 		}
 		// CSON: IllegalCatchCheck
 	}
+	//CSON: InnerAssignmentCheck
 	
 	@Override public int hashCode()
 	{
@@ -133,8 +140,8 @@ final class Bundle
 	
 		// Check the path exists
 		ClassLoader loader = Thread.currentThread().getContextClassLoader();
-		URL url = loader.getResource(realPath + ".properties");
-		if (url != null)
+		if (	loader.getResource(realPath + ".xml") != null
+			||	loader.getResource(realPath + ".properties") != null)
 		{
 			return realPath;
 		}
