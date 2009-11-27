@@ -322,9 +322,10 @@ class ClassConverter<T> implements ResourceConverter<Class<? extends T>>
 
 class ListConverter<T> extends AbstractCompoundResourceConverter<List<T>>
 {
-	ListConverter(TypeLiteral<T> type)
+	ListConverter(TypeLiteral<T> type, String delimiters)
 	{
 		_type = type;
+		_delimiters = delimiters;
 	}
 	
 	@Override public List<T> convert(ResourceEntry entry)
@@ -332,7 +333,7 @@ class ListConverter<T> extends AbstractCompoundResourceConverter<List<T>>
 		// Tokenize property value
 		List<T> list = new ArrayList<T>();
 		ResourceConverter<T> converter = converter(_type);
-		StringTokenizer tokenize = new StringTokenizer(entry.value(), ":");
+		StringTokenizer tokenize = new StringTokenizer(entry.value(), _delimiters);
 		while (tokenize.hasMoreTokens())
 		{
 			list.add(converter.convert(entry.derive(tokenize.nextToken())));
@@ -341,4 +342,5 @@ class ListConverter<T> extends AbstractCompoundResourceConverter<List<T>>
 	}
 
 	final private TypeLiteral<T> _type;
+	final private String _delimiters;
 }
