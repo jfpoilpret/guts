@@ -65,6 +65,12 @@
  * <li>relative path: the file is searched within a directory relative to the current
  * location of the resource bundle file where the property is defined</li>
  * </ul>
+ * <p/>
+ * Note that Guts-GUI also supports XML properties files (as defined in 
+ * {@link java.util.Properties}). This is useful whenever you need to support a
+ * {@link java.util.Locale} which language can't be written with {@code ISO-8859-1}
+ * charset (e.g. asian languages). Guts-GUI will always use an XML bundle if it 
+ * exists, and will fall back to normal properties file if not.
  * 
  * <p/><a name="rsrc2"></a><h3>Resources searching principles</h3>
  * As when using Java {@link java.util.ResourceBundle}s, Guts-GUI will search the most
