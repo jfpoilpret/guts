@@ -28,7 +28,6 @@ import net.guts.event.Consumes;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.google.inject.internal.Nullable;
 
 @Singleton
 class ResourceMapFactoryImpl implements ResourceMapFactory
@@ -36,14 +35,13 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	static private final Logger _logger = 
 		LoggerFactory.getLogger(ResourceMapFactoryImpl.class);
 
-	@Inject
-	ResourceMapFactoryImpl(ResourceConverterFinder finder,
+	@Inject ResourceMapFactoryImpl(ResourceConverterFinder finder,
 		ResourcePreprocessor preprocessor,
 		@BindBundle Map<Class<?>, List<String>> classBundles,
 		@BindBundle Map<String, List<String>> packageBundles,
-		@BindBundle @Nullable String root)
+		RootBundleHolder rootHolder)
 	{
-		if (root == null)
+		if (rootHolder._root == null)
 		{
 			// Log this fact because it is likely to be a developer's mistake, but not
 			// necessarily.
@@ -54,7 +52,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 		_finder = finder;
 		_preprocessor = preprocessor;
-		_root = getBundle(root);
+		_root = getBundle(rootHolder._root);
 		for (Map.Entry<Class<?>, List<String>> entry: classBundles.entrySet())
 		{
 			_bundlesPerClass.put(entry.getKey(), getBundles(entry.getValue()));
@@ -180,6 +178,16 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 	}
 
+	// Workaround to Guice limitation on injection of optional args to constructors
+	// See http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions
+	// "How can I inject optional parameters into a constructor?"
+	//CSOFF: VisibilityModifierCheck
+	static class RootBundleHolder
+	{
+		@Inject(optional = true) @BindBundle String _root;
+	}
+	//CSON: VisibilityModifierCheck
+	
 	static final private String DEFAULT_BUNDLE_NAME = "resources";
 	
 	final private Bundle _root;
