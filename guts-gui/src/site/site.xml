@@ -18,9 +18,6 @@
 			<item name="Guice" href="http://code.google.com/p/google-guice/" />
 			<item name="Swing AppFramework" href="http://appframework.dev.java.net/" />
 		</links>
-		<menu name="General">
-			<item name="Introduction" href="index.html" />
-		</menu>
 		<menu ref="reports" />
 	</body>
 </project>
