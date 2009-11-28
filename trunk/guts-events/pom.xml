@@ -15,7 +15,7 @@
 
 	<name>Event Bus for Guice</name>
 	<description>
-		Guts Event is a light library, based on Guice Dependency Injection,
+		Guts-Events is a light library, based on Guice Dependency Injection,
 		to handle "events" transmission from Suppliers to Consumers inside a 
 		same JVM.
 	</description>
