@@ -21,29 +21,6 @@
 	</description>
 	<url>http://kenai.com/projects/guts</url>
 
-	<build>
-		<plugins>
-			<!-- Also generate a javadoc jar to be installed into the repository -->
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<excludePackageNames>net.guts.gui.action.impl:net.guts.gui.application.impl:net.guts.gui.dialog.impl:net.guts.gui.menu.impl:net.guts.gui.message.impl</excludePackageNames>
-				</configuration>
- 			</plugin>
-		</plugins>
-	</build>
-	
-	<reporting>
-		<plugins>
-			<plugin>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<configuration>
-					<excludePackageNames>net.guts.gui.action.impl:net.guts.gui.application.impl:net.guts.gui.dialog.impl:net.guts.gui.menu.impl:net.guts.gui.message.impl</excludePackageNames>
-				</configuration>
- 			</plugin>
-		</plugins>
-	</reporting>
-
 	<dependencies>
 		<!-- Swing AppFramework and its dependencies -->
 		<dependency>
