@@ -51,17 +51,22 @@ import com.google.inject.TypeLiteral;
  * framework.
  * <p/>
  * By default, {@code ResourceModule} binds several {@link ResourceConverter}s for
- * various types:
+ * various types (examples of values are given for each type):
  * <ul>
- * <li>{@link String}</li>
- * <li>{@link Boolean} and {@code boolean}</li>
- * <li>{@link Integer} and {@code integer}</li>
- * <li>{@link Color}</li>
- * <li>{@link Font}</li>
- * <li>{@link Icon}</li>
- * <li>{@link Image}</li>
- * <li>{@link Cursor}</li>
- * <li>{@link CursorInfo}</li>
+ * <li>{@link String}: {@code Save}</li>
+ * <li>{@link Boolean} and {@code boolean}: {@code true} or {@code false}</li>
+ * <li>{@link Integer} and {@code integer}: {@code 12345}, {@code -10}, 
+ * {@code 0xDEADBEEF} (hexa), {@code #FFFF}, {@code 0777} (octal)</li>
+ * <li>{@link Color}: {@code #FF808080} (ARGB format in hexa)</li>
+ * <li>{@link Font}: {@code Dialog-BOLD-14}</li>
+ * <li>{@link Icon}: {@code /icons/save.png}</li>
+ * <li>{@link Image}: {@code /icons/save.png}</li>
+ * <li>{@link Cursor}: {@code CROSSHAIR} (or any value of 
+ * {@link net.guts.gui.util.CursorType}), or for custom cursors, 
+ * {@code /icons/mycursor.png,0.5,0.5} where both double values indicate the relative
+ * location of the cursor "hot spot" (0.0 is topmost or leftmost, 1.0 is bottom-most 
+ * or rightmost)</li>
+ * <li>{@link CursorInfo}: same examples as above</li>
  * </ul>
  * You can add your own {@link ResourceConverter}s by using {@link Resources#bindConverter}
  * methods.

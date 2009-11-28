@@ -47,28 +47,18 @@ import com.google.inject.TypeLiteral;
  * Your own converter may require special conventions to the {@code String} values
  * it can possibly convert.
  * <p/>
- * FIXME javadoc below is obsolete! Use ResourceConverterFinder or better derive
- * from AbstractCompoundResourceConverter!
  * Custom converters can possibly use other registered {@code ResourceConverter}s, 
- * and chain calls to them; for this they can require to be injected a
- * {@code Provider<ResourceConverter<T>>} and then use this provider to get the
- * needed {@code ResourceConverter<T>}, as in the following snippet (excerpted
- * from Guts-GUI itself):
+ * and chain calls to them; for this they have to be injected {@link ResourceConverterFinder}
+ * and then use it to get the needed {@code ResourceConverter<T>}. The easiest way
+ * to do it is to derive from {@link AbstractCompoundResourceConverter}, as in the 
+ * following snippet (excerpted from Guts-GUI itself):
  * <pre>
- * class CursorConverter implements ResourceConverter&lt;Cursor&gt;
+ * class CursorConverter extends AbstractCompoundResourceConverter&lt;Cursor&gt;
  * {
- *     &#64;Inject CursorConverter(
- *         Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; cursorInfoConverter)
- *     {
- *         _cursorInfoConverter = cursorInfoConverter;
- *     }
- *     
  *     &#64;Override public Cursor convert(ResourceEntry entry)
  *     {
- *         return _cursorInfoConverter.get().convert(entry).getCursor();
+ *         return converter(CursorInfo.class).convert(entry).getCursor();
  *     }
- *     
- *     private final Provider&lt;ResourceConverter&lt;CursorInfo&gt;&gt; _cursorInfoConverter;
  * }
  * </pre>
  * Note that you should not directly inject a {@code ResourceConverter<T>}
