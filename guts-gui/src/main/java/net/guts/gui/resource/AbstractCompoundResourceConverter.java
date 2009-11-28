@@ -67,5 +67,5 @@ public abstract class AbstractCompoundResourceConverter<T> implements ResourceCo
 		return _finder.getConverter(TypeLiteral.get(type));
 	}
 
-	private ResourceConverterFinder _finder;
+	private ResourceConverterFinder _finder = null;
 }
