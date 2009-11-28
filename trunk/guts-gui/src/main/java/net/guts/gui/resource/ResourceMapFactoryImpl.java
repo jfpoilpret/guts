@@ -127,7 +127,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 	private void addBundle(List<Bundle> bundles, Class<?> origin, String path)
 	{
 		String realPath = Bundle.checkBundleExists(path, origin);
-		if (realPath != null && !bundles.contains(realPath))
+		if (realPath != null && !bundles.contains(new Bundle(realPath)))
 		{
 			Bundle bundle = getBundle(realPath);
 			if (bundle != null)
@@ -150,6 +150,7 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 		}
 		return bundles;
 	}
+	
 	private Bundle getBundle(String path)
 	{
 		if (path == null)

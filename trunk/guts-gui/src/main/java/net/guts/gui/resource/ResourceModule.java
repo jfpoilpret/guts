@@ -116,10 +116,9 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(Cursor.class,		CursorConverter.class);
 
 		// Bind default ComponentInjector
-		bindInjector(Component.class, 
-			new TypeLiteral<BeanPropertiesInjector<Component>>(){});
-		bindInjector(Object.class, 
-			new TypeLiteral<BeanPropertiesInjector<Object>>(){});
+		bindInjector(Component.class, COMPONENT_INJECTOR);
+		bindInjector(Object.class, OBJECT_INJECTOR);
+
 		// Bind injectors for more specific components
 		bindInjector(JLabel.class,			JLabelInjector.class);
 		bindInjector(AbstractButton.class,	AbstractButtonInjector.class);
@@ -150,4 +149,9 @@ public final class ResourceModule extends AbstractModule
 	{
 		Resources.bindInstanceInjector(binder(), type).to(converter).asEagerSingleton();
 	}
+	
+	static final private TypeLiteral<BeanPropertiesInjector<Component>> COMPONENT_INJECTOR =
+		new TypeLiteral<BeanPropertiesInjector<Component>>(){};
+	static final private TypeLiteral<BeanPropertiesInjector<Object>> OBJECT_INJECTOR =
+		new TypeLiteral<BeanPropertiesInjector<Object>>(){};
 }

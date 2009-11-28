@@ -186,12 +186,12 @@ class CursorInfoConverter extends AbstractCompoundResourceConverter<CursorInfo>
 		if (info == null)
 		{
 			// First check if this is a predefined cursor
-			CursorType type = CursorType.valueOf(entry.value());
-			if (type != null)
+			try
 			{
+				CursorType type = CursorType.valueOf(entry.value());
 				info = type.getCursorInfo();
 			}
-			else
+			catch (IllegalArgumentException e)
 			{
 				// Split s into: iconfile[,hotspotx[,hotspoty]]
 				StringTokenizer tokenize = new StringTokenizer(entry.value(), ",");
