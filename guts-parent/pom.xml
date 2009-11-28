@@ -57,7 +57,7 @@
 					<verbose>false</verbose>
 					<links>
 						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
-						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+						<link>http://java.sun.com/j2se/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
 				</configuration>
@@ -130,7 +130,7 @@
 					<verbose>false</verbose>
 					<links>
 						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
-						<link>http://java.sun.com/j2se/1.5.0/docs/api</link>
+						<link>http://java.sun.com/j2se/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
 				</configuration>
@@ -342,16 +342,31 @@
 		<url>http://kenai.com/jira/browse/GUTS</url>
 	</issueManagement>
 	
-	<!-- TODO -->
 	<mailingLists>
-		<!--
 		<mailingList>
 			<name>GUTS Users list</name>
-			<archive>http://designgridlayout.dev.java.net/servlets/SummarizeList?listName=announce</archive>
-			<subscribe>mailto:announce-subscribe@designgridlayout.dev.java.net</subscribe>
-			<unsubscribe>mailto:announce-unsubscribe@designgridlayout.dev.java.net</unsubscribe>
+			<archive>http://kenai.com/projects/guts/lists/users/archive</archive>
+			<subscribe>http://kenai.com/projects/guts/lists</subscribe>
+			<unsubscribe>http://kenai.com/projects/guts/lists</unsubscribe>
 		</mailingList>
-		-->
+		<mailingList>
+			<name>GUTS Development list</name>
+			<archive>http://kenai.com/projects/guts/lists/development/archive</archive>
+			<subscribe>http://kenai.com/projects/guts/lists</subscribe>
+			<unsubscribe>http://kenai.com/projects/guts/lists</unsubscribe>
+		</mailingList>
+		<mailingList>
+			<name>GUTS Issues list</name>
+			<archive>http://kenai.com/projects/guts/lists/issues/archive</archive>
+			<subscribe>http://kenai.com/projects/guts/lists</subscribe>
+			<unsubscribe>http://kenai.com/projects/guts/lists</unsubscribe>
+		</mailingList>
+		<mailingList>
+			<name>GUTS Commits list</name>
+			<archive>http://kenai.com/projects/guts/lists/commits/archive</archive>
+			<subscribe>http://kenai.com/projects/guts/lists</subscribe>
+			<unsubscribe>http://kenai.com/projects/guts/lists</unsubscribe>
+		</mailingList>
 	</mailingLists>
 
 	<scm>
@@ -372,6 +387,15 @@
 				<role>developer</role>
 			</roles>
 			<timezone>+7</timezone>
+		</developer>
+		<developer>
+			<id>kevinday</id>
+			<name>Kevin Day</name>
+			<email>kevin@trumpetinc.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>-7</timezone>
 		</developer>
 	</developers>
 </project>
