@@ -14,6 +14,10 @@
 	<packaging>jar</packaging>
 
 	<name>Simple utilities for Guice and all Guts modules</name>
+	<description>
+		A set of basic utilities for Guice-based development, and particularly
+		other Guts modules (guts-events and guts-gui).
+	</description>
 	<url>http://kenai.com/projects/guts</url>
 	
 	<dependencies>
