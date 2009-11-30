@@ -83,7 +83,10 @@ class WindowControllerImpl implements WindowController
 			if (	window.isVisible()
 				&&	window instanceof RootPaneContainer)
 			{
-				injectResources((RootPaneContainer) window);
+				RootPaneContainer root = (RootPaneContainer) window;
+				injectResources(root);
+				root.getRootPane().revalidate();
+				window.repaint();
 			}
 		}
 	}
