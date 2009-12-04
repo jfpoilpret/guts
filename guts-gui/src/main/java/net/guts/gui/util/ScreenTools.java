@@ -16,6 +16,7 @@ package net.guts.gui.util;
 
 import java.awt.Dimension;
 import java.awt.GraphicsConfiguration;
+import java.awt.GraphicsDevice;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.Point;
@@ -33,6 +34,19 @@ public final class ScreenTools
 	{
 	}
 
+	static public Rectangle[] getScreenEstate()
+	{
+		GraphicsDevice[] devices = 
+			GraphicsEnvironment.getLocalGraphicsEnvironment().getScreenDevices();
+		int size = devices.length;
+		Rectangle[] estate = new Rectangle[size];
+		for (int i = 0; i < size; i++)
+		{
+			estate[i] = devices[i].getDefaultConfiguration().getBounds();
+		}
+		return estate;
+	}
+	
 	/**
 	 * Calculates the usable real estate of the main monitor. Usable estate
 	 * excludes special space consumed by the OS (e.g. for a Task bar).

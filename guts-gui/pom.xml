@@ -64,17 +64,13 @@
 			<scope>test</scope>
 		</dependency>
 
-		<!-- Reflection utilities -->
-<!--
+		<!-- Serialization utilities -->
+		<!-- TODO later remove as xstream is used for prototype of PrefsStorageMedium -->
 		<dependency>
-			<groupId>org.easytesting</groupId>
-			<artifactId>fest-reflect</artifactId>
+			<groupId>com.thoughtworks.xstream</groupId>
+			<artifactId>xstream</artifactId>
+			<version>1.3.1</version>
 		</dependency>
-		<dependency>
-			<groupId>cglib</groupId>
-			<artifactId>cglib-nodep</artifactId>
-		</dependency>
--->
 
 		<!-- TODO Take latest update (check also if in central maven repo) -->
 		<dependency>
