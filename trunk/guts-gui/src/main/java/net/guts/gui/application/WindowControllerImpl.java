@@ -20,21 +20,19 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.WindowEvent;
-import java.io.IOException;
 import java.util.Locale;
 
-import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
 
-import org.jdesktop.application.ApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.resource.ResourceInjector;
+import net.guts.gui.session.SessionManager;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -44,9 +42,10 @@ class WindowControllerImpl implements WindowController
 {
 	static final private Logger _logger = LoggerFactory.getLogger(WindowControllerImpl.class);
 	
-	@Inject WindowControllerImpl(ResourceInjector injector)
+	@Inject WindowControllerImpl(ResourceInjector injector, SessionManager sessions)
 	{
 		_injector = injector;
+		_sessions = sessions;
 		_current = null;
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
 		{
@@ -67,10 +66,9 @@ class WindowControllerImpl implements WindowController
 		// Find all visible windows and save session for each
 		for (Window window: Window.getWindows())
 		{
-			if (	window.isVisible()
-				&&	window instanceof RootPaneContainer)
+			if (window.isVisible())
 			{
-				saveSize((RootPaneContainer) window);
+				saveSize(window);
 			}
 		}
 	}
@@ -80,13 +78,14 @@ class WindowControllerImpl implements WindowController
 	{
 		for (Window window: Window.getWindows())
 		{
-			if (	window.isVisible()
-				&&	window instanceof RootPaneContainer)
+			if (window.isVisible())
 			{
-				RootPaneContainer root = (RootPaneContainer) window;
-				injectResources(root);
-				root.getRootPane().revalidate();
+				injectResources(window);
 				window.repaint();
+				if (window instanceof RootPaneContainer)
+				{
+					((RootPaneContainer) window).getRootPane().revalidate();
+				}
 			}
 		}
 	}
@@ -115,8 +114,7 @@ class WindowControllerImpl implements WindowController
 		showWindow(dialog, policy);
 	}
 
-	private <T extends Window & RootPaneContainer> void showWindow(
-		T container, BoundsPolicy policy)
+	private void showWindow(Window container, BoundsPolicy policy)
 	{
 		if (!EventQueue.isDispatchThread())
 		{
@@ -127,61 +125,35 @@ class WindowControllerImpl implements WindowController
 		injectResources(container);
 		// Calculate size (based on existing session state)
 		initBounds(container, policy);
-		container.getRootPane().getParent().setVisible(true);
+		container.setVisible(true);
 	}
 	
-	private void injectResources(RootPaneContainer container)
+	private void injectResources(Window container)
 	{
-		_injector.injectHierarchy(container.getRootPane().getParent());
+		_injector.injectHierarchy(container);
 	}
 	
-	private <T extends Window & RootPaneContainer> void initBounds(
-		T container, BoundsPolicy policy)
+	private void initBounds(Window container, BoundsPolicy policy)
 	{
-		try
+		// Initialize location and size according to policy
+		if (policy == BoundsPolicy.PACK_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
 		{
-			JComponent root = container.getRootPane();
-
-			// Initialize location and size according to policy
-			if (policy == BoundsPolicy.PACK_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
-			{
-				container.pack();
-			}
-			if (policy == BoundsPolicy.CENTER_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
-			{
-				container.setLocationRelativeTo(getActiveWindow());
-			}
-			
-			// Restore size from session storage if any
-			_context.getSessionStorage().restore(root.getParent(), sessionFileName(container));
+			container.pack();
 		}
-		catch (IOException e)
+		if (policy == BoundsPolicy.CENTER_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
 		{
-			String msg = "Could not restore window state from " + sessionFileName(container);
-			_logger.info(msg, e);
+			container.setLocationRelativeTo(getActiveWindow());
 		}
+		
+		// Restore size from session storage if any
+		_sessions.restore(container);
 	}
 	
-	private void saveSize(RootPaneContainer container)
+	private void saveSize(Window container)
 	{
-		try
-		{
-			JComponent root = container.getRootPane();
-			_context.getSessionStorage().save(root.getParent(), sessionFileName(container));
-		}
-		catch (IOException e)
-		{
-			String msg = "Could not save window state to " + sessionFileName(container);
-			_logger.info(msg, e);
-		}
+		_sessions.save(container);
 	}
 	
-	private String sessionFileName(RootPaneContainer container)
-	{
-		String name = container.getRootPane().getParent().getName();
-		return (name == null ? "" : name + ".session.xml");
-	}
-
 	private void eventDispatched(WindowEvent event)
 	{
 		switch (event.getID())
@@ -194,21 +166,11 @@ class WindowControllerImpl implements WindowController
 			_current = null;
 			break;
 
-			case WindowEvent.COMPONENT_RESIZED:
-			// Save window bounds (as client property?)
-			if (event.getWindow() instanceof JFrame)
-			{
-				_logger.debug("WINDOW_RESIZED\n");
-				JFrame frame = (JFrame) event.getWindow();
-				frame.getRootPane().putClientProperty(SAVED_BOUNDS, frame.getBounds());
-			}
-			break;
-			
 			case WindowEvent.COMPONENT_HIDDEN:
 			case WindowEvent.WINDOW_CLOSED:
 			_logger.debug("WINDOW_CLOSED\n");
 			// Save window state in session storage
-			saveSize((RootPaneContainer) event.getWindow());
+			saveSize(event.getWindow());
 			break;
 				
 			default:
@@ -217,12 +179,7 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 
-	private static final String SAVED_BOUNDS = "WindowState.normalBounds";
-//TODO add after rewriting SessionStorage
-//		WindowController.class.getCanonicalName() + ".SavedBounds";
-
-	//TODO replace with RootPaneContainer exclusively?
 	private Window _current;
 	final private ResourceInjector _injector;
-	@Inject private ApplicationContext _context;
+	final private SessionManager _sessions;
 }

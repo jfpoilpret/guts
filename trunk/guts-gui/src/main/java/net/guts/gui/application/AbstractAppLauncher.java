@@ -31,6 +31,8 @@ import net.guts.gui.action.ActionModule;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
 import net.guts.gui.resource.ResourceModule;
+import net.guts.gui.session.SessionModule;
+import net.guts.gui.session.Sessions;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -85,6 +87,7 @@ public abstract class AbstractAppLauncher
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
 			modules.add(new ResourceModule());
+			modules.add(new SessionModule());
 			modules.add(new ActionModule());
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
@@ -134,6 +137,8 @@ public abstract class AbstractAppLauncher
 		{
 			// Make sure that we get ourselves injected: we'll soon need AppLifecycle!
 			requestInjection(AbstractAppLauncher.this);
+			// Bind the application class for SessionManager
+			Sessions.bindApplicationClass(binder(), AbstractAppLauncher.this.getClass());
 			// The following code will be removed when SAF is completely replaced
 			GutsApplication application = new GutsApplication();
 			requestInjection(application);
