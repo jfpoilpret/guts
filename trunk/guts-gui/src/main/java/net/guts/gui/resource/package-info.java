@@ -170,8 +170,8 @@
  * 
  * <p/><a name="rsrc4"></a><h3>Locale changes</h3>
  * Guts-GUI {@link net.guts.gui.resource.ResourceInjector} supports changes of
- * {@link Locale} almost transparently. Only "almost" because unfortunately Java
- * has not listener mechanism for changes of the current {@code Locale}.
+ * {@link java.util.Locale} almost transparently. Only "almost" because unfortunately 
+ * Java has not listener mechanism for changes of the current {@code Locale}.
  * <p/>
  * Hence, Guts-GUI option is to provide an API to change the current {@code Locale};
  * this API should be used in lieu of {@link java.util.Locale#setDefault}. By calling
