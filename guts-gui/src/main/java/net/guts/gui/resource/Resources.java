@@ -334,7 +334,7 @@ public final class Resources
 	 * @param delimiters list of delimiters characters that should be used to extract
 	 * each item of the list in the original resource string value
 	 * 
-	 * @see #bindListConverter(Binder, Class)
+	 * @see #bindListConverter(Binder, Class, String)
 	 */
 	@SuppressWarnings("unchecked") 
 	static public <T> void bindListConverter(
