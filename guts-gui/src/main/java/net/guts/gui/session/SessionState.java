@@ -26,6 +26,7 @@ import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 
 import net.guts.gui.util.ScreenTools;
@@ -38,95 +39,126 @@ public interface SessionState<T extends Component>
 	public void injectState(T component);
 }
 
-//TODO later on, integrate multi-screen problems?
-// - when restoring state check that bounds are visible on the current real estate 
-// (one whole rectangle), if not, then don't restore state at all
-// - or just check if real estate has changed between store and restore times?
-//TODO refactor because WindowState and FrameState will share a lot of code!
+// Class wrapping current screen estate with bounds of a given window
+class ScreenEstate
+{
+	// Default constructor for deserialization
+	ScreenEstate() {}
+
+	ScreenEstate(Rectangle bounds)
+	{
+		_bounds = bounds;
+		_screensEstate = ScreenTools.getScreenEstate();
+	}
+
+	Rectangle bounds()
+	{
+		// Check if screen real estate has changed since previous session
+		if (	_bounds != null
+			&&	Arrays.equals(_screensEstate, ScreenTools.getScreenEstate()))
+		{
+			return _bounds;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
+	private Rectangle[] _screensEstate;
+	private Rectangle _bounds;
+}
+
 class WindowState implements SessionState<Window>
 {
 	@Override public void reset()
 	{
-		_bounds = null;
+		_estate = null;
 	}
 	
 	@Override public void extractState(Window component)
 	{
-		_bounds = component.getBounds();
+		_estate = new ScreenEstate(component.getBounds());
 	}
 
 	@Override public void injectState(Window component)
 	{
-		if (_bounds != null)
+		Rectangle bounds = (_estate != null ? _estate.bounds() : null);
+		if (bounds != null)
 		{
-			component.setBounds(_bounds);
+			component.setBounds(bounds);
 		}
 	}
 	
-	private Rectangle _bounds = null;
+	private ScreenEstate _estate = null;
 }
 
 class FrameState implements SessionState<JFrame>
 {
 	@Override public void reset()
 	{
-		_bounds = null;
 		_state = JFrame.NORMAL;
-		_screensEstate = null;
+		_estate = null;
 	}
 	
 	@Override public void extractState(JFrame component)
 	{
-		_bounds = (Rectangle) component.getRootPane().getClientProperty(SAVED_BOUNDS);
-		if (_bounds == null)
-		{
-			_bounds = component.getBounds();
-		}
 		_state = component.getExtendedState();
-		_screensEstate = ScreenTools.getScreenEstate();
+		_estate = new ScreenEstate(getBounds(component));
 	}
 
 	@Override public void injectState(JFrame component)
 	{
 		// Register resize listener if JFrame
 		component.addComponentListener(_listener);
-		if (checkBounds())
+		Rectangle bounds = (_estate != null ? _estate.bounds() : null);
+		if (bounds != null)
 		{
-			component.setBounds(_bounds);
+			component.setBounds(bounds);
+			saveBounds(component);
 			component.setExtendedState(_state);
 		}
 	}
-	
-	// Check if screen real estate has changed since previous session
-	private boolean checkBounds()
+
+	static private Rectangle getBounds(JFrame frame)
 	{
-		return		_bounds != null
-				&&	Arrays.equals(_screensEstate, ScreenTools.getScreenEstate());
+		Rectangle bounds = 
+			(Rectangle) frame.getRootPane().getClientProperty(SAVED_BOUNDS);
+		if (bounds != null)
+		{
+			return bounds;
+		}
+		else
+		{
+			return frame.getBounds();
+		}
 	}
 	
-	static private void frameBoundsChanged(ComponentEvent event)
+	static private void saveBounds(JFrame frame)
 	{
-		((JFrame) event.getComponent()).getRootPane().putClientProperty(
-			SAVED_BOUNDS, event.getComponent().getBounds());
+		// Save bounds only when frame is in normal state (not maximized, minimized...)
+		if (frame.getExtendedState() == JFrame.NORMAL)
+		{
+			frame.getRootPane().putClientProperty(SAVED_BOUNDS, frame.getBounds());
+		}
 	}
 	
 	static final private ComponentListener _listener = new ComponentAdapter()
 	{
 		@Override public void componentResized(ComponentEvent event)
 		{
-			frameBoundsChanged(event);
+			saveBounds((JFrame) event.getComponent());
 		}
 		
 		@Override public void componentMoved(ComponentEvent event)
 		{
-			frameBoundsChanged(event);
+			saveBounds((JFrame) event.getComponent());
 		}
 	};
 	
 	static final private String SAVED_BOUNDS = 
-		WindowState.class.getCanonicalName() + ".SavedBounds";
-	private Rectangle[] _screensEstate = null;
-	private Rectangle _bounds = null;
+		FrameState.class.getCanonicalName() + ".SavedBounds";
+	private ScreenEstate _estate = null;
 	private int _state = JFrame.NORMAL;
 }
 
@@ -157,34 +189,56 @@ class TableState implements SessionState<JTable>
 {
 	@Override public void reset()
 	{
-		_columns = null;
+		_columnWidths = null;
+		_columnIndexes = null;
 	}
 	
 	@Override public void extractState(JTable component)
 	{
 		TableColumnModel model = component.getColumnModel();
 		int size = model.getColumnCount();
-		_columns = new int[size];
+		_columnWidths = new int[size];
+		_columnIndexes = new int[size];
 		for (int i = 0; i < size; i++)
 		{
-			_columns[i] = model.getColumn(i).getWidth();
+			_columnWidths[i] = model.getColumn(i).getWidth();
+			//TODO or ColumnIndexToModel?
+			_columnIndexes[i] = component.convertColumnIndexToView(i);
 		}
 	}
 
 	@Override public void injectState(JTable component)
 	{
-		if (_columns != null)
+		if (_columnWidths != null)
 		{
 			TableColumnModel model = component.getColumnModel();
-			int size = Math.min(model.getColumnCount(), _columns.length);
-			for (int i = 0; i < size; i++)
+			int size = _columnWidths.length;
+			if (size == model.getColumnCount())
 			{
-				model.getColumn(i).setPreferredWidth(_columns[i]);
+				// Reorder the columns according to the previously saved state
+				// And also set preferred size according to stored state
+				TableColumn[] columns = new TableColumn[size];
+				for (int i = 0; i < size; i++)
+				{
+					//FIXME What about -1 index?
+					columns[i] = model.getColumn(_columnIndexes[i]);
+					columns[i].setPreferredWidth(_columnWidths[i]);
+				}
+				// For that, remove all columns and add previous columns again
+				for (int i = 0; i < size; i++)
+				{
+					model.removeColumn(columns[i]);
+				}
+				for (int i = 0; i < size; i++)
+				{
+					model.addColumn(columns[i]);
+				}
 			}
 		}
 	}
 	
-	private int[] _columns = null;
+	private int[] _columnWidths = null;
+	private int[] _columnIndexes = null;
 }
 
 class TabbedPaneState implements SessionState<JTabbedPane>
