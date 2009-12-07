@@ -24,6 +24,26 @@ import javax.swing.JTable;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI Session State 
+ * persistence system. This module must be added to the list of modules 
+ * passed to {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new SessionModule(), ...);
+ * </pre>
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * {@code SessionModule} is automatically added to the list of {@code Module}s used
+ * by Guts-GUI to create Guice {@code Injector}.
+ * <p/>
+ * Hence you would care about {@code SessionModule} only if you intend to use 
+ * Guts-GUI Session State persistence system but don't want to use the whole 
+ * Guts-GUI framework.
+ * <p/>
+ * Note that in this latter situation, you must also bind your main application 
+ * class with {@link Sessions#bindApplicationClass}.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class SessionModule extends AbstractModule
 {
 	/* (non-Javadoc)
