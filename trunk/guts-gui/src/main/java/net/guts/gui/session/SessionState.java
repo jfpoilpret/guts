@@ -31,11 +31,79 @@ import javax.swing.table.TableColumnModel;
 
 import net.guts.gui.util.ScreenTools;
 
-// Any actual component state should be a bean that implements this interface
+/**
+ * Interface allowing any kind of {@code java.awt.Component} to have its state
+ * (geometry information, as set manually set by the end-user) saved and
+ * restored across several launches of the application.
+ * <p/>
+ * Any actual component state should be a class that implements this interface.
+ * This class will be serialized by {@link StorageMedium}.
+ * <p/>
+ * {@code SessionState<T>} implementations are used as singletons by 
+ * {@link SessionManager}, i.e. they are reused for all components of the same type.
+ * <p/>
+ * Guts-GUI allows defining one implementation of {@code SessionState<T>} per
+ * class of {@code Component}. You can register your own implementations with
+ * {@link Sessions#bindSessionConverter}.
+ * <p/>
+ * Guts-GUI provides implementations for the following:
+ * <ul>
+ * <li>{@link java.awt.Window}</li>
+ * <li>{@link javax.swing.JFrame}</li>
+ * <li>{@link javax.swing.JTabbedPane}</li>
+ * <li>{@link javax.swing.JTable}</li>
+ * <li>{@link javax.swing.JSplitPane}</li>
+ * </ul>
+ * More information on these implementations can be found in 
+ * <a href="package-summary.html#session3">net.guts.gui.session package description</a>.
+ * 
+ * @param <T> type of the {@link java.awt.Component} handled by this {@code SessionState}
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface SessionState<T extends Component>
 {
+	/**
+	 * Called before fields of {@code this} instance are populated from the 
+	 * previously stored state.
+	 * {@code reset()} should initialize all fields to their default values,
+	 * thus allowing to populate only some fields from the currently stored
+	 * state (can be useful when the fields change across versions).
+	 * <p/>
+	 * This method is needed because {@code SessionState<T>} implementations are
+	 * reused for all components of type {@code T}.
+	 */
 	public void reset();
+	
+	/**
+	 * Called by {@link SessionManager#save(Component)}, this method must extract,
+	 * from {@code component}, the state to be persisted. That state must be stored
+	 * in fields of {@code this} instance.
+	 * <p/>
+	 * This method must deal with {@code component} state exclusively, not the state
+	 * of any child component, because {@link SessionManager#save(Component)} directly
+	 * handles state persistence of {@code component} hierarchy, and finds the right
+	 * {@code SessionState<T>} implementation for each child.
+	 * 
+	 * @param component the component which state must be extracted and stored in 
+	 * fields of {@code this} instance
+	 */
 	public void extractState(T component);
+	
+	/**
+	 * Called by {@link SessionManager#restore(Component)} after it has populated 
+	 * fields of {@code this} instance from previously persisted state of 
+	 * {@code component}, this method must inject values from its fields into
+	 * {@code component}.
+	 * <p/>
+	 * This method must deal with {@code component} state exclusively, not the state
+	 * of any child component, because {@link SessionManager#restore(Component)} directly
+	 * handles state persistence of {@code component} hierarchy, and finds the right
+	 * {@code SessionState<T>} implementation for each child.
+	 * 
+	 * @param component the component which state must be injected from fields of 
+	 * {@code this} instance
+	 */
 	public void injectState(T component);
 }
 
@@ -202,7 +270,6 @@ class TableState implements SessionState<JTable>
 		for (int i = 0; i < size; i++)
 		{
 			_columnWidths[i] = model.getColumn(i).getWidth();
-			//TODO or ColumnIndexToModel?
 			_columnIndexes[i] = component.convertColumnIndexToView(i);
 		}
 	}
@@ -220,7 +287,7 @@ class TableState implements SessionState<JTable>
 				TableColumn[] columns = new TableColumn[size];
 				for (int i = 0; i < size; i++)
 				{
-					//FIXME What about -1 index?
+					//FIXME What about -1 index? Can this happen?
 					columns[i] = model.getColumn(_columnIndexes[i]);
 					columns[i].setPreferredWidth(_columnWidths[i]);
 				}
