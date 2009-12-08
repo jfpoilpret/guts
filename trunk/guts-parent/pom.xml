@@ -244,13 +244,13 @@
 			</dependency>
 			<dependency>
 				<groupId>org.easytesting</groupId>
-				<artifactId>fest-swing</artifactId>
-				<version>TODO</version>
+				<artifactId>fest-swing-testng</artifactId>
+				<version>1.2a3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.easytesting</groupId>
 				<artifactId>fest-swing-testng</artifactId>
-				<version>TODO</version>
+				<version>1.2a3</version>
 			</dependency>
 			<dependency>
 				<groupId>org.easymock</groupId>
