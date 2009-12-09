@@ -24,7 +24,7 @@ import com.google.inject.multibindings.MapBinder;
 /**
  * Utility class to define, from within a Guice {@link com.google.inject.Module},
  * bindings for {@link SessionState}s and to declare your main application class,
- * which {@link StorageMedium} will use to locate the preferences where to store
+ * which {@link StorageManager} will use to locate the preferences where to store
  * GUI state.
  *
  * @author Jean-Francois Poilpret

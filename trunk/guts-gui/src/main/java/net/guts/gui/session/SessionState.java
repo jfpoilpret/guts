@@ -37,7 +37,7 @@ import net.guts.gui.util.ScreenTools;
  * restored across several launches of the application.
  * <p/>
  * Any actual component state should be a class that implements this interface.
- * This class will be serialized by {@link StorageMedium}.
+ * This class will be serialized by {@link StorageManager}.
  * <p/>
  * {@code SessionState<T>} implementations are used as singletons by 
  * {@link SessionManager}, i.e. they are reused for all components of the same type.

@@ -47,7 +47,7 @@
  * </pre>
  * 
  * <p/><a name="session2"></a><h3>Session State Storage</h3>
- * Physical storage is handled by {@link net.guts.gui.session.StorageMedium} 
+ * Physical storage is handled by {@link net.guts.gui.session.StorageManager} 
  * service, which default implementation uses {@link java.util.prefs.Preferences}
  * API for storage, e.g. on Windows, the registry is used.
  * <p/>
@@ -95,12 +95,12 @@
  * <p/><a name="session5"></a><h3>Persisting other state (non GUI)</h3>
  * As explained above, GUI state persistence is performed thanks to 
  * {@link net.guts.gui.session.SessionManager}, which itself uses 
- * {@link net.guts.gui.session.StorageMedium} for physical storage of data.
+ * {@link net.guts.gui.session.StorageManager} for physical storage of data.
  * <p/>
- * Actually, {@code StorageMedium} is not dealing only with GUI state, but it can
+ * Actually, {@code StorageManager} is not dealing only with GUI state, but it can
  * deal with any object, provided this object has a public default constructor.
  * If your application needs to manage some general state (e.g. preferences settings 
- * like host URL, timeout...), then you can use {@code StorageMedium} to persist it
+ * like host URL, timeout...), then you can use {@code StorageManager} to persist it
  * and restore it on next launch. Thus, all your application settings (GUI and not-GUI)
  * will be stored in the same physical location, rather than e.g. storing GUI state
  * in preferences (registry on Windows) and your preferences settings in some user 

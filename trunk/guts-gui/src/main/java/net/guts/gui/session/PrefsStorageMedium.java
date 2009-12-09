@@ -22,9 +22,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.thoughtworks.xstream.XStream;
 
-//TODO remove XStream-based prototype later on
 @Singleton
 class PrefsStorageMedium implements StorageMedium
 {
@@ -36,33 +34,28 @@ class PrefsStorageMedium implements StorageMedium
 		_root = Preferences.userNodeForPackage(applicationNode);
 	}
 
-	@Override public void load(String id, Object content)
+	@Override public byte[] load(String name)
 	{
-		String xml = _root.get(id, null);
-		if (xml == null)
+		byte[] content = _root.getByteArray(name, null);
+		if (content == null)
 		{
-			_logger.debug("load({}): nothing found in Backing Store.", id);
-			return;
+			_logger.debug("load({}): nothing found in Backing Store.", name);
 		}
-		// Deserialize XML into content
-		_xstream.fromXML(xml, content);
+		return content;
 	}
 
-	@Override public void save(String id, Object content)
+	@Override public void save(String name, byte[] content)
 	{
 		try
 		{
-			// Serialize content into XML
-			String xml = _xstream.toXML(content);
-			_root.put(id, xml);
+			_root.putByteArray(name, content);
 			_root.flush();
 		}
 		catch (BackingStoreException e)
 		{
-			_logger.warn("Error saving state id " + id, e);
+			_logger.warn("Error saving state id " + name, e);
 		}
 	}
-	
+
 	final private Preferences _root;
-	final private XStream _xstream = new XStream();
 }
