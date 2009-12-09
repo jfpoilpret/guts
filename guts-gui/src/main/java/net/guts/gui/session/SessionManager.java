@@ -24,7 +24,7 @@ import com.google.inject.ImplementedBy;
  * You normally won't need to use this API directly as it is automatically
  * called by {@link net.guts.gui.application.WindowController}.
  * <p/>
- * Behind the scenes, this service relies on {@link StorageMedium} to perform
+ * Behind the scenes, this service relies on {@link StorageManager} to perform
  * the actual physical storage of GUI state.
  * <p/>
  * Besides, {@code SessionManager} needs to know, for a given GUI 

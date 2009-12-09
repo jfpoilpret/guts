@@ -28,7 +28,7 @@ class SessionManagerImpl implements SessionManager
 {
 	@Inject
 	SessionManagerImpl(
-		StorageMedium medium, Map<Class<?>, SessionState<?>> converters)
+		StorageManager medium, Map<Class<?>, SessionState<?>> converters)
 	{
 		_medium = medium;
 		_converters = converters;
@@ -105,6 +105,6 @@ class SessionManagerImpl implements SessionManager
 		}
 	}
 
-	final private StorageMedium _medium;
+	final private StorageManager _medium;
 	final private Map<Class<?>, SessionState<?>> _converters;
 }
