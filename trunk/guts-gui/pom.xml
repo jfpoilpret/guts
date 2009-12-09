@@ -57,9 +57,6 @@
 
 		<dependency>
 			<groupId>org.slf4j</groupId>
-<!--
-			<artifactId>slf4j-simple</artifactId>
--->
 			<artifactId>slf4j-log4j12</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -92,5 +89,12 @@
 			<optional>true</optional>
 		</dependency>
 		-->
+		
+		<!-- For Swing tests -->
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-swing-testng</artifactId>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
