@@ -14,38 +14,28 @@
 
 package net.guts.gui.session;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.thoughtworks.xstream.XStream;
 
-//TODO remove XStream-based prototype later on
 @Singleton
-class StorageManagerImpl implements StorageManager
+class XStreamSerializationManager implements SerializationManager
 {
-	@Inject
-	StorageManagerImpl(StorageMedium storage)
-	{
-		_storage = storage;
-	}
-
-	@Override public void load(String id, Object content)
-	{
-		byte[] rawData = _storage.load(id);
-		if (rawData != null)
-		{
-			String xml = new String(rawData);
-			// Deserialize XML into content
-			_xstream.fromXML(xml, content);
-		}
-	}
-
-	@Override public void save(String id, Object content)
+	@Override public byte[] serialize(Object object)
 	{
 		// Serialize content into XML
-		String xml = _xstream.toXML(content);
-		_storage.save(id, xml.getBytes());
+		String xml = _xstream.toXML(object);
+		return xml.getBytes();
 	}
 	
-	final private StorageMedium _storage;
+	@Override public void deserialize(byte[] content, Object object)
+	{
+		if (content != null)
+		{
+			String xml = new String(content);
+			_xstream.fromXML(xml, object);
+		}
+		
+	}
+	
 	final private XStream _xstream = new XStream();
 }

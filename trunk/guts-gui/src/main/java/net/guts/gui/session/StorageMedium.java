@@ -16,9 +16,43 @@ package net.guts.gui.session;
 
 import com.google.inject.ImplementedBy;
 
+/**
+ * API of the service to physically store session state from an application. 
+ * It is used by {@link SessionManager}.
+ * <p/>
+ * Default implementation uses {@link java.util.prefs.Preferences} as actual
+ * storage.
+ * <p/>
+ * You normally won't need to use this service but you may want to override the
+ * default implementation, for instance you could provide an implementation
+ * that stores data in a file, which could be useful for debugging or automatic
+ * tests of your application.
+ * <p/>
+ * Overriding default implementation must be done in one of your 
+ * {@link com.google.inject.Module}s:
+ * <pre>
+ * bind(StorageMedium.class).to(MyFileStorageMedium.class);
+ * </pre>
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(PrefsStorageMedium.class)
 public interface StorageMedium
 {
+	/**
+	 * Save binary {@code content} under the name {@code name}.
+	 * 
+	 * @param name name to be used for storing {@code content}
+	 * @param content binary content to be stored
+	 */
 	public void save(String name, byte[] content);
+	
+	/**
+	 * Load binary content from storage named {@code name}.
+	 * 
+	 * @param name name under which content was previously saved
+	 * @return binary content with name {@code name}, or {@code null} if no
+	 * storage can be found with this {@code name}
+	 */
 	public byte[] load(String name);
 }
