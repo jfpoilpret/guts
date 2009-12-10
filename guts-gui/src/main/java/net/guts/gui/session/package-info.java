@@ -26,7 +26,9 @@
  * <p/><a name="session1"></a><h3>GUI Session State Persistence</h3>
  * The API to manage GUI session state is defined by 
  * {@link net.guts.gui.session.SessionManager} which defines a couple of methods to 
- * save and restore state of a GUI component (including its whole hierarchy).
+ * save and restore state of a GUI component (including its whole hierarchy). It also
+ * has methods to be used for persisting any other state, not related to GUI 
+ * components (see <a href="#session5">below</a>).
  * <p/>
  * For your UI components, if you use Guts-GUI as the whole framework for your application,
  * then you won't have to explicitly call {@code SessionManager}: 
@@ -47,17 +49,18 @@
  * </pre>
  * 
  * <p/><a name="session2"></a><h3>Session State Storage</h3>
- * Physical storage is handled by {@link net.guts.gui.session.StorageManager} 
+ * Physical storage is handled by {@link net.guts.gui.session.StorageMedium} 
  * service, which default implementation uses {@link java.util.prefs.Preferences}
  * API for storage, e.g. on Windows, the registry is used.
  * <p/>
  * Each component state is stored under one key, named after the component name. The
  * value is an XML string which is the result of serialization of the component state
- * through <a hr="http://xstream.codehaus.org/">XStream</a>.
+ * through <a hr="http://xstream.codehaus.org/">XStream</a>. Serialization is handled
+ * by {@link net.guts.gui.session.SerializationManager} service.
  * <p/>
  * All keys are stored under the same preferences {@link java.util.prefs.Preferences}
  * node, based on the application class name (as bound with 
- * {@link net.guts.gui.session.Sessions#bindApplicationClass}.
+ * {@link net.guts.gui.session.Sessions#bindApplicationClass}).
  * <p/>
  * Component states are instances of classes implementing 
  * {@link net.guts.gui.session.SessionState}.
@@ -93,17 +96,18 @@
  * {@code private}) except those marked with {@code transient}.
  * 
  * <p/><a name="session5"></a><h3>Persisting other state (non GUI)</h3>
- * As explained above, GUI state persistence is performed thanks to 
- * {@link net.guts.gui.session.SessionManager}, which itself uses 
- * {@link net.guts.gui.session.StorageManager} for physical storage of data.
- * <p/>
- * Actually, {@code StorageManager} is not dealing only with GUI state, but it can
- * deal with any object, provided this object has a public default constructor.
- * If your application needs to manage some general state (e.g. preferences settings 
- * like host URL, timeout...), then you can use {@code StorageManager} to persist it
- * and restore it on next launch. Thus, all your application settings (GUI and not-GUI)
- * will be stored in the same physical location, rather than e.g. storing GUI state
- * in preferences (registry on Windows) and your preferences settings in some user 
- * directory.
+ * {@link net.guts.gui.session.SessionManager} also has methods for saving and
+ * restoring any kinds of objects:
+ * <ul>
+ * <li>{@link net.guts.gui.session.SessionManager#save(String, Object)}</li>
+ * <li>{@link net.guts.gui.session.SessionManager#restore(String, Object)}</li>
+ * </ul>
+ * You can use these methods to deal with any object, provided this object has a 
+ * public default constructor. If your application needs to manage some general state 
+ * (e.g. preferences settings like host URL, timeout...), then you can manually use 
+ * {@code SessionManager} to persist it and restore it on next launch. Thus, all your 
+ * application settings (GUI and not-GUI) will be stored in the same physical location, 
+ * rather than e.g. storing GUI state in preferences (registry on Windows) and your 
+ * preferences settings in some user directory.
  */
 package net.guts.gui.session;

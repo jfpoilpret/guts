@@ -24,7 +24,8 @@ import com.google.inject.ImplementedBy;
  * You normally won't need to use this API directly as it is automatically
  * called by {@link net.guts.gui.application.WindowController}.
  * <p/>
- * Behind the scenes, this service relies on {@link StorageManager} to perform
+ * Behind the scenes, this service relies on {@link SerializationManager} to
+ * convert objects to/from binary content, and {@link StorageMedium} to perform
  * the actual physical storage of GUI state.
  * <p/>
  * Besides, {@code SessionManager} needs to know, for a given GUI 
@@ -67,4 +68,24 @@ public interface SessionManager
 	 * @param component the GUI component which state must be restored
 	 */
 	public <T extends Component> void restore(T component);
+
+	/**
+	 * Save the fields of {@code content} in a {@link java.util.prefs.Preferences} 
+	 * user node, under the key {@code id}. 
+	 * 
+	 * @param id the key under which to store {@code content}'s fields
+	 * @param content the object which fields should be stored
+	 */
+	public void save(String id, Object content);
+
+	/**
+	 * Restore the fields of {@code content} from {@link java.util.prefs.Preferences},
+	 * as stored under the given {@code key}.
+	 * If no information can currently be found for {@code key}, then {@code content}
+	 * doesn't change at all; no exception occurs in this case.
+	 * 
+	 * @param id the key under which to retrieve {@code content}'s fields
+	 * @param content the object which fields should be retrieved
+	 */
+	public void restore(String id, Object content);
 }

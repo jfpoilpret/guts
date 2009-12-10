@@ -27,9 +27,10 @@ import com.google.inject.Singleton;
 class SessionManagerImpl implements SessionManager
 {
 	@Inject
-	SessionManagerImpl(
-		StorageManager medium, Map<Class<?>, SessionState<?>> converters)
+	SessionManagerImpl(SerializationManager serializer, StorageMedium medium, 
+		Map<Class<?>, SessionState<?>> converters)
 	{
+		_serializer = serializer;
 		_medium = medium;
 		_converters = converters;
 	}
@@ -60,6 +61,22 @@ class SessionManagerImpl implements SessionManager
 		}
 	}
 
+	public void save(String id, Object content)
+	{
+		// Serialize object
+		byte[] data = _serializer.serialize(content);
+		// Save it somewhere
+		_medium.save(id, data);
+	}
+	
+	public void restore(String id, Object content)
+	{
+		// Restore saved content
+		byte[] data = _medium.load(id);
+		// Deserialize content into given object
+		_serializer.deserialize(data, content);
+	}
+
 	@SuppressWarnings("unchecked") 
 	private <T extends Component> SessionState<T> findState(T component)
 	{
@@ -73,7 +90,7 @@ class SessionManagerImpl implements SessionManager
 		if (state != null)
 		{
 			state.reset();
-			_medium.load(name(component), state);
+			restore(name(component), state);
 			state.injectState(component);
 		}
 	}
@@ -84,7 +101,7 @@ class SessionManagerImpl implements SessionManager
 		if (state != null)
 		{
 			state.extractState(component);
-			_medium.save(name(component), state);
+			save(name(component), state);
 		}
 	}
 	
@@ -105,6 +122,7 @@ class SessionManagerImpl implements SessionManager
 		}
 	}
 
-	final private StorageManager _medium;
+	final private SerializationManager _serializer;
+	final private StorageMedium _medium;
 	final private Map<Class<?>, SessionState<?>> _converters;
 }
