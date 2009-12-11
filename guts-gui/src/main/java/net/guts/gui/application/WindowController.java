@@ -21,19 +21,90 @@ import javax.swing.JFrame;
 
 import com.google.inject.ImplementedBy;
 
-// Deals with windows display, including managing i18n and session storage
+/**
+ * Main service API that deals with windows display. Any {@link javax.swing.JFrame}
+ * or {@link javax.swing.JDialog} should be made visible through this service (rather
+ * than directly calling {@code setVisible(true)} on these.
+ * <p/>
+ * Guts-GUI implementation of {@code WindowController} manages:
+ * <ul>
+ * <li>Automatic resource injection through 
+ * {@link net.guts.gui.resource.ResourceInjector}</li>
+ * <li>Automatic resource re-injection when {@link java.util.Locale} changes</li>
+ * <li>Automatic GUI session state persistence through 
+ * {@link net.guts.gui.session.SessionManager}</li>
+ * <li>Location and size computation of displayed windows according to caller's 
+ * request</li>
+ * <li>Correct "stacking" of dialogs on windows</li>
+ * </ul>
+ * Whenever you need to display a window, you should {@code @Inject} 
+ * {@code WindowController} and use its {@code show} methods.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(WindowControllerImpl.class)
 public interface WindowController
 {
+	/**
+	 * Policy, passed to {@link WindowController#show} methods, to determine how the
+	 * bounds (location and size) of the Window to be displayed shall be computed.
+	 */
 	public enum BoundsPolicy
 	{
+		/**
+		 * This policy determines the window size by calling {@code pack()} on the 
+		 * window (which calculates the preferred size, based on the 
+		 * {@link java.awt.LayoutManager}s used by the window), and its position is
+		 * centered relatively to its parent window (or the screen if there is no parent
+		 * window).
+		 */
 		PACK_AND_CENTER,
+
+		/**
+		 * This policy determines the window size by calling {@code pack()} on the 
+		 * window (which calculates the preferred size, based on the 
+		 * {@link java.awt.LayoutManager}s used by the window), and its position is
+		 * not changed (as returned by {@link java.awt.Window#getLocation()}.
+		 */
 		PACK_ONLY,
+		
+		/**
+		 * This policy centers the window relatively to its parent window (or the 
+		 * screen if there is no parent window); the window size is not changed (as 
+		 * returned by {@link java.awt.Window#getSize()}.
+		 */
 		CENTER_ONLY,
+
+		/**
+		 * This policy doesn't change the window currently set position and size.
+		 */
 		KEEP_ORIGINAL_BOUNDS
 	};
-	
+
+	/**
+	 * Show the given {@code frame} after setting its location and size according
+	 * to {@code policy}. {@code frame} will have its resources automatically 
+	 * injected (according to {@link net.guts.gui.resource.ResourceInjector} 
+	 * principles). {@code frame} GUI session state is restored if it was previously
+	 * persisted; in this case, {@code policy} has no effect.
+	 * 
+	 * @param frame the frame to be displayed
+	 * @param policy the policy to use for determining {@code frame}'s size and 
+	 * location
+	 */
 	public void show(JFrame frame, BoundsPolicy policy);
+	
+	/**
+	 * Show the given {@code dialog} after setting its location and size according
+	 * to {@code policy}. {@code dialog} will have its resources automatically 
+	 * injected (according to {@link net.guts.gui.resource.ResourceInjector} 
+	 * principles). {@code dialog} GUI session state is restored if it was previously
+	 * persisted; in this case, {@code policy} has no effect.
+	 * 
+	 * @param dialog the dialog to be displayed
+	 * @param policy the policy to use for determining {@code frame}'s size and 
+	 * location
+	 */
 	public void show(JDialog dialog, BoundsPolicy policy);
 
 	/**
