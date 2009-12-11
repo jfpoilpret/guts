@@ -20,6 +20,7 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.WindowEvent;
+import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.swing.JDialog;
@@ -68,7 +69,7 @@ class WindowControllerImpl implements WindowController
 		{
 			if (window.isVisible())
 			{
-				saveSize(window);
+				saveState(window);
 			}
 		}
 	}
@@ -136,11 +137,11 @@ class WindowControllerImpl implements WindowController
 	private void initBounds(Window container, BoundsPolicy policy)
 	{
 		// Initialize location and size according to policy
-		if (policy == BoundsPolicy.PACK_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
+		if (PACK_POLICY.contains(policy))
 		{
 			container.pack();
 		}
-		if (policy == BoundsPolicy.CENTER_ONLY || policy == BoundsPolicy.PACK_AND_CENTER)
+		if (CENTER_POLICY.contains(policy))
 		{
 			container.setLocationRelativeTo(getActiveWindow());
 		}
@@ -149,7 +150,7 @@ class WindowControllerImpl implements WindowController
 		_sessions.restore(container);
 	}
 	
-	private void saveSize(Window container)
+	private void saveState(Window container)
 	{
 		_sessions.save(container);
 	}
@@ -170,7 +171,7 @@ class WindowControllerImpl implements WindowController
 			case WindowEvent.WINDOW_CLOSED:
 			_logger.debug("WINDOW_CLOSED\n");
 			// Save window state in session storage
-			saveSize(event.getWindow());
+			saveState(event.getWindow());
 			break;
 				
 			default:
@@ -179,6 +180,10 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 
+	static final private EnumSet<BoundsPolicy> PACK_POLICY = 
+		EnumSet.of(BoundsPolicy.PACK_AND_CENTER, BoundsPolicy.PACK_ONLY);
+	static final private EnumSet<BoundsPolicy> CENTER_POLICY =
+		EnumSet.of(BoundsPolicy.PACK_AND_CENTER, BoundsPolicy.CENTER_ONLY);
 	private Window _current;
 	final private ResourceInjector _injector;
 	final private SessionManager _sessions;
