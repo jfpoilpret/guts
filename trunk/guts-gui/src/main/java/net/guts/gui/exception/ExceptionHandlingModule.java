@@ -20,6 +20,32 @@ import net.guts.common.injection.OneTypeListener;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI Exception Handling
+ * system. This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new ExceptionHandlingModule(), ...);
+ * </pre>
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * {@code ExceptionHandlingModule} is automatically added to the list of 
+ * {@code Module}s used by Guts-GUI to create Guice {@code Injector}.
+ * <p/>
+ * Hence you would care about {@code ExceptionHandlingModule} only if you intend 
+ * to use Guts-GUI Exception Handling system but don't want to use the whole 
+ * Guts-GUI framework.
+ * <p/>
+ * Guts-GUI Exception Handling catches all exceptions thrown in the Event
+ * Dispatch Thread and gives your application a chance to handle them in
+ * any suitable way, thanks to {@link HandlesException} annotation.
+ * <p/>
+ * Any instance injected by Guice, if it contains methods annotated with
+ * {@link HandlesException}, will be automatically registered with 
+ * {@link ExceptionHandlerManager}, hence these methods will be notified of
+ * uncaught exceptions.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class ExceptionHandlingModule extends AbstractModule
 {
 	/* (non-Javadoc)

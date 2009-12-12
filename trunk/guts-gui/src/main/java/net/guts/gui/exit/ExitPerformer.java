@@ -16,8 +16,29 @@ package net.guts.gui.exit;
 
 import com.google.inject.ImplementedBy;
 
+/**
+ * Service that performs the last step of the actual shutdown of the application:
+ * exiting the application!
+ * <p/>
+ * Default implementation simply performs {@code System.exit(0);}. You can override
+ * this behavior by providing and binding your own implementation:
+ * <pre>
+ * bind(ExitPerformer.class).to(MyExitPerformer.class);
+ * </pre>
+ * This can be useful in some circumstances where you don't want your application to
+ * quit by exiting the JVM (for instance if your application is being GUI-tested, 
+ * exiting the JVM would mean exiting the tests runner itself!)
+ * <p/>
+ * In general however, you won't often need to override default behavior.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(DefaultExitPerformer.class)
 public interface ExitPerformer
 {
+	/**
+	 * This method performs the last step of shutting down the application. It is 
+	 * called from the Event Dispatch Thread.
+	 */
 	public void exitApplication();
 }
