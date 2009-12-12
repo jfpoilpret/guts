@@ -94,14 +94,6 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	{
 	}
 
-	// Should be a better way to declare an object as an ActionSource (annotation + processing?)
-//	@SuppressWarnings("unused")
-//	@Inject private void initActionSources(
-//		ActionManager manager, ContactActions contacts)
-//	{
-//		manager.addActionSource(contacts);
-//	}
-
 	// CSOFF: GenericIllegalRegexp
 	// Handle exceptions on the EDT
 	@HandlesException
