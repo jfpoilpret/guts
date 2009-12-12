@@ -22,6 +22,33 @@ import net.guts.event.Events;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI Exit Management system. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new ExitModule(), ...);
+ * </pre>
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * {@code ExitModule} is automatically added to the list of {@code Module}s used
+ * by Guts-GUI to create Guice {@code Injector}.
+ * <p/>
+ * Hence you would care about {@code ExitModule} only if you intend to use 
+ * Guts-GUI Exit management system but don't want to use the whole Guts-GUI 
+ * framework.
+ * <p/>
+ * TODO this should rather go to package-info.java no????
+ * Guts-GUI Exit management system is quite simple:
+ * <ul>
+ * <li>{@link ExitController} is used to request application shutdown</li>
+ * <li>{@link ExitChecker} instances, registered with {@link ExitController},
+ * are called in sequence to check if shutdown can be authorized or not</li>
+ * <li>if shutdown can proceed, then {@link ExitController#SHUTDOWN_EVENT} event
+ * is sent to all registered {@link net.guts.event.Consumes} methods, as a last
+ * chance opportunity to perform cleanup before actual shutdown</li>
+ * <li>Finally, {@link ExitPerformer} is called to exit the application (and the JVM)</li>
+ * </ul>
+ */
 public final class ExitModule extends AbstractModule
 {
 	/* (non-Javadoc)

@@ -16,6 +16,20 @@ package net.guts.gui.exception;
 
 import com.google.inject.ImplementedBy;
 
+/**
+ * Service managing uncaught exceptions. Uncaught exceptions are fed through
+ * {@link #handleException}, and dispatched to all objects with 
+ * {@link HandlesException}-annotated methods, provided these objects have been
+ * registered through {@link #registerExceptionHandlers}.
+ * <p/>
+ * You normally won't need direct access to this service. Once 
+ * {@link ExceptionHandlingModule} has been used to initialize Guice, this
+ * service is already connected to other parts of Guts-GUI framework; in
+ * particular, uncaught exceptions occurring in the Event Dispatch Thread will
+ * be automatically handled by this service.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(ExceptionHandlerManagerImpl.class)
 public interface ExceptionHandlerManager
 {
