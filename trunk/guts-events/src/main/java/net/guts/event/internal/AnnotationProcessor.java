@@ -24,9 +24,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.Executor;
 
-import net.guts.event.ConsumerClassError;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.guts.event.Consumes;
-import net.guts.event.ErrorHandler;
 import net.guts.event.Filters;
 
 import com.google.inject.Inject;
@@ -36,11 +37,12 @@ import com.google.inject.assistedinject.Assisted;
 
 public class AnnotationProcessor
 {
+	static private final Logger _logger = LoggerFactory.getLogger(AnnotationProcessor.class);
+	
 	@Inject
-	public AnnotationProcessor(ErrorHandler handler, @Assisted Set<ChannelKey> channels,
+	public AnnotationProcessor(@Assisted Set<ChannelKey> channels,
 		Map<Class<? extends Annotation>, Provider<Executor>> executors)
 	{
-		_handler = handler;
 		_channels = channels;
 		_executors = executors;
 	}
@@ -95,8 +97,7 @@ public class AnnotationProcessor
 				}
 				else
 				{
-					_handler.handleError(
-						ConsumerClassError.CONSUMES_CANNOT_HAVE_SEVERAL_THREAD_ANNOTATIONS, 
+					handleError(InternalError.BAD_THREAD_POLICY.getError(false), 
 						method, type, topic);
 					break;
 				}
@@ -170,13 +171,13 @@ public class AnnotationProcessor
 		// Check method is void and has one parameter
 		if (isFilter && m.getReturnType() != boolean.class)
 		{
-			handleError(isFilter, InternalError.BAD_RETURN_TYPE, m, null, null);
+			handleError(InternalError.BAD_RETURN_TYPE.getError(isFilter), m, null, null);
 			return null;
 		}
 		//TODO allow 0-arg meaning Void type
 		if (m.getParameterTypes().length != 1)
 		{
-			handleError(isFilter, InternalError.BAD_ARG_NUMBER, m, null, null);
+			handleError(InternalError.BAD_ARG_NUMBER.getError(isFilter), m, null, null);
 			return null;
 		}
 
@@ -188,7 +189,7 @@ public class AnnotationProcessor
 			// Check that the declared type is a superclass of the argument type
 			if (!type.isAssignableFrom(argType.getRawType()))
 			{
-				handleError(isFilter, InternalError.EXPLICIT_TYPE_NOT_ARG_SUPERTYPE, 
+				handleError(InternalError.BAD_EXPLICIT_TYPE.getError(isFilter), 
 					m, type, topic);
 				return null;
 			}
@@ -199,17 +200,18 @@ public class AnnotationProcessor
 		ChannelKey key = new ChannelKey(eventType.getType(), topic);
 		if (!_channels.contains(key))
 		{
-			handleError(isFilter, InternalError.EVENT_NOT_REGISTERED, 
+			handleError(InternalError.EVENT_NOT_REGISTERED.getError(isFilter), 
 				m, eventType.getType(), topic);
 			return null;
 		}
 		return key;
 	}
 	
-	private void handleError(boolean isFilter,
-		InternalError error, Method m, Type type, String topic)
+	private void handleError(String format, Method m, Type type, String topic)
 	{
-		_handler.handleError(error.getError(isFilter), m, type, topic);
+		String className = m.getDeclaringClass().getName();
+		String methodName = m.getName();
+		_logger.error(format, new Object[]{className, methodName, type, topic});
 	}
 
 	//CSOFF: HideUtilityClassConstructorCheck
@@ -247,7 +249,6 @@ public class AnnotationProcessor
 	}
 	//CSON: HideUtilityClassConstructorCheck
 
-	final private ErrorHandler _handler;
 	final private Map<Class<?>, List<ConsumerFilter>> _inspectedClasses = 
 		new HashMap<Class<?>, List<ConsumerFilter>>();
 	final private Set<ChannelKey> _channels;

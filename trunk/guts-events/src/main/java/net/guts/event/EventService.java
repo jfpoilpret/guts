@@ -78,19 +78,8 @@ public interface EventService
 	 * instantiated, then you must use this method.
 	 * <p/>
 	 * Note that {@code instance} processing may generate errors (misuse of
-	 * {@link Consumes} and {@link Filters} annotations). Errors are processed by
-	 * the Guice-bound instance of {@link ErrorHandler}; default implementation
-	 * (if you don't explicitly set it in one of your {@link Module}s) will simply 
-	 * throw {@link IllegalArgumentException}.
-	 * <p/>
-	 * You can define your own implementation of {@link ErrorHandler} in your Guice
-	 * {@link Module}:
-	 * <pre>
-	 * &#64;Override protected void configure()
-	 * {
-	 *     bind(ErrorHandler.class).to(MyErrorHandler.class);
-	 * }
-	 * </pre>
+	 * {@link Consumes} and {@link Filters} annotations). Errors are simply logged 
+	 * with SLF4J.
 	 * 
 	 * @param instance the object which consumer methods must be processed and 
 	 * registered with matching {@link Channel}s

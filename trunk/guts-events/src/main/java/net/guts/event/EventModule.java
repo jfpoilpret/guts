@@ -39,9 +39,6 @@ import com.google.inject.assistedinject.FactoryProvider;
  * GUTS-Events has some default bindings that can be overridden in your own modules
  * if required:
  * <ul>
- * <li>{@link ErrorHandler}: used to manage GUTS-Events configuration errors during
- * processing of classes annotated with {@link Consumes} and {@link Filters}; default
- * behavior is to throw {@link IllegalArgumentException}.</li>
  * <li>{@link ConsumerExceptionHandler}: used to handle exceptions thrown by filter
  * and consumer methods during event notification; default behavior is to echo
  * information about the event and the exception to {@code System.err}.</li>

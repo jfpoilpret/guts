@@ -38,7 +38,6 @@ import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
 import net.guts.event.Consumes;
-import net.guts.event.ErrorHandler;
 import net.guts.event.EventService;
 import net.guts.event.InDeferredThread;
 import net.guts.event.InEDT;
@@ -55,7 +54,6 @@ public class EventServiceExecutorsTest
 {
 	@BeforeMethod public void setup()
 	{
-		_errorHandler = createMock(ErrorHandler.class);
 		_exceptionHandler = createMock(ConsumerExceptionHandler.class);
 		_cleaner = createNiceMock(Cleaner.class);
 		final Map<Class<? extends Annotation>, Provider<Executor>> executors =
@@ -70,7 +68,7 @@ public class EventServiceExecutorsTest
 		{
 			public AnnotationProcessor create(Set<ChannelKey> channels)
 			{
-				return new AnnotationProcessor(_errorHandler, channels, executors);
+				return new AnnotationProcessor(channels, executors);
 			}
 		};
 		ChannelFactory channelFactory = new ChannelFactory()
@@ -152,7 +150,6 @@ public class EventServiceExecutorsTest
 	}
 
 	private EventService _service;
-	private ErrorHandler _errorHandler;
 	private ConsumerExceptionHandler _exceptionHandler;
 	private Cleaner _cleaner;
 	private Executor _exec1;

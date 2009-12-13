@@ -63,11 +63,11 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		write.lock();
 		try
 		{
-			SortedSet<Consumer> consumers = _consumers.get(executor);
+			SortedSet<Consumer> consumers = _executorConsumers.get(executor);
 			if (consumers == null)
 			{
 				consumers = new TreeSet<Consumer>();
-				_consumers.put(executor, consumers);
+				_executorConsumers.put(executor, consumers);
 			}
 			consumers.add(new Consumer(instance, consumer, filter, priority));
 		}
@@ -85,7 +85,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		read.lock();
 		try
 		{
-			for (Map.Entry<Executor, SortedSet<Consumer>> entry: _consumers.entrySet())
+			for (Map.Entry<Executor, SortedSet<Consumer>> entry: _executorConsumers.entrySet())
 			{
 				EventPublisher publisher = new EventPublisher(event);
 				consumers.put(entry.getKey(), publisher);
@@ -135,7 +135,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		read.lock();
 		try
 		{
-			for (Map.Entry<Executor, SortedSet<Consumer>> entry: _consumers.entrySet())
+			for (Map.Entry<Executor, SortedSet<Consumer>> entry: _executorConsumers.entrySet())
 			{
 				for (Consumer consumer: entry.getValue())
 				{
@@ -164,7 +164,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		try
 		{
 			// First remove Consumers from each individual list for all executors
-			for (SortedSet<Consumer> consumers: _consumers.values())
+			for (SortedSet<Consumer> consumers: _executorConsumers.values())
 			{
 				Iterator<Consumer> i = consumers.iterator();
 				while (i.hasNext())
@@ -178,7 +178,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 			
 			// Then remove any entries for which the consumer list is empty
 			Iterator<Map.Entry<Executor, SortedSet<Consumer>>> i = 
-				_consumers.entrySet().iterator();
+				_executorConsumers.entrySet().iterator();
 			while (i.hasNext())
 			{
 				if (i.next().getValue().isEmpty())
@@ -353,7 +353,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 
 	// Ordered list (by priority and registration time) of consumers for this channel
 	// (grouped by Executor)
-	final private Map<Executor, SortedSet<Consumer>> _consumers = 
+	final private Map<Executor, SortedSet<Consumer>> _executorConsumers = 
 		new IdentityHashMap<Executor, SortedSet<Consumer>>();
 	// RW lock to access _consumers
 	final private ReadWriteLock _lock = new ReentrantReadWriteLock();
