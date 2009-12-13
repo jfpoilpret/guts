@@ -17,6 +17,7 @@ package net.guts.gui.exception;
 import java.lang.ref.WeakReference;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Iterator;
 import java.util.List;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -24,11 +25,12 @@ import java.util.TreeSet;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.cleaner.Cleanable;
+import net.guts.common.cleaner.Cleaner;
+
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-//TODO add locks!
-//TODO add cleaning!
 @Singleton
 class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 {
@@ -36,9 +38,16 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 		LoggerFactory.getLogger(ExceptionHandlerManagerImpl.class);
 	
 	@Inject
-	public ExceptionHandlerManagerImpl(AnnotationProcessor processor)
+	public ExceptionHandlerManagerImpl(AnnotationProcessor processor, Cleaner cleaner)
 	{
 		_processor = processor;
+		cleaner.addCleanable(new Cleanable()
+		{
+			@Override public void cleanup()
+			{
+				ExceptionHandlerManagerImpl.this.cleanup();
+			}
+		});
 	}
 
 	/* (non-Javadoc)
@@ -70,19 +79,22 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 	private void dispatch(Throwable e)
 	{
 		Class<? extends Throwable> clazz = e.getClass();
-		for (Handler handler: _handlers)
+		synchronized (_handlers)
 		{
-			// Check if reference is still valid
-			Object instance = handler._instance.get();
-			if (instance != null)
+			for (Handler handler: _handlers)
 			{
-				// Check method arg type is compatible with e
-				if (handler._info.getType().isAssignableFrom(clazz))
+				// Check if reference is still valid
+				Object instance = handler._instance.get();
+				if (instance != null)
 				{
-					// Call the handler and check if it has handled this exception
-					if (handle(instance, handler._info.getHandler(), e))
+					// Check method arg type is compatible with e
+					if (handler._info.getType().isAssignableFrom(clazz))
 					{
-						break;
+						// Call the handler and check if it has handled this exception
+						if (handle(instance, handler._info.getHandler(), e))
+						{
+							break;
+						}
 					}
 				}
 			}
@@ -95,9 +107,12 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 	@Override public void registerExceptionHandlers(Object instance)
 	{
 		List<ExceptionHandler> handlers = _processor.process(instance.getClass());
-		for (ExceptionHandler handler: handlers)
+		synchronized (_handlers)
 		{
-			_handlers.add(new Handler(instance, handler));
+			for (ExceptionHandler handler: handlers)
+			{
+				_handlers.add(new Handler(instance, handler));
+			}
 		}
 	}
 	
@@ -118,6 +133,21 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 	}
 	// CSON: IllegalCatchCheck
 	
+	private void cleanup()
+	{
+		synchronized (_handlers)
+		{
+			Iterator<Handler> i = _handlers.iterator();
+			while (i.hasNext())
+			{
+				if (i.next()._instance.get() == null)
+				{
+					i.remove();
+				}
+			}
+		}
+	}
+
 	static private class Handler implements Comparable<Handler>
 	{
 		Handler(Object instance, ExceptionHandler info)
