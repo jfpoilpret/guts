@@ -19,10 +19,14 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
 
-//TODO can we make this class package-private????
 /**
  * Special handler for all exceptions thrown inside the EDT. This handler simply
  * delegates all exception handling to {@link ExceptionHandlerManager}.
+ * <p/>
+ * This handler is automatically registered with Swing through 
+ * {@link ExceptionHandlingModule}. Although {@code public}, it is not part of the
+ * official Guts-GUI API, it has to be {@code public} because of the Swing trick it
+ * uses to be notified of exceptions occurring in the EDT.
  * 
  * @author Jean-Francois Poilpret
  */
