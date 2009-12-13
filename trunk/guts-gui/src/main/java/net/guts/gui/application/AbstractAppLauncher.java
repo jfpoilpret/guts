@@ -55,7 +55,33 @@ import com.google.inject.Module;
  * </ul>
  * As in the following example:
  * <pre>
- * TODO example with main(), initModules() and simplest module
+ * public class AddressBookMain extends AbstractAppLauncher
+ * {
+ *     public static void main(String[] args)
+ *     {
+ *         new AddressBookMain().launch(args);
+ *     }
+ *     
+ *     @Override protected void initModules(String[] args, List<Module> modules)
+ *     {
+ *         modules.add(new MessageModule());
+ *         modules.add(new AddressBookModule());
+ *     }
+ *     
+ *     private class AddressBookModule extends AbstractModule
+ *     {
+ *         @Override protected void configure()
+ *         {
+ *             bind(AppLifecycleStarter.class)
+ *                 .to(AddressBookLifecycleStarter.class).asEagerSingleton();
+ *             // Add binding for "contact selection" events
+ *             Events.bindChannel(binder(), Contact.class);
+ *             bind(ContactActions.class).asEagerSingleton();
+ *             // Setup ResourceModule root bundle
+ *             Resources.bindRootBundle(binder(), getClass(), "resources");
+ *         }
+ *     }
+ * }
  * </pre>
  * Note, in the example above, as a minimum requirement for the {@code initModules()}
  * method, you have to define a binding for {@link AppLifecycleStarter} to one of
@@ -67,7 +93,13 @@ import com.google.inject.Module;
  * to subclass it.
  * Refer to (TODO later when these classes exist).
  * <p/>
- * TODO document fatal error (bootstrapping) handling and resource bundle for these errors.
+ * In case any error occurs during intialization process, it will be logged and an error
+ * message will be displayed to the end user. For localization of these fatal error
+ * message, {@code AbstractAppLauncher} cannot use 
+ * {@link net.guts.gui.resource.ResourceInjector} but must use a special 
+ * {@link java.util.ResourceBundle}, which path (in classpath) is 
+ * {@code `/net/guts/gui/application/guts-gui.properties`}. You can localize it by
+ * providing files for specific {@link java.util.Locale}.
  *
  * @author Jean-Francois Poilpret
  */
@@ -181,7 +213,6 @@ public abstract class AbstractAppLauncher
 
 	static private void fatalError(String id, Exception e)
 	{
-		//TODO create the necessary default bundle!
 		// Fail graciously with Message Box!
 		// Needs a special bundle with system-level fatal error messages
 		ResourceBundle bundle = ResourceBundle.getBundle("guts-gui");
