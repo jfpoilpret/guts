@@ -20,16 +20,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.google.inject.Inject;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class AnnotationProcessor
 {
-	@Inject
-	public AnnotationProcessor(ClassProcessingErrorHandler handler)
-	{
-		_handler = handler;
-	}
-	
+	static final private Logger _logger = LoggerFactory.getLogger(AnnotationProcessor.class);
+
 	//TODO synchronization?
 	public List<ExceptionHandler> process(Class<?> clazz)
 	{
@@ -68,12 +65,12 @@ class AnnotationProcessor
 		// Check method is void and has one parameter
 		if (m.getReturnType() != boolean.class)
 		{
-			_handler.handleError(ClassProcessingError.HANDLER_MUST_RETURN_BOOLEAN, m);
+			logError(ERR_HANDLER_MUST_RETURN_BOOLEAN, m);
 			return null;
 		}
 		if (m.getParameterTypes().length != 1)
 		{
-			_handler.handleError(ClassProcessingError.HANDLER_MUST_HAVE_ONE_ARG, m);
+			logError(ERR_HANDLER_MUST_HAVE_ONE_THROWABLE_ARG, m);
 			return null;
 		}
 
@@ -82,13 +79,26 @@ class AnnotationProcessor
 		// Check that the declared type is a subclass of Throwable
 		if (!Throwable.class.isAssignableFrom(argType))
 		{
-			_handler.handleError(ClassProcessingError.HANDLER_ARG_MUST_BE_THROWABLE, m);
+			logError(ERR_HANDLER_MUST_HAVE_ONE_THROWABLE_ARG, m);
 			return null;
 		}
 		return new ExceptionHandler(m, argType.asSubclass(Throwable.class), priority);
 	}
 	
-	final private ClassProcessingErrorHandler _handler;
+	private void logError(String format, Method method)
+	{
+		String className = method.getDeclaringClass().getName();
+		String methodName = method.getName();
+		_logger.error(format, className, methodName);
+	}
+
+	// CSOFF: LineLengthCheck
+	static final private String ERR_HANDLER_MUST_HAVE_ONE_THROWABLE_ARG =
+		"@HandlesException is forbidden on method '{}.{}' because it must have exactly one Throwable argument (or any Throwable subtype)";
+	static final private String ERR_HANDLER_MUST_RETURN_BOOLEAN =
+		"@HandlesException is forbidden on method '{}.{}' because it must return boolean";
+	// CSON: LineLengthCheck
+
 	final private Map<Class<?>, List<ExceptionHandler>> _inspectedClasses = 
 		new HashMap<Class<?>, List<ExceptionHandler>>();
 }
