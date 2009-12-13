@@ -1,6 +1,6 @@
 <projectDescription>
   <name>guts-events-0.1-SNAPSHOT</name>
-  <comment>Guts Event is a light library, based on Guice Dependency Injection,
+  <comment>Guts-Events is a light library, based on Guice Dependency Injection,
 		to handle &quot;events&quot; transmission from Suppliers to Consumers inside a 
 		same JVM.</comment>
   <projects/>

@@ -27,7 +27,6 @@
  * <li><a href="#guts5">Controlling thread executing consumers notification</a></li>
  * <li><a href="#guts6">Adding special processing to consumer returned values</a></li>
  * <li><a href="#guts7">Handling exceptions thrown by consumers</a></li>
- * <li><a href="#guts8">Handling configuration errors</a></li>
  * <li><a href="#guts9">Miscellaneous</a></li>
  * </ul>
  * 
@@ -479,24 +478,6 @@
  * });
  * </pre>
  * The example above simply logs all exceptions thrown by consumer methods.
- * 
- * <p/><a name="guts8"></a><h3>Handling configuration errors</h3>
- * When processing a class containing {@code @Consumes} and {@code @Filters}
- * annotations (which is done automatically when instantiating such a class through
- * a Guice {@link com.google.inject.Injector}), in case of any error, GUTS-Events 
- * will, by default, throw {@link java.lang.IllegalArgumentException}. 
- * You may, if you need, change this behavior by specifying your own 
- * {@link net.guts.event.ErrorHandler}. As usual, you'll have to add a new Guice 
- * binding in your module:
- * <pre>
- * Injector injector = Guice.createInjector(new EventModule(), new AbstractModule()
- * {
- *     &#64;Override protected void configure()
- *     {
- *         bind(ErrorHandler.class).to(MyErrorHandler.class);
- *     }
- * });
- * </pre>
  * 
  * <p/><a name="guts9"></a><h3>Miscellaneous</h3>
  * In GUTS-Events, all reference to instances of classes containing consumer methods

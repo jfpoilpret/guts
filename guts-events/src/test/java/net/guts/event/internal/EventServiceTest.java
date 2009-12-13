@@ -38,7 +38,6 @@ import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
 import net.guts.event.Consumes;
-import net.guts.event.ErrorHandler;
 import net.guts.event.EventService;
 import net.guts.event.Filters;
 import net.guts.event.internal.AnnotationProcessor;
@@ -54,7 +53,6 @@ public class EventServiceTest
 {
 	@BeforeMethod public void setup()
 	{
-		_errorHandler = createMock(ErrorHandler.class);
 		_exceptionHandler = createMock(ConsumerExceptionHandler.class);
 		_cleaner = createNiceMock(Cleaner.class);
 		final Map<Class<? extends Annotation>, Provider<Executor>> executors =
@@ -65,7 +63,7 @@ public class EventServiceTest
 		{
 			public AnnotationProcessor create(Set<ChannelKey> channels)
 			{
-				return new AnnotationProcessor(_errorHandler, channels, executors);
+				return new AnnotationProcessor(channels, executors);
 			}
 		};
 		ChannelFactory channelFactory = new ChannelFactory()
@@ -88,37 +86,37 @@ public class EventServiceTest
 	@Test(expectedExceptions = IllegalArgumentException.class)
 	public void checkGetUnregisteredTopicChannel()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		_service.registerChannel(TypeLiteral.get(Integer.class), TOPIC);
 		_service.getChannel(TypeLiteral.get(Integer.class), BAD_TOPIC);
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkRegisterAndGetChannel()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		Channel<Integer> channel = 
 			_service.getChannel(TypeLiteral.get(Integer.class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkRegisterSameChannelTwice()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		Channel<Integer> channel = 
 			_service.getChannel(TypeLiteral.get(Integer.class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkGetSameChannelTwiceIsUnique()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		Channel<Integer> channel1 = 
 			_service.getChannel(TypeLiteral.get(Integer.class), null);
@@ -127,12 +125,12 @@ public class EventServiceTest
 			_service.getChannel(TypeLiteral.get(Integer.class), null);
 		assertThat(channel2).as("second call to getChannel()").isNotNull();
 		assertThat(channel1).as("first call to getChannel()").isSameAs(channel2);
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkGenericChannelRetrieval()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(new TypeLiteral<List<Integer>>(){}, null);
 		_service.registerChannel(new TypeLiteral<List<String>>(){}, null);
 		Channel<List<Integer>> channel1 = 
@@ -142,12 +140,12 @@ public class EventServiceTest
 		assertThat(channel1).as("getChannel(List<Integer>)").isNotNull();
 		assertThat(channel2).as("getChannel(List<String>)").isNotNull();
 		assertThat(channel1).as("getChannel(List<Integer>)").isNotSameAs(channel2);
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkPrimitiveChannelRetrieval()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		_service.registerChannel(TypeLiteral.get(int.class), null);
 		Channel<Integer> channel1 = 
@@ -157,32 +155,32 @@ public class EventServiceTest
 		assertThat(channel1).as("getChannel(Integer)").isNotNull();
 		assertThat(channel2).as("getChannel(int)").isNotNull();
 		assertThat(channel1).as("getChannel(Integer)").isNotSameAs(channel2);
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkNullAndEmptyTopicsEquivalent()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		Channel<Integer> channel = 
 			_service.getChannel(TypeLiteral.get(Integer.class), "");
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkEmptyAndNullTopicsEquivalent()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), "");
 		Channel<Integer> channel = 
 			_service.getChannel(TypeLiteral.get(Integer.class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkNonEmptyAndNullTopicsDifferent()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(Integer.class), null);
 		_service.registerChannel(TypeLiteral.get(Integer.class), TOPIC);
 		Channel<Integer> channel1 = 
@@ -192,27 +190,27 @@ public class EventServiceTest
 			_service.getChannel(TypeLiteral.get(Integer.class), TOPIC);
 		assertThat(channel2).as("getChannel() for non empty topic").isNotNull();
 		assertThat(channel1).as("getChannel() for null topic").isNotSameAs(channel2);
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkRegisterPrimitiveTypeEvent()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(int.class), null);
 		Channel<Integer> channel = 
 			_service.getChannel(TypeLiteral.get(int.class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkRegisterArrayTypeEvent()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(int[].class), null);
 		Channel<int[]> channel = 
 			_service.getChannel(TypeLiteral.get(int[].class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	public void checkIntegerEventChannelToConsumer()
@@ -228,11 +226,11 @@ public class EventServiceTest
 		mock.push(same(event2));
 		Consumer2 consumer = new Consumer2(mock);
 		
-		replay(mock, _errorHandler, _exceptionHandler);
+		replay(mock, _exceptionHandler);
 		_service.registerConsumers(consumer);
 		channel.publish(event1);
 		channel.publish(event2);
-		verify(mock, _errorHandler, _exceptionHandler);
+		verify(mock, _exceptionHandler);
 	}
 	
 	static public interface Consumer1
@@ -267,13 +265,13 @@ public class EventServiceTest
 		mock.push(same(event3));
 		Consumer2 consumer = new Consumer3(mock);
 		
-		replay(mock, _errorHandler, _exceptionHandler);
+		replay(mock, _exceptionHandler);
 		_service.registerConsumers(consumer);
 		channel.publish(event1);
 		channel.publish(event2);
 		channel.publish(event3);
 		channel.publish(event4);
-		verify(mock, _errorHandler, _exceptionHandler);
+		verify(mock, _exceptionHandler);
 	}
 	
 	static public class Consumer3 extends Consumer2
@@ -290,13 +288,13 @@ public class EventServiceTest
 
 	public void checkRegisterArrayTypeEventAndProcessConsumer()
 	{
-		replay(_errorHandler, _exceptionHandler);
+		replay(_exceptionHandler);
 		_service.registerChannel(TypeLiteral.get(int[].class), null);
 		Channel<int[]> channel = 
 			_service.getChannel(TypeLiteral.get(int[].class), null);
 		assertThat(channel).as("getChannel()").isNotNull();
 		_service.registerConsumers(new Consumer4());
-		verify(_errorHandler, _exceptionHandler);
+		verify(_exceptionHandler);
 	}
 	
 	static public class Consumer4
@@ -308,7 +306,6 @@ public class EventServiceTest
 	static private final String TOPIC = "dummy";
 	static private final String BAD_TOPIC = "unexisting";
 	private EventService _service;
-	private ErrorHandler _errorHandler;
 	private ConsumerExceptionHandler _exceptionHandler;
 	private Cleaner _cleaner;
 }
