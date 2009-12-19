@@ -27,6 +27,7 @@ import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
+import javax.swing.KeyStroke;
 
 import net.guts.event.EventModule;
 import net.guts.event.Events;
@@ -108,6 +109,7 @@ public final class ResourceModule extends AbstractModule
 		bindConverter(boolean.class,	BooleanConverter.class);
 		bindConverter(Integer.class,	IntConverter.class);
 		bindConverter(int.class,		IntConverter.class);
+		bindConverter(KeyStroke.class,	KeyStrokeConverter.class);
 		bindConverter(Color.class,		ColorConverter.class);
 		bindConverter(Font.class,		FontConverter.class);
 		bindConverter(Icon.class,		IconConverter.class);
@@ -150,6 +152,16 @@ public final class ResourceModule extends AbstractModule
 		Resources.bindInstanceInjector(binder(), type).to(converter).asEagerSingleton();
 	}
 	
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof ResourceModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return ResourceModule.class.hashCode();
+	}
+
 	static final private TypeLiteral<BeanPropertiesInjector<Component>> COMPONENT_INJECTOR =
 		new TypeLiteral<BeanPropertiesInjector<Component>>(){};
 	static final private TypeLiteral<BeanPropertiesInjector<Object>> OBJECT_INJECTOR =
