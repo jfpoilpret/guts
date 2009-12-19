@@ -27,6 +27,7 @@ import java.util.StringTokenizer;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
+import javax.swing.KeyStroke;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -117,6 +118,14 @@ class IntConverter implements ResourceConverter<Integer>
 	{
 		// Trick to support "unsigned" Hex values like 0xFF0000FF
 		return (int) (long) Long.decode(entry.value());
+	}
+}
+
+class KeyStrokeConverter implements ResourceConverter<KeyStroke>
+{
+	@Override public KeyStroke convert(ResourceEntry entry)
+	{
+		return KeyStroke.getKeyStroke(entry.value());
 	}
 }
 
