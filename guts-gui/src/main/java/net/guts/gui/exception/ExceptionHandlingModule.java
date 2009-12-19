@@ -65,4 +65,14 @@ public final class ExceptionHandlingModule extends AbstractModule
 		// Registers static injection of SwingExceptionHandler class
 		requestStaticInjection(SwingExceptionHandler.class);
 	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof ExceptionHandlingModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return ExceptionHandlingModule.class.hashCode();
+	}
 }

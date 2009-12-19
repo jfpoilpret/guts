@@ -65,4 +65,14 @@ public final class SessionModule extends AbstractModule
 	{
 		Sessions.bindSessionConverter(binder(), type).to(state);
 	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof SessionModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return SessionModule.class.hashCode();
+	}
 }

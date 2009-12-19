@@ -69,4 +69,14 @@ public final class ExitModule extends AbstractModule
 			new OneTypeListener<ExitChecker>(ExitChecker.class, injectionListener);
 		bindListener(Matchers.isSubtypeOf(ExitChecker.class), typeListener);
 	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof ExitModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return ExitModule.class.hashCode();
+	}
 }

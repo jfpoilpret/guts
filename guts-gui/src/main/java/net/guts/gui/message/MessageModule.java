@@ -14,6 +14,7 @@
 
 package net.guts.gui.message;
 
+import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
@@ -25,8 +26,19 @@ public final class MessageModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		install(new ResourceModule());
 		// Bind special ResourceConverter used by MessageFactoryImpl
 		Resources.bindEnumConverter(binder(), MessageType.class);
 		Resources.bindEnumConverter(binder(), OptionType.class);
+	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof MessageModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return MessageModule.class.hashCode();
 	}
 }
