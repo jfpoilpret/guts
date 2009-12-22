@@ -20,22 +20,18 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import org.jdesktop.application.Task;
-
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.domain.Contact;
-import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.Resettable;
 import net.guts.gui.dialog.support.AbstractPanel;
-import net.guts.gui.dialog.support.Acceptor;
+import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ContactPanel extends AbstractPanel 
-	implements Resettable, Acceptor
+public class ContactPanel extends AbstractPanel implements Resettable
 {
 	static final private long serialVersionUID = -2653616540903403972L;
 	static final private String NAME = "ContactDetailPanel";
@@ -60,6 +56,9 @@ public class ContactPanel extends AbstractPanel
 
 		_home.layout(layout);
 		_office.layout(layout);
+		
+		// Finish initializing AbstractPanel
+		initButtons(_accept);
 	}
 	
 	public void reset()
@@ -84,7 +83,7 @@ public class ContactPanel extends AbstractPanel
 		_office.setAddress(_contact.getOffice());
 	}
 
-	public Task<Void, Void> accept(ParentDialog parent)
+	private void accept()
     {
 		boolean create = false;
 		if (_contact == null)
@@ -112,10 +111,17 @@ public class ContactPanel extends AbstractPanel
 		{
 			_service.modifyContact(_contact);
 		}
-		parent.close(false);
-		return null;
+		getParentDialog().close(false);
 	}
 
+	final private AcceptGutsAction _accept = new AcceptGutsAction()
+	{
+		@Override protected void perform()
+		{
+			accept();
+		}
+	};
+	
 	final private JLabel _lblFirstName = new JLabel();
 	final private JTextField _txfFirstName = new JTextField(20);
 	final private JLabel _lblLastName = new JLabel();

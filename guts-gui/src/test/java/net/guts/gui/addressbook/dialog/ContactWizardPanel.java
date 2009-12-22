@@ -20,22 +20,20 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import org.jdesktop.application.Task;
-
+import net.guts.gui.action.Task;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.domain.Address;
 import net.guts.gui.addressbook.domain.Contact;
-import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.support.AbstractWizardPanel;
 import net.guts.gui.dialog.support.AbstractWizardStepPanel;
-import net.guts.gui.dialog.support.Acceptor;
+import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ContactWizardPanel extends AbstractWizardPanel implements Acceptor
+public class ContactWizardPanel extends AbstractWizardPanel
 {
 	static final private long serialVersionUID = -8845317327842500636L;
 	static final private String NAME = "ContactDetailWizardPanel";
@@ -43,6 +41,13 @@ public class ContactWizardPanel extends AbstractWizardPanel implements Acceptor
 	public ContactWizardPanel()
     {
 	    super(NAME);
+	    initButtons(new AcceptGutsAction()
+		{
+			@Override protected void perform()
+			{
+				accept();
+			}
+		});
     }
 
 	@Override protected void initWizard()
@@ -68,7 +73,7 @@ public class ContactWizardPanel extends AbstractWizardPanel implements Acceptor
 		getController().setContext(_contact);
 	}
 
-	public Task<Void, Void> accept(ParentDialog parent)
+	private void accept()
     {
 	    // Now save
 		if (_create)
@@ -79,10 +84,9 @@ public class ContactWizardPanel extends AbstractWizardPanel implements Acceptor
 		{
 			_service.modifyContact(_contact);
 		}
-		parent.close(false);
-	    return null;
+		getParentDialog().close(false);
     }
-
+	
 	private final ContactPane _contactPane = new ContactPane();
 	private final AbstractAddressPane _homePane = 
 		new HomeAddressPane(NAME + "-home", false);

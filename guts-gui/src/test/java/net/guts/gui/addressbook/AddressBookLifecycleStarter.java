@@ -21,12 +21,14 @@ import java.util.Locale;
 import javax.swing.JFrame;
 import javax.swing.JMenuBar;
 
-import org.jdesktop.application.Action;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.addressbook.action.ContactActions;
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
+import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.application.WindowController;
 import static net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.exception.HandlesException;
@@ -47,9 +49,12 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	public AddressBookLifecycleStarter(WindowController windowController, 
 		MenuFactory menuFactory, MessageFactory messageFactory,
 		ResourceInjector injector, ExitController exitController, 
-		AddressBookMainView mainView)
+		AddressBookMainView mainView, ContactActions contactActions,
+		GutsApplicationActions appActions)
 	{
 		_mainView =  mainView;
+		_appActions = appActions;
+		_contactActions = contactActions;
 		_windowController = windowController;
 		_menuFactory = menuFactory;
 		_messageFactory = messageFactory;
@@ -63,14 +68,22 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	{
 		// Create menus
 		JMenuBar menuBar = new JMenuBar();
-		menuBar.add(_menuFactory.createMenu("fileMenu", "throwException", "quit"));
-		menuBar.add(_menuFactory.createMenu("editMenu", "cut", "copy", "paste"));
-		menuBar.add(_menuFactory.createMenu(
-			"contactMenu", 
-			"createContact", "createContactWithTabs", "createContactWithWizard", 
-			"modifyContact", "modifyContactWithTabs", "modifyContactWithWizard", 
-			"deleteContact"));
-		menuBar.add(_menuFactory.createMenu("localeMenu", "french", "english"));
+		menuBar.add(_menuFactory.createMenu("fileMenu", _throwException, _appActions.quit()));
+		menuBar.add(_menuFactory.createMenu("editMenu", 
+			_appActions.cut(),
+			_appActions.copy(),
+			_appActions.paste()));
+		menuBar.add(_menuFactory.createMenu("contactMenu",
+			_contactActions.createContact(),
+			_contactActions.createContactWithTabs(),
+			_contactActions.createContactWithWizard(),
+			MenuFactory.ACTION_SEPARATOR,
+			_contactActions.modifyContact(),
+			_contactActions.modifyContactWithTabs(),
+			_contactActions.modifyContactWithWizard(),
+			MenuFactory.ACTION_SEPARATOR,
+			_contactActions.deleteContact()));
+		menuBar.add(_menuFactory.createMenu("localeMenu", _french, _english));
 		JFrame mainFrame = new JFrame();
 		mainFrame.setName("mainFrame");
 		//TODO Guts-GUI should always provide this somehow
@@ -108,21 +121,30 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	// CSON: GenericIllegalRegexp
 
 	// Only to demonstrate the exception handling
-	@Action public void throwException()
+	final private GutsAction _throwException = new GutsAction("throwException")
 	{
-		throw new IllegalArgumentException("Some message here");
-	}
+		@Override protected void perform()
+		{
+			throw new IllegalArgumentException("Some message here");
+		}
+	};
+	final private GutsAction _french = new GutsAction("french")
+	{
+		@Override protected void perform()
+		{
+			_injector.setLocale(Locale.FRENCH);
+		}
+	};
+	final private GutsAction _english = new GutsAction("english")
+	{
+		@Override protected void perform()
+		{
+			_injector.setLocale(Locale.ENGLISH);
+		}
+	};
 	
-	@Action public void french()
-	{
-		_injector.setLocale(Locale.FRENCH);
-	}
-
-	@Action public void english()
-	{
-		_injector.setLocale(Locale.ENGLISH);
-	}
-
+	final private ContactActions _contactActions;
+	final private GutsApplicationActions _appActions;
 	final private AddressBookMainView _mainView;
 	final private WindowController _windowController;
 	final private MenuFactory _menuFactory;

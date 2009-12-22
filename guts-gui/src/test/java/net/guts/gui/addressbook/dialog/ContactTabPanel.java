@@ -21,13 +21,11 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.jdesktop.application.Task;
-
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.domain.Address;
 import net.guts.gui.addressbook.domain.Contact;
-import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.support.AbstractTabbedPanel;
+import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.dialog.support.TabPanelAcceptor;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
@@ -46,6 +44,13 @@ public class ContactTabPanel extends AbstractTabbedPanel
 	    _tabbedPane.add(_contactTab);
 	    _tabbedPane.add(_homeTab);
 	    _tabbedPane.add(_officeTab);
+	    initButtons(new AcceptGutsAction()
+	    {
+			@Override protected void perform()
+			{
+				accept();
+			}
+	    });
     }
 	
 	public void setContact(Contact contact)
@@ -70,11 +75,9 @@ public class ContactTabPanel extends AbstractTabbedPanel
 		setContact(null);
     }
 
-	@Override public Task<Void, Void> accept(ParentDialog parent)
+	private void accept()
     {
-		// First make sure that all tabs save user input to _contact
-	    super.accept(parent);
-	    // Now save
+	    // Save everything
 		if (_create)
 		{
 			_service.createContact(_contact);
@@ -83,8 +86,7 @@ public class ContactTabPanel extends AbstractTabbedPanel
 		{
 			_service.modifyContact(_contact);
 		}
-		parent.close(false);
-	    return null;
+		getParentDialog().close(false);
     }
 
 	private final ContactTab _contactTab = new ContactTab();
