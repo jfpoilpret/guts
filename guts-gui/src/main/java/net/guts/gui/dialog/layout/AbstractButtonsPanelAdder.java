@@ -14,7 +14,11 @@
 
 package net.guts.gui.dialog.layout;
 
+import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -71,15 +75,14 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		buttonsPanel.add(Box.createHorizontalGlue());
 		int maxVgap = 0;
-		int width = 0;
-		int height = 0;
 
 		// Build the buttons box and calculate all needed sizes
 		for (int i = 0; i < buttons.size(); i++)
 		{
 			JButton left = buttons.get(i);
-			width = Math.max(width, left.getPreferredSize().width);
-			height = Math.max(height, left.getPreferredSize().height);
+			// Make sure buttons size will be made consistent during all lifetime of button
+			left.addPropertyChangeListener(_sizeListener);
+			
 			int vgap = style.getContainerGap(left, SwingConstants.SOUTH, buttonsPanel);
 			maxVgap = Math.max(maxVgap, vgap);
 			if (i == 0)
@@ -107,16 +110,69 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 				buttonsPanel.add(Box.createHorizontalStrut(hgap));
 			}
 		}
-		// Resize every button to its preferred size
-		Dimension prefSize = new Dimension(width, height);
-		for (JButton button: buttons)
-		{
-			button.setMinimumSize(prefSize);
-			button.setPreferredSize(prefSize);
-		}
+		
+		// Update buttons size
+		updateButtonsSize(buttonsPanel, calculateButtonsSize(buttonsPanel));
+		
 		// Add border around box
 		int vgap = style.getContainerGap(buttonsPanel, SwingConstants.SOUTH, container);
 		buttonsPanel.setBorder(new EmptyBorder(vgap, 0, maxVgap, 0));
 		return buttonsPanel;
 	}
+
+	static private Dimension calculateButtonsSize(Container panel)
+	{
+		int width = 0;
+		int height = 0;
+		for (Component child: panel.getComponents())
+		{
+			if (child instanceof JButton)
+			{
+				width = Math.max(width, child.getPreferredSize().width);
+				height = Math.max(height, child.getPreferredSize().height);
+			}
+		}
+		return new Dimension(width, height);
+	}
+	
+	static private void updateButtonsSize(Container panel, Dimension size)
+	{
+		for (Component child: panel.getComponents())
+		{
+			if (child instanceof JButton)
+			{
+				if (!size.equals(child.getMinimumSize()))
+				{
+					child.setMinimumSize(size);
+				}
+				if (!size.equals(child.getPreferredSize()))
+				{
+					child.setPreferredSize(size);
+				}
+			}
+		}
+	}
+	
+	static private class ButtonSizeConsistencyHandler implements PropertyChangeListener
+	{
+		@Override public void propertyChange(PropertyChangeEvent evt)
+		{
+			if (	!evt.getPropertyName().equals("preferredSize")
+				&&	!evt.getPropertyName().equals("minimumSize"))
+			{
+				Component source = (Component) evt.getSource();
+				// First reset default size calculation behavior
+				source.setMinimumSize(null);
+				source.setPreferredSize(null);
+				// Then calculate the max size of all buttons in the parent panel
+				Container panel = source.getParent();
+				Dimension prefSize = calculateButtonsSize(panel);
+				// Now force the size of all buttons
+				updateButtonsSize(panel, prefSize);
+			}
+		}
+	}
+	
+	static final private PropertyChangeListener _sizeListener = 
+		new ButtonSizeConsistencyHandler();
 }

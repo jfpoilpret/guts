@@ -14,26 +14,35 @@
 
 package net.guts.gui.action;
 
-import net.guts.common.injection.AbstractInjectionListener;
+import java.util.List;
 
-import com.google.inject.Inject;
-
-class ActionRegisterInjectionListener extends AbstractInjectionListener<Object>
+public abstract class AbstractTask<T, V> implements Task<T, V>
 {
-	// Guice Injector is injected as a "trick" in order to delay the call to this method
-	// as late as possible during Guice.createInjector()
-	@Inject void setActionManager(ActionRegistry registry)
+	/* (non-Javadoc)
+	 * @see net.guts.gui.action.Task#failed(java.lang.Throwable)
+	 */
+	@Override public void failed(Throwable cause)
 	{
-		_registry = registry;
 	}
 
 	/* (non-Javadoc)
-	 * @see net.guts.common.injection.AbstractInjectionListener#registerInjectee(java.lang.Object)
+	 * @see net.guts.gui.action.Task#finished()
 	 */
-	@Override protected void registerInjectee(Object injectee)
+	@Override public void finished()
 	{
-		_registry.registerActions(injectee);
 	}
 
-	private ActionRegistry _registry;
+	/* (non-Javadoc)
+	 * @see net.guts.gui.action.Task#process(java.util.List)
+	 */
+	@Override public void process(List<V> chunks)
+	{
+	}
+
+	/* (non-Javadoc)
+	 * @see net.guts.gui.action.Task#succeeded(java.lang.Object)
+	 */
+	@Override public void succeeded(T result)
+	{
+	}
 }

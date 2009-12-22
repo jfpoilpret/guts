@@ -42,8 +42,6 @@ class DialogFactoryImpl implements DialogFactory
 	 */
 	public boolean showDialog(JComponent panel)
 	{
-		// Make sure to inject panel members with Guice injector
-		_injector.injectMembers(panel);
 		resetPanel(panel);
 		return show(panel);
 	}

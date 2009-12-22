@@ -12,16 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.support;
+package net.guts.gui.action;
 
-import net.guts.gui.action.Task;
+import com.google.inject.ImplementedBy;
 
-public interface WizardStepPanel
+@ImplementedBy(ActionRegistryImpl.class)
+public interface ActionRegistry
 {
-	public void setController(WizardController controller);
-
-	public void enter();
-	//#### check if this can be easily instantiable (because impl will hardcode
-	// T & V paremter types!)
-	public <T, V> Task<T, V> leave();
+	public void registerActions(Object instance);
+	//TODO add one method to register one GutsAction directly?
 }

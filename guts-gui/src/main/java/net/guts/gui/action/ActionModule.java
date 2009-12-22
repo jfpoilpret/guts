@@ -14,11 +14,11 @@
 
 package net.guts.gui.action;
 
-import org.jdesktop.application.Action;
-
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
+import net.guts.gui.resource.ResourceModule;
+import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
 
@@ -29,13 +29,29 @@ public final class ActionModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
-		// Add type listener to automatically register @Action methods of
-		// Guice-instantiated objects
+		// Make sure Resource Injection system is installed
+		install(new ResourceModule());
+		// Add special Injector for GutsAction
+		Resources.bindInstanceInjector(binder(), GutsAction.class)
+			.to(GutsActionInjector.class).asEagerSingleton();
+
+		// Add type listener to automatically register Action fields 
+		// of Guice-instantiated objects
 		ActionRegisterInjectionListener injectionListener = 
 			InjectionListeners.requestInjection(
 				binder(), new ActionRegisterInjectionListener());
 		OneTypeListener<Object> typeListener = 
 			new OneTypeListener<Object>(Object.class, injectionListener);
-		bindListener(Matchers.hasMethodAnnotatedWith(Action.class), typeListener);
+		bindListener(Matchers.hasFieldsOfType(GutsAction.class), typeListener);
+	}
+
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof ActionModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return ActionModule.class.hashCode();
 	}
 }

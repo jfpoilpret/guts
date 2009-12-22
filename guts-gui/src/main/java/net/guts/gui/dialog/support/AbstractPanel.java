@@ -18,19 +18,18 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.KeyStroke;
 
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Task;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import net.guts.gui.action.ActionManager;
-import net.guts.gui.dialog.DefaultButtonHolder;
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
-import net.guts.gui.dialog.TitleDialogProvider;
 import net.guts.gui.dialog.layout.ButtonsPanelAdder;
 import net.guts.gui.dialog.layout.ButtonsPanelAdderFactory;
 
@@ -87,92 +86,45 @@ import com.google.inject.Inject;
  * 
  * @author Jean-Francois Poilpret
  */
-public abstract class AbstractPanel extends JPanel
-	implements	DefaultButtonHolder,
-				ParentDialogAware,
-				TitleDialogProvider
+public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 {
+	//TODO move some of the doc below into the class javadoc
 	/**
 	 * Constructs a new abstract panel, with a unique identifier, used for 
 	 * resources internationalization.
 	 * <p/>
-	 * If this panel implements {@link Acceptor} then an "OK" button will be 
-	 * created and {@link Acceptor#accept(ParentDialog)} will be called on
-	 * {@code this} when the user clicks "OK"; otherwise, there will be no
-	 * "OK" button in the dialog.
+	 * You must pass the {@code accept} action that will be mapped to the 
+	 * default "OK" button created and laid out by the panel. 
+	 * {@code AbstractPanel} always adds a "Cancel" button which cannot be
+	 * removed. The action performed on "Cancel" cannot be changed either,
+	 * however, you can overrider {@code TODO} that is called before TODO.
+	 * <p/>
+	 * If you have other buttons to be added to the buttons bar, then you should
+	 * pass them in {@code actions}; {@code AbstractPanel} will automatically
+	 * create buttons from the passed {@link GutsAction}s and add them to the bar.
+	 * <p/>
+	 * If {@code actions} also contains {@code accept}, then its position in the 
+	 * list will be used to lay out the whole buttons bar; if not, then the "OK" 
+	 * button will always be laid out on the left. The "Cancel" button position 
+	 * cannot be changed, it is always laid out on the right.
 	 * 
 	 * @param id unique identifier for this dialog panel
+	 * @param accept TODO
 	 */
 	protected AbstractPanel(String id)
 	{
 		setName(id);
-		_acceptor = (this instanceof Acceptor ? (Acceptor) this : null);
 	}
-
-	/**
-	 * Constructs a new abstract panel, with a unique identifier, used for 
-	 * resources internationalization.
-	 * 
-	 * @param id unique identifier for this dialog panel
-	 * @param acceptor the acceptor to call back when the user clicks the "OK"
-	 * button; if {@code null}, then no "OK" button will be created.
-	 */
-	protected AbstractPanel(String id, Acceptor acceptor)
+	
+	@Inject void checkConstructionComplete()
 	{
-		setName(id);
-		_acceptor = acceptor;
-	}
-
-	/**
-	 * Indicates which button is the default button dialog.
-	 * <p/>
-	 * By default, if the subclass defines an {@code accept()} action method,
-	 * then the matching button will be the default, otherwise, the "Cancel"
-	 * button will be the default. Override this method if you need more
-	 * control on this behavior (e.g. if you have more than the 2 "OK" and
-	 * "Cancel" buttons and one of your extra buttons should be the default).
-	 * 
-	 * @see DefaultButtonHolder#getDefaultButton()
-	 */
-	public JButton getDefaultButton()
-	{
-		if (_accept != null)
+		if (!_initButtonsCalled)
 		{
-			return _accept;
-		}
-		else
-		{
-			return _cancel;
+			_logger.error("initButtons() was not called from {}'s constructor",
+				getClass().getSimpleName());
 		}
 	}
-
-	/**
-	 * This method is called after the panel instance has been injected by
-	 * Guice; it does nothing by default. 
-	 * <p/>
-	 * It should be overridden to layout this panel instance if this task 
-	 * requires access to injected fields, otherwise it is always possible to 
-	 * set the panel layout directly in the class constructor, although not 
-	 * advised for the sake of consistency.
-	 * <p/>
-	 * Note that if you want to add buttons besides the usual "OK" and "Cancel"
-	 * buttons (automatically added by {@code AbstractPanel}), then you should 
-	 * not use this method but rather override 
-	 * {@link #setupButtonsList(List, JButton, JButton)}.
-	 * <p/>
-	 * <b>CAUTION!</b> {@code initLayout()} is actually called <u>during</u> 
-	 * Guice injection, not <u>after</u>, hence there is no guarantee that, 
-	 * except for constructor-injection, all injection has been performed on
-	 * {@code this}. As a rule of thumb, you should use only 
-	 * constructor-injection for your dialog panels, to avoid potential problems.
-	 * <p/>
-	 * This word of caution may be relaxed in a future version (based on a new
-	 * version of Guice).
-	 */
-	protected void initLayout()
-	{
-	}
-
+	
 	/**
 	 * Creates 2 default buttons for the dialog panel: "OK" and "Cancel". 
 	 * The "OK" button will be created <b>only if</b> an {@code @Action}
@@ -181,68 +133,104 @@ public abstract class AbstractPanel extends JPanel
 	 * This method also takes care of mapping the "escape" key to the "Cancel"
 	 * action.
 	 */
-	final private void initButtons()
+	final protected void initButtons(AcceptGutsAction accept, GutsAction... actions)
 	{
-		_cancel = createButton("cancel", "cancel");
-		_accept = (_acceptor != null ? createButton("ok", "ok") : null);
+		_ok = validateAcceptAction(accept);
+		JButton btnCancel = createButton(_cancel);
+		JButton btnAccept = (_ok != null ? createButton(_ok) : null);
 
 		// Set escape button
 		getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 					KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-		getActionMap().put("cancel", _cancel.getAction());
+		getActionMap().put("cancel", btnCancel.getAction());
 		
 		// Add these and all buttons to the list of buttons that will be added
 		// at the bottom of the dialog
+		boolean hasAccept = false;
 		List<JButton> buttons = new ArrayList<JButton>();
-		setupButtonsList(buttons, _accept, _cancel);
-
+		for (GutsAction action: actions)
+		{
+			if (action != null)
+			{
+				if (action != _ok)
+				{
+					buttons.add(createButton(action));
+				}
+				else
+				{
+					hasAccept = true;
+					buttons.add(btnAccept);
+				}
+			}
+		}
 		// Make sure "ok" and "cancel" have been added to the list else add them
-		if (_accept != null && !buttons.contains(_accept))
+		if (!hasAccept)
 		{
-			buttons.add(0, _accept);
+			buttons.add(0, btnAccept);
 		}
-		if (!buttons.contains(_cancel))
-		{
-			buttons.add(_cancel);
-		}
+		buttons.add(btnCancel);
 
 		// Add the buttons to the layout
+		//TODO replace this with an injected Map? => must be static!
 		ButtonsPanelAdder adder = ButtonsPanelAdderFactory.getAdder(this);
 		if (adder != null)
 		{
 			adder.addButtons(this, buttons);
 		}
+		else
+		{
+			_logger.warn("initButtons(): No ButtonsPanelAdder for {} LayoutManager",
+				getLayout().getClass());
+		}
+		_initButtonsCalled = true;
 	}
 
+	protected AcceptGutsAction validateAcceptAction(AcceptGutsAction accept)
+	{
+		return accept;
+	}
+	
 	/**
-	 * Sets up the list of buttons that must appear at the bottom of the dialog.
-	 * Does nothing by default. {@code AbstractPanel} always makes sure that
-	 * the "OK" and "Cancel" buttons are added to the dialog if needed.
+	 * Creates an action and a button for it.
 	 * <p/>
-	 * You need to override this method if you need to add your own buttons to
-	 * this dialog. After creating the buttons from the {@code @Action} methods
-	 * in your {@code AbstractPanel} subclass (you can use 
-	 * {@link #createButton(String, String)} for that), you should add these to
-	 * the {@code buttons} list.
+	 * The method names the new button based on the given name and the unique
+	 * id of this panel: "{@code id-name}".
 	 * <p/>
-	 * You may also add the 2 buttons {@code ok} and {@code cancel} passed as
-	 * arguments to the list in the order you want them appear. If you don't add
-	 * them, they will be automatically added: {@code ok} leftmost and 
-	 * {@code cancel} rightmost.
-	 * <p/>
-	 * Overriding this method is particularly useful for creating new types of
-	 * dialogs such as wizards (wizards generally have four buttons: "&lt;&lt;",
-	 * "&gt;&gt;", "Finish" and "Cancel").
+	 * If there is no action with the given name, the method does nothing.
 	 * 
-	 * @param buttons list to which you add your own buttons
-	 * @param ok reference to the automatically created "OK" button
-	 * @param cancel reference to the automatically created "Cancel" button
+	 * @param name name of the new button
+	 * @param actionName name of the action to create; a method with this name
+	 * must exist and be annotated with {@code @Action}.
+	 * @return the new button or {@code null} if {@code actionName} matches no
+	 * real action method
 	 */
-	protected void setupButtonsList(
-		List<JButton> buttons, JButton ok, JButton cancel)
-    {
-    }
+	final protected JButton	createButton(GutsAction gutsAction)
+	{
+		Action action = gutsAction.action();
+		if (action != null)
+		{
+			JButton button = new JButton(action);
+			button.setName(getName() + "-" + gutsAction.name());
+			return button;
+		}
+		else
+		{
+			return null;
+		}
+	}
 
+	@Override final public void setParentDialog(ParentDialog parent)
+	{
+		_parent = parent;
+		//TODO hook for subclasses to do something when parent dialog is known
+	}
+
+	//TODO javadoc
+	final protected ParentDialog getParentDialog()
+	{
+		return _parent;
+	}
+	
 	/**
 	 * Returns a list of arguments that will be used when formatting the dialog
 	 * title. The format must be found in the resources properties file.
@@ -262,146 +250,33 @@ public abstract class AbstractPanel extends JPanel
 		return EMPTY_ARGS;
 	}
 
-	/**
-	 * Action called when the user clicks "Cancel". Simply closes the containing
-	 * dialog.
-	 */
-	@Action final public void cancel()
+	//TODO javadoc
+	protected void cancel()
 	{
-		_parent.close(true);
 	}
 	
-	@Action(enabledProperty = ACCEPT_ENABLED)
-	final public Task<?, ?> ok()
-	{
-		if (_acceptor != null)
-		{
-			return _acceptor.accept(_parent);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
-	/**
-	 * Creates an action and a button for it.
-	 * <p/>
-	 * The method names the new button based on the given name and the unique
-	 * id of this panel: "{@code id-name}".
-	 * <p/>
-	 * If there is no action with the given name, the method does nothing.
-	 * 
-	 * @param name name of the new button
-	 * @param actionName name of the action to create; a method with this name
-	 * must exist and be annotated with {@code @Action}.
-	 * @return the new button or {@code null} if {@code actionName} matches no
-	 * real action method
-	 */
-	final protected JButton	createButton(String name, String actionName)
-	{
-		javax.swing.Action action = getAction(actionName);
-		if (action != null)
-		{
-			JButton button = new JButton(action);
-			button.setName(getName() + "-" + name);
-			return button;
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	/**
-	 * Creates an {@link javax.swing.Action} from an {@code @Action} annotated
-	 * method in the class of this instance (or any superclass).
-	 * <p/>
-	 * This method should be called exclusively from one of the following
-	 * overridden methods:
-	 * <ul>
-	 * <li>{@link #initLayout()}</li>
-	 * <li>{@link #setupButtonsList(List, JButton, JButton)}</li>
-	 * </ul>
-	 * 
-	 * @param action the name of the {@code @Action} annotated method
-	 * @return the {@link javax.swing.Action} matching {@code action}, or 
-	 * {@code null} if no match exists
-	 */
-	final protected javax.swing.Action getAction(String action)
-	{
-		return _actionManager.getAction(action, this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see ParentDialogAware#setParent(ParentDialog)
-	 */
-	final public void setParent(ParentDialog parent)
-	{
-		_parent = parent;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see TitleDialogProvider#getDialogTitle()
-	 */
-	final public String getDialogTitle()
-	{
-		return String.format(_title, getTitleFormatArgs());
-	}
-
 	// Used for resource injection
 	void setTitle(String title)
 	{
-		_title = title;
+		getParentDialog().setDialogTitle(String.format(title, getTitleFormatArgs()));
 	}
 	
-	/**
-	 * This method is implicitly used by the {@link #ok()} method which 
-	 * {@code @Action} is dynamically enabled based on this property.
-	 */
-	final public boolean isAcceptEnabled()
-	{
-		return _enabled;
-	}
-
-	/**
-	 * Enables or disables the {@code @Action public void accept()} action.
-	 * Call this method according to current user input (e.g. through a
-	 * {@link javax.swing.event.DocumentListener} on a mandatory field).
-	 */
-	final protected void setAcceptEnabled(boolean enabled)
-	{
-		boolean old = _enabled;
-		_enabled = enabled;
-		firePropertyChange(ACCEPT_ENABLED, old, enabled);
-	}
-
-	//FIXME there is a risk calling overridden methods (initLayout()...)
-	// before the instance is fully injected by Guice! Only full constructor-
-	// injected instances are safely used. At least this should be documented
-	// in all called overridable methods
-	@Inject final void init(ActionManager actionManager)
-	{
-		// Initialize all properties
-		_actionManager = actionManager;
-		
-		// Setup layout for buttons and internationalize the whole panel
-		initLayout();
-		initButtons();
-	}
-
 	static final private long serialVersionUID = 9182634284361356808L;
-
-	static final private String ACCEPT_ENABLED = "acceptEnabled";
 	static final private Object[] EMPTY_ARGS = new Object[0];
 
-	final private Acceptor _acceptor;
-	private ActionManager _actionManager;
+	final private GutsAction _cancel = new GutsAction("cancel")
+	{
+		@Override protected void perform()
+		{
+			cancel();
+			_parent.close(true);
+		}
+	};
+	
+	//TODO javadoc
+	final protected Logger _logger = LoggerFactory.getLogger(getClass());
+
+	private AcceptGutsAction _ok;
 	private ParentDialog _parent;
-	private String _title = "";
-	private boolean _enabled =  true;
-	private JButton _cancel;
-	private JButton _accept;
+	private boolean _initButtonsCalled = false;
 }

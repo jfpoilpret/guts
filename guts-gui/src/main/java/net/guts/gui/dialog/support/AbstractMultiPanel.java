@@ -18,6 +18,7 @@ import java.awt.Component;
 
 import javax.swing.JComponent;
 
+import net.guts.gui.dialog.Closable;
 import net.guts.gui.dialog.Resettable;
 
 /**
@@ -39,7 +40,7 @@ import net.guts.gui.dialog.Resettable;
  * @see AbstractPanel
  */
 public abstract class AbstractMultiPanel extends AbstractPanel 
-	implements Resettable
+	implements Closable, Resettable 
 {
 	/**
 	 * Constructs a new abstract multi panel, with a unique identifier, used 
@@ -53,19 +54,6 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 	}
 	
 	/**
-	 * Constructs a new abstract multi panel, with a unique identifier, used 
-	 * for resources internationalization.
-	 * 
-	 * @param id unique identifier for this dialog panel
-	 * @param acceptor the acceptor to call back when the user clicks the "OK"
-	 * button; if {@code null}, then no "OK" button will be created.
-	 */
-	protected AbstractMultiPanel(String id, Acceptor acceptor)
-	{
-		super(id, acceptor);
-	}
-
-	/**
 	 * Gets the list of sub panes.
 	 */
 	abstract protected Iterable<JComponent> getSubComponents();
@@ -76,7 +64,7 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 	 * control; if you do that, however, don't forget to call 
 	 * {@code super.reset()}.
 	 */
-	public void reset()
+	@Override public void reset()
     {
 		for (Component subpane: getSubComponents())
 		{
@@ -86,6 +74,19 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 			}
 		}
     }
+	
+	@Override public boolean canClose()
+	{
+		for (Component subpane: getSubComponents())
+		{
+			if (	subpane instanceof Closable
+				&&	!((Closable) subpane).canClose())
+			{
+				return false;
+			}
+		}
+		return true;
+	}
 
 	private static final long serialVersionUID = 8676919627941201180L;
 }

@@ -16,7 +16,7 @@ package net.guts.gui.dialog.support;
 
 import javax.swing.JPanel;
 
-import org.jdesktop.application.Task;
+import net.guts.gui.action.Task;
 
 public abstract class AbstractWizardStepPanel extends JPanel implements WizardStepPanel
 {

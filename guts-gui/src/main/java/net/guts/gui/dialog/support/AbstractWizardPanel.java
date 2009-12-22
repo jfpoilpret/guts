@@ -22,13 +22,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JButton;
 import javax.swing.JComponent;
 
-import org.jdesktop.application.Action;
-import org.jdesktop.application.Task;
-import org.jdesktop.application.TaskEvent;
-import org.jdesktop.application.TaskListener;
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.Task;
 
 //TODO better exception handling and/or logging on error conditions
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
@@ -58,35 +55,26 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 				}
             }
 	    });
-    }
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.support.AbstractPanel#initLayout()
-	 */
-	@Override final protected void initLayout()
-    {
 		_mainPane.initLayout(this);
     }
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.support.AbstractPanel#setupButtonsList(java.util.List, javax.swing.JButton, javax.swing.JButton)
-	 */
-	@Override final protected void setupButtonsList(
-		List<JButton> buttons, JButton ok, JButton cancel)
-    {
-		// Create previous and next buttons
-		JButton previous = createButton("previous", "previous");
-		JButton next = createButton("next", "next");
-		// Setup the full list
-		buttons.add(previous);
-		buttons.add(next);
-		buttons.add(ok);
-		buttons.add(cancel);
-    }
 	
-	@Action(enabledProperty = NEXT_ENABLED) 
+	final protected void initButtons(AcceptGutsAction accept)
+	{
+		initButtons(accept, _previous, _next, accept);
+	}
+
+	final private GutsAction _next = new GutsAction("next")
+	{
+		@Override protected void perform()
+		{
+			Task<?, ?> task = next();
+			if (task != null)
+			{
+				submit(task);
+			}
+		}
+	};
+	
 	final public <R, S> Task<R, S> next()
 	{
 		// First accept current pane
@@ -96,14 +84,15 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			Task<R, S> task = ((WizardStepPanel) current).leave();
 			if (task != null)
 			{
+				//FIXME add later when action package supports TaskListener
 				// Use TaskListener to go on after success
-				task.addTaskListener(new TaskListener.Adapter<R, S>()
-				{
-					@Override public void succeeded(TaskEvent<R> e)
-	                {
-						goToStep(++_current);
-	                }
-				});
+//				task.addTaskListener(new TaskListener.Adapter<R, S>()
+//				{
+//					@Override public void succeeded(TaskEvent<R> e)
+//	                {
+//						goToStep(++_current);
+//	                }
+//				});
 				return task;
 			}
 		}
@@ -128,7 +117,14 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		_mainPane.showStep(step);
 	}
 
-	@Action(enabledProperty = PREVIOUS_ENABLED) 
+	final private GutsAction _previous = new GutsAction("previous")
+	{
+		@Override protected void perform()
+		{
+			previous();
+		}
+	};
+	
 	final public void previous()
 	{
 		if (_current > 0)
@@ -167,28 +163,19 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	    return _panes.values();
     }
 
-	public final boolean isNextEnabled()
+	private final void setAcceptEnabled(boolean enabled)
+	{
+		//TODO
+	}
+	
+	private final void setPreviousEnabled(boolean enabled)
     {
-    	return _nextEnabled;
-    }
-
-	public final boolean isPreviousEnabled()
-    {
-    	return _previousEnabled;
-    }
-
-	private final void setPreviousEnabled(boolean previousEnabled)
-    {
-		boolean old = _previousEnabled;
-		_previousEnabled = previousEnabled;
-		firePropertyChange(PREVIOUS_ENABLED, old, _previousEnabled);
+		_previous.action().setEnabled(enabled);
     }
 	
 	private final void setNextEnabled(boolean enabled)
     {
-		boolean old = _nextEnabled;
-    	_nextEnabled = enabled;
-		firePropertyChange(NEXT_ENABLED, old, _nextEnabled);
+		_next.action().setEnabled(enabled);
     }
 
 	private class WizardControllerImpl implements WizardController
@@ -216,7 +203,8 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		public void setNextStepsSequence(String... steps)
         {
 			// First check that all steps match added components
-			if (!_panes.keySet().containsAll(Arrays.asList(steps)))
+			List<String> stepsList = Arrays.asList(steps);
+			if (!_panes.keySet().containsAll(stepsList))
 			{
 				throw new IllegalArgumentException(
 					"Some steps have no matching JComponent registered " +
@@ -227,7 +215,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			{
 				_sequence.retainAll(_sequence.subList(0, _current));
 			}
-			_sequence.addAll(Arrays.asList(steps));
+			_sequence.addAll(stepsList);
         }
 
 		public <U> U getContext(Class<U> clazz)
@@ -245,14 +233,9 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	
 	private static final long serialVersionUID = 7779160067777339171L;
 
-	static final private String PREVIOUS_ENABLED = "previousEnabled";
-	static final private String NEXT_ENABLED = "nextEnabled";
-
 	private final WizardPanelHelper _mainPane;
 	private final WizardController _controller = new WizardControllerImpl();
 	private final Map<String, JComponent> _panes =  new HashMap<String, JComponent>();
 	private final List<String> _sequence = new ArrayList<String>();
 	private int _current = 0;
-	private boolean _previousEnabled;
-	private boolean _nextEnabled;
 }

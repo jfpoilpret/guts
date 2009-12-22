@@ -14,6 +14,7 @@
 
 package net.guts.gui.dialog;
 
+import java.awt.Component;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
@@ -22,34 +23,20 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-
-/**
- * All dialogs shown by {@link net.guts.gui.dialog.DialogFactory} are 
- * instances of this class.
- * <p/>
- * {@code GDialog} provides resource injection, manages dialog's close box,
- * dialog's default button, and tracks if dialog was cancelled.
- * 
- * @author Jean-Francois Poilpret
- */
 final class GDialog extends JDialog implements ParentDialog
 {
-	public GDialog(JDialog parent, JComponent panel)
+	GDialog(JDialog parent, JComponent panel)
 	{
 		super(parent, true);
 		_panel = panel;
 	}
 	
-	public GDialog(JFrame parent, JComponent panel)
+	GDialog(JFrame parent, JComponent panel)
 	{
 		super(parent, true);
 		_panel = panel;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.ParentDialog#close(boolean)
-	 */
 	public void close(boolean cancelled)
 	{
 		_cancelled = cancelled;
@@ -57,74 +44,56 @@ final class GDialog extends JDialog implements ParentDialog
 		dispose();
 	}
 
+	public void setDefaultButton(JButton button)
+	{
+		if (button != null && _panel.isAncestorOf(button))
+		{
+			getRootPane().setDefaultButton(button);
+		}
+	}
+
+	public void setDialogTitle(String title)
+	{
+		setTitle(title);
+	}
+
 	// Used by DefaultDialogFactory.showDialog()
-	public boolean wasCancelled()
+	boolean wasCancelled()
 	{
 		return _cancelled;
 	}
 	
-	/**
-	 * Overridden to get title from embedded panel if it implements
-	 * {@link TitleDialogProvider}.
-	 */
-	@Override public String getTitle()
-	{
-		if (_title == null)
-		{
-			if (_panel instanceof TitleDialogProvider)
-			{
-				_title = ((TitleDialogProvider) _panel).getDialogTitle();
-			}
-			else
-			{
-				_title = super.getTitle();
-			}
-			if (_title == null)
-			{
-				_title = "";
-			}
-		}
-		return _title;
-	}
-	
-	public void init()
+	void init()
 	{
 		String name = _panel.getName();
 		setName(name + "-dialog");
 		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
-		addWindowListener(new CloseListener());
+		addWindowListener(_listener);
 		if (_panel instanceof ParentDialogAware)
 		{
-			((ParentDialogAware) _panel).setParent(this);
+			((ParentDialogAware) _panel).setParentDialog(this);
 		}
-
 		setContentPane(_panel);
-		if (_panel instanceof DefaultButtonHolder)
-		{
-			JButton button = ((DefaultButtonHolder) _panel).getDefaultButton();
-			if (button != null)
-			{
-				getRootPane().setDefaultButton(button);
-			}
-		}
 	}
 
-	private class CloseListener extends WindowAdapter
+	static private class CloseListener extends WindowAdapter
 	{
 		@Override public void windowClosing(WindowEvent event)
 		{
-			if (	!(_panel instanceof Closable)
-				||	((Closable) _panel).canClose())
+			GDialog dialog = (GDialog) event.getComponent();
+			Component panel = dialog.getContentPane();
+			if (	!(panel instanceof Closable)
+				||	((Closable) panel).canClose())
 			{
-				setVisible(false);
-				dispose();
+				dialog.setVisible(false);
+				dialog.dispose();
 			}
 		}
 	}
 
 	private static final long serialVersionUID = -5936651916244078811L;
 
+	static final private CloseListener _listener = new CloseListener();
 	final private JComponent _panel;
 	private boolean	_cancelled = true;
-	private String _title = null;
 }

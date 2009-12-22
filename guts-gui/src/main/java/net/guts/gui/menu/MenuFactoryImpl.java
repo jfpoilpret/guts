@@ -20,24 +20,18 @@ import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
 import javax.swing.JSeparator;
 
-import net.guts.gui.action.ActionManager;
+import net.guts.gui.action.GutsAction;
 
-import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
 class MenuFactoryImpl implements MenuFactory
 {
-	@Inject MenuFactoryImpl(ActionManager actionManager)
-	{
-		_actionManager = actionManager;
-	}
-	
 	/*
 	 * (non-Javadoc)
 	 * @see net.sf.guice.gui.menu.MenuFactory#createMenu(java.lang.String, java.lang.String[])
 	 */
-	public JMenu createMenu(String name, String... actions)
+	@Override public JMenu createMenu(String name, GutsAction... actions)
 	{
 		JMenu menu = new JMenu();
 		initMenu(menu, name, actions);
@@ -48,32 +42,30 @@ class MenuFactoryImpl implements MenuFactory
 	 * (non-Javadoc)
 	 * @see net.sf.guice.gui.menu.MenuFactory#createPopupMenu(java.lang.String, java.lang.String[])
 	 */
-	public JPopupMenu createPopupMenu(String name, String... actions)
+	public JPopupMenu createPopupMenu(String name, GutsAction... actions)
 	{
 		JPopupMenu popup = new JPopupMenu();
 		initMenu(popup, name, actions);
 		return popup;
 	}
 	
-	private <T extends JComponent> void initMenu(T menu, String name, String[] actions)
+	private <T extends JComponent> void initMenu(T menu, String name, GutsAction[] actions)
 	{
 		menu.setName(name);
-		for (String action: actions)
+		for (GutsAction action: actions)
 		{
-			if (ACTION_SEPARATOR.equals(action))
+			if (action == ACTION_SEPARATOR)
 			{
 				menu.add(new JSeparator());
 			}
 			else
 			{
 				JMenuItem item = new JMenuItem();
-				item.setName(menu.getName() + "-" + action);
-				item.setAction(_actionManager.getAction(action));
+				item.setName(menu.getName() + "-" + action.name());
+				item.setAction(action.action());
 				menu.add(item);
 			}
 		}
 		
 	}
-
-	final private ActionManager _actionManager;
 }
