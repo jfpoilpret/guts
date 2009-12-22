@@ -22,19 +22,6 @@
 	<url>http://kenai.com/projects/guts</url>
 
 	<dependencies>
-		<!-- Swing AppFramework and its dependencies -->
-		<dependency>
-			<groupId>org.jdesktop.application</groupId>
-			<artifactId>AppFramework</artifactId>
-			<version>1.03-patch-jfpoilpret</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.swinglabs</groupId> 
-			<artifactId>swing-worker</artifactId> 
-			<version>1.1</version> 
-		</dependency>
-
 		<!-- GUTS-Events -->
 		<dependency>
 			<groupId>net.guts</groupId>
