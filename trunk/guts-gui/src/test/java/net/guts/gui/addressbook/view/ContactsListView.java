@@ -39,8 +39,6 @@ import ca.odell.glazedlists.swing.EventTableModel;
 public class ContactsListView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
-	//#### Put that elsewhere (where?)
-	static final public String SELECTED_CONTACT = "SelectedContact";
 	static final private String NAME = "ContactsListView";
 	
 	@Inject public ContactsListView(

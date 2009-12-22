@@ -14,10 +14,8 @@
 
 package net.guts.gui.addressbook.action;
 
-import org.jdesktop.application.AbstractBean;
-import org.jdesktop.application.Action;
-
 import net.guts.event.Consumes;
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.dialog.ContactPanel;
 import net.guts.gui.addressbook.dialog.ContactTabPanel;
@@ -32,9 +30,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ContactActions extends AbstractBean 
+public class ContactActions
 {
-	static private final String CONTACT_SELECTED = "contactSelected";
+	public ContactActions()
+	{
+		setContactSelected(false);
+	}
 	
 	@Consumes public void onContactSelectionChange(Contact selected)
 	{
@@ -42,87 +43,134 @@ public class ContactActions extends AbstractBean
 		setContactSelected(selected != null);
 	}
 	
-	public boolean isContactSelected()
-	{
-		return _contactSelected;
-	}
-
 	public void setContactSelected(boolean contactSelected)
 	{
-		boolean old = _contactSelected;
-		_contactSelected = contactSelected;
-		firePropertyChange(CONTACT_SELECTED, old, _contactSelected);
-	}
-
-	@Action
-	public void createContact()
-	{
-		_dialogFactory.showDialog(ContactPanel.class);
-	}
-
-	@Action(enabledProperty = CONTACT_SELECTED)
-	public void modifyContact()
-	{
-		_dialogFactory.showDialog(ContactPanel.class, new ComponentInitializer<ContactPanel>()
-		{
-			public void init(ContactPanel panel)
-			{
-				panel.setContact(_selected);
-			}
-		});
-	}
-
-	@Action(enabledProperty = CONTACT_SELECTED)
-	public void deleteContact()
-	{
-		if (UserChoice.YES == _messageFactory.showMessage(
-			"confirm-delete", _selected.getFirstName(), _selected.getLastName()))
-		{
-			_service.removeContact(_selected);
-		}
+		_modifyContact.action().setEnabled(contactSelected);
+		_modifyContactWithTabs.action().setEnabled(contactSelected);
+		_modifyContactWithWizard.action().setEnabled(contactSelected);
+		_deleteContact.action().setEnabled(contactSelected);
 	}
 	
-	@Action
-	public void createContactWithTabs()
+	public GutsAction createContact()
 	{
-		_dialogFactory.showDialog(ContactTabPanel.class);
+		return _createContact;
+	}
+	
+	public GutsAction createContactWithTabs()
+	{
+		return _createContactWithTabs;
+	}
+	
+	public GutsAction createContactWithWizard()
+	{
+		return _createContactWithWizard;
+	}
+	
+	public GutsAction modifyContact()
+	{
+		return _modifyContact;
+	}
+	
+	public GutsAction modifyContactWithTabs()
+	{
+		return _modifyContactWithTabs;
+	}
+	
+	public GutsAction modifyContactWithWizard()
+	{
+		return _modifyContactWithWizard;
+	}
+	
+	public GutsAction deleteContact()
+	{
+		return _deleteContact;
 	}
 
-	@Action(enabledProperty = CONTACT_SELECTED)
-	public void modifyContactWithTabs()
+	final private GutsAction _createContact = new GutsAction("createContact")
 	{
-		_dialogFactory.showDialog(
-			ContactTabPanel.class, new ComponentInitializer<ContactTabPanel>()
+		@Override protected void perform()
 		{
-			public void init(ContactTabPanel panel)
-			{
-				panel.setContact(_selected);
-			}
-		});
-	}
+			_dialogFactory.showDialog(ContactPanel.class);
+		}
+	};
 
-	@Action
-	public void createContactWithWizard()
+	final private GutsAction _modifyContact = new GutsAction("modifyContact")
 	{
-		_dialogFactory.showDialog(ContactWizardPanel.class);
-	}
-
-	@Action(enabledProperty = CONTACT_SELECTED)
-	public void modifyContactWithWizard()
-	{
-		_dialogFactory.showDialog(
-			ContactWizardPanel.class, new ComponentInitializer<ContactWizardPanel>()
+		@Override protected void perform()
 		{
-			public void init(ContactWizardPanel panel)
+			_dialogFactory.showDialog(
+				ContactPanel.class, new ComponentInitializer<ContactPanel>()
 			{
-				panel.setContact(_selected);
+				public void init(ContactPanel panel)
+				{
+					panel.setContact(_selected);
+				}
+			});
+		}
+	};
+
+	final private GutsAction _deleteContact = new GutsAction("deleteContact")
+	{
+		@Override protected void perform()
+		{
+			if (UserChoice.YES == _messageFactory.showMessage(
+				"confirm-delete", _selected.getFirstName(), _selected.getLastName()))
+			{
+				_service.removeContact(_selected);
 			}
-		});
-	}
+		}
+	};
+	
+	final private GutsAction _createContactWithTabs = new GutsAction("createContactWithTabs")
+	{
+		@Override protected void perform()
+		{
+			_dialogFactory.showDialog(ContactTabPanel.class);
+		}
+	};
+
+	final private GutsAction _modifyContactWithTabs = new GutsAction("modifyContactWithTabs")
+	{
+		@Override protected void perform()
+		{
+			_dialogFactory.showDialog(
+				ContactTabPanel.class, new ComponentInitializer<ContactTabPanel>()
+			{
+				public void init(ContactTabPanel panel)
+				{
+					panel.setContact(_selected);
+				}
+			});
+		}
+	};
+
+	final private GutsAction _createContactWithWizard = 
+		new GutsAction("createContactWithWizard")
+	{
+		@Override protected void perform()
+		{
+			_dialogFactory.showDialog(ContactWizardPanel.class);
+		}
+	};
+
+	final private GutsAction _modifyContactWithWizard = 
+		new GutsAction("modifyContactWithWizard")
+	{
+		@Override protected void perform()
+		{
+			_dialogFactory.showDialog(
+				ContactWizardPanel.class, new ComponentInitializer<ContactWizardPanel>()
+			{
+				public void init(ContactWizardPanel panel)
+				{
+					panel.setContact(_selected);
+				}
+			});
+		}
+	};
 
 	@Inject private DialogFactory _dialogFactory;
 	@Inject private MessageFactory _messageFactory;
 	@Inject private AddressBookService _service;
 	private Contact _selected = null;
-	private boolean _contactSelected = false;
 }
