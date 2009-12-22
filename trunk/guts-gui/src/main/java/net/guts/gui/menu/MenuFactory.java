@@ -17,6 +17,8 @@ package net.guts.gui.menu;
 import javax.swing.JMenu;
 import javax.swing.JPopupMenu;
 
+import net.guts.gui.action.GutsAction;
+
 
 import com.google.inject.ImplementedBy;
 
@@ -40,7 +42,7 @@ public interface MenuFactory
 	 * Special action name, to use in arguments of MenuFactory methods, to
 	 * describe a menu separator between two menu items.
 	 */
-	static final public String ACTION_SEPARATOR = "---";
+	static final public GutsAction ACTION_SEPARATOR = null;
 
 	/**
 	 * Creates a new menu, to be added to a {@link javax.swing.JMenuBar}.
@@ -59,7 +61,7 @@ public interface MenuFactory
 	 * the menu; items are added in the order of the actions.
 	 * @return a new menu, ready to be added to a {@link javax.swing.JMenuBar}
 	 */
-	public JMenu createMenu(String name, String... actions);
+	public JMenu createMenu(String name, GutsAction... actions);
 	
 	/**
 	 * Creates a new popup menu, that can be popped up on any component.
@@ -78,5 +80,5 @@ public interface MenuFactory
 	 * the popup menu; items are added in the order of the actions.
 	 * @return a new popup menu
 	 */
-	public JPopupMenu createPopupMenu(String name, String... actions);
+	public JPopupMenu createPopupMenu(String name, GutsAction... actions);
 }

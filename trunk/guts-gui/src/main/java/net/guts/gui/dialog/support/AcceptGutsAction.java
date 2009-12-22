@@ -14,14 +14,16 @@
 
 package net.guts.gui.dialog.support;
 
-import net.guts.gui.action.Task;
+import net.guts.gui.action.GutsAction;
 
-public interface WizardStepPanel
+//CSOFF: AbstractClassNameCheck
+public abstract class AcceptGutsAction extends GutsAction
 {
-	public void setController(WizardController controller);
+	protected AcceptGutsAction()
+	{
+		super(NAME);
+	}
 
-	public void enter();
-	//#### check if this can be easily instantiable (because impl will hardcode
-	// T & V paremter types!)
-	public <T, V> Task<T, V> leave();
+	static final private String NAME = "ok";
 }
+//CSON: AbstractClassNameCheck

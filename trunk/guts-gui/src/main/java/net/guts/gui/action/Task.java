@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.support;
+package net.guts.gui.action;
 
-import net.guts.gui.action.Task;
+import java.util.List;
 
-public interface WizardStepPanel
+public interface Task<T, V>
 {
-	public void setController(WizardController controller);
-
-	public void enter();
-	//#### check if this can be easily instantiable (because impl will hardcode
-	// T & V paremter types!)
-	public <T, V> Task<T, V> leave();
+	public T doInBackground(TaskResultPublisher<V> publisher);
+	public void process(List<V> chunks);
+	public void failed(Throwable cause);
+	public void succeeded(T result);
+	public void finished();
+	//TODO more methods here: cancelled? interrupted?
 }

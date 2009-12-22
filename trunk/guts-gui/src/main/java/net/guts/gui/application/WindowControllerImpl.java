@@ -169,7 +169,7 @@ class WindowControllerImpl implements WindowController
 
 			case WindowEvent.COMPONENT_HIDDEN:
 			case WindowEvent.WINDOW_CLOSED:
-			_logger.debug("WINDOW_CLOSED\n");
+			_logger.debug("WINDOW_CLOSED");
 			// Save window state in session storage
 			saveState(event.getWindow());
 			break;

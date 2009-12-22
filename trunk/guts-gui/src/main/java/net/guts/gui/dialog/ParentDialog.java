@@ -14,12 +14,16 @@
 
 package net.guts.gui.dialog;
 
+import javax.swing.JButton;
+
+//TODO rename interface (and methods) to make it container-agnostic 
+// (JFrame, JDialog, JInternalFrame)
 /**
  * Interface that is passed to {@link ParentDialogAware} panels before their 
  * containing dialog is shown. Panels must use this interface to close their 
  * embedding dialog upon user's action (e.g. click on "OK" or "Cancel" button).
  * 
- * @see ParentDialogAware#setParent(ParentDialog)
+ * @see ParentDialogAware#setParentDialog(ParentDialog)
  * @author Jean-Francois Poilpret
  */
 public interface ParentDialog
@@ -31,4 +35,8 @@ public interface ParentDialog
 	 * the user has cancelled it (typically by clicking the "Cancel" button).
 	 */
 	public void close(boolean cancelled);
+	
+	public void setDefaultButton(JButton button);
+	
+	public void setDialogTitle(String title);
 }

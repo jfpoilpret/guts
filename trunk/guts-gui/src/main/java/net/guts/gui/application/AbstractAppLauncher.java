@@ -21,12 +21,11 @@ import java.util.ResourceBundle;
 
 import javax.swing.JOptionPane;
 
-import org.jdesktop.application.ApplicationContext;
-import org.jdesktop.application.GutsApplicationContext;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.common.injection.InjectionListeners;
+import net.guts.common.type.TypeHelper;
 import net.guts.gui.action.ActionModule;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
@@ -215,7 +214,8 @@ public abstract class AbstractAppLauncher
 	{
 		// Fail graciously with Message Box!
 		// Needs a special bundle with system-level fatal error messages
-		ResourceBundle bundle = ResourceBundle.getBundle("guts-gui");
+		String pack = TypeHelper.getPackagePath(AbstractAppLauncher.class);
+		ResourceBundle bundle = ResourceBundle.getBundle(pack + "/guts-gui");
 		String title = String.format(bundle.getString(id + ".title"), e);
 		String message = String.format(bundle.getString(id + ".message"), e);
 		JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
@@ -230,11 +230,8 @@ public abstract class AbstractAppLauncher
 			requestInjection(AbstractAppLauncher.this);
 			// Bind the application class for SessionManager
 			Sessions.bindApplicationClass(binder(), AbstractAppLauncher.this.getClass());
-			// The following code will be removed when SAF is completely replaced
-			GutsApplication application = new GutsApplication();
-			requestInjection(application);
-			bind(ApplicationContext.class).toInstance(
-				new GutsApplicationContext(application));
+			// Bind the generic Application actions
+			bind(GutsApplicationActions.class).asEagerSingleton();
 		}
 	}
 	

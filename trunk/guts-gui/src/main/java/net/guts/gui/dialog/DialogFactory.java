@@ -39,10 +39,8 @@ public interface DialogFactory
 	 * Optionally,  {@code panel} may implement one or more of:
 	 * <ul>
 	 * <li>{@link Closable}</li>
-	 * <li>{@link DefaultButtonHolder}</li>
 	 * <li>{@link ParentDialogAware}</li>
 	 * <li>{@link Resettable}</li>
-	 * <li>{@link TitleDialogProvider}</li>
 	 * </ul>
 	 * A better -and easier- solution is to have {@code panel} class derive
 	 * from {@link net.guts.gui.dialog.support.AbstractPanel}.

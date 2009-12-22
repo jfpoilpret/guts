@@ -18,15 +18,12 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.AbstractList;
 
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
-
-import org.jdesktop.application.Task;
-
-import net.guts.gui.dialog.Closable;
-import net.guts.gui.dialog.ParentDialog;
 
 /**
  * Abstract panel to be used in dialogs containing several tabs managed in a
@@ -96,8 +93,7 @@ import net.guts.gui.dialog.ParentDialog;
  * @see AbstractPanel
  * @see AbstractMultiPanel
  */
-public abstract class AbstractTabbedPanel extends AbstractMultiPanel 
-	implements Acceptor, Closable
+public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 {
 	/**
 	 * Constructs a new abstract tabbed panel, with a unique identifier, used 
@@ -109,14 +105,15 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 	{
 		super(id);
 		_tabbedPane.setName(id + TABPANE_NAME_SUFFIX);
-//		_tabbedPane.addContainerListener(_listener);
+		initLayout();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.support.AbstractPanel#initLayout()
-	 */
-	@Override final protected void initLayout()
+	@Override final protected AcceptGutsAction validateAcceptAction(AcceptGutsAction accept)
+	{
+		return (accept != null ? new TabAcceptAction(accept) : null);
+	}
+	
+	private void initLayout()
     {
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
@@ -130,41 +127,6 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		constraints.weighty = 1.0;
 		constraints.insets = new Insets(INSETS, INSETS, INSETS, INSETS);
 		add(_tabbedPane, constraints);
-    }
-
-	/**
-	 * Accepts all individual tab panes added to this panel (if they implement
-	 * {@link Acceptor}). You will generally override this method to perform
-	 * your own specific acceptance code. When overriding this method, don't
-	 * forget to call {@code super.accept()} before any other code.
-	 */
-	public Task<Void, Void> accept(ParentDialog parent)
-    {
-		for (Component subpane: getSubComponents())
-		{
-			if (subpane instanceof TabPanelAcceptor)
-			{
-				((TabPanelAcceptor) subpane).accept();
-			}
-		}
-		return null;
-    }
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.Closable#canClose()
-	 */
-	public boolean canClose()
-    {
-		for (Component subpane: getSubComponents())
-		{
-			if (	(subpane instanceof Closable)
-				&&	!((Closable) subpane).canClose())
-			{
-				return false;
-			}
-		}
-	    return true;
     }
 
 	/*
@@ -184,9 +146,50 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 			{
 				return _tabbedPane.getComponentCount();
 			}
-			
 		};
     }
+
+	//TODO put into AbstractMultiPanel????
+	//TODO should listen to enabling of delegate action!
+	private class TabAcceptAction extends AcceptGutsAction
+	{
+		TabAcceptAction(AcceptGutsAction delegate)
+		{
+			_delegate = delegate;
+			//TODO remove after debugging
+			action().addPropertyChangeListener(new PropertyChangeListener()
+			{
+				@Override public void propertyChange(PropertyChangeEvent evt)
+				{
+					_logger.debug("Main action changed property {} to value {}", 
+						evt.getPropertyName(), evt.getNewValue());
+				}
+			});
+			_delegate.action().addPropertyChangeListener(new PropertyChangeListener()
+			{
+				@Override public void propertyChange(PropertyChangeEvent evt)
+				{
+					_logger.debug("Delegate action changed property {} to value {}", 
+						evt.getPropertyName(), evt.getNewValue());
+				}
+			});
+		}
+		
+		@Override protected void perform()
+		{
+			for (Component subpane: getSubComponents())
+			{
+				if (subpane instanceof TabPanelAcceptor)
+				{
+					//TODO use actions instead of TabPanelAcceptor.accept!
+					((TabPanelAcceptor) subpane).accept();
+				}
+			}
+			_delegate.action().actionPerformed(event());
+		}
+		
+		final private AcceptGutsAction _delegate;
+	}
 
 	private static final long serialVersionUID = -4667291820304038305L;
 
@@ -198,4 +201,6 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 	 * add individual tabs.
 	 */
 	final protected JTabbedPane _tabbedPane = new JTabbedPane();
+
+//	final private TabAcceptAction _accept = new TabAcceptAction();
 }
