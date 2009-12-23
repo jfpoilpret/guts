@@ -19,6 +19,8 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
+import com.google.inject.Inject;
+
 // CSOFF: AbstractClassNameCheck
 abstract public class GutsAction
 {
@@ -59,9 +61,30 @@ abstract public class GutsAction
 			perform();
 		}
 	}
+	
+	@Override final public boolean equals(Object that)
+	{
+		return this == that;
+	}
 
+	@Override public int hashCode()
+	{
+		return System.identityHashCode(this);
+	}
+	
+	@Inject void markInjected()
+	{
+		_injectedAlready = true;
+	}
+	
+	boolean isMarkedInjected()
+	{
+		return _injectedAlready;
+	}
+	
 	final private String _name;
 	final private Action _action = new InternalAction();
 	private ActionEvent _event = null;
+	private boolean _injectedAlready = false;
 }
 //CSON: AbstractClassNameCheck

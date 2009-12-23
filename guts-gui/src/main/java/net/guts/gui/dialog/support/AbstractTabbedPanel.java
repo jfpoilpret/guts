@@ -18,8 +18,6 @@ import java.awt.Component;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.util.AbstractList;
 
 import javax.swing.JComponent;
@@ -149,30 +147,12 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		};
     }
 
-	//TODO put into AbstractMultiPanel????
 	//TODO should listen to enabling of delegate action!
 	private class TabAcceptAction extends AcceptGutsAction
 	{
 		TabAcceptAction(AcceptGutsAction delegate)
 		{
 			_delegate = delegate;
-			//TODO remove after debugging
-			action().addPropertyChangeListener(new PropertyChangeListener()
-			{
-				@Override public void propertyChange(PropertyChangeEvent evt)
-				{
-					_logger.debug("Main action changed property {} to value {}", 
-						evt.getPropertyName(), evt.getNewValue());
-				}
-			});
-			_delegate.action().addPropertyChangeListener(new PropertyChangeListener()
-			{
-				@Override public void propertyChange(PropertyChangeEvent evt)
-				{
-					_logger.debug("Delegate action changed property {} to value {}", 
-						evt.getPropertyName(), evt.getNewValue());
-				}
-			});
 		}
 		
 		@Override protected void perform()
@@ -201,6 +181,4 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 	 * add individual tabs.
 	 */
 	final protected JTabbedPane _tabbedPane = new JTabbedPane();
-
-//	final private TabAcceptAction _accept = new TabAcceptAction();
 }

@@ -15,7 +15,6 @@
 package net.guts.gui.exception;
 
 import java.lang.ref.WeakReference;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Iterator;
 import java.util.List;
@@ -55,25 +54,7 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 	 */
 	@Override public void handleException(Throwable e)
 	{
-		//TODO Remove SAF bugs workarounds once SAF is completely removed from dependencies
-		// Workaround Swing AppFW Issue #42
-		if (e instanceof Error && e.getCause() != null)
-		{
-			// Work-around for Issue #72
-			Throwable cause = e.getCause();
-			if (cause instanceof InvocationTargetException)
-			{
-				dispatch(((InvocationTargetException) cause).getTargetException());
-			}
-			else
-			{
-				dispatch(cause);
-			}
-		}
-		else
-		{
-			dispatch(e);
-		}
+		dispatch(e);
 	}
 	
 	private void dispatch(Throwable e)

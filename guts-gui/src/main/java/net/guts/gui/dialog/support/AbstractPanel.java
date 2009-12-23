@@ -97,7 +97,8 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	 * default "OK" button created and laid out by the panel. 
 	 * {@code AbstractPanel} always adds a "Cancel" button which cannot be
 	 * removed. The action performed on "Cancel" cannot be changed either,
-	 * however, you can overrider {@code TODO} that is called before TODO.
+	 * however, you can override {@link #cancel()} that is called before closing
+	 * the parent dialog.
 	 * <p/>
 	 * If you have other buttons to be added to the buttons bar, then you should
 	 * pass them in {@code actions}; {@code AbstractPanel} will automatically
@@ -109,7 +110,6 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	 * cannot be changed, it is always laid out on the right.
 	 * 
 	 * @param id unique identifier for this dialog panel
-	 * @param accept TODO
 	 */
 	protected AbstractPanel(String id)
 	{
@@ -253,6 +253,11 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	//TODO javadoc
 	protected void cancel()
 	{
+	}
+	
+	protected AcceptGutsAction acceptAction()
+	{
+		return _ok;
 	}
 	
 	// Used for resource injection
