@@ -15,6 +15,7 @@
 package net.guts.common.injection;
 
 import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import net.guts.common.type.TypeHelper;
@@ -27,6 +28,32 @@ public final class Matchers
 {
 	private Matchers()
 	{
+	}
+	
+	static final public Matcher<TypeLiteral<?>> hasFieldsOfType(final Class<?>... fieldTypes)
+	{
+		return new AbstractMatcher<TypeLiteral<?>>()
+		{
+			@Override public boolean matches(TypeLiteral<?> type)
+			{
+				Class<?> clazz = type.getRawType();
+				while (clazz != null)
+				{
+					for (Field field: clazz.getDeclaredFields())
+					{
+						for (Class<?> fieldType: fieldTypes)
+						{
+							if (fieldType.isAssignableFrom(field.getType()))
+							{
+								return true;
+							}
+						}
+					}
+					clazz = clazz.getSuperclass();
+				}
+				return false;
+			}
+		};
 	}
 	
 	static final public Matcher<TypeLiteral<?>> isSubtypeOf(final Class<?> supertype)
