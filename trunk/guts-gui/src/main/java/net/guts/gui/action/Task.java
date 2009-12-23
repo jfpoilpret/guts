@@ -18,7 +18,7 @@ import java.util.List;
 
 public interface Task<T, V>
 {
-	public T doInBackground(TaskResultPublisher<V> publisher);
+	public T doInBackground(TaskResultPublisher<V> publisher) throws Exception;
 	public void process(List<V> chunks);
 	public void failed(Throwable cause);
 	public void succeeded(T result);

@@ -15,7 +15,10 @@
 package net.guts.gui.addressbook.action;
 
 import net.guts.event.Consumes;
+import net.guts.gui.action.AbstractTask;
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.Task;
+import net.guts.gui.action.TaskResultPublisher;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.dialog.ContactPanel;
 import net.guts.gui.addressbook.dialog.ContactTabPanel;
@@ -109,6 +112,7 @@ public class ContactActions
 		}
 	};
 
+	//TODO tests of guts-gui Task behavior here!
 	final private GutsAction _deleteContact = new GutsAction("deleteContact")
 	{
 		@Override protected void perform()
@@ -116,7 +120,22 @@ public class ContactActions
 			if (UserChoice.YES == _messageFactory.showMessage(
 				"confirm-delete", _selected.getFirstName(), _selected.getLastName()))
 			{
-				_service.removeContact(_selected);
+				Task<Void, Void> task = new AbstractTask<Void, Void>()
+				{
+					@Override public Void doInBackground(TaskResultPublisher<Void> publisher)
+						throws InterruptedException
+					{
+						Thread.sleep(5000L);
+						_service.removeContact(_selected);
+						return null;
+					}
+
+					@Override public void succeeded(Void result)
+					{
+						_messageFactory.showMessage("delete-done");
+					}
+				};
+				submit(task);
 			}
 		}
 	};
