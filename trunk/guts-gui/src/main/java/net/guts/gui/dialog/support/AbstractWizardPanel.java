@@ -165,7 +165,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	private final void setAcceptEnabled(boolean enabled)
 	{
-		//TODO
+		acceptAction().action().setEnabled(enabled);
 	}
 	
 	private final void setPreviousEnabled(boolean enabled)

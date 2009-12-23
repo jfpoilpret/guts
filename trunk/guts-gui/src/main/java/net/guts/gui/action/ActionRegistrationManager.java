@@ -16,9 +16,9 @@ package net.guts.gui.action;
 
 import com.google.inject.ImplementedBy;
 
-@ImplementedBy(ActionRegistryImpl.class)
-public interface ActionRegistry
+@ImplementedBy(ActionRegistrationManagerImpl.class)
+public interface ActionRegistrationManager
 {
 	public void registerActions(Object instance);
-	//TODO add one method to register one GutsAction directly?
+	public void registerAction(GutsAction action);
 }

@@ -22,7 +22,7 @@ class ActionRegisterInjectionListener extends AbstractInjectionListener<Object>
 {
 	// Guice Injector is injected as a "trick" in order to delay the call to this method
 	// as late as possible during Guice.createInjector()
-	@Inject void setActionManager(ActionRegistry registry)
+	@Inject void setActionManager(ActionRegistrationManager registry)
 	{
 		_registry = registry;
 	}
@@ -35,5 +35,5 @@ class ActionRegisterInjectionListener extends AbstractInjectionListener<Object>
 		_registry.registerActions(injectee);
 	}
 
-	private ActionRegistry _registry;
+	private ActionRegistrationManager _registry;
 }

@@ -18,29 +18,34 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.cleaner.Cleanable;
+import net.guts.common.cleaner.Cleaner;
 import net.guts.event.Consumes;
 import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-//TODO add cleanup and synchronization
-//TODO rename to more suitable name
 @Singleton
-class ActionRegistryImpl implements ActionRegistry
+class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleanable
 {
-	static final private Logger _logger = LoggerFactory.getLogger(ActionRegistryImpl.class);
+	static final private Logger _logger = 
+		LoggerFactory.getLogger(ActionRegistrationManagerImpl.class);
 	
-	@Inject ActionRegistryImpl(ResourceInjector injector)
+	@Inject ActionRegistrationManagerImpl(ResourceInjector injector, Cleaner cleaner)
 	{
 		_injector = injector;
+		cleaner.addCleanable(this);
 	}
 
 	// CSOFF: IllegalCatchCheck
@@ -54,11 +59,7 @@ class ActionRegistryImpl implements ActionRegistry
 			{
 				field.setAccessible(true);
 				GutsAction action =  (GutsAction) field.get(instance);
-				if (action != null)
-				{
-					_actions.add(new WeakReference<GutsAction>(action));
-					_injector.injectInstance(action, action.name());
-				}
+				registerAction(action);
 			}
 			catch (Exception e)
 			{
@@ -73,25 +74,43 @@ class ActionRegistryImpl implements ActionRegistry
 	}
 	// CSON: IllegalCatchCheck
 	
-	//TODO determine correct priority
-	@Consumes public void localeChanged(Locale locale)
+	@Override public void registerAction(GutsAction action)
+	{
+		if (action != null)
+		{
+			synchronized (_actions)
+			{
+				_actions.add(new WeakReference<GutsAction>(action));
+				if (!action.isMarkedInjected())
+				{
+					_injector.injectInstance(action, action.name());
+				}
+			}
+		}
+	}
+	
+	@Consumes(priority = Integer.MIN_VALUE + 2) 
+	public void localeChanged(Locale locale)
 	{
 		boolean mustCleanUp = false;
-		for (WeakReference<GutsAction> ref: _actions)
+		synchronized (_actions)
 		{
-			GutsAction action = ref.get();
-			if (action != null)
+			for (WeakReference<GutsAction> ref: _actions)
 			{
-				_injector.injectInstance(action, action.name());
-			}
-			else
-			{
-				mustCleanUp = true;
+				GutsAction action = ref.get();
+				if (action != null)
+				{
+					_injector.injectInstance(action, action.name());
+				}
+				else
+				{
+					mustCleanUp = true;
+				}
 			}
 		}
 		if (mustCleanUp)
 		{
-			//TODO perform cleanup
+			cleanup();
 		}
 	}
 	
@@ -121,9 +140,25 @@ class ActionRegistryImpl implements ActionRegistry
 		}
 	}
 	
+
+	@Override public void cleanup()
+	{
+		synchronized (_actions)
+		{
+			Iterator<WeakReference<GutsAction>> i = _actions.iterator();
+			while (i.hasNext())
+			{
+				if (i.next().get() == null)
+				{
+					i.remove();
+				}
+			}
+		}
+	}
+	
 	final private Map<Class<?>, List<Field>> _actionClasses = 
 		new HashMap<Class<?>, List<Field>>();
-	final private List<WeakReference<GutsAction>> _actions = 
-		new ArrayList<WeakReference<GutsAction>>();
+	final private Set<WeakReference<GutsAction>> _actions = 
+		new HashSet<WeakReference<GutsAction>>();
 	final private ResourceInjector _injector;
 }
