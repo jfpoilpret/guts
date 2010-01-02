@@ -74,7 +74,7 @@ abstract public class GutsAction
 		return this == that;
 	}
 
-	@Override public int hashCode()
+	@Override final public int hashCode()
 	{
 		return System.identityHashCode(this);
 	}

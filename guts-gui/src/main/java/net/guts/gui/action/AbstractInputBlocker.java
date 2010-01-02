@@ -14,12 +14,23 @@
 
 package net.guts.gui.action;
 
-public interface TaskService
+public abstract class AbstractInputBlocker implements InputBlocker
 {
-	public <T, V> void addTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public <T, V> void removeTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public void addTaskListener(TaskListener<Object, Object> listener);
-	public void removeTaskListener(TaskListener<Object, Object> listener);
-	
-	public <T, V> void execute(Task<T, V> task, InputBlocker blocker);
+	abstract protected void setBlocking(boolean block);
+
+	/* (non-Javadoc)
+	 * @see net.guts.gui.action.InputBlocker#block()
+	 */
+	@Override public void block()
+	{
+		setBlocking(true);
+	}
+
+	/* (non-Javadoc)
+	 * @see net.guts.gui.action.InputBlocker#unblock()
+	 */
+	@Override public void unblock()
+	{
+		setBlocking(false);
+	}
 }
