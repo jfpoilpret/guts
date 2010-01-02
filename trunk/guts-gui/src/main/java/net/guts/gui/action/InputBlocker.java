@@ -14,12 +14,8 @@
 
 package net.guts.gui.action;
 
-public interface TaskService
+public interface InputBlocker
 {
-	public <T, V> void addTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public <T, V> void removeTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public void addTaskListener(TaskListener<Object, Object> listener);
-	public void removeTaskListener(TaskListener<Object, Object> listener);
-	
-	public <T, V> void execute(Task<T, V> task, InputBlocker blocker);
+	public void block();
+	public void unblock();
 }

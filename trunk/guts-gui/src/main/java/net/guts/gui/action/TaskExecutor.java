@@ -22,7 +22,8 @@ import javax.swing.SwingWorker;
 
 class TaskExecutor<T, V> extends SwingWorker<T, V> implements TaskController<V>
 {
-	TaskExecutor(Task<T, V> task, AbstractTaskService.TaskListeners<T, V> listeners)
+	TaskExecutor(Task<T, V> task, AbstractTaskService.TaskListeners<T, V> listeners,
+		final InputBlocker blocker)
 	{
 		_task = task;
 		_listeners = listeners;
@@ -31,11 +32,19 @@ class TaskExecutor<T, V> extends SwingWorker<T, V> implements TaskController<V>
 		{
 			@Override public void propertyChange(PropertyChangeEvent evt)
 			{
-				if (	evt.getPropertyName().equals("state")
-					&&	evt.getOldValue() == StateValue.PENDING
-					&&	evt.getNewValue() == StateValue.STARTED)
+				if (evt.getPropertyName().equals("state"))
 				{
-					_listeners.fireDoInBackground();
+					if (	evt.getOldValue() == StateValue.PENDING
+						&&	evt.getNewValue() == StateValue.STARTED)
+					{
+						blocker.block();
+						_listeners.fireDoInBackground();
+					}
+					else if (	evt.getOldValue() == StateValue.STARTED
+							&&	evt.getNewValue() == StateValue.DONE)
+					{
+						blocker.unblock();
+					}
 				}
 			}
 		});

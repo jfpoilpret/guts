@@ -42,12 +42,12 @@ class DefaultTaskService extends AbstractTaskService
 		}
 	}
 	
-	@Override public <T, V> void execute(Task<T, V> task)
+	@Override public <T, V> void execute(Task<T, V> task, InputBlocker blocker)
 	{
 		if (task != null)
 		{
 			TaskExecutor<T, V> executor = 
-				new TaskExecutor<T, V>(task, getTaskListeners(task));
+				new TaskExecutor<T, V>(task, getTaskListeners(task), blocker);
 			_executor.execute(executor);
 		}
 	}

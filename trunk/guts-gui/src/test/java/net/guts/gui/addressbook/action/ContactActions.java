@@ -17,6 +17,7 @@ package net.guts.gui.addressbook.action;
 import net.guts.event.Consumes;
 import net.guts.gui.action.AbstractTask;
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.InputBlockers;
 import net.guts.gui.action.Task;
 import net.guts.gui.action.TaskController;
 import net.guts.gui.addressbook.business.AddressBookService;
@@ -135,7 +136,7 @@ public class ContactActions
 						_messageFactory.showMessage("delete-done");
 					}
 				};
-				getDefaultTaskService().execute(task);
+				getDefaultTaskService().execute(task, InputBlockers.createActionBlocker(this));
 			}
 		}
 	};

@@ -25,6 +25,7 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.InputBlockers;
 import net.guts.gui.action.Task;
 
 //TODO better exception handling and/or logging on error conditions
@@ -70,12 +71,13 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			Task<?, ?> task = next();
 			if (task != null)
 			{
-				getDefaultTaskService().execute(task);
+				getDefaultTaskService().execute(
+					task, InputBlockers.createActionBlocker(_next));
 			}
 		}
 	};
 	
-	final public <R, S> Task<R, S> next()
+	private <R, S> Task<R, S> next()
 	{
 		// First accept current pane
 		JComponent current = _panes.get(_sequence.get(_current));
@@ -125,7 +127,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		}
 	};
 	
-	final public void previous()
+	private void previous()
 	{
 		if (_current > 0)
 		{
