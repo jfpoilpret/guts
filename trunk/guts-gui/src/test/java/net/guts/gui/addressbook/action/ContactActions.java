@@ -18,7 +18,7 @@ import net.guts.event.Consumes;
 import net.guts.gui.action.AbstractTask;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.Task;
-import net.guts.gui.action.TaskResultPublisher;
+import net.guts.gui.action.TaskController;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.dialog.ContactPanel;
 import net.guts.gui.addressbook.dialog.ContactTabPanel;
@@ -122,7 +122,7 @@ public class ContactActions
 			{
 				Task<Void, Void> task = new AbstractTask<Void, Void>()
 				{
-					@Override public Void doInBackground(TaskResultPublisher<Void> publisher)
+					@Override public Void doInBackground(TaskController<Void> publisher)
 						throws InterruptedException
 					{
 						Thread.sleep(5000L);
@@ -130,12 +130,12 @@ public class ContactActions
 						return null;
 					}
 
-					@Override public void succeeded(Void result)
+					@Override public void succeeded(Task<?, ?> source, Void result)
 					{
 						_messageFactory.showMessage("delete-done");
 					}
 				};
-				submit(task);
+				getDefaultTaskService().execute(task);
 			}
 		}
 	};

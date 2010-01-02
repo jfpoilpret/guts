@@ -14,7 +14,22 @@
 
 package net.guts.gui.action;
 
-public interface Task<T, V>
+import com.google.inject.Binder;
+import com.google.inject.binder.LinkedBindingBuilder;
+import com.google.inject.multibindings.MapBinder;
+
+final public class Actions
 {
-	public T doInBackground(TaskController<V> publisher) throws Exception;
+	private Actions()
+	{
+	}
+	
+	static final String DEFAULT_TASK_SERVICE = "DEFAULT";
+	
+	static public LinkedBindingBuilder<TaskService> bindTaskService(Binder binder, String name)
+	{
+		MapBinder<String, TaskService> services = 
+				MapBinder.newMapBinder(binder, String.class, TaskService.class);
+		return services.addBinding(name);
+	}
 }

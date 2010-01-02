@@ -16,33 +16,25 @@ package net.guts.gui.action;
 
 import java.util.List;
 
-public abstract class AbstractTask<T, V> implements Task<T, V>
+public abstract class AbstractTask<T, V> implements Task<T, V>, TaskListener<T, V>
 {
-	/* (non-Javadoc)
-	 * @see net.guts.gui.action.Task#failed(java.lang.Throwable)
-	 */
-	@Override public void failed(Throwable cause)
+	@Override public void doInBackground(Task<?, ?> source)
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.action.Task#finished()
-	 */
-	@Override public void finished()
+	@Override public void failed(Task<?, ?> source, Throwable cause)
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.action.Task#process(java.util.List)
-	 */
-	@Override public void process(List<V> chunks)
+	@Override public void finished(Task<?, ?> source)
 	{
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.action.Task#succeeded(java.lang.Object)
-	 */
-	@Override public void succeeded(T result)
+	@Override public void process(Task<?, ?> source, List<V> chunks)
+	{
+	}
+
+	@Override public void succeeded(Task<?, ?> source, T result)
 	{
 	}
 }

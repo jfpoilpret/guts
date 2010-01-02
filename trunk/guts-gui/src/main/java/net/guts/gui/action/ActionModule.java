@@ -21,6 +21,7 @@ import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 
 public final class ActionModule extends AbstractModule
 {
@@ -35,6 +36,9 @@ public final class ActionModule extends AbstractModule
 		Resources.bindInstanceInjector(binder(), GutsAction.class)
 			.to(GutsActionInjector.class).asEagerSingleton();
 
+		// Create default TaskService
+		Actions.bindTaskService(binder(), Actions.DEFAULT_TASK_SERVICE)
+			.to(DefaultTaskService.class).in(Scopes.SINGLETON);
 		// Add type listener to automatically register Action fields 
 		// of Guice-instantiated objects
 		ActionRegisterInjectionListener injectionListener = 
