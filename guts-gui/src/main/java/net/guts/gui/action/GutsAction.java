@@ -15,11 +15,13 @@
 package net.guts.gui.action;
 
 import java.awt.event.ActionEvent;
+import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 // CSOFF: AbstractClassNameCheck
 abstract public class GutsAction
@@ -46,10 +48,15 @@ abstract public class GutsAction
 		return _event;
 	}
 	
-	final protected <T, V> void submit(Task<T, V> task)
+	final protected TaskService getDefaultTaskService()
 	{
-		TaskExecutor<T, V> executor = new TaskExecutor<T, V>(task);
-		executor.execute();
+		return getTaskService(Actions.DEFAULT_TASK_SERVICE);
+	}
+	
+	final protected TaskService getTaskService(String name)
+	{
+		Provider<TaskService> service = _taskServices.get(name);
+		return (service != null ? service.get() : null);
 	}
 	
 	@SuppressWarnings("serial") 
@@ -72,8 +79,9 @@ abstract public class GutsAction
 		return System.identityHashCode(this);
 	}
 	
-	@Inject void markInjected()
+	@Inject void init(Map<String, Provider<TaskService>> taskServices)
 	{
+		_taskServices = taskServices;
 		_injectedAlready = true;
 	}
 	
@@ -85,6 +93,7 @@ abstract public class GutsAction
 	final private String _name;
 	final private Action _action = new InternalAction();
 	private ActionEvent _event = null;
+	private Map<String, Provider<TaskService>> _taskServices = null;
 	private boolean _injectedAlready = false;
 }
 //CSON: AbstractClassNameCheck

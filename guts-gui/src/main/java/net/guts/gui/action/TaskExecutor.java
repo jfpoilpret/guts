@@ -18,11 +18,14 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
-class TaskExecutor<T, V> implements TaskResultPublisher<V>
+//TODO rework simplier as SwingWorker Wrapper????
+// => would allow to pass it to any java.util.Executor!
+class TaskExecutor<T, V> implements TaskController<V>
 {
-	TaskExecutor(Task<T, V> task)
+	TaskExecutor(Task<T, V> task, AbstractTaskService.TaskListeners<T, V> listeners)
 	{
 		_task = task;
+		_listeners = listeners;
 	}
 	
 	@Override public void publish(V... chunks)
@@ -32,6 +35,7 @@ class TaskExecutor<T, V> implements TaskResultPublisher<V>
 	
 	void execute()
 	{
+		_listeners.fireDoInBackground();
 		_worker.execute();
 	}
 	
@@ -44,7 +48,7 @@ class TaskExecutor<T, V> implements TaskResultPublisher<V>
 		
 		@Override protected void process(List<V> chunks)
 		{
-			_task.process(chunks);
+			_listeners.fireProcess(chunks);
 		}
 
 		// CSOFF: IllegalCatchCheck
@@ -52,15 +56,15 @@ class TaskExecutor<T, V> implements TaskResultPublisher<V>
 		{
 			try
 			{
-				_task.succeeded(get());
+				_listeners.fireSucceeded(get());
 			}
 			catch (Exception e)
 			{
-				_task.failed(e);
+				_listeners.fireFailed(e);
 			}
 			finally
 			{
-				_task.finished();
+				_listeners.fireFinished();
 			}
 		}
 		// CSON: IllegalCatchCheck
@@ -73,4 +77,5 @@ class TaskExecutor<T, V> implements TaskResultPublisher<V>
 	
 	final private Worker _worker = new Worker();
 	final private Task<T, V> _task;
+	final private AbstractTaskService.TaskListeners<T, V> _listeners;
 }

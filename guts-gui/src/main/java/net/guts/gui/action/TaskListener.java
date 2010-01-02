@@ -14,7 +14,14 @@
 
 package net.guts.gui.action;
 
-public interface Task<T, V>
+import java.util.List;
+
+public interface TaskListener<T, V>
 {
-	public T doInBackground(TaskController<V> publisher) throws Exception;
+	public void doInBackground(Task<?, ?> source);
+	public void process(Task<?, ?> source, List<V> chunks);
+	public void succeeded(Task<?, ?> source, T result);
+	public void failed(Task<?, ?> source, Throwable cause);
+	public void finished(Task<?, ?> source);
+	//TODO more methods here: cancelled? interrupted?
 }

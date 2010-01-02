@@ -14,7 +14,15 @@
 
 package net.guts.gui.action;
 
-public interface Task<T, V>
+class DefaultTaskService extends AbstractTaskService implements TaskService
 {
-	public T doInBackground(TaskController<V> publisher) throws Exception;
+	@Override public <T, V> void execute(Task<T, V> task)
+	{
+		if (task != null)
+		{
+			TaskExecutor<T, V> executor = 
+				new TaskExecutor<T, V>(task, getTaskListeners(task));
+			executor.execute();
+		}
+	}
 }

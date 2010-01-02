@@ -34,6 +34,7 @@ import net.guts.event.Consumes;
 import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -42,9 +43,11 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 	static final private Logger _logger = 
 		LoggerFactory.getLogger(ActionRegistrationManagerImpl.class);
 	
-	@Inject ActionRegistrationManagerImpl(ResourceInjector injector, Cleaner cleaner)
+	@Inject ActionRegistrationManagerImpl(Injector injector, 
+		ResourceInjector resourceInjector, Cleaner cleaner)
 	{
 		_injector = injector;
+		_resourceInjector = resourceInjector;
 		cleaner.addCleanable(this);
 	}
 
@@ -83,7 +86,8 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 				_actions.add(new WeakReference<GutsAction>(action));
 				if (!action.isMarkedInjected())
 				{
-					_injector.injectInstance(action, action.name());
+					_injector.injectMembers(action);
+					_resourceInjector.injectInstance(action, action.name());
 				}
 			}
 		}
@@ -100,7 +104,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 				GutsAction action = ref.get();
 				if (action != null)
 				{
-					_injector.injectInstance(action, action.name());
+					_resourceInjector.injectInstance(action, action.name());
 				}
 				else
 				{
@@ -160,5 +164,6 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 		new HashMap<Class<?>, List<Field>>();
 	final private Set<WeakReference<GutsAction>> _actions = 
 		new HashSet<WeakReference<GutsAction>>();
-	final private ResourceInjector _injector;
+	final private ResourceInjector _resourceInjector;
+	final private Injector _injector;
 }

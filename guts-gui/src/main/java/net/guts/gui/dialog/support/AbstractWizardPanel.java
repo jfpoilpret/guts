@@ -70,7 +70,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			Task<?, ?> task = next();
 			if (task != null)
 			{
-				submit(task);
+				getDefaultTaskService().execute(task);
 			}
 		}
 	};

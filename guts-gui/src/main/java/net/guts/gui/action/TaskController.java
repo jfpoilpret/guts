@@ -14,7 +14,8 @@
 
 package net.guts.gui.action;
 
-public interface TaskResultPublisher<V>
+public interface TaskController<V>
 {
 	public void publish(V... chunks);
+	//TODO add cancel? or rather isCancelled()?
 }
