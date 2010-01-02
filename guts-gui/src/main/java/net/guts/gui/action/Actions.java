@@ -14,6 +14,8 @@
 
 package net.guts.gui.action;
 
+import java.util.concurrent.ExecutorService;
+
 import com.google.inject.Binder;
 import com.google.inject.binder.LinkedBindingBuilder;
 import com.google.inject.multibindings.MapBinder;
@@ -25,6 +27,12 @@ final public class Actions
 	}
 	
 	static final String DEFAULT_TASK_SERVICE = "DEFAULT";
+	
+	static public LinkedBindingBuilder<ExecutorService> bindDefaultTaskExecutorService(
+		Binder binder)
+	{
+		return binder.bind(ExecutorService.class).annotatedWith(BindTaskServiceExecutor.class);
+	}
 	
 	static public LinkedBindingBuilder<TaskService> bindTaskService(Binder binder, String name)
 	{
