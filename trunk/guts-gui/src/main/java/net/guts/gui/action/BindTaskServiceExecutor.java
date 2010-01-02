@@ -14,6 +14,16 @@
 
 package net.guts.gui.action;
 
-public abstract class AbstractTask<T, V> extends TaskAdapter<T, V> implements Task<T, V>
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+import com.google.inject.BindingAnnotation;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+@BindingAnnotation
+@interface BindTaskServiceExecutor
 {
 }
