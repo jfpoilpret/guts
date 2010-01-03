@@ -14,8 +14,13 @@
 
 package net.guts.gui.action;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 public abstract class AbstractInputBlocker implements InputBlocker
 {
+	final protected Logger _logger = LoggerFactory.getLogger(getClass());
+	
 	abstract protected void setBlocking(boolean block);
 
 	/* (non-Javadoc)
@@ -23,7 +28,12 @@ public abstract class AbstractInputBlocker implements InputBlocker
 	 */
 	@Override public void block()
 	{
+		if (_blocked)
+		{
+			_logger.error("block() called twice!");
+		}
 		setBlocking(true);
+		_blocked = true;
 	}
 
 	/* (non-Javadoc)
@@ -31,6 +41,13 @@ public abstract class AbstractInputBlocker implements InputBlocker
 	 */
 	@Override public void unblock()
 	{
+		if (!_blocked)
+		{
+			_logger.error("unblock() called before block()!");
+		}
 		setBlocking(false);
+		_blocked = false;
 	}
+	
+	private boolean _blocked = false;
 }

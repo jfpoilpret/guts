@@ -15,6 +15,14 @@
 package net.guts.gui.action;
 
 import java.awt.Component;
+import java.awt.Window;
+
+import javax.swing.JRootPane;
+import javax.swing.MenuElement;
+import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
+
+import net.guts.gui.util.SpinningAnimator;
 
 public final class InputBlockers
 {
@@ -50,7 +58,71 @@ public final class InputBlockers
 		};
 	}
 	
-	//TODO other blockers here: Window, Application...
+	static public InputBlocker createWindowBlocker(GutsAction source)
+	{
+		return createWindowBlocker(source, null);
+	}
+	
+	static public InputBlocker createWindowBlocker(
+		GutsAction source, SpinningAnimator spinner)
+	{
+		// Find RootPane for component
+		Component component = (Component) source.event().getSource();
+		JRootPane root = findComponentRoot(component);
+		if (root != null)
+		{
+			return new WindowInputBlocker(root, spinner);
+		}
+		else
+		{
+			return _noBlocker;
+		}
+	}
+	
+	static private JRootPane findComponentRoot(Component component)
+	{
+		if (component instanceof MenuElement)
+		{
+			return findMenuItemRoot((MenuElement) component);
+		}
+		else
+		{
+			return SwingUtilities.getRootPane(component);
+		}
+	}
+	
+	static private JRootPane findMenuItemRoot(MenuElement item)
+	{
+		// Find all Windows that are RootPaneContainers
+		for (Window window: Window.getWindows())
+		{
+			if (window instanceof RootPaneContainer)
+			{
+				RootPaneContainer root = (RootPaneContainer) window;
+				MenuElement menuBar = root.getRootPane().getJMenuBar();
+				if (isItemContainedInMenu(item, menuBar))
+				{
+					return root.getRootPane();
+				}
+			}
+		}
+		return null;
+	}
+	
+	static private boolean isItemContainedInMenu(MenuElement item, MenuElement menu)
+	{
+		if (menu != null)
+		{
+			for (MenuElement subitem: menu.getSubElements())
+			{
+				if (item == subitem || isItemContainedInMenu(item, subitem))
+				{
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	
 	static final private InputBlocker _noBlocker = new AbstractInputBlocker()
 	{
