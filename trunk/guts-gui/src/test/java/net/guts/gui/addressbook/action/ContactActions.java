@@ -29,6 +29,7 @@ import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
+import net.guts.gui.util.SpinningAnimator;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -136,7 +137,8 @@ public class ContactActions
 						_messageFactory.showMessage("delete-done");
 					}
 				};
-				getDefaultTaskService().execute(task, InputBlockers.createActionBlocker(this));
+				getDefaultTaskService().execute(
+					task, InputBlockers.createWindowBlocker(this, _spinner));
 			}
 		}
 	};
@@ -193,4 +195,5 @@ public class ContactActions
 	@Inject private MessageFactory _messageFactory;
 	@Inject private AddressBookService _service;
 	private Contact _selected = null;
+	final private SpinningAnimator _spinner = new SpinningAnimator();
 }
