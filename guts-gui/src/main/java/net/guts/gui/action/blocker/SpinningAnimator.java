@@ -12,16 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.util;
+package net.guts.gui.action.blocker;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
 import java.awt.geom.RoundRectangle2D;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class SpinningAnimator
 {
-	public SpinningAnimator numBars(int numBars)
+	SpinningAnimator numBars(int numBars)
 	{
 		if (numBars > _trailLength)
 		{

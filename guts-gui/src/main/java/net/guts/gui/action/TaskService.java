@@ -14,6 +14,10 @@
 
 package net.guts.gui.action;
 
+import java.lang.annotation.Annotation;
+
+import net.guts.gui.action.blocker.InputBlocker;
+
 public interface TaskService
 {
 	public <T, V> void addTaskListener(Task<T, V> task, TaskListener<T, V> listener);
@@ -22,4 +26,6 @@ public interface TaskService
 	public void removeTaskListener(TaskListener<Object, Object> listener);
 	
 	public <T, V> void execute(Task<T, V> task, InputBlocker blocker);
+	public <T, V> void execute(
+		Task<T, V> task, GutsAction source, Class<? extends Annotation> blocker);
 }

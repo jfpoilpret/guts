@@ -12,10 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.action.blocker;
 
 import java.awt.Color;
-import java.awt.Component;
 import java.awt.Cursor;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -26,46 +25,19 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
 import javax.swing.JComponent;
-import javax.swing.JRootPane;
 import javax.swing.Timer;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
 
-import net.guts.gui.util.SpinningAnimator;
 
-//TODO add features to display waiting dialog after some timeout
-class WindowInputBlocker implements InputBlocker
-{
-	WindowInputBlocker(JRootPane root, SpinningAnimator spinner)
-	{
-		_root = root;
-		_blockingGlassPane = new DisabledGlassPane(spinner);
-	}
-
-	@Override public void block()
-	{
-		_savedGlassPane = _root.getGlassPane();
-		_root.setGlassPane(_blockingGlassPane);
-		_blockingGlassPane.activate();
-	}
-
-	@Override public void unblock()
-	{
-		_blockingGlassPane.deactivate();
-		_root.setGlassPane(_savedGlassPane);
-	}
-
-	final private DisabledGlassPane _blockingGlassPane;
-	final private JRootPane _root;
-	private Component _savedGlassPane;
-}
+import com.google.inject.Inject;
 
 // Adapted from http://tips4java.wordpress.com/2008/11/07/disabled-glass-pane/
 // Credit: Rob Camick
-@SuppressWarnings("serial") 
+@SuppressWarnings("serial")
 class DisabledGlassPane extends JComponent
 {
-	DisabledGlassPane(SpinningAnimator spinner)
+	@Inject DisabledGlassPane(SpinningAnimator spinner)
 	{
 		_spinner = spinner;
 		

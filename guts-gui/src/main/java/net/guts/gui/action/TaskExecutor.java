@@ -20,6 +20,8 @@ import java.util.List;
 
 import javax.swing.SwingWorker;
 
+import net.guts.gui.action.blocker.InputBlocker;
+
 class TaskExecutor<T, V> extends SwingWorker<T, V> implements TaskController<V>
 {
 	TaskExecutor(Task<T, V> task, AbstractTaskService.TaskListeners<T, V> listeners,
