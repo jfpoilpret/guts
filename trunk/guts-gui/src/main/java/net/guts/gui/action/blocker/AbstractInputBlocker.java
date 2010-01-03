@@ -12,14 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.action.blocker;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.gui.action.GutsAction;
+
 public abstract class AbstractInputBlocker implements InputBlocker
 {
 	final protected Logger _logger = LoggerFactory.getLogger(getClass());
+
+	protected AbstractInputBlocker(GutsAction source)
+	{
+		_source = source;
+	}
 	
 	abstract protected void setBlocking(boolean block);
 
@@ -50,4 +57,5 @@ public abstract class AbstractInputBlocker implements InputBlocker
 	}
 	
 	private boolean _blocked = false;
+	final protected GutsAction _source;
 }

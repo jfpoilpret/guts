@@ -17,6 +17,7 @@ package net.guts.gui.action;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
+import net.guts.gui.action.blocker.BlockerModule;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 
@@ -32,6 +33,8 @@ public final class ActionModule extends AbstractModule
 	{
 		// Make sure Resource Injection system is installed
 		install(new ResourceModule());
+		// Install other specific dependencies
+		install(new BlockerModule());
 		// Add special Injector for GutsAction
 		Resources.bindInstanceInjector(binder(), GutsAction.class)
 			.to(GutsActionInjector.class).asEagerSingleton();

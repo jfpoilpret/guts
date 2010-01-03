@@ -14,6 +14,8 @@
 
 package net.guts.gui.action;
 
+import java.lang.annotation.Annotation;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -22,15 +24,19 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
+import net.guts.gui.action.blocker.InputBlocker;
+import net.guts.gui.action.blocker.InputBlockerFactory;
 import net.guts.gui.exit.ExitController;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 
 class DefaultTaskService extends AbstractTaskService
 {
 	static final private Logger _logger = LoggerFactory.getLogger(DefaultTaskService.class);
 	
-	@Inject DefaultTaskService(ExecutorServiceHolder executorHolder)
+	@Inject DefaultTaskService(ExecutorServiceHolder executorHolder, 
+		Map<Class<? extends Annotation>, Provider<InputBlockerFactory>> blockerFactories)
 	{
 		if (executorHolder._service != null)
 		{
@@ -40,6 +46,7 @@ class DefaultTaskService extends AbstractTaskService
 		{
 			_executor = Executors.newSingleThreadExecutor();
 		}
+		_blockerFactories = blockerFactories;
 	}
 	
 	@Override public <T, V> void execute(Task<T, V> task, InputBlocker blocker)
@@ -49,6 +56,21 @@ class DefaultTaskService extends AbstractTaskService
 			TaskExecutor<T, V> executor = 
 				new TaskExecutor<T, V>(task, getTaskListeners(task), blocker);
 			_executor.execute(executor);
+		}
+	}
+	
+	public <T, V> void execute(
+		Task<T, V> task, GutsAction source, Class<? extends Annotation> blocker)
+	{
+		Provider<InputBlockerFactory> provider = _blockerFactories.get(blocker);
+		if (provider != null)
+		{
+			execute(task, provider.get().create(source));
+		}
+		else
+		{
+			_logger.error("execute() couldn't find any InputBlocker bound with annotation {}",
+				blocker.getName());
 		}
 	}
 	
@@ -97,4 +119,6 @@ class DefaultTaskService extends AbstractTaskService
 	static private final int WAIT_TIME_UNTIL_SHUTDOWN = 30;
 	
 	final private ExecutorService _executor;
+	final private Map<Class<? extends Annotation>, Provider<InputBlockerFactory>> 
+		_blockerFactories;
 }

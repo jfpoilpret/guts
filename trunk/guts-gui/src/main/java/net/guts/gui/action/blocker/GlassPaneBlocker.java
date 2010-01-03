@@ -12,73 +12,54 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.action.blocker;
 
 import java.awt.Component;
 import java.awt.Window;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import javax.swing.JRootPane;
 import javax.swing.MenuElement;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
-import net.guts.gui.util.SpinningAnimator;
+import net.guts.gui.action.GutsAction;
 
-public final class InputBlockers
+import com.google.inject.BindingAnnotation;
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+@BindingAnnotation
+public @interface GlassPaneBlocker
 {
-	private InputBlockers()
+}
+
+class GlassPaneInputBlocker implements InputBlocker
+{
+	@Inject GlassPaneInputBlocker(@Assisted GutsAction source, DisabledGlassPane glassPane)
 	{
+		_root = findComponentRoot((Component) source.event().getSource());
+		_blockingGlassPane = glassPane;
 	}
 
-	static public InputBlocker createNoBlocker()
+	@Override public void block()
 	{
-		return _noBlocker;
-	}
-	
-	static public InputBlocker createActionBlocker(final GutsAction source)
-	{
-		return new AbstractInputBlocker()
-		{
-			@Override protected void setBlocking(boolean block)
-			{
-				source.action().setEnabled(!block);
-			}
-		};
+		_savedGlassPane = _root.getGlassPane();
+		_root.setGlassPane(_blockingGlassPane);
+		_blockingGlassPane.activate();
 	}
 
-	static public InputBlocker createComponentBlocker(final GutsAction source)
+	@Override public void unblock()
 	{
-		final Component component = (Component) source.event().getSource();
-		return new AbstractInputBlocker()
-		{
-			@Override protected void setBlocking(boolean block)
-			{
-				component.setEnabled(!block);
-			}
-		};
+		_blockingGlassPane.deactivate();
+		_root.setGlassPane(_savedGlassPane);
 	}
-	
-	static public InputBlocker createWindowBlocker(GutsAction source)
-	{
-		return createWindowBlocker(source, null);
-	}
-	
-	static public InputBlocker createWindowBlocker(
-		GutsAction source, SpinningAnimator spinner)
-	{
-		// Find RootPane for component
-		Component component = (Component) source.event().getSource();
-		JRootPane root = findComponentRoot(component);
-		if (root != null)
-		{
-			return new WindowInputBlocker(root, spinner);
-		}
-		else
-		{
-			return _noBlocker;
-		}
-	}
-	
+
 	static private JRootPane findComponentRoot(Component component)
 	{
 		if (component instanceof MenuElement)
@@ -123,11 +104,8 @@ public final class InputBlockers
 		}
 		return false;
 	}
-	
-	static final private InputBlocker _noBlocker = new AbstractInputBlocker()
-	{
-		@Override protected void setBlocking(boolean block)
-		{
-		}
-	};
+
+	final private DisabledGlassPane _blockingGlassPane;
+	final private JRootPane _root;
+	private Component _savedGlassPane;
 }

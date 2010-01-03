@@ -43,7 +43,7 @@ abstract public class GutsAction
 	
 	abstract protected void perform();
 
-	final protected ActionEvent event()
+	final public ActionEvent event()
 	{
 		return _event;
 	}

@@ -25,8 +25,12 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.InputBlockers;
 import net.guts.gui.action.Task;
+import net.guts.gui.action.blocker.ActionBlocker;
+import net.guts.gui.action.blocker.InputBlocker;
+import net.guts.gui.action.blocker.InputBlockerFactory;
+
+import com.google.inject.Inject;
 
 //TODO better exception handling and/or logging on error conditions
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
@@ -66,15 +70,22 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	final private GutsAction _next = new GutsAction("next")
 	{
+		@SuppressWarnings("unused") 
+		@Inject void initInputBlocker(@ActionBlocker InputBlockerFactory factory)
+		{
+			_blocker = factory.create(this);
+		}
+		
 		@Override protected void perform()
 		{
 			Task<?, ?> task = next();
 			if (task != null)
 			{
-				getDefaultTaskService().execute(
-					task, InputBlockers.createActionBlocker(_next));
+				getDefaultTaskService().execute(task, _blocker);
 			}
 		}
+		
+		private InputBlocker _blocker;
 	};
 	
 	private <R, S> Task<R, S> next()

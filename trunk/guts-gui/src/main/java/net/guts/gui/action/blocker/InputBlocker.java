@@ -12,25 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.action.blocker;
 
-class ModalDialogInputBlocker implements InputBlocker
+public interface InputBlocker
 {
-	ModalDialogInputBlocker()
-	{
-		// TODO Create dialog from resources
-	}
-
-	@Override public void block()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override public void unblock()
-	{
-		// TODO Auto-generated method stub
-
-	}
-
+	public void block();
+	public void unblock();
 }
