@@ -14,13 +14,11 @@
 
 package net.guts.gui.addressbook.action;
 
+import java.awt.Component;
+
 import net.guts.event.Consumes;
-import net.guts.gui.action.AbstractTask;
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.Task;
-import net.guts.gui.action.TaskController;
-import net.guts.gui.action.blocker.GlassPaneBlocker;
-import net.guts.gui.action.blocker.SpinningAnimator;
+import net.guts.gui.action.TaskAction;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.dialog.ContactPanel;
 import net.guts.gui.addressbook.dialog.ContactTabPanel;
@@ -30,6 +28,11 @@ import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
+import net.guts.gui.task.AbstractTask;
+import net.guts.gui.task.FeedbackController;
+import net.guts.gui.task.Task;
+import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.blocker.InputBlockers;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -115,16 +118,17 @@ public class ContactActions
 	};
 
 	//TODO tests of guts-gui Task behavior here!
-	final private GutsAction _deleteContact = new GutsAction("deleteContact")
+	final private GutsAction _deleteContact = new TaskAction("deleteContact")
 	{
 		@Override protected void perform()
 		{
 			if (UserChoice.YES == _messageFactory.showMessage(
 				"confirm-delete", _selected.getFirstName(), _selected.getLastName()))
 			{
-				Task<Void, Void> task = new AbstractTask<Void, Void>()
+				final Component parent = (Component) event().getSource();
+				Task<Void> task = new AbstractTask<Void>()
 				{
-					@Override public Void doInBackground(TaskController<Void> publisher)
+					@Override public Void execute(FeedbackController controller)
 						throws InterruptedException
 					{
 						Thread.sleep(5000L);
@@ -132,12 +136,17 @@ public class ContactActions
 						return null;
 					}
 
-					@Override public void succeeded(Task<?, ?> source, Void result)
+					@Override public void succeeded(
+						TasksGroup group, Task<? extends Void> source, Void result)
 					{
-						_messageFactory.showMessage("delete-done");
+						_messageFactory.showMessage(parent, "delete-done");
 					}
 				};
-				getDefaultTaskService().execute(task, this, GlassPaneBlocker.class);
+//				submit(task);
+//				submit(task, InputBlockers.actionBlocker(this));
+//				submit(task, InputBlockers.componentBlocker(this));
+//				submit(task, InputBlockers.windowBlocker(this));
+				submit(task, InputBlockers.dialogBlocker());
 			}
 		}
 	};

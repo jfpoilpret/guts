@@ -25,12 +25,8 @@ import java.util.Map;
 import javax.swing.JComponent;
 
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.Task;
-import net.guts.gui.action.blocker.ActionBlocker;
-import net.guts.gui.action.blocker.InputBlocker;
-import net.guts.gui.action.blocker.InputBlockerFactory;
-
-import com.google.inject.Inject;
+import net.guts.gui.action.TaskAction;
+import net.guts.gui.task.Task;
 
 //TODO better exception handling and/or logging on error conditions
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
@@ -68,33 +64,21 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		initButtons(accept, _previous, _next, accept);
 	}
 
-	final private GutsAction _next = new GutsAction("next")
+	final private GutsAction _next = new TaskAction("next")
 	{
-		@SuppressWarnings("unused") 
-		@Inject void initInputBlocker(@ActionBlocker InputBlockerFactory factory)
-		{
-			_blocker = factory.create(this);
-		}
-		
 		@Override protected void perform()
 		{
-			Task<?, ?> task = next();
-			if (task != null)
-			{
-				getDefaultTaskService().execute(task, _blocker);
-			}
+			submit(next());
 		}
-		
-		private InputBlocker _blocker;
 	};
 	
-	private <R, S> Task<R, S> next()
+	private <R> Task<R> next()
 	{
 		// First accept current pane
 		JComponent current = _panes.get(_sequence.get(_current));
 		if (current instanceof WizardStepPanel)
 		{
-			Task<R, S> task = ((WizardStepPanel) current).leave();
+			Task<R> task = ((WizardStepPanel) current).leave();
 			if (task != null)
 			{
 				//FIXME add later when action package supports TaskListener

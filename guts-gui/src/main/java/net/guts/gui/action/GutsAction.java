@@ -15,13 +15,11 @@
 package net.guts.gui.action;
 
 import java.awt.event.ActionEvent;
-import java.util.Map;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 
 // CSOFF: AbstractClassNameCheck
 abstract public class GutsAction
@@ -40,25 +38,14 @@ abstract public class GutsAction
 	{
 		return _name;
 	}
-	
-	abstract protected void perform();
 
 	final public ActionEvent event()
 	{
 		return _event;
 	}
 	
-	final protected TaskService getDefaultTaskService()
-	{
-		return getTaskService(Actions.DEFAULT_TASK_SERVICE);
-	}
-	
-	final protected TaskService getTaskService(String name)
-	{
-		Provider<TaskService> service = _taskServices.get(name);
-		return (service != null ? service.get() : null);
-	}
-	
+	abstract protected void perform();
+
 	@SuppressWarnings("serial") 
 	private class InternalAction extends AbstractAction
 	{
@@ -79,12 +66,12 @@ abstract public class GutsAction
 		return System.identityHashCode(this);
 	}
 	
-	@Inject void init(Map<String, Provider<TaskService>> taskServices)
+	@Inject void init()
 	{
-		_taskServices = taskServices;
 		_injectedAlready = true;
 	}
-	
+
+	// Used by ActionRegistrationManager to prevent Guice injection occurring twice
 	boolean isMarkedInjected()
 	{
 		return _injectedAlready;
@@ -93,7 +80,7 @@ abstract public class GutsAction
 	final private String _name;
 	final private Action _action = new InternalAction();
 	private ActionEvent _event = null;
-	private Map<String, Provider<TaskService>> _taskServices = null;
+	
 	private boolean _injectedAlready = false;
 }
 //CSON: AbstractClassNameCheck

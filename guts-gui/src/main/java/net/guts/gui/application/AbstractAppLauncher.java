@@ -32,6 +32,7 @@ import net.guts.gui.exit.ExitModule;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.session.SessionModule;
 import net.guts.gui.session.Sessions;
+import net.guts.gui.task.TasksModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -180,6 +181,7 @@ public abstract class AbstractAppLauncher
 			modules.add(new ResourceModule());
 			modules.add(new SessionModule());
 			modules.add(new ActionModule());
+			modules.add(new TasksModule());
 			modules.add(new ExceptionHandlingModule());
 			modules.add(new ExitModule());
 			modules.add(new AppModule());

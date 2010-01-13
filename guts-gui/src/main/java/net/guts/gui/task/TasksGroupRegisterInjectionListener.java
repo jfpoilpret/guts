@@ -12,8 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task;
 
-public abstract class AbstractTask<T, V> extends TaskAdapter<T, V> implements Task<T, V>
+import net.guts.common.injection.AbstractInjectionListener;
+
+import com.google.inject.Inject;
+
+class TasksGroupRegisterInjectionListener extends AbstractInjectionListener<TasksGroup>
 {
+	@Inject void setTasksGroupRegistry(TasksGroupRegistry registry)
+	{
+		_registry = registry;
+	}
+
+	@Override protected void registerInjectee(TasksGroup injectee)
+	{
+		_registry.registerTasksGroup(injectee);
+	}
+
+	private TasksGroupRegistry _registry;
 }

@@ -14,18 +14,32 @@
 
 package net.guts.gui.action;
 
-import java.lang.annotation.Annotation;
+import net.guts.gui.task.TasksGroupFactory;
 
-import net.guts.gui.action.blocker.InputBlocker;
+import com.google.inject.Inject;
 
-public interface TaskService
+//TODO infer further; may need different API for TasksGroup?
+// CSOFF: AbstractClassNameCheck
+abstract public class TasksGroupAction extends GutsAction
 {
-	public <T, V> void addTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public <T, V> void removeTaskListener(Task<T, V> task, TaskListener<T, V> listener);
-	public void addTaskListener(TaskListener<Object, Object> listener);
-	public void removeTaskListener(TaskListener<Object, Object> listener);
-	
-	public <T, V> void execute(Task<T, V> task, InputBlocker blocker);
-	public <T, V> void execute(
-		Task<T, V> task, GutsAction source, Class<? extends Annotation> blocker);
+	protected TasksGroupAction(String name)
+	{
+		super(name);
+	}
+
+	final protected TasksGroupFactory tasksGroupFactory()
+	{
+		return _factory;
+	}
+
+	//TODO some utility methods to:
+	// - get a TasksGroup?
+	// - create an InputBlocker?
+	@Inject void init(TasksGroupFactory factory)
+	{
+		_factory = factory;
+	}
+
+	private TasksGroupFactory _factory;
 }
+//CSON: AbstractClassNameCheck

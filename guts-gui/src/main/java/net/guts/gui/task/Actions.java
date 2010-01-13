@@ -12,32 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task;
 
 import java.util.concurrent.ExecutorService;
 
+
 import com.google.inject.Binder;
 import com.google.inject.binder.LinkedBindingBuilder;
-import com.google.inject.multibindings.MapBinder;
 
+//TODO rename to better name...
 final public class Actions
 {
 	private Actions()
 	{
 	}
 	
-	static final String DEFAULT_TASK_SERVICE = "DEFAULT";
-	
-	static public LinkedBindingBuilder<ExecutorService> bindDefaultTaskExecutorService(
+	static public LinkedBindingBuilder<ExecutorService> bindDefaultExecutorService(
 		Binder binder)
 	{
-		return binder.bind(ExecutorService.class).annotatedWith(BindTaskServiceExecutor.class);
-	}
-	
-	static public LinkedBindingBuilder<TaskService> bindTaskService(Binder binder, String name)
-	{
-		MapBinder<String, TaskService> services = 
-				MapBinder.newMapBinder(binder, String.class, TaskService.class);
-		return services.addBinding(name);
+		return binder.bind(ExecutorService.class).annotatedWith(DefaultExecutor.class);
 	}
 }

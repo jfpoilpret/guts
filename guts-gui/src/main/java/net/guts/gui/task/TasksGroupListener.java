@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task;
 
-public interface TaskController<V>
+public interface TasksGroupListener
 {
-	public void publishIntermediateResults(V... chunks);
-	//TODO add cancel? or rather isCancelled()?
+	public void taskAdded(TasksGroup group, Task<?> task);
+	public void taskStarted(TasksGroup group, Task<?> task);
+	public void taskEnded(TasksGroup group, Task<?> task);
+	public void allTasksEnded(TasksGroup group);
 }

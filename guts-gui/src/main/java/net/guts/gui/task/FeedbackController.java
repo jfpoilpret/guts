@@ -12,10 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action.blocker;
+package net.guts.gui.task;
 
-public interface InputBlocker
+//TODO find better name?
+public interface FeedbackController
 {
-	public void block();
-	public void unblock();
+	public void setProgress(int current);
+	public void setFeedback(String note);
+	public boolean isCancelled();
 }

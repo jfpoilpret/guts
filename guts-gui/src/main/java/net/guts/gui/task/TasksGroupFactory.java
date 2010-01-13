@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task;
 
-public interface Task<T, V>
+public interface TasksGroupFactory
 {
-	public T doInBackground(TaskController<V> publisher) throws Exception;
+	public TasksGroup newTasksGroup(String name, boolean cancellable);
 }

@@ -14,7 +14,7 @@
 
 package net.guts.gui.dialog.support;
 
-import net.guts.gui.action.Task;
+import net.guts.gui.task.Task;
 
 public interface WizardStepPanel
 {
@@ -23,5 +23,5 @@ public interface WizardStepPanel
 	public void enter();
 	//#### check if this can be easily instantiable (because impl will hardcode
 	// T & V paremter types!)
-	public <T, V> Task<T, V> leave();
+	public <T> Task<T> leave();
 }

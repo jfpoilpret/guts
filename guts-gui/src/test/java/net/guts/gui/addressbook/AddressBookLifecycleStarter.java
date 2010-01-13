@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.addressbook.action.ContactActions;
+import net.guts.gui.addressbook.action.TaskTestActions;
 import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.GutsApplicationActions;
@@ -50,11 +51,12 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		MenuFactory menuFactory, MessageFactory messageFactory,
 		ResourceInjector injector, ExitController exitController, 
 		AddressBookMainView mainView, ContactActions contactActions,
-		GutsApplicationActions appActions)
+		TaskTestActions taskTestActions, GutsApplicationActions appActions)
 	{
 		_mainView =  mainView;
 		_appActions = appActions;
 		_contactActions = contactActions;
+		_taskTestActions = taskTestActions;
 		_windowController = windowController;
 		_menuFactory = menuFactory;
 		_messageFactory = messageFactory;
@@ -84,6 +86,18 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 			MenuFactory.ACTION_SEPARATOR,
 			_contactActions.deleteContact()));
 		menuBar.add(_menuFactory.createMenu("localeMenu", _french, _english));
+		menuBar.add(_menuFactory.createMenu("taskTestMenu",
+			_taskTestActions._oneTaskNoBlocker,
+			_taskTestActions._oneTaskComponentBlocker,
+			_taskTestActions._oneTaskActionBlocker,
+			_taskTestActions._oneTaskWindowBlocker,
+			_taskTestActions._oneTaskDialogBlocker,
+			_taskTestActions._oneTaskProgressDialogBlocker,
+			MenuFactory.ACTION_SEPARATOR,
+			_taskTestActions._oneTaskSerialExecutor,
+			_taskTestActions._fiveTasksDialogBlocker,
+			_taskTestActions._twoSerialTaskDialogBlocker,
+			_taskTestActions._twoSerialGroupsDialogBlocker));
 		JFrame mainFrame = new JFrame();
 		mainFrame.setName("mainFrame");
 		//TODO Guts-GUI should always provide this somehow
@@ -144,6 +158,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	};
 	
 	final private ContactActions _contactActions;
+	final private TaskTestActions _taskTestActions;
 	final private GutsApplicationActions _appActions;
 	final private AddressBookMainView _mainView;
 	final private WindowController _windowController;

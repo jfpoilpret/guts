@@ -19,7 +19,6 @@ import javax.swing.JPopupMenu;
 
 import net.guts.gui.action.GutsAction;
 
-
 import com.google.inject.ImplementedBy;
 
 /**

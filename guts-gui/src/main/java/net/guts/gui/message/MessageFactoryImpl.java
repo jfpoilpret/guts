@@ -14,10 +14,10 @@
 
 package net.guts.gui.message;
 
+import java.awt.Component;
 import java.awt.Window;
 
 import javax.swing.JDialog;
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import net.guts.gui.application.WindowController;
@@ -36,11 +36,13 @@ class MessageFactoryImpl implements MessageFactory
 		_injector = injector;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.message.MessageFactory#showMessage(java.lang.String, java.lang.Object[])
-	 */
 	public UserChoice showMessage(String id, Object... args)
+	{
+		Window parent = _windowController.getActiveWindow();
+		return showMessage(parent, id, args);
+	}
+	
+	public UserChoice showMessage(Component parent, String id, Object... args)
 	{
 		// Inject specific information into private object
 		MessageInfo info = new MessageInfo();
@@ -52,20 +54,7 @@ class MessageFactoryImpl implements MessageFactory
 											info.getMessageType().value(),
 											info.getOptionType().value());
 		pane.setName("message-" + id);
-		Window parent = _windowController.getActiveWindow();
-		JDialog box;
-		if (parent instanceof JFrame)
-		{
-			box = pane.createDialog(parent, title);
-		}
-		else if (parent instanceof JDialog)
-		{
-			box = pane.createDialog(parent, title);
-		}
-		else
-		{
-			box = pane.createDialog((JFrame) null, title);
-		}
+		JDialog box = pane.createDialog(parent, title);
 		box.setLocationRelativeTo(parent);
 		box.setVisible(true);
 		Integer result = (Integer) pane.getValue();
