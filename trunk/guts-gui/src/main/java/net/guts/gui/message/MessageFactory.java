@@ -15,6 +15,8 @@
 package net.guts.gui.message;
 
 
+import java.awt.Component;
+
 import com.google.inject.ImplementedBy;
 
 /**
@@ -63,4 +65,15 @@ public interface MessageFactory
 	 * @return the user's choice (according to the clicked button)
 	 */
 	public UserChoice showMessage(String id, Object... args);
+	
+	/**
+	 * Displays the message box uniquely identified by {@code id} and defined
+	 * in the resources properties file used by the application.
+	 * @param parent the component to be sued as a parent for the new message box
+	 * @param id message box unique identifier
+	 * @param args optional arguments used to format the message box title and
+	 * content
+	 * @return the user's choice (according to the clicked button)
+	 */
+	public UserChoice showMessage(Component parent, String id, Object... args);
 }

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action.blocker;
+package net.guts.gui.task.blocker;
 
 import java.awt.Color;
 import java.awt.Cursor;
@@ -28,7 +28,6 @@ import javax.swing.JComponent;
 import javax.swing.Timer;
 import javax.swing.event.MouseInputAdapter;
 import javax.swing.event.MouseInputListener;
-
 
 import com.google.inject.Inject;
 

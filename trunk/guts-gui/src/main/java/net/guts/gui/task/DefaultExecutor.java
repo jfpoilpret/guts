@@ -12,11 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action.blocker;
+package net.guts.gui.task;
 
-import net.guts.gui.action.GutsAction;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-public interface InputBlockerFactory
+import com.google.inject.BindingAnnotation;
+
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+@BindingAnnotation
+@interface DefaultExecutor
 {
-	public InputBlocker create(GutsAction source);
 }

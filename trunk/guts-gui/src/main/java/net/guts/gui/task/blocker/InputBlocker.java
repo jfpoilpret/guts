@@ -12,16 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task.blocker;
 
-import java.util.List;
+import net.guts.gui.task.TasksGroup;
 
-public interface TaskListener<T, V>
+public interface InputBlocker
 {
-	public void doInBackground(Task<?, ?> source);
-	public void process(Task<?, ?> source, List<V> chunks);
-	public void succeeded(Task<?, ?> source, T result);
-	public void failed(Task<?, ?> source, Throwable cause);
-	public void finished(Task<?, ?> source);
-	//TODO more methods here: cancelled? interrupted?
+	public void block(TasksGroup tasks);
+	public void unblock(TasksGroup tasks);
 }

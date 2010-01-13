@@ -12,34 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.support;
+package net.guts.gui.task;
 
-import javax.swing.JPanel;
-
-import net.guts.gui.task.Task;
-
-public abstract class AbstractWizardStepPanel extends JPanel implements WizardStepPanel
+public interface Task<T>
 {
-	public void enter()
-	{
-	}
-
-	public <T> Task<T> leave()
-	{
-		return null;
-	}
-
-	final public void setController(WizardController controller)
-	{
-		_controller = controller;
-	}
-	
-	final protected WizardController getController()
-	{
-		return _controller;
-	}
-
-	private static final long serialVersionUID = -5998189407857391710L;
-
-	private WizardController _controller;
+	public T execute(FeedbackController controller) throws Exception;
 }

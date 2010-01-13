@@ -87,6 +87,8 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 				if (!action.isMarkedInjected())
 				{
 					_injector.injectMembers(action);
+					//TODO should resource injection be performed systematically?
+					// eg if an injectable bound class derives from GutsAction?
 					_resourceInjector.injectInstance(action, action.name());
 				}
 			}

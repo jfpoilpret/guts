@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.action;
+package net.guts.gui.task;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 import net.guts.gui.resource.ResourceModule;
-import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.assistedinject.FactoryProvider;
 
-public final class ActionModule extends AbstractModule
+public final class TasksModule extends AbstractModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -31,27 +31,27 @@ public final class ActionModule extends AbstractModule
 	{
 		// Make sure Resource Injection system is installed
 		install(new ResourceModule());
-		// Add special Injector for GutsAction
-		Resources.bindInstanceInjector(binder(), GutsAction.class)
-			.to(GutsActionInjector.class).asEagerSingleton();
 
-		// Add type listener to automatically register Action fields 
-		// of Guice-instantiated objects
-		ActionRegisterInjectionListener injectionListener = 
+		// Bind TasksGroupFactory
+		bind(TasksGroupFactory.class).toProvider(
+			FactoryProvider.newFactory(TasksGroupFactory.class, TasksGroup.class));
+
+		// Add type listener to automatically register new TasksGroup
+		TasksGroupRegisterInjectionListener injectionListener = 
 			InjectionListeners.requestInjection(
-				binder(), new ActionRegisterInjectionListener());
-		OneTypeListener<Object> typeListener = 
-			new OneTypeListener<Object>(Object.class, injectionListener);
-		bindListener(Matchers.hasFieldsOfType(GutsAction.class), typeListener);
+				binder(), new TasksGroupRegisterInjectionListener());
+		OneTypeListener<TasksGroup> typeListener = 
+			new OneTypeListener<TasksGroup>(TasksGroup.class, injectionListener);
+		bindListener(Matchers.isSubtypeOf(TasksGroup.class), typeListener);
 	}
 
 	@Override public boolean equals(Object other)
 	{
-		return other instanceof ActionModule;
+		return other instanceof TasksModule;
 	}
 
 	@Override public int hashCode()
 	{
-		return ActionModule.class.hashCode();
+		return TasksModule.class.hashCode();
 	}
 }

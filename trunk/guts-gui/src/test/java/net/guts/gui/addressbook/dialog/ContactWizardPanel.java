@@ -20,13 +20,13 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import net.guts.gui.action.Task;
 import net.guts.gui.addressbook.business.AddressBookService;
 import net.guts.gui.addressbook.domain.Address;
 import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.dialog.support.AbstractWizardPanel;
 import net.guts.gui.dialog.support.AbstractWizardStepPanel;
 import net.guts.gui.dialog.support.AcceptGutsAction;
+import net.guts.gui.task.Task;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
@@ -129,7 +129,7 @@ class ContactPane extends AbstractWizardStepPanel
 		_txfBirth.setValue(_contact.getBirth());
     }
 
-	@Override public <T, V> Task<T, V> leave()
+	@Override public <T> Task<T> leave()
     {
 		// Binding from Swing to Domain
 		_contact.setFirstName(_txfFirstName.getText());
@@ -169,7 +169,7 @@ abstract class AbstractAddressPane extends AbstractWizardStepPanel
 		_addressPane.setAddress(_address);
     }
 
-	@Override public <T, V> Task<T, V> leave()
+	@Override public <T> Task<T> leave()
     {
 		_addressPane.updateAddress(_address);
 		getController().setAcceptEnabled(_last);
