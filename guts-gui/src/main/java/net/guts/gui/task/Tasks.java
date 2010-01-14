@@ -20,10 +20,9 @@ import java.util.concurrent.ExecutorService;
 import com.google.inject.Binder;
 import com.google.inject.binder.LinkedBindingBuilder;
 
-//TODO rename to better name...
-final public class Actions
+final public class Tasks
 {
-	private Actions()
+	private Tasks()
 	{
 	}
 	
