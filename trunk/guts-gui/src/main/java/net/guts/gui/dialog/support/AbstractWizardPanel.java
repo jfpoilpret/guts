@@ -26,7 +26,10 @@ import javax.swing.JComponent;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
+import net.guts.gui.task.DelegatingTask;
 import net.guts.gui.task.Task;
+import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.blocker.InputBlockers;
 
 //TODO better exception handling and/or logging on error conditions
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
@@ -68,7 +71,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	{
 		@Override protected void perform()
 		{
-			submit(next());
+			submit(next(), InputBlockers.actionBlocker(this));
 		}
 	};
 	
@@ -81,16 +84,14 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			Task<R> task = ((WizardStepPanel) current).leave();
 			if (task != null)
 			{
-				//FIXME add later when action package supports TaskListener
-				// Use TaskListener to go on after success
-//				task.addTaskListener(new TaskListener.Adapter<R, S>()
-//				{
-//					@Override public void succeeded(TaskEvent<R> e)
-//	                {
-//						goToStep(++_current);
-//	                }
-//				});
-				return task;
+				return new DelegatingTask<R>(task)
+				{
+					@Override public void succeeded(
+						TasksGroup group, Task<? extends R> source, R result)
+					{
+						goToStep(++_current);
+					}
+				};
 			}
 		}
 		goToStep(++_current);
