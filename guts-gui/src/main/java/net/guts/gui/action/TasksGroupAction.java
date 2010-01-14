@@ -18,7 +18,6 @@ import net.guts.gui.task.TasksGroupFactory;
 
 import com.google.inject.Inject;
 
-//TODO infer further; may need different API for TasksGroup?
 // CSOFF: AbstractClassNameCheck
 abstract public class TasksGroupAction extends GutsAction
 {
@@ -32,9 +31,6 @@ abstract public class TasksGroupAction extends GutsAction
 		return _factory;
 	}
 
-	//TODO some utility methods to:
-	// - get a TasksGroup?
-	// - create an InputBlocker?
 	@Inject void init(TasksGroupFactory factory)
 	{
 		_factory = factory;
