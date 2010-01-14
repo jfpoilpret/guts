@@ -14,7 +14,6 @@
 
 package net.guts.gui.task;
 
-//TODO find better name?
 public interface FeedbackController
 {
 	public void setProgress(int current);
