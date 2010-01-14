@@ -19,12 +19,15 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
+import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.task.TasksGroup;
 
 import com.google.inject.Inject;
 
-//TODO get timeout from resources!
+//TODO allow replacement of BlockerDialogPane with something else
+// so that developers can provide their own home-made progress dialog
+// Maybe make BlockerDailogPane abstract or interface?
 //TODO make sure resource injection accounts for source GutsAction name!
 public class ModalDialogInputBlocker implements InputBlocker
 {
@@ -37,8 +40,7 @@ public class ModalDialogInputBlocker implements InputBlocker
 				showDialog();
 			}
 		});
-		//TODO replace with injected resource!
-		_timeout.setInitialDelay(1000);
+		_timeout.setInitialDelay(DEFAULT_WAIT_BEFORE_DIALOG);
 	}
 	
 	@Inject void init(DialogFactory dialogFactory, BlockerDialogPane pane)
@@ -49,7 +51,7 @@ public class ModalDialogInputBlocker implements InputBlocker
 	
 	private void showDialog()
 	{
-		_dialogFactory.showDialog(_pane);
+		_dialogFactory.showDialog(_pane, BoundsPolicy.PACK_AND_CENTER);
 	}
 
 	@Override public void block(TasksGroup tasks)
@@ -63,7 +65,14 @@ public class ModalDialogInputBlocker implements InputBlocker
 		_timeout.stop();
 		_pane.close();
 	}
+	
+	void setWaitBeforeDialog(int wait)
+	{
+		_timeout.setInitialDelay(Math.max(0, wait));
+	}
 
+	static final private int DEFAULT_WAIT_BEFORE_DIALOG = 1000;
+	
 	final private Timer _timeout;
 	private DialogFactory _dialogFactory;
 	private BlockerDialogPane _pane;
