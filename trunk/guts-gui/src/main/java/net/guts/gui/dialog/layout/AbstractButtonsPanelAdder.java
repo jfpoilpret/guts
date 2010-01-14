@@ -27,10 +27,9 @@ import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import org.jdesktop.layout.LayoutStyle;
+import static net.guts.gui.util.LayoutHelper.*;
 
 /**
  * An abstract implementation of {@link ButtonsPanelAdder} that creates a 
@@ -70,7 +69,6 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 
 	static private JPanel createButtonsPanel(List<JButton> buttons, JComponent container)
 	{
-		LayoutStyle style = LayoutStyle.getSharedInstance();
 		JPanel buttonsPanel = new JPanel();
 		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
 		buttonsPanel.add(Box.createHorizontalGlue());
@@ -83,12 +81,12 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 			// Make sure buttons size will be made consistent during all lifetime of button
 			left.addPropertyChangeListener(_sizeListener);
 			
-			int vgap = style.getContainerGap(left, SwingConstants.SOUTH, buttonsPanel);
+			int vgap = topGap(buttonsPanel, left);
 			maxVgap = Math.max(maxVgap, vgap);
 			if (i == 0)
 			{
 				// Add left gutter
-				int hgap = style.getContainerGap(left, SwingConstants.WEST, buttonsPanel);
+				int hgap = leftGap(buttonsPanel, left);
 				buttonsPanel.add(Box.createHorizontalStrut(hgap));
 			}
 			buttonsPanel.add(left);
@@ -96,17 +94,13 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 			{
 				// Add inter-buttons gutter
 				JButton right = buttons.get(i + 1);
-				int gap = style.getPreferredGap(left,
-												right, 
-												LayoutStyle.RELATED, 
-												SwingConstants.EAST, 
-												buttonsPanel);
+				int gap = relatedHorizontalGap(buttonsPanel, left, right);
 				buttonsPanel.add(Box.createHorizontalStrut(gap));
 			}
 			else
 			{
 				// Add right gutter
-				int hgap = style.getContainerGap(left, SwingConstants.EAST, buttonsPanel);
+				int hgap = rightGap(buttonsPanel, left);
 				buttonsPanel.add(Box.createHorizontalStrut(hgap));
 			}
 		}
@@ -115,7 +109,7 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 		updateButtonsSize(buttonsPanel, calculateButtonsSize(buttonsPanel));
 		
 		// Add border around box
-		int vgap = style.getContainerGap(buttonsPanel, SwingConstants.SOUTH, container);
+		int vgap = bottomGap(container, buttonsPanel);
 		buttonsPanel.setBorder(new EmptyBorder(vgap, 0, maxVgap, 0));
 		return buttonsPanel;
 	}
