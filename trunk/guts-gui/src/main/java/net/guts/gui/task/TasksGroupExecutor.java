@@ -130,7 +130,6 @@ final public class TasksGroupExecutor
 				_logger.debug("handleTasksFeedback", e);
 			}
 		}
-//		System.out.println("####### handleTasksFeedback(): all tasks complete! #######");
 		_state.compareAndSet(State.RUNNING, State.DONE);
 		// Make sure, at the end, to unblock input (must be in EDT)!
 		SwingUtilities.invokeLater(new Runnable()
