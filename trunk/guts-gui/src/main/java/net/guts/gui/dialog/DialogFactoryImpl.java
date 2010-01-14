@@ -42,8 +42,17 @@ class DialogFactoryImpl implements DialogFactory
 	 */
 	public boolean showDialog(JComponent panel)
 	{
+		return showDialog(panel, BoundsPolicy.PACK_AND_CENTER);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy)
+	 */
+	public boolean showDialog(JComponent panel, BoundsPolicy policy)
+	{
 		resetPanel(panel);
-		return show(panel);
+		return show(panel, policy);
 	}
 
 	/*
@@ -52,7 +61,16 @@ class DialogFactoryImpl implements DialogFactory
 	 */
 	public <T extends JComponent> boolean showDialog(Class<T> clazz)
 	{
-		return showDialog(clazz, null);
+		return showDialog(clazz, null, BoundsPolicy.PACK_AND_CENTER);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.application.WindowController.BoundsPolicy)
+	 */
+	public <T extends JComponent> boolean showDialog(Class<T> clazz, BoundsPolicy policy)
+	{
+		return showDialog(clazz, null, policy);
 	}
 	
 	/*
@@ -62,13 +80,19 @@ class DialogFactoryImpl implements DialogFactory
 	public <T extends JComponent> boolean showDialog(
 		Class<T> clazz, ComponentInitializer<T> initializer)
 	{
+		return showDialog(clazz, initializer, BoundsPolicy.PACK_AND_CENTER);
+	}
+
+	public <T extends JComponent> boolean showDialog(
+		Class<T> clazz, ComponentInitializer<T> initializer, BoundsPolicy policy)
+	{
 		T panel = _injector.getInstance(clazz);
 		resetPanel(panel);
 		if (initializer != null)
 		{
 			initializer.init(panel);
 		}
-		return show(panel);
+		return show(panel, policy);
 	}
 
 	static private void resetPanel(JComponent panel)
@@ -79,7 +103,7 @@ class DialogFactoryImpl implements DialogFactory
 		}
 	}
 	
-	private boolean show(JComponent panel)
+	private boolean show(JComponent panel, BoundsPolicy policy)
 	{
 		// Find right parent first
 		Window active = _windowController.getActiveWindow();

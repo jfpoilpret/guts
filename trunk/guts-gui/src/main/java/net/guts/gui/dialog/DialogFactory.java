@@ -16,6 +16,7 @@ package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
 
+import net.guts.gui.application.WindowController.BoundsPolicy;
 
 import com.google.inject.ImplementedBy;
 
@@ -52,6 +53,8 @@ public interface DialogFactory
 	 */
 	public boolean showDialog(JComponent panel);
 
+	public boolean showDialog(JComponent panel, BoundsPolicy policy);
+
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
@@ -65,6 +68,8 @@ public interface DialogFactory
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
 	public<T extends JComponent> boolean showDialog(Class<T> clazz);
+
+	public<T extends JComponent> boolean showDialog(Class<T> clazz, BoundsPolicy policy);
 
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
@@ -92,4 +97,7 @@ public interface DialogFactory
 	 */
 	public<T extends JComponent> boolean showDialog(
 		Class<T> clazz, ComponentInitializer<T> initializer);
+
+	public<T extends JComponent> boolean showDialog(
+		Class<T> clazz, ComponentInitializer<T> initializer, BoundsPolicy policy);
 }
