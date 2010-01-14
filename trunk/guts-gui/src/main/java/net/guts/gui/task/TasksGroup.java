@@ -61,14 +61,11 @@ public class TasksGroup
 		return this;
 	}
 	
-	//FIXME dangerous API: it may happen that someone passes an object that
-	// implements Task<T> and TaskListener<V>!!!!
-	@SuppressWarnings("unchecked") 
 	public <T> TasksGroup add(Task<T> task)
 	{
-		if (task instanceof TaskListener)
+		if (task instanceof AbstractTask)
 		{
-			return add(task, (TaskListener<T>) task);
+			return add(task, (AbstractTask<T>) task);
 		}
 		else
 		{
@@ -94,7 +91,8 @@ public class TasksGroup
 		checkMutability("add TasksGroupListener");
 		_groupListeners.add(listener);
 	}
-	
+
+	//TODO shouldn't we impose executor and blocker as ctor arguments????
 	public TasksGroupExecutor getExecutor(ExecutorService executor, InputBlocker blocker)
 	{
 		// Make sure all arguments are suitable, change them to defaults otherwise
