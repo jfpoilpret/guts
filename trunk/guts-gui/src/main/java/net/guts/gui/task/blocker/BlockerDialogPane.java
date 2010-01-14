@@ -14,6 +14,10 @@
 
 package net.guts.gui.task.blocker;
 
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.Insets;
+
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -26,7 +30,7 @@ import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskAdapter;
 import net.guts.gui.task.TasksGroup;
-import net.java.dev.designgridlayout.DesignGridLayout;
+import static net.guts.gui.util.LayoutHelper.*;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -40,9 +44,13 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 	@Inject BlockerDialogPane()
 	{
 		setName(NAME);
-		//TODO set names for resource injection!
-		_progress.setMinimum(0);
-		_progress.setMaximum(100);
+		// Set names for resource injection
+		_progress.setName(NAME + "-progress");
+		_note.setName(NAME + "-note");
+		_cancelBtn.setName(NAME + "-cancel");
+		_progress.setMinimum(MIN_RATE);
+		_progress.setMaximum(MAX_RATE);
+		//FIXME externalize text in some FW resource bundle!
 		_cancelBtn.setText("Cancel Task");
 		initLayout();
 	}
@@ -51,10 +59,8 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 	{
 		_tasks = tasks;
 		_cancel.action().setEnabled(_tasks.isCancellable());
-		//TODO listen to progress!
 		_tasks.addListener(new TaskAdapter<Object>()
 		{
-
 			@Override public void feedback(TasksGroup group, Task<? extends Object> source,
 				String note)
 			{
@@ -69,14 +75,46 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 		});
 	}
 	
-	//FIXME Change to GBL to avoid DGL as mandatory dependency in runtime
 	private void initLayout()
 	{
-		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().left().fill().add(_note);
-		layout.row().left().fill().add(_progress);
-		layout.emptyRow();
-		layout.row().center().add(_cancelBtn);
+		setLayout(new GridBagLayout());
+		GridBagConstraints constraints = new GridBagConstraints();
+
+		// Calculate border gaps
+		int top = topGap(this, _note);
+		int bottom = bottomGap(this, _cancelBtn);
+		int left = maxLeftGap(this, _note, _progress, _cancelBtn);
+		int right = maxRightGap(this, _note, _progress, _cancelBtn);
+
+		constraints.anchor = GridBagConstraints.BASELINE_LEADING;
+		constraints.fill = GridBagConstraints.HORIZONTAL;
+		constraints.gridx = 0;
+		constraints.gridwidth = 1;
+		constraints.weightx = 1.0;
+		constraints.gridy = 0;
+		constraints.gridheight = 1;
+		constraints.weighty = 0.0;
+		
+		constraints.insets = 
+			new Insets(top, left, relatedVerticalGap(this, _note, _progress), right);
+		add(_note, constraints);
+		
+		constraints.gridy++;
+		constraints.insets = 
+			new Insets(0, left, unrelatedVerticalGap(this, _progress, _cancelBtn), right);
+		add(_progress, constraints);
+		
+		constraints.gridy++;
+		constraints.insets = new Insets(0, left, bottom, right);
+		constraints.anchor = GridBagConstraints.NORTH;
+		constraints.fill = GridBagConstraints.NONE;
+		add(_cancelBtn, constraints);
+		// I wish I had used DesignGridLayout for that method...
+//		DesignGridLayout layout = new DesignGridLayout(this);
+//		layout.row().left().fill().add(_note);
+//		layout.row().left().fill().add(_progress);
+//		layout.emptyRow();
+//		layout.row().center().add(_cancelBtn);
 	}
 	
 	@Override public boolean canClose()
@@ -105,7 +143,7 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 		_parent.setDialogTitle(title);
 	}
 
-	final private GutsAction _cancel = new GutsAction(NAME + "-cancel")
+	final private GutsAction _cancel = new GutsAction(NAME + "-action-cancel")
 	{
 		@Override protected void perform()
 		{
@@ -114,6 +152,9 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 		}
 	};
 
+	static final private int MIN_RATE = 0;
+	static final private int MAX_RATE = 100;
+	
 	final private JLabel _note = new JLabel("");
 	final private JProgressBar _progress = new JProgressBar();
 	final private JButton _cancelBtn = new JButton(_cancel.action());
