@@ -27,17 +27,19 @@ class AnnotationProcessor
 {
 	static final private Logger _logger = LoggerFactory.getLogger(AnnotationProcessor.class);
 
-	//TODO synchronization?
 	public List<ExceptionHandler> process(Class<?> clazz)
 	{
-		// First check if clazz has been processed already
-		List<ExceptionHandler> handlers = _inspectedClasses.get(clazz);
-		if (handlers == null)
+		synchronized (_inspectedClasses)
 		{
-			handlers = findHandlers(clazz);
-			_inspectedClasses.put(clazz, handlers);
+			// First check if clazz has been processed already
+			List<ExceptionHandler> handlers = _inspectedClasses.get(clazz);
+			if (handlers == null)
+			{
+				handlers = findHandlers(clazz);
+				_inspectedClasses.put(clazz, handlers);
+			}
+			return handlers;
 		}
-		return handlers;
 	}
 	
 	private List<ExceptionHandler> findHandlers(Class<?> clazz)
