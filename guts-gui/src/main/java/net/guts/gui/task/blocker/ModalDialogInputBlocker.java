@@ -25,9 +25,6 @@ import net.guts.gui.task.TasksGroup;
 
 import com.google.inject.Inject;
 
-//TODO allow replacement of BlockerDialogPane with something else
-// so that developers can provide their own home-made progress dialog
-// Maybe make BlockerDailogPane abstract or interface?
 //TODO make sure resource injection accounts for source GutsAction name!
 public class ModalDialogInputBlocker implements InputBlocker
 {
@@ -51,7 +48,7 @@ public class ModalDialogInputBlocker implements InputBlocker
 	
 	private void showDialog()
 	{
-		_dialogFactory.showDialog(_pane, BoundsPolicy.PACK_AND_CENTER);
+		_dialogFactory.showDialog(_pane.getPane(), BoundsPolicy.PACK_AND_CENTER);
 	}
 
 	@Override public void block(TasksGroup tasks)

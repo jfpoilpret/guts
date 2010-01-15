@@ -14,159 +14,16 @@
 
 package net.guts.gui.task.blocker;
 
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import javax.swing.JComponent;
 
-import javax.swing.JButton;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JProgressBar;
-
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.Closable;
-import net.guts.gui.dialog.ParentDialog;
-import net.guts.gui.dialog.ParentDialogAware;
-import net.guts.gui.task.FeedbackController;
-import net.guts.gui.task.Task;
-import net.guts.gui.task.TaskAdapter;
 import net.guts.gui.task.TasksGroup;
-import static net.guts.gui.util.LayoutHelper.*;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
+import com.google.inject.ImplementedBy;
 
-@SuppressWarnings("serial") 
-@Singleton
-class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
+@ImplementedBy(DefaultBlockerDialogPane.class)
+public interface BlockerDialogPane
 {
-	static final private String NAME = "BlockerDialog";
-	
-	@Inject BlockerDialogPane()
-	{
-		setName(NAME);
-		// Set names for resource injection
-		_progress.setName(NAME + "-progress");
-		_note.setName(NAME + "-note");
-		_cancelBtn.setName(NAME + "-cancel");
-		_progress.setMinimum(MIN_RATE);
-		_progress.setMaximum(MAX_RATE);
-		initLayout();
-	}
-	
-	void setTasksGroup(TasksGroup tasks)
-	{
-		_tasks = tasks;
-		_note.setText("");
-		_progress.setValue(MIN_RATE);
-		_cancel.action().setEnabled(_tasks.isCancellable());
-		_tasks.addListener(new TaskAdapter<Object>()
-		{
-			@Override public void feedback(TasksGroup group, Task<? extends Object> source,
-				String note)
-			{
-				_note.setText(note);
-			}
-
-			@Override public void progress(TasksGroup group, Task<? extends Object> source,
-				int rate)
-			{
-				_progress.setValue(rate);
-			}
-		});
-	}
-	
-	private void initLayout()
-	{
-		setLayout(new GridBagLayout());
-		GridBagConstraints constraints = new GridBagConstraints();
-
-		// Calculate border gaps
-		int top = topGap(this, _note);
-		int bottom = bottomGap(this, _cancelBtn);
-		int left = maxLeftGap(this, _note, _progress, _cancelBtn);
-		int right = maxRightGap(this, _note, _progress, _cancelBtn);
-
-		constraints.anchor = GridBagConstraints.BASELINE_LEADING;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.gridx = 0;
-		constraints.gridwidth = 1;
-		constraints.weightx = 1.0;
-		constraints.gridy = 0;
-		constraints.gridheight = 1;
-		constraints.weighty = 0.0;
-		
-		constraints.insets = 
-			new Insets(top, left, relatedVerticalGap(this, _note, _progress), right);
-		add(_note, constraints);
-		
-		constraints.gridy++;
-		constraints.insets = 
-			new Insets(0, left, unrelatedVerticalGap(this, _progress, _cancelBtn), right);
-		add(_progress, constraints);
-		
-		constraints.gridy++;
-		constraints.insets = new Insets(0, left, bottom, right);
-		constraints.anchor = GridBagConstraints.NORTH;
-		constraints.fill = GridBagConstraints.NONE;
-		add(_cancelBtn, constraints);
-		// I wish I had used DesignGridLayout for that method...
-//		DesignGridLayout layout = new DesignGridLayout(this);
-//		layout.row().left().fill().add(_note);
-//		layout.row().left().fill().add(_progress);
-//		layout.emptyRow();
-//		layout.row().center().add(_cancelBtn);
-	}
-	
-	@Override public boolean canClose()
-	{
-		// It is not allowed to close the dialog through the close box
-		return false;
-	}
-
-	@Override public void setParentDialog(ParentDialog parent)
-	{
-		_parent = parent;
-	}
-	
-	void close()
-	{
-		if (_parent != null)
-		{
-			_parent.close(true);
-			_parent = null;
-		}
-	}
-
-	// Used for resource injection
-	void setTitle(String title)
-	{
-		_parent.setDialogTitle(title);
-	}
-
-	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
-	{
-		@Override protected void perform()
-		{
-			Task<Void> task = new Task<Void>()
-			{
-				@Override public Void execute(FeedbackController controller) throws Exception
-				{
-					_tasks.getExecutor().cancel();
-					return null;
-				}
-			};
-			submit(task, InputBlockers.actionBlocker(this));
-		}
-	};
-
-	static final private int MIN_RATE = 0;
-	static final private int MAX_RATE = 100;
-	
-	final private JLabel _note = new JLabel("");
-	final private JProgressBar _progress = new JProgressBar();
-	final private JButton _cancelBtn = new JButton(_cancel.action());
-	private ParentDialog _parent;
-	private TasksGroup _tasks;
+	public JComponent getPane();
+	public void setTasksGroup(TasksGroup tasks);
+	public void close();
 }
