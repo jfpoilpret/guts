@@ -14,22 +14,19 @@
 
 package net.guts.gui.action;
 
-import java.lang.ref.WeakReference;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.ref.WeakRefSet;
+import net.guts.common.ref.WeakRefSet.Performer;
 import net.guts.event.Consumes;
 import net.guts.gui.resource.ResourceInjector;
 
@@ -38,7 +35,7 @@ import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
-class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleanable
+class ActionRegistrationManagerImpl implements ActionRegistrationManager
 {
 	static final private Logger _logger = 
 		LoggerFactory.getLogger(ActionRegistrationManagerImpl.class);
@@ -48,7 +45,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 	{
 		_injector = injector;
 		_resourceInjector = resourceInjector;
-		cleaner.addCleanable(this);
+		cleaner.addCleanable(_actions);
 	}
 
 	// CSOFF: IllegalCatchCheck
@@ -79,45 +76,27 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 	
 	@Override public void registerAction(GutsAction action)
 	{
-		if (action != null)
+		if (_actions.add(action))
 		{
-			synchronized (_actions)
+			if (!action.isMarkedInjected())
 			{
-				_actions.add(new WeakReference<GutsAction>(action));
-				if (!action.isMarkedInjected())
-				{
-					_injector.injectMembers(action);
-					//TODO should resource injection be performed systematically?
-					// eg if an injectable bound class derives from GutsAction?
-					_resourceInjector.injectInstance(action, action.name());
-				}
+				_injector.injectMembers(action);
 			}
+			_resourceInjector.injectInstance(action, action.name());
 		}
 	}
 	
 	@Consumes(priority = Integer.MIN_VALUE + 2) 
 	public void localeChanged(Locale locale)
 	{
-		boolean mustCleanUp = false;
-		synchronized (_actions)
+		_actions.perform(new Performer<GutsAction>()
 		{
-			for (WeakReference<GutsAction> ref: _actions)
+			@Override public boolean perform(GutsAction action)
 			{
-				GutsAction action = ref.get();
-				if (action != null)
-				{
-					_resourceInjector.injectInstance(action, action.name());
-				}
-				else
-				{
-					mustCleanUp = true;
-				}
+				_resourceInjector.injectInstance(action, action.name());
+				return true;
 			}
-		}
-		if (mustCleanUp)
-		{
-			cleanup();
-		}
+		});
 	}
 	
 	private List<Field> findActions(Class<?> type)
@@ -146,26 +125,9 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager, Cleana
 		}
 	}
 	
-
-	@Override public void cleanup()
-	{
-		synchronized (_actions)
-		{
-			Iterator<WeakReference<GutsAction>> i = _actions.iterator();
-			while (i.hasNext())
-			{
-				if (i.next().get() == null)
-				{
-					i.remove();
-				}
-			}
-		}
-	}
-	
 	final private Map<Class<?>, List<Field>> _actionClasses = 
 		new HashMap<Class<?>, List<Field>>();
-	final private Set<WeakReference<GutsAction>> _actions = 
-		new HashSet<WeakReference<GutsAction>>();
+	final private WeakRefSet<GutsAction> _actions = WeakRefSet.create();
 	final private ResourceInjector _resourceInjector;
 	final private Injector _injector;
 }

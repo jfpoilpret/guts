@@ -14,18 +14,15 @@
 
 package net.guts.gui.task;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.ref.WeakRefSet;
+import net.guts.common.ref.WeakRefSet.Performer;
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
 
@@ -40,37 +37,25 @@ class ExecutorServiceRegistry
 
 	@Inject ExecutorServiceRegistry(Cleaner cleaner)
 	{
-		cleaner.addCleanable(new Cleanable()
-		{
-			@Override public void cleanup()
-			{
-				ExecutorServiceRegistry.this.cleanup();
-			}
-		});
+		cleaner.addCleanable(_executors);
 	}
 	
 	public void registerExecutor(ExecutorService executor)
 	{
-		synchronized (_executors)
-		{
-			_executors.add(new WeakReference<ExecutorService>(executor));
-		}
+		_executors.add(executor);
 	}
 	
 	@Consumes(topic = ExitController.SHUTDOWN_EVENT)
 	public void shutdown(Void nothing)
 	{
-		synchronized (_executors)
+		_executors.perform(new Performer<ExecutorService>()
 		{
-			for (WeakReference<ExecutorService> ref: _executors)
+			@Override public boolean perform(ExecutorService executor)
 			{
-				ExecutorService executor = ref.get();
-				if (executor != null)
-				{
-					shutdown(executor);
-				}
+				shutdown(executor);
+				return true;
 			}
-		}
+		});
 	}
 	
 	private void shutdown(ExecutorService executor)
@@ -104,24 +89,7 @@ class ExecutorServiceRegistry
 		}
 	}
 
-	private void cleanup()
-	{
-		synchronized (_executors)
-		{
-			Iterator<WeakReference<ExecutorService>> i = _executors.iterator();
-			while (i.hasNext())
-			{
-				if (i.next().get() == null)
-				{
-					i.remove();
-				}
-			}
-		}
-	}
-	
 	static private final int WAIT_TIME_UNTIL_SHUTDOWN = 30;
 
-	//TODO factor out the code for handling lists of weak references of any type!!!!
-	final private List<WeakReference<ExecutorService>> _executors = 
-		new ArrayList<WeakReference<ExecutorService>>();
+	final private WeakRefSet<ExecutorService> _executors = WeakRefSet.create();
 }

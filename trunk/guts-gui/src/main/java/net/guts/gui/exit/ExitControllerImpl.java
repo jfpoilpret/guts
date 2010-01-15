@@ -15,13 +15,10 @@
 package net.guts.gui.exit;
 
 import java.awt.EventQueue;
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 
-import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.ref.WeakRefSet;
+import net.guts.common.ref.WeakRefSet.Performer;
 import net.guts.event.Channel;
 import net.guts.event.Event;
 
@@ -38,13 +35,7 @@ class ExitControllerImpl implements ExitController
 	{
 		_shutdownChannel = shutdownChannel;
 		_exitPerformer = exitPerformer;
-		cleaner.addCleanable(new Cleanable()
-		{
-			@Override public void cleanup()
-			{
-				ExitControllerImpl.this.cleanup();
-			}
-		});
+		cleaner.addCleanable(_checkers);
 	}
 
 	/* (non-Javadoc)
@@ -52,10 +43,7 @@ class ExitControllerImpl implements ExitController
 	 */
 	@Override public void registerExitChecker(ExitChecker checker)
 	{
-		synchronized (_checkers)
-		{
-			_checkers.add(new WeakReference<ExitChecker>(checker));
-		}
+		_checkers.add(checker);
 	}
 
 	/* (non-Javadoc)
@@ -82,41 +70,24 @@ class ExitControllerImpl implements ExitController
 	
 	private void performShutdown()
 	{
-		synchronized (_checkers)
+		boolean shutdown = _checkers.perform(new Performer<ExitChecker>()
 		{
-			for (WeakReference<ExitChecker> refChecker: _checkers)
+			@Override public boolean perform(ExitChecker checker)
 			{
-				ExitChecker checker = refChecker.get();
-				if (checker != null && !checker.acceptExit())
-				{
-					return;
-				}
+				return checker.acceptExit();
 			}
+		});
+		if (shutdown)
+		{
+			// If we are here, we can shutdown the application
+			// First send a shutdown event to all event listeners!
+			_shutdownChannel.publish(null);
+			// Then shutdown the application
+			_exitPerformer.exitApplication();
 		}
-		// If we are here, we can shutdown the application
-		// First send a shutdown event to all event listeners!
-		_shutdownChannel.publish(null);
-		// Then shutdown the application
-		_exitPerformer.exitApplication();
 	}
 	
-	private void cleanup()
-	{
-		synchronized (_checkers)
-		{
-			Iterator<WeakReference<ExitChecker>> i = _checkers.iterator();
-			while (i.hasNext())
-			{
-				if (i.next().get() == null)
-				{
-					i.remove();
-				}
-			}
-		}
-	}
-
 	final private Channel<Void> _shutdownChannel;
 	final private ExitPerformer _exitPerformer;
-	final private List<WeakReference<ExitChecker>> _checkers = 
-		new ArrayList<WeakReference<ExitChecker>>();
+	final private WeakRefSet<ExitChecker> _checkers = WeakRefSet.create();
 }

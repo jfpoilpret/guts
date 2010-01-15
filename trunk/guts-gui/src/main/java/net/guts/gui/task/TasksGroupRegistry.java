@@ -14,14 +14,11 @@
 
 package net.guts.gui.task;
 
-import java.lang.ref.WeakReference;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import java.util.Locale;
 
-import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.ref.WeakRefSet;
+import net.guts.common.ref.WeakRefSet.Performer;
 import net.guts.event.Consumes;
 import net.guts.gui.resource.ResourceInjector;
 
@@ -34,65 +31,31 @@ class TasksGroupRegistry
 	@Inject TasksGroupRegistry(ResourceInjector injector, Cleaner cleaner)
 	{
 		_injector = injector;
-		cleaner.addCleanable(new Cleanable()
-		{
-			@Override public void cleanup()
-			{
-				TasksGroupRegistry.this.cleanup();
-			}
-		});
+		cleaner.addCleanable(_groups);
 	}
 	
 	public void registerTasksGroup(TasksGroup group)
 	{
 		// Inject resources into group
-		_injector.injectInstance(group, group.name());
-		synchronized (_groups)
+		if (_groups.add(group))
 		{
-			_groups.add(new WeakReference<TasksGroup>(group));
+			// Inject resources into group
+			_injector.injectInstance(group, group.name());
 		}
 	}
 	
 	@Consumes public void localeChanged(Locale locale)
 	{
-		boolean cleanup = false;
-		synchronized (_groups)
+		_groups.perform(new Performer<TasksGroup>()
 		{
-			for (WeakReference<TasksGroup> groupRef: _groups)
+			@Override public boolean perform(TasksGroup group)
 			{
-				TasksGroup group = groupRef.get();
-				if (group != null)
-				{
-					_injector.injectInstance(group, group.name());
-				}
-				else
-				{
-					cleanup = true;
-				}
+				_injector.injectInstance(group, group.name());
+				return true;
 			}
-		}
-		if (cleanup)
-		{
-			cleanup();
-		}
+		});
 	}
 
-	private void cleanup()
-	{
-		synchronized (_groups)
-		{
-			Iterator<WeakReference<TasksGroup>> i = _groups.iterator();
-			while (i.hasNext())
-			{
-				if (i.next().get() == null)
-				{
-					i.remove();
-				}
-			}
-		}
-	}
-	
-	final private List<WeakReference<TasksGroup>> _groups = 
-		new ArrayList<WeakReference<TasksGroup>>();
+	final private WeakRefSet<TasksGroup> _groups = WeakRefSet.create();
 	final private ResourceInjector _injector;
 }
