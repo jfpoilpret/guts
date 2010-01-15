@@ -71,7 +71,7 @@ public class ModalDialogInputBlocker implements InputBlocker
 		_timeout.setInitialDelay(Math.max(0, wait));
 	}
 
-	static final private int DEFAULT_WAIT_BEFORE_DIALOG = 1000;
+	static final private int DEFAULT_WAIT_BEFORE_DIALOG = 250;
 	
 	final private Timer _timeout;
 	private DialogFactory _dialogFactory;
