@@ -24,9 +24,11 @@ import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.TaskAction;
 import net.guts.gui.dialog.Closable;
 import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
+import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskAdapter;
 import net.guts.gui.task.TasksGroup;
@@ -50,14 +52,14 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 		_cancelBtn.setName(NAME + "-cancel");
 		_progress.setMinimum(MIN_RATE);
 		_progress.setMaximum(MAX_RATE);
-		//FIXME externalize text in some FW resource bundle!
-		_cancelBtn.setText("Cancel Task");
 		initLayout();
 	}
 	
 	void setTasksGroup(TasksGroup tasks)
 	{
 		_tasks = tasks;
+		_note.setText("");
+		_progress.setValue(MIN_RATE);
 		_cancel.action().setEnabled(_tasks.isCancellable());
 		_tasks.addListener(new TaskAdapter<Object>()
 		{
@@ -143,12 +145,19 @@ class BlockerDialogPane extends JPanel implements Closable, ParentDialogAware
 		_parent.setDialogTitle(title);
 	}
 
-	final private GutsAction _cancel = new GutsAction(NAME + "-action-cancel")
+	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
 	{
 		@Override protected void perform()
 		{
-			//TODO normally the cancellation should also be a blocking task!
-			_tasks.getExecutor().cancel();
+			Task<Void> task = new Task<Void>()
+			{
+				@Override public Void execute(FeedbackController controller) throws Exception
+				{
+					_tasks.getExecutor().cancel();
+					return null;
+				}
+			};
+			submit(task, InputBlockers.actionBlocker(this));
 		}
 	};
 
