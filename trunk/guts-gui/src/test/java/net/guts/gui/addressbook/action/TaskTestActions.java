@@ -95,12 +95,13 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			TasksGroup group = tasksGroupFactory().newTasksGroup("fiveTasksDialogBlocker", true);
+			TasksGroup group = newTasksGroup(
+				"fiveTasksDialogBlocker", true, InputBlockers.dialogBlocker());
 			for (int i = 0; i < 5; i++)
 			{
 				group.add(new LongTask("fiveTasksDialogBlocker #" + i));
 			}
-			group.getExecutor(InputBlockers.dialogBlocker()).execute();
+			group.getExecutor().execute();
 		}
 	};
 	
@@ -108,7 +109,8 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			final TasksGroup theGroup = tasksGroupFactory().newTasksGroup("twoSerialTaskDialogBlocker", true);
+			final TasksGroup theGroup = newTasksGroup(
+				"twoSerialTaskDialogBlocker", true, InputBlockers.dialogBlocker());
 			Task<?> task1 = new LongProgressTask("twoSerialTaskDialogBlocker #1")
 			{
 				@Override public Void execute(FeedbackController controller) throws Exception
@@ -119,7 +121,7 @@ public class TaskTestActions
 				}
 			};
 			theGroup.add(task1);
-			theGroup.getExecutor(InputBlockers.dialogBlocker()).execute();
+			theGroup.getExecutor().execute();
 		}
 	};
 	
@@ -127,19 +129,21 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			TasksGroup group1 = tasksGroupFactory().newTasksGroup("twoSerialGroupsDialogBlocker #1", true);
-			final TasksGroup group2 = tasksGroupFactory().newTasksGroup("twoSerialGroupsDialogBlocker #2", true);
+			TasksGroup group1 = newTasksGroup(
+				"twoSerialGroupsDialogBlocker #1", true, InputBlockers.dialogBlocker());
+			final TasksGroup group2 = newTasksGroup(
+				"twoSerialGroupsDialogBlocker #2", true, InputBlockers.dialogBlocker());
 			final Task<?> task2 = new LongTask("twoSerialGroupsDialogBlocker #2");
 			Task<?> task1 = new LongTask("twoSerialGroupsDialogBlocker #1")
 			{
 				@Override public Void execute(FeedbackController controller) throws Exception
 				{
 					super.execute(controller);
-					group2.add(task2).getExecutor(InputBlockers.dialogBlocker()).execute();
+					group2.add(task2).getExecutor().execute();
 					return null;
 				}
 			};
-			group1.add(task1).getExecutor(InputBlockers.dialogBlocker()).execute();
+			group1.add(task1).getExecutor().execute();
 		}
 	};
 	

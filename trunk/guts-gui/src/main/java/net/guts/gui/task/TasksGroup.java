@@ -18,7 +18,6 @@ import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
@@ -27,23 +26,30 @@ import net.guts.gui.task.blocker.InputBlockers;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.assistedinject.Assisted;
+import com.google.inject.internal.Nullable;
 
 public class TasksGroup
 {
 	// We don't care about the number of parameters because this constructor is injected
-	// Only 2 parameters are explicitly passed (through the Fcatory API)
+	// Only 4 parameters are explicitly passed (through the Factory API)
 	//CSOFF: ParameterNumberCheck
 	@Inject TasksGroup(ExecutorServiceRegistry executorRegistry, Injector injector,
 		ResourceInjector resourceInjector, DefaultExecutorHolder holder, 
-		@Assisted String name, @Assisted boolean cancellable)
+		@Assisted String name, @Assisted boolean cancellable,
+		@Assisted @Nullable InputBlocker blocker, 
+		@Assisted @Nullable ExecutorService executor)
 	{
-		_defaultExecutor = holder._executor;
-		_executorRegistry = executorRegistry;
-		_injector = injector;
-		_resourceInjector = resourceInjector;
 		_name = name;
 		_cancellable = cancellable;
-		_executor = new TasksGroupExecutor(this);
+		// Use default executor if needed
+		ExecutorService actualExecutor = (executor != null ? executor : holder._executor);
+		executorRegistry.registerExecutor(actualExecutor);
+		// Use default blocker if needed
+		InputBlocker actualBlocker = (blocker != null ? blocker : InputBlockers.noBlocker());
+		// Make sure InputBlocker is injected (we can't make sure of that fact before)
+		injector.injectMembers(actualBlocker);
+		resourceInjector.injectInstance(blocker);
+		_executor = new TasksGroupExecutor(this, actualBlocker, actualExecutor);
 	}
 	//CSON: ParameterNumberCheck
 	
@@ -99,35 +105,8 @@ public class TasksGroup
 		_groupListeners.add(listener);
 	}
 
-	//TODO shouldn't we impose executor and blocker as ctor arguments????
-	public TasksGroupExecutor getExecutor(ExecutorService executor, InputBlocker blocker)
-	{
-		// Make sure all arguments are suitable, change them to defaults otherwise
-		return initExecutor((executor != null ? executor : _defaultExecutor), 
-			(blocker != null ? blocker : InputBlockers.noBlocker()));
-	}
-	
-	public TasksGroupExecutor getExecutor(InputBlocker blocker)
-	{
-		return getExecutor(null, blocker);
-	}
-	
 	public TasksGroupExecutor getExecutor()
 	{
-		return getExecutor(null, null);
-	}
-	
-	private TasksGroupExecutor initExecutor(ExecutorService executor, InputBlocker blocker)
-	{
-		if (_executorInitialized.compareAndSet(false, true))
-		{
-			// Make sure InputBlocker is injected (we can't make sure of that fact before)
-			_injector.injectMembers(blocker);
-			_resourceInjector.injectInstance(blocker);
-			_executor.init(blocker, executor);
-			// Register executor with ExecutorServiceRegistry (for proper shutdown)
-			_executorRegistry.registerExecutor(executor);
-		}
 		return _executor;
 	}
 	
@@ -193,10 +172,6 @@ public class TasksGroup
 	}
 	//CSON: VisibilityModifierCheck
 
-	final private ExecutorService _defaultExecutor;
-	final private ExecutorServiceRegistry _executorRegistry;
-	final private Injector _injector;
-	final private ResourceInjector _resourceInjector;
 	final private String _name;
 	final private boolean _cancellable;
 	final private List<TaskHandler<?>> _tasks = new CopyOnWriteArrayList<TaskHandler<?>>();
@@ -205,5 +180,4 @@ public class TasksGroup
 	final private List<TasksGroupListener> _groupListeners = 
 		new CopyOnWriteArrayList<TasksGroupListener>();
 	final private TasksGroupExecutor _executor;
-	final private AtomicBoolean _executorInitialized = new AtomicBoolean();
 }

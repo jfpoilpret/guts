@@ -14,7 +14,11 @@
 
 package net.guts.gui.action;
 
+import java.util.concurrent.ExecutorService;
+
+import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TasksGroupFactory;
+import net.guts.gui.task.blocker.InputBlocker;
 
 import com.google.inject.Inject;
 
@@ -26,9 +30,27 @@ abstract public class TasksGroupAction extends GutsAction
 		super(name);
 	}
 
-	final protected TasksGroupFactory tasksGroupFactory()
+	final protected TasksGroup newTasksGroup(
+		String name, boolean cancellable, ExecutorService executable, InputBlocker blocker)
 	{
-		return _factory;
+		return _factory.newTasksGroup(name, cancellable, executable, blocker);
+	}
+
+	final protected TasksGroup newTasksGroup(
+		String name, boolean cancellable, ExecutorService executable)
+	{
+		return _factory.newTasksGroup(name, cancellable, executable, null);
+	}
+
+	final protected TasksGroup newTasksGroup(
+		String name, boolean cancellable, InputBlocker blocker)
+	{
+		return _factory.newTasksGroup(name, cancellable, null, blocker);
+	}
+
+	final protected TasksGroup newTasksGroup(String name, boolean cancellable)
+	{
+		return _factory.newTasksGroup(name, cancellable, null, null);
 	}
 
 	@Inject void init(TasksGroupFactory factory)

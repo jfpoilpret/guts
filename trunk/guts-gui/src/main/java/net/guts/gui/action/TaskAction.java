@@ -48,9 +48,9 @@ abstract public class TaskAction extends TasksGroupAction
 	{
 		if (task != null)
 		{
-			TasksGroup group = tasksGroupFactory().newTasksGroup(name(), _cancellable);
+			TasksGroup group = newTasksGroup(name(), _cancellable, executor, blocker);
 			group.add(task);
-			group.getExecutor(executor, blocker).execute();
+			group.getExecutor().execute();
 		}
 	}
 	
