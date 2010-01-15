@@ -14,7 +14,12 @@
 
 package net.guts.gui.task;
 
+import java.util.concurrent.ExecutorService;
+
+import net.guts.gui.task.blocker.InputBlocker;
+
 public interface TasksGroupFactory
 {
-	public TasksGroup newTasksGroup(String name, boolean cancellable);
+	public TasksGroup newTasksGroup(
+		String name, boolean cancellable, ExecutorService executable, InputBlocker blocker);
 }

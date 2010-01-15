@@ -29,23 +29,16 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.gui.task.blocker.InputBlocker;
 
+//TODO does it really need to be public? Could be just a delegate for TasksGroup!
 final public class TasksGroupExecutor
 {
-	TasksGroupExecutor(TasksGroup group)
+	@SuppressWarnings("unchecked")
+	TasksGroupExecutor(TasksGroup group, InputBlocker blocker, ExecutorService executor)
 	{
 		_group = group;
-		_logger = LoggerFactory.getLogger(getClass().getSimpleName() + "-" + _group.name());
-	}
-	
-	@SuppressWarnings("unchecked")
-	void init(InputBlocker blocker, ExecutorService executor)
-	{
-		if (_state.get() != State.PENDING)
-		{
-			throw new IllegalStateException("Can't call `init` twice!");
-		}
 		_blocker = blocker;
 		_groupExecutor = new ExecutorCompletionService(executor);
+		_logger = LoggerFactory.getLogger(getClass().getSimpleName() + "-" + _group.name());
 	}
 	
 	@SuppressWarnings("unchecked") 
@@ -170,6 +163,6 @@ final public class TasksGroupExecutor
 	final private TasksGroup _group;
 	final private ThreadFactory _threadFactory = Executors.defaultThreadFactory();
 	final private AtomicReference<State> _state = new AtomicReference<State>(State.PENDING);
-	private InputBlocker _blocker;
-	@SuppressWarnings("unchecked") private CompletionService _groupExecutor;
+	final private InputBlocker _blocker;
+	@SuppressWarnings("unchecked") final private CompletionService _groupExecutor;
 }
