@@ -117,7 +117,6 @@ public class ContactActions
 		}
 	};
 
-	//TODO tests of guts-gui Task behavior here!
 	final private GutsAction _deleteContact = new TaskAction("deleteContact")
 	{
 		@Override protected void perform()
@@ -131,7 +130,6 @@ public class ContactActions
 					@Override public Void execute(FeedbackController controller)
 						throws InterruptedException
 					{
-						Thread.sleep(5000L);
 						_service.removeContact(_selected);
 						return null;
 					}
@@ -142,11 +140,7 @@ public class ContactActions
 						_messageFactory.showMessage(parent, "delete-done");
 					}
 				};
-//				submit(task);
-//				submit(task, InputBlockers.actionBlocker(this));
-//				submit(task, InputBlockers.componentBlocker(this));
-//				submit(task, InputBlockers.windowBlocker(this));
-				submit(task, InputBlockers.dialogBlocker());
+				submit(task, InputBlockers.actionBlocker(this));
 			}
 		}
 	};

@@ -22,6 +22,6 @@ public interface WizardStepPanel
 
 	public void enter();
 	//#### check if this can be easily instantiable (because impl will hardcode
-	// T & V paremter types!)
+	// T parameter type!)
 	public <T> Task<T> leave();
 }

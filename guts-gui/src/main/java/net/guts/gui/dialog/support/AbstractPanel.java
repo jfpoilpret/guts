@@ -171,7 +171,7 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		buttons.add(btnCancel);
 
 		// Add the buttons to the layout
-		//TODO replace this with an injected Map? => must be static!
+		// NB: don't try to replace this with an injected Map, it would have to be static!
 		ButtonsPanelAdder adder = ButtonsPanelAdderFactory.getAdder(this);
 		if (adder != null)
 		{
@@ -225,7 +225,6 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		//TODO hook for subclasses to do something when parent dialog is known
 	}
 
-	//TODO javadoc
 	final protected ParentDialog getParentDialog()
 	{
 		return _parent;
@@ -250,7 +249,6 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		return EMPTY_ARGS;
 	}
 
-	//TODO javadoc
 	protected void cancel()
 	{
 	}
@@ -278,7 +276,6 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		}
 	};
 	
-	//TODO javadoc
 	final protected Logger _logger = LoggerFactory.getLogger(getClass());
 
 	private AcceptGutsAction _ok;
