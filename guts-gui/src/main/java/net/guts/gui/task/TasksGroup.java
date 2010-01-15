@@ -20,6 +20,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
 import net.guts.gui.task.blocker.InputBlockers;
 
@@ -29,16 +30,22 @@ import com.google.inject.assistedinject.Assisted;
 
 public class TasksGroup
 {
+	// We don't care about the number of parameters because this constructor is injected
+	// Only 2 parameters are explicitly passed (through the Fcatory API)
+	//CSOFF: ParameterNumberCheck
 	@Inject TasksGroup(ExecutorServiceRegistry executorRegistry, Injector injector,
-		DefaultExecutorHolder holder, @Assisted String name, @Assisted boolean cancellable)
+		ResourceInjector resourceInjector, DefaultExecutorHolder holder, 
+		@Assisted String name, @Assisted boolean cancellable)
 	{
 		_defaultExecutor = holder._executor;
 		_executorRegistry = executorRegistry;
 		_injector = injector;
+		_resourceInjector = resourceInjector;
 		_name = name;
 		_cancellable = cancellable;
 		_executor = new TasksGroupExecutor(this);
 	}
+	//CSON: ParameterNumberCheck
 	
 	public boolean isCancellable()
 	{
@@ -116,6 +123,7 @@ public class TasksGroup
 		{
 			// Make sure InputBlocker is injected (we can't make sure of that fact before)
 			_injector.injectMembers(blocker);
+			_resourceInjector.injectInstance(blocker);
 			_executor.init(blocker, executor);
 			// Register executor with ExecutorServiceRegistry (for proper shutdown)
 			_executorRegistry.registerExecutor(executor);
@@ -188,6 +196,7 @@ public class TasksGroup
 	final private ExecutorService _defaultExecutor;
 	final private ExecutorServiceRegistry _executorRegistry;
 	final private Injector _injector;
+	final private ResourceInjector _resourceInjector;
 	final private String _name;
 	final private boolean _cancellable;
 	final private List<TaskHandler<?>> _tasks = new CopyOnWriteArrayList<TaskHandler<?>>();
