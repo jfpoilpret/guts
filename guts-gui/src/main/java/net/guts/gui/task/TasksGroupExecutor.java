@@ -29,8 +29,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.gui.task.blocker.InputBlocker;
 
-//TODO does it really need to be public? Could be just a delegate for TasksGroup!
-final public class TasksGroupExecutor
+final class TasksGroupExecutor
 {
 	@SuppressWarnings("unchecked")
 	TasksGroupExecutor(TasksGroup group, InputBlocker blocker, ExecutorService executor)
@@ -51,7 +50,7 @@ final public class TasksGroupExecutor
 	}
 	
 	@SuppressWarnings("unchecked") 
-	public void execute()
+	void execute()
 	{
 		if (!_state.compareAndSet(State.PENDING, State.STARTING))
 		{
@@ -94,9 +93,9 @@ final public class TasksGroupExecutor
 		}
 	}
 	
-	public void cancel()
+	void cancel()
 	{
-		if (_group.isCancellable() && _state.compareAndSet(State.RUNNING, State.CANCELLED))
+		if (_state.compareAndSet(State.RUNNING, State.CANCELLED))
 		{
 			for (TaskHandler<?> handler: _group.tasks())
 			{
@@ -105,7 +104,7 @@ final public class TasksGroupExecutor
 		}
 	}
 	
-	public boolean isCancelled()
+	boolean isCancelled()
 	{
 		return _state.get() == State.CANCELLED;
 	}

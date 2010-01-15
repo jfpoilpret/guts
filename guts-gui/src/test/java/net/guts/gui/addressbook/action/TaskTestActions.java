@@ -101,7 +101,7 @@ public class TaskTestActions
 			{
 				group.add(new LongTask("fiveTasksDialogBlocker #" + i));
 			}
-			group.getExecutor().execute();
+			group.execute();
 		}
 	};
 	
@@ -121,7 +121,7 @@ public class TaskTestActions
 				}
 			};
 			theGroup.add(task1);
-			theGroup.getExecutor().execute();
+			theGroup.execute();
 		}
 	};
 	
@@ -139,11 +139,11 @@ public class TaskTestActions
 				@Override public Void execute(FeedbackController controller) throws Exception
 				{
 					super.execute(controller);
-					group2.add(task2).getExecutor().execute();
+					group2.add(task2).execute();
 					return null;
 				}
 			};
-			group1.add(task1).getExecutor().execute();
+			group1.add(task1).execute();
 		}
 	};
 	

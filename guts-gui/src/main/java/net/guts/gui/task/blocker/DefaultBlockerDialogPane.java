@@ -154,7 +154,7 @@ class DefaultBlockerDialogPane extends JPanel
 			{
 				@Override public Void execute(FeedbackController controller) throws Exception
 				{
-					_tasks.getExecutor().cancel();
+					_tasks.cancel();
 					return null;
 				}
 			};
