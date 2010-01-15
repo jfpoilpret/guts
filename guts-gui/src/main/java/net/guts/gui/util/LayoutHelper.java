@@ -38,7 +38,7 @@ public final class LayoutHelper
 
 	static public int topGap(Container parent, JComponent component)
 	{
-		return gap(parent, component, SwingConstants.TOP);
+		return gap(parent, component, SwingConstants.NORTH);
 	}
 
 	static public int maxLeftGap(Container parent, JComponent... components)
@@ -53,7 +53,7 @@ public final class LayoutHelper
 
 	static public int leftGap(Container parent, JComponent component)
 	{
-		return gap(parent, component, SwingConstants.LEFT);
+		return gap(parent, component, SwingConstants.WEST);
 	}
 
 	static public int maxBottomGap(Container parent, JComponent... components)
@@ -68,7 +68,7 @@ public final class LayoutHelper
 
 	static public int bottomGap(Container parent, JComponent component)
 	{
-		return gap(parent, component, SwingConstants.BOTTOM);
+		return gap(parent, component, SwingConstants.SOUTH);
 	}
 
 	static public int maxRightGap(Container parent, JComponent... components)
@@ -83,7 +83,7 @@ public final class LayoutHelper
 
 	static public int rightGap(Container parent, JComponent component)
 	{
-		return gap(parent, component, SwingConstants.RIGHT);
+		return gap(parent, component, SwingConstants.EAST);
 	}
 	
 	static public int unrelatedHorizontalGap(
