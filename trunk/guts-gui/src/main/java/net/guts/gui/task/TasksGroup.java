@@ -105,9 +105,22 @@ public class TasksGroup
 		_groupListeners.add(listener);
 	}
 
-	public TasksGroupExecutor getExecutor()
+	public void execute()
 	{
-		return _executor;
+		_executor.execute();
+	}
+	
+	public void cancel()
+	{
+		if (_cancellable)
+		{
+			_executor.cancel();
+		}
+	}
+	
+	public boolean isCancelled()
+	{
+		return _executor.isCancelled();
 	}
 	
 	String name()

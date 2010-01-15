@@ -50,7 +50,7 @@ abstract public class TaskAction extends TasksGroupAction
 		{
 			TasksGroup group = newTasksGroup(name(), _cancellable, executor, blocker);
 			group.add(task);
-			group.getExecutor().execute();
+			group.execute();
 		}
 	}
 	
