@@ -287,7 +287,6 @@ class TableState implements SessionState<JTable>
 				TableColumn[] columns = new TableColumn[size];
 				for (int i = 0; i < size; i++)
 				{
-					//FIXME What about -1 index? Can this happen?
 					columns[i] = model.getColumn(_columnIndexes[i]);
 					columns[i].setPreferredWidth(_columnWidths[i]);
 				}
