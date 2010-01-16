@@ -1,6 +1,7 @@
 <projectDescription>
   <name>guts-common-0.1-SNAPSHOT</name>
-  <comment/>
+  <comment>A set of basic utilities for Guice-based development, and particularly
+		other Guts modules (guts-events and guts-gui).</comment>
   <projects/>
   <buildSpec>
     <buildCommand>
