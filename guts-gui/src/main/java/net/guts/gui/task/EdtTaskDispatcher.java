@@ -36,14 +36,11 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 	@Override public void failed(
 		final TasksGroup group, final Task<? extends T> source, final Throwable cause)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.failed(group, source, cause);
-				}
+				listener.failed(group, source, cause);
 			}
 		});
 	}
@@ -51,28 +48,22 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 	@Override public void feedback(
 		final TasksGroup group, final Task<? extends T> source, final String note)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.feedback(group, source, note);
-				}
+				listener.feedback(group, source, note);
 			}
 		});
 	}
 
 	@Override public void finished(final TasksGroup group, final Task<? extends T> source)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.finished(group, source);
-				}
+				listener.finished(group, source);
 			}
 		});
 	}
@@ -80,14 +71,11 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 	@Override public void progress(
 		final TasksGroup group, final Task<? extends T> source, final int rate)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.progress(group, source, rate);
-				}
+				listener.progress(group, source, rate);
 			}
 		});
 	}
@@ -95,28 +83,22 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 	@Override public void succeeded(
 		final TasksGroup group, final Task<? extends T> source, final T result)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.succeeded(group, source, result);
-				}
+				listener.succeeded(group, source, result);
 			}
 		});
 	}
 
 	@Override public void cancelled(final TasksGroup group, final Task<? extends T> source)
 	{
-		invoke(new Runnable()
+		invoke(new FireListener<T>()
 		{
-			@Override public void run()
+			@Override public void perform(TaskListener<? super T> listener)
 			{
-				for (TaskListener<? super T> listener: _listeners)
-				{
-					listener.cancelled(group, source);
-				}
+				listener.cancelled(group, source);
 			}
 		});
 	}
@@ -124,18 +106,29 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 	@Override public void interrupted(final TasksGroup group, 
 		final Task<? extends T> source, final InterruptedException cause)
 	{
+		invoke(new FireListener<T>()
+		{
+			@Override public void perform(TaskListener<? super T> listener)
+			{
+				listener.interrupted(group, source, cause);
+			}
+		});
+	}
+
+	private void invoke(final FireListener<T> fire)
+	{
 		invoke(new Runnable()
 		{
 			@Override public void run()
 			{
 				for (TaskListener<? super T> listener: _listeners)
 				{
-					listener.interrupted(group, source, cause);
+					fire.perform(listener);
 				}
 			}
 		});
 	}
-
+	
 	private void invoke(Runnable runnable)
 	{
 		if (!_listeners.isEmpty())
@@ -149,6 +142,11 @@ class EdtTaskDispatcher<T> implements TaskListener<T>
 				SwingUtilities.invokeLater(runnable);
 			}
 		}
+	}
+	
+	static private interface FireListener<T>
+	{
+		void perform(TaskListener<? super T> listener);
 	}
 	
 	private final List<TaskListener<? super T>> _listeners = 
