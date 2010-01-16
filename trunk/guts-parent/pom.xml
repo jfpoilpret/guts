@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
 <project 
 	xmlns="http://maven.apache.org/POM/4.0.0" 
 	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -194,7 +195,7 @@
 			</snapshots>
 			<id>guts-releases</id>
 			<name>GUTS Releases Repository</name>
-			<url>http://kenai.com/svn/guts~guts-maven-repository/releases/</url>
+			<url>http://guts.kenai.com/maven/releases/</url>
 		</repository>
 		<repository>
 			<releases>
@@ -205,8 +206,9 @@
 			</snapshots>
 			<id>guts-snapshots</id>
 			<name>GUTS Snapshots Repository</name>
-			<url>http://kenai.com/svn/guts~guts-maven-repository/snapshots/</url>
+			<url>http://guts.kenai.com/maven/snapshots/</url>
 		</repository>
+		<!-- Used for designgridlayout optional dependency -->
 		<repository>
 			<id>java.net</id>
 			<name>Java.net repository</name>
@@ -318,14 +320,19 @@
 			<id>guts-releases</id>
 			<name>GUTS Release Repository</name>
 			<uniqueVersion>false</uniqueVersion>
-			<url>file:C:/dev/guts~guts-maven-repository/releases/</url>
+			<url>dav:https://kenai.com/website/guts/maven/releases</url>
 		</repository>
 		<snapshotRepository>
 			<id>guts-snapshots</id>
 			<name>GUTS Snapshot Repository</name>
 			<uniqueVersion>true</uniqueVersion>
-			<url>file:C:/dev/guts~guts-maven-repository/snapshots/</url>
+			<url>dav:https://kenai.com/website/guts/maven/snapshots</url>
 		</snapshotRepository>
+		<site>
+			<id>guts-website</id>
+			<name>GUTS Website</name>
+			<url>dav:https://kenai.com/website/guts</url>
+		</site>
 	</distributionManagement>
 
 	<licenses>
@@ -396,6 +403,15 @@
 				<role>developer</role>
 			</roles>
 			<timezone>-7</timezone>
+		</developer>
+		<developer>
+			<id>trygvelaugstol</id>
+			<name>Trygve Laugstøl</name>
+			<email>trygvis@inamo.no</email>
+			<roles>
+				<role>content developer</role>
+			</roles>
+			<timezone>+1</timezone>
 		</developer>
 	</developers>
 </project>
