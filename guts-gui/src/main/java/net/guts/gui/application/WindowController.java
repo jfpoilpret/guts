@@ -85,27 +85,35 @@ public interface WindowController
 	 * Show the given {@code frame} after setting its location and size according
 	 * to {@code policy}. {@code frame} will have its resources automatically 
 	 * injected (according to {@link net.guts.gui.resource.ResourceInjector} 
-	 * principles). {@code frame} GUI session state is restored if it was previously
-	 * persisted; in this case, {@code policy} has no effect.
+	 * principles). Depending on {@code restoreState} value, {@code frame} GUI 
+	 * session state will be restored if it was previously persisted; in this case, 
+	 * {@code policy} has no effect.
 	 * 
 	 * @param frame the frame to be displayed
 	 * @param policy the policy to use for determining {@code frame}'s size and 
 	 * location
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, hence
+	 * only {@code policy} is used to set the bounds of {@code frame}.
 	 */
-	public void show(JFrame frame, BoundsPolicy policy);
+	public void show(JFrame frame, BoundsPolicy policy, boolean restoreState);
 	
 	/**
 	 * Show the given {@code dialog} after setting its location and size according
 	 * to {@code policy}. {@code dialog} will have its resources automatically 
 	 * injected (according to {@link net.guts.gui.resource.ResourceInjector} 
-	 * principles). {@code dialog} GUI session state is restored if it was previously
-	 * persisted; in this case, {@code policy} has no effect.
+	 * principles). Depending on {@code restoreState} value, {@code dialog} GUI 
+	 * session state will be restored if it was previously persisted; in this case, 
+	 * {@code policy} has no effect.
 	 * 
 	 * @param dialog the dialog to be displayed
-	 * @param policy the policy to use for determining {@code frame}'s size and 
+	 * @param policy the policy to use for determining {@code dialog}'s size and 
 	 * location
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, hence
+	 * only {@code policy} is used to set the bounds of {@code dialog}.
 	 */
-	public void show(JDialog dialog, BoundsPolicy policy);
+	public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState);
 
 	/**
 	 * Get the current active foreground window in the application.

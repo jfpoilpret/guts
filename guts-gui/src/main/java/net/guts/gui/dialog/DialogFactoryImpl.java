@@ -38,53 +38,31 @@ class DialogFactoryImpl implements DialogFactory
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent)
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
 	 */
-	public boolean showDialog(JComponent panel)
-	{
-		return showDialog(panel, BoundsPolicy.PACK_AND_CENTER);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy)
-	 */
-	public boolean showDialog(JComponent panel, BoundsPolicy policy)
+	@Override public boolean showDialog(
+		JComponent panel, BoundsPolicy policy, boolean restoreState)
 	{
 		resetPanel(panel);
-		return show(panel, policy);
+		return show(panel, policy, restoreState);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.DialogFactory#showDialog(java.lang.Class)
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
 	 */
-	public <T extends JComponent> boolean showDialog(Class<T> clazz)
+	@Override public <T extends JComponent> boolean showDialog(
+		Class<T> clazz, BoundsPolicy policy, boolean restoreState)
 	{
-		return showDialog(clazz, null, BoundsPolicy.PACK_AND_CENTER);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.application.WindowController.BoundsPolicy)
-	 */
-	public <T extends JComponent> boolean showDialog(Class<T> clazz, BoundsPolicy policy)
-	{
-		return showDialog(clazz, null, policy);
+		return showDialog(clazz, policy, restoreState, null);
 	}
 	
 	/*
 	 * (non-Javadoc)
-	 * @see net.sf.guice.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.sf.guice.gui.dialog.ComponentInitializer)
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.dialog.ComponentInitializer, net.guts.gui.application.WindowController.BoundsPolicy)
 	 */
-	public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, ComponentInitializer<T> initializer)
-	{
-		return showDialog(clazz, initializer, BoundsPolicy.PACK_AND_CENTER);
-	}
-
-	public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, ComponentInitializer<T> initializer, BoundsPolicy policy)
+	@Override public <T extends JComponent> boolean showDialog(Class<T> clazz, 
+		BoundsPolicy policy, boolean restoreState, ComponentInitializer<T> initializer)
 	{
 		T panel = _injector.getInstance(clazz);
 		resetPanel(panel);
@@ -92,7 +70,7 @@ class DialogFactoryImpl implements DialogFactory
 		{
 			initializer.init(panel);
 		}
-		return show(panel, policy);
+		return show(panel, policy, restoreState);
 	}
 
 	static private void resetPanel(JComponent panel)
@@ -103,7 +81,7 @@ class DialogFactoryImpl implements DialogFactory
 		}
 	}
 	
-	private boolean show(JComponent panel, BoundsPolicy policy)
+	private boolean show(JComponent panel, BoundsPolicy policy, boolean restoreState)
 	{
 		// Find right parent first
 		Window active = _windowController.getActiveWindow();
@@ -122,7 +100,7 @@ class DialogFactoryImpl implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_windowController.show(dialog, BoundsPolicy.PACK_AND_CENTER);
+		_windowController.show(dialog, BoundsPolicy.PACK_AND_CENTER, restoreState);
 		return !dialog.wasCancelled();
 	}
 

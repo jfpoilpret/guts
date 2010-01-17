@@ -114,7 +114,7 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(_mainView);
 //		mainFrame.pack();
-		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER);
+		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER, true);
 	}
 	
 	@Override public void ready()
