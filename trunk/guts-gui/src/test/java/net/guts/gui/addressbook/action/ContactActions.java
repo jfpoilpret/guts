@@ -24,6 +24,7 @@ import net.guts.gui.addressbook.dialog.ContactPanel;
 import net.guts.gui.addressbook.dialog.ContactTabPanel;
 import net.guts.gui.addressbook.dialog.ContactWizardPanel;
 import net.guts.gui.addressbook.domain.Contact;
+import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.message.MessageFactory;
@@ -98,7 +99,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(ContactPanel.class);
+			_dialogFactory.showDialog(ContactPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
 		}
 	};
 
@@ -107,7 +108,8 @@ public class ContactActions
 		@Override protected void perform()
 		{
 			_dialogFactory.showDialog(
-				ContactPanel.class, new ComponentInitializer<ContactPanel>()
+				ContactPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
+				new ComponentInitializer<ContactPanel>()
 			{
 				public void init(ContactPanel panel)
 				{
@@ -149,7 +151,8 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(ContactTabPanel.class);
+			_dialogFactory.showDialog(
+				ContactTabPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
 		}
 	};
 
@@ -158,7 +161,8 @@ public class ContactActions
 		@Override protected void perform()
 		{
 			_dialogFactory.showDialog(
-				ContactTabPanel.class, new ComponentInitializer<ContactTabPanel>()
+				ContactTabPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
+				new ComponentInitializer<ContactTabPanel>()
 			{
 				public void init(ContactTabPanel panel)
 				{
@@ -173,7 +177,8 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(ContactWizardPanel.class);
+			_dialogFactory.showDialog(
+				ContactWizardPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
 		}
 	};
 
@@ -183,7 +188,8 @@ public class ContactActions
 		@Override protected void perform()
 		{
 			_dialogFactory.showDialog(
-				ContactWizardPanel.class, new ComponentInitializer<ContactWizardPanel>()
+				ContactWizardPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
+				new ComponentInitializer<ContactWizardPanel>()
 			{
 				public void init(ContactWizardPanel panel)
 				{

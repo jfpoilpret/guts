@@ -48,7 +48,7 @@ public class ModalDialogInputBlocker implements InputBlocker
 	
 	private void showDialog()
 	{
-		_dialogFactory.showDialog(_pane.getPane(), BoundsPolicy.PACK_AND_CENTER);
+		_dialogFactory.showDialog(_pane.getPane(), BoundsPolicy.PACK_AND_CENTER, false);
 	}
 
 	@Override public void block(TasksGroup tasks)

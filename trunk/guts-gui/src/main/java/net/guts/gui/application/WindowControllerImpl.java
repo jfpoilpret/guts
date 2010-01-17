@@ -102,20 +102,20 @@ class WindowControllerImpl implements WindowController
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JFrame)
 	 */
-	@Override public void show(JFrame frame, BoundsPolicy policy)
+	@Override public void show(JFrame frame, BoundsPolicy policy, boolean restoreState)
 	{
-		showWindow(frame, policy);
+		showWindow(frame, policy, restoreState);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JDialog)
 	 */
-	@Override public void show(JDialog dialog, BoundsPolicy policy)
+	@Override public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState)
 	{
-		showWindow(dialog, policy);
+		showWindow(dialog, policy, restoreState);
 	}
 
-	private void showWindow(Window container, BoundsPolicy policy)
+	private void showWindow(Window container, BoundsPolicy policy, boolean restoreState)
 	{
 		if (!EventQueue.isDispatchThread())
 		{
@@ -125,7 +125,7 @@ class WindowControllerImpl implements WindowController
 		// Perform i18n if not done already
 		injectResources(container);
 		// Calculate size (based on existing session state)
-		initBounds(container, policy);
+		initBounds(container, policy, restoreState);
 		container.setVisible(true);
 	}
 	
@@ -134,7 +134,7 @@ class WindowControllerImpl implements WindowController
 		_injector.injectHierarchy(container);
 	}
 	
-	private void initBounds(Window container, BoundsPolicy policy)
+	private void initBounds(Window container, BoundsPolicy policy, boolean restoreState)
 	{
 		// Initialize location and size according to policy
 		if (PACK_POLICY.contains(policy))
@@ -145,9 +145,12 @@ class WindowControllerImpl implements WindowController
 		{
 			container.setLocationRelativeTo(getActiveWindow());
 		}
-		
-		// Restore size from session storage if any
-		_sessions.restore(container);
+
+		if (restoreState)
+		{
+			// Restore size from session storage if any
+			_sessions.restore(container);
+		}
 	}
 	
 	private void saveState(Window container)
