@@ -1,19 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>guts-events-0.1-SNAPSHOT</name>
-  <comment>Guts-Events is a light library, based on Guice Dependency Injection,
+	<name>guts-events-0.1-SNAPSHOT</name>
+	<comment>Guts-Events is a light library, based on Guice Dependency Injection,
 		to handle &quot;events&quot; transmission from Suppliers to Consumers inside a 
 		same JVM.</comment>
-  <projects/>
-  <buildSpec>
-    <buildCommand>
-      <name>org.eclipse.jdt.core.javabuilder</name>
-    </buildCommand>
-    <buildCommand>
-      <name>de.mvmsoft.checkclipse.CheckclipseBuilder</name>
-    </buildCommand>
-  </buildSpec>
-  <natures>
-    <nature>de.mvmsoft.checkclipse.CheckclipseNature</nature>
-    <nature>org.eclipse.jdt.core.javanature</nature>
-  </natures>
+	<projects>
+	</projects>
+	<buildSpec>
+		<buildCommand>
+			<name>org.eclipse.jdt.core.javabuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>de.mvmsoft.checkclipse.CheckclipseBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+		<buildCommand>
+			<name>net.sf.eclipsecs.core.CheckstyleBuilder</name>
+			<arguments>
+			</arguments>
+		</buildCommand>
+	</buildSpec>
+	<natures>
+		<nature>de.mvmsoft.checkclipse.CheckclipseNature</nature>
+		<nature>org.eclipse.jdt.core.javanature</nature>
+		<nature>net.sf.eclipsecs.core.CheckstyleNature</nature>
+	</natures>
 </projectDescription>
