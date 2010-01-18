@@ -68,7 +68,7 @@ public interface DialogFactory
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
-	public<T extends JComponent> boolean showDialog(
+	public <T extends JComponent> boolean showDialog(
 		Class<T> clazz, BoundsPolicy policy, boolean restoreState);
 
 	//TODO complete javadoc!
@@ -96,6 +96,6 @@ public interface DialogFactory
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
-	public<T extends JComponent> boolean showDialog(Class<T> clazz, 
+	public <T extends JComponent> boolean showDialog(Class<T> clazz, 
 		BoundsPolicy policy, boolean restoreState, ComponentInitializer<T> initializer);
 }
