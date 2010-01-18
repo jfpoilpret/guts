@@ -61,6 +61,10 @@ public class TasksGroup
 	public <T> TasksGroup add(Task<T> task, TaskListener<T> listener)
 	{
 		checkMutability("add Task");
+		if (task == null)
+		{
+			return null;
+		}
 		TaskHandler<T> handler = new TaskHandler<T>(this, task, listener);
 		// Add all general listeners (already registered) to the new TaskHandler
 		// But the problem is that we don't store them anywhere!
@@ -76,7 +80,11 @@ public class TasksGroup
 	
 	public <T> TasksGroup add(Task<T> task)
 	{
-		if (task instanceof AbstractTask)
+		if (task == null)
+		{
+			return null;
+		}
+		if (AbstractTask.class.isAssignableFrom(task.getClass()))
 		{
 			return add(task, (AbstractTask<T>) task);
 		}
