@@ -62,7 +62,7 @@ import com.google.inject.Module;
  *         new AddressBookMain().launch(args);
  *     }
  *     
- *     @Override protected void initModules(String[] args, List<Module> modules)
+ *     &#64;Override protected void initModules(String[] args, List<Module> modules)
  *     {
  *         modules.add(new MessageModule());
  *         modules.add(new AddressBookModule());
@@ -70,7 +70,7 @@ import com.google.inject.Module;
  *     
  *     private class AddressBookModule extends AbstractModule
  *     {
- *         @Override protected void configure()
+ *         &#64;Override protected void configure()
  *         {
  *             bind(AppLifecycleStarter.class)
  *                 .to(AddressBookLifecycleStarter.class).asEagerSingleton();
