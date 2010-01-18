@@ -20,6 +20,7 @@ public final class PrimitiveHelper
 	{
 	}
 	
+	//CSOFF: ReturnCountCheck
 	@SuppressWarnings("unchecked")
 	static public <T> Class<T> toPrimitive(Class<T> clazz)
 	{
@@ -60,7 +61,9 @@ public final class PrimitiveHelper
 			return clazz;
 		}
 	}
+	//CSON: ReturnCountCheck
 	
+	//CSOFF: ReturnCountCheck
 	@SuppressWarnings("unchecked")
 	static public <T> Class<T> toWrapper(Class<T> clazz)
 	{
@@ -101,4 +104,5 @@ public final class PrimitiveHelper
 			return clazz;
 		}
 	}
+	//CSON: ReturnCountCheck
 }
