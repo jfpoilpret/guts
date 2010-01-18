@@ -21,6 +21,15 @@
 
 	<!-- TODO Add plugin management with versions for all plugins? -->
 	<build>
+		<pluginManagement>
+			<plugins>
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.4</version>
+				</plugin>
+			</plugins>
+		</pluginManagement>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -86,6 +95,21 @@
 					<downloadSources>true</downloadSources>
 					<downloadJavadocs>true</downloadJavadocs>
 				</configuration>
+			</plugin>
+			<!--
+				Here to declare dependency to guts-config which contains checkstyle
+				config for all guts modules
+			-->
+			<plugin>
+				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.4</version>
+				<dependencies>
+					<dependency>
+						<groupId>net.guts</groupId>
+						<artifactId>guts-config</artifactId>
+						<version>${version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 		</plugins>
 	</build>
@@ -154,10 +178,10 @@
 				</reportSets>
 			</plugin>
 			<plugin>
-				<!-- TODO won't work except if we copy config/ for every child project! -->
 				<artifactId>maven-checkstyle-plugin</artifactId>
+				<version>2.4</version>
 				<configuration>
-					<configLocation>config/checkstyle/checkstyle_checks.xml</configLocation>
+					<configLocation>checkstyle/checkstyle_checks.xml</configLocation>
 				</configuration>
 			</plugin>
 			<plugin>
