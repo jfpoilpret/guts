@@ -18,15 +18,10 @@ import java.lang.reflect.Method;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import com.google.inject.TypeLiteral;
-
 import static net.guts.common.type.PrimitiveHelper.*;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
+import com.google.inject.TypeLiteral;
+
 public class UntypedProperty
 {
 	UntypedProperty(String name, TypeLiteral<?> type, Method setter, Method getter)
@@ -70,7 +65,8 @@ public class UntypedProperty
 			
 		}
 	}
-	
+
+	//CSOFF: IllegalCatchCheck
 	protected void setValue(Object bean, Object value)
 	{
 		// Check that there is a setter!
@@ -104,7 +100,9 @@ public class UntypedProperty
 			}
 		}
 	}
+	//CSON: IllegalCatchCheck
 	
+	//CSOFF: IllegalCatchCheck
 	public Object get(Object bean)
 	{
 		// Check that there is a getter!
@@ -138,6 +136,7 @@ public class UntypedProperty
 			}
 		}
 	}
+	//CSON: IllegalCatchCheck
 	
 	static private void setAccessible(final Method method, final boolean accessible)
 	{

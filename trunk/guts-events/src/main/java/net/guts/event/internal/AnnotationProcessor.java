@@ -166,6 +166,7 @@ public class AnnotationProcessor
 		return events;
 	}
 
+	//CSOFF: ReturnCountCheck
 	private ChannelKey analyzeMethod(boolean isFilter, Method m, String topic, Class<?> type)
 	{
 		// Check method is void and has one parameter
@@ -206,6 +207,7 @@ public class AnnotationProcessor
 		}
 		return key;
 	}
+	//CSON: ReturnCountCheck
 	
 	private void handleError(String format, Method m, Type type, String topic)
 	{

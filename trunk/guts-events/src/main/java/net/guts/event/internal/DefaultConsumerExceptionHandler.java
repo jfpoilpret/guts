@@ -24,7 +24,7 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultConsumerExceptionHandler implements ConsumerExceptionHandler
 {
-	// CSOFF: GenericIllegalRegexpCheck
+	// CSOFF: RegexpSingleLineJavaCheck
 	public void handleException(
 		Throwable e, Method method, Object instance, Type eventType, String topic)
 	{
@@ -32,7 +32,7 @@ public class DefaultConsumerExceptionHandler implements ConsumerExceptionHandler
 			method.getDeclaringClass().getName(), method.getName(), instance, e.getMessage());
 		e.printStackTrace();
 	}
-	// CSON: GenericIllegalRegexpCheck
+	// CSON: RegexpSingleLineJavaCheck
 	
 	static final private String LOG = 
 		"Consumer %s.%s (instance= %s) has thrown exception %s\n";

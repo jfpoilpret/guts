@@ -118,7 +118,9 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		
 		return null;
 	}
-	
+
+	//CSOFF: IllegalCatchCheck
+	//CSOFF: ParameterAssignmentCheck
 	static private Method findMethod(Class<?> bean, String name, TypeLiteral<?> type)
 	{
 		while (bean != null)
@@ -146,7 +148,12 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		}
 		return null;
 	}
+	//CSON: ParameterAssignmentCheck
+	//CSON: IllegalCatchCheck
 	
+	//CSOFF: IllegalCatchCheck
+	//CSOFF: EmptyBlockCheck
+	//CSOFF: ParameterAssignmentCheck
 	static private Method findAnySetter(Class<?> bean, String name)
 	{
 		while (bean != null)
@@ -170,6 +177,9 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		}
 		return null;
 	}
+	//CSON: ParameterAssignmentCheck
+	//CSON: EmptyBlockCheck
+	//CSON: IllegalCatchCheck
 	
 	static private String capitalize(String name)
 	{

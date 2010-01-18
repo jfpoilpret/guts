@@ -26,7 +26,7 @@ public abstract class AbstractSwingTask<T, V> extends SwingWorker<T, V>
 	protected void failed(Throwable cause) {}
 	protected void finished() {}
 
-	protected final void done()
+	@Override protected final void done()
 	{
 		try
 		{

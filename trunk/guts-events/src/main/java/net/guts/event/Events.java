@@ -216,7 +216,7 @@ public final class Events
 		Binder binder, TypeLiteral<T> returnType)
 	{
 		LinkedBindingBuilder builder = getHandlerMap(binder).addBinding(returnType);
-		return (LinkedBindingBuilder<ConsumerReturnHandler<? extends T>>) builder;
+		return builder;
 	}
 			
 	/**

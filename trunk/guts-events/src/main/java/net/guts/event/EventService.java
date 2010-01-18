@@ -50,7 +50,7 @@ public interface EventService
 	 * @param topic topic of the newly registered {@link Channel}; for an
 	 * unnamed {@link Channel}, just pass {@code null} or {@code ""}.
 	 */
-	public<T> void registerChannel(TypeLiteral<T> type, String topic);
+	public <T> void registerChannel(TypeLiteral<T> type, String topic);
 	
 	/**
 	 * Lazily evaluates and returns the Event {@link Channel} for the given
@@ -65,7 +65,7 @@ public interface EventService
 	 * @throws IllegalArgumentException if no {@link Channel} was registered for
 	 * {@code type} and {@code topic}
 	 */
-	public<T> Channel<T> getChannel(TypeLiteral<T> type, String topic)
+	public <T> Channel<T> getChannel(TypeLiteral<T> type, String topic)
 		throws IllegalArgumentException;
 
 	/**
