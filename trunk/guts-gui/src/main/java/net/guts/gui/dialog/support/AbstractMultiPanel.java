@@ -32,9 +32,9 @@ import net.guts.gui.dialog.Resettable;
  * <p/>
  * Embedded panels can be instances of any class as long as it is a subclass 
  * (direct or not) of {@link JComponent}. Similarly, embedded panels may or may 
- * not implement {@link Acceptor}, {@link Resettable} or 
- * {@link net.guts.gui.dialog.Closable}. If they do, 
- * {@code AbstractMultiPanel} will delegate to them the corresponding calls.
+ * not implement {@link Resettable} or {@link net.guts.gui.dialog.Closable}. 
+ * If they do, {@code AbstractMultiPanel} will delegate to them the corresponding 
+ * calls.
  * 
  * @author Jean-Francois Poilpret
  * @see AbstractPanel
@@ -58,6 +58,7 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 	 */
 	abstract protected Iterable<JComponent> getSubComponents();
 
+	//TODO rework to make it final with an empty overridable hook
 	/**
 	 * Resets all individual tab panes added to this panel (if they implement
 	 * {@link Resettable}). You may override this method if you need further 
@@ -74,7 +75,8 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 			}
 		}
     }
-	
+
+	//TODO same as above
 	@Override public boolean canClose()
 	{
 		for (Component subpane: getSubComponents())

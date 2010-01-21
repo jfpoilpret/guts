@@ -27,8 +27,5 @@
  * <p/>
  * Package {@link net.guts.gui.dialog.support} defines several classes and 
  * interfaces to ease actual dialog creation.
- * <p/>
- * Default implementation details can be found in package 
- * {@link net.guts.gui.dialog.impl}.
  */
 package net.guts.gui.dialog;

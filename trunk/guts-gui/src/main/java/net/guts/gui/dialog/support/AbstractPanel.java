@@ -38,7 +38,7 @@ import com.google.inject.Inject;
 /**
  * Abstract Panel that you can (should?) subclass for all your "main" panels,
  * ie panels that are aimed to be set as content panes of a dialog (using
- * {@link net.guts.gui.dialog.DialogFactory#showDialog} methods).
+ * {@link net.guts.gui.dialog.DialogFactory} {@code showDialog} methods).
  * <p/>
  * This class manages most repetitive stuff for you: creating OK/Cancel buttons
  * and associated Actions, inject resources into components from properties
@@ -191,18 +191,15 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	}
 	
 	/**
-	 * Creates an action and a button for it.
+	 * Creates a button for the given {@code gutsAction}.
 	 * <p/>
 	 * The method names the new button based on the given name and the unique
-	 * id of this panel: "{@code id-name}".
-	 * <p/>
-	 * If there is no action with the given name, the method does nothing.
+	 * id of this panel: "{@code id-name}" where {@code name} is 
+	 * {@code gutsAction.name()}.
 	 * 
-	 * @param name name of the new button
-	 * @param actionName name of the action to create; a method with this name
-	 * must exist and be annotated with {@code @Action}.
-	 * @return the new button or {@code null} if {@code actionName} matches no
-	 * real action method
+	 * @param gutsAction the action for which to create a new button; if {@code null},
+	 * the method returns {@code null}.
+	 * @return the new button or {@code null} if {@code gutsAction} is {@code null}
 	 */
 	final protected JButton	createButton(GutsAction gutsAction)
 	{

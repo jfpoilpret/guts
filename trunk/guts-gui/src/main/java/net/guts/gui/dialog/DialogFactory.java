@@ -16,6 +16,7 @@ package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
 
+import net.guts.gui.application.WindowController;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 
 import com.google.inject.ImplementedBy;
@@ -61,7 +62,7 @@ public interface DialogFactory
 	 * method through Guice (automatically injected), based on the passed Class.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent)}.
+	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
@@ -88,7 +89,7 @@ public interface DialogFactory
 	 * always performed, even if the contained panel was already created before.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent)}.
+	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
 	 * @param initializer an initializer object
