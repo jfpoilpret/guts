@@ -22,6 +22,29 @@ import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI action management system. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new ActionModule(), ...);
+ * </pre>
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * {@code ActionModule} is automatically added to the list of {@code Module}s used
+ * by Guts-GUI to create Guice {@code Injector}.
+ * <p/>
+ * Hence you would care about {@code ActionModule} only if you intend to use 
+ * Guts-GUI action management system but don't want to use the whole Guts-GUI 
+ * framework.
+ * <p/>
+ * {@code ActionModule} makes sure that objects, when injected by Guice, if they
+ * contain {@link GutsAction} fields, will be automatically registered with
+ * {@link ActionRegistrationManager}.
+ * <p/>
+ * {@code ActionModule} also installs {@link ResourceModule} which it depends on.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class ActionModule extends AbstractModule
 {
 	/* (non-Javadoc)
