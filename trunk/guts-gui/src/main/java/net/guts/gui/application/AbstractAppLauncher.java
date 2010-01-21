@@ -136,8 +136,8 @@ public abstract class AbstractAppLauncher
 	 * application.
 	 * <p/>
 	 * The method initializes Guice {@link com.google.inject.Injector} from default
-	 * {@link com.google.inject.Module}s and {@code Module}s returned by
-	 * {@link #getModules(String[])}.
+	 * {@link com.google.inject.Module}s and {@code Module}s appended by
+	 * {@link #initModules}.
 	 * <p/>
 	 * Then it gets the singleton instance implementing {@link AppLifecycleStarter}, and
 	 * calls its methods in sequence (first {@link AppLifecycleStarter#startup} is called,

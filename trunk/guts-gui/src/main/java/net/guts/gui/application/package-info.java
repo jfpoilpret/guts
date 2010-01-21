@@ -22,8 +22,8 @@
  * main class should derive from</li>
  * <li>{@link net.guts.gui.application.AppLifecycleStarter} interface which you
  * must implement to actually "start up" your UI</li>
- * <li>{@link WindowController} service which you can inject in any of your own
- * classes in order to initialize and display windows</li>
+ * <li>{@link net.guts.gui.application.WindowController} service which you can 
+ * inject in any of your own classes in order to initialize and display windows</li>
  * </ul>
  * <p/>
  * {@code AbstractAppLauncher} performs several initialization in order to put
