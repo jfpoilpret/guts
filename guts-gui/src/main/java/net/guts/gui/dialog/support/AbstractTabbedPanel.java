@@ -84,8 +84,8 @@ import javax.swing.JTabbedPane;
  * Tab panels can be instances of any class as long as it is a subclass (direct
  * or not) of {@link JComponent}. Similarly, tab panels may or may not implement
  * {@link TabPanelAcceptor}, {@link net.guts.gui.dialog.Resettable} or 
- * {@link Closable}. If they do, {@code AbstractTabbedPanel} will delegate to 
- * them the corresponding calls.
+ * {@link net.guts.gui.dialog.Closable}. If they do, {@code AbstractTabbedPanel} 
+ * will delegate to them the corresponding calls.
  * 
  * @author Jean-Francois Poilpret
  * @see AbstractPanel
