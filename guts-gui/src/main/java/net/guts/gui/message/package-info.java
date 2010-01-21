@@ -21,12 +21,7 @@
  * used by this service. You can inject this service through Guice wherever you 
  * need by simply using Guice {@link com.google.inject.Inject} annotation:
  * <pre>
- * &#64;Inject private MessageManager _messageManager;
+ * &#64;Inject private MessageFactory _messageFactory;
  * </pre>
- * but you should note it is already available directly in 
- * {@link net.guts.gui.application.AbstractGuiceApplication}.
- * <p/>
- * Default implementation details can be found in package 
- * {@link net.guts.gui.message.impl}.
  */
 package net.guts.gui.message;

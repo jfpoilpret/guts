@@ -23,12 +23,10 @@ import com.google.inject.ImplementedBy;
 
 /**
  * Interface defining the factory to create menus and popup menus in the
- * application. All menus are defined by the names of matching {@code @Action}
- * annotated methods (all these actions must be known and retrievable by
- * {@link net.guts.gui.action.ActionManager#getAction(String)}).
+ * application. All menus are defined through {@link GutsAction} instances.
  * <p/>
  * It is possible to define separators inside created menus by using a special
- * action name, {@link #ACTION_SEPARATOR}.
+ * action, {@link #ACTION_SEPARATOR}.
  * <p/>
  * This service is directly injectable through Guice facilities.
  * 
@@ -38,7 +36,7 @@ import com.google.inject.ImplementedBy;
 public interface MenuFactory
 {
 	/**
-	 * Special action name, to use in arguments of MenuFactory methods, to
+	 * Special action, to use in arguments of MenuFactory methods, to
 	 * describe a menu separator between two menu items.
 	 */
 	static final public GutsAction ACTION_SEPARATOR = null;
@@ -56,7 +54,7 @@ public interface MenuFactory
 	 * </ul>
 	 * 
 	 * @param name name to assign to the created {@code JMenu}
-	 * @param actions list of action names to map to {@code JMenuItem}s added to
+	 * @param actions list of actions to map to {@code JMenuItem}s added to
 	 * the menu; items are added in the order of the actions.
 	 * @return a new menu, ready to be added to a {@link javax.swing.JMenuBar}
 	 */
@@ -75,7 +73,7 @@ public interface MenuFactory
 	 * </ul>
 	 * 
 	 * @param name name to assign to the created {@code JPopupMenu}
-	 * @param actions list of action names to map to {@code JMenuItem}s added to
+	 * @param actions list of actions to map to {@code JMenuItem}s added to
 	 * the popup menu; items are added in the order of the actions.
 	 * @return a new popup menu
 	 */
