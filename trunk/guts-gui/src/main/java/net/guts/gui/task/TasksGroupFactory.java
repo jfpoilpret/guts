@@ -21,5 +21,5 @@ import net.guts.gui.task.blocker.InputBlocker;
 public interface TasksGroupFactory
 {
 	public TasksGroup newTasksGroup(
-		String name, boolean cancellable, ExecutorService executable, InputBlocker blocker);
+		String name, boolean cancellable, ExecutorService executor, InputBlocker blocker);
 }
