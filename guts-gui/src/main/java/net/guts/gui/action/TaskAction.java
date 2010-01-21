@@ -17,33 +17,93 @@ package net.guts.gui.action;
 import java.util.concurrent.ExecutorService;
 
 import net.guts.gui.task.Task;
+import net.guts.gui.task.Tasks;
 import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.TasksGroupFactory;
 import net.guts.gui.task.blocker.InputBlocker;
 
+/**
+ * An abstract {@link GutsAction} including support for launching one long task in
+ * background, based on Guts-GUI {@link net.guts.gui.task} package.
+ * <p/>
+ * This class is provided as a convenience as it reduces boiler-plate code
+ * needed to inject {@link TasksGroupFactory} into {@code GutsAction} subclasses.
+ *
+ * @author Jean-Francois Poilpret
+ * @see Task
+ * @see TasksGroupAction
+ */
 // CSOFF: AbstractClassNameCheck
 abstract public class TaskAction extends TasksGroupAction
 {
+	/**
+	 * Create a new {@code TaskAction} and assign it a {@code name} that 
+	 * will be used as a key for resource injection.
+	 * 
+	 * @param name the name used as a key for resource injection
+	 */
 	protected TaskAction(String name)
 	{
 		this(name, false);
 	}
 
+	/**
+	 * Create a new {@code TaskAction} and assign it a {@code name} that 
+	 * will be used as a key for resource injection.
+	 * 
+	 * @param name the name used as a key for resource injection
+	 * @param cancellable indicates whether {@link #submit(Task)} will create a 
+	 * cancelable {@code TasksGroup} for {@code Task} execution
+	 * be canceled by the end user
+	 */
 	protected TaskAction(String name, boolean cancellable)
 	{
 		super(name);
 		_cancellable = cancellable;
 	}
 
+	/**
+	 * Immediately start background execution of the given {@code task}, using the
+	 * default {@link ExecutorService} (as defined by 
+	 * {@link Tasks#bindDefaultExecutorService}) and no {@link InputBlocker}, meaning that
+	 * user input won't be blocked during execution of {@code task}.
+	 * <p/>
+	 * The method returns immediately without waiting for {@code task} to be finished.
+	 * 
+	 * @param task the task to execute in background
+	 */
 	final protected void submit(Task<?> task)
 	{
 		submit(task, null, null);
 	}
-	
+
+	/**
+	 * Immediately start background execution of the given {@code task}, using the
+	 * default {@link ExecutorService} (as defined by 
+	 * {@link Tasks#bindDefaultExecutorService}) and the provided {@link InputBlocker}.
+	 * <p/>
+	 * The method returns immediately without waiting for {@code task} to be finished.
+	 * 
+	 * @param task the task to execute in background
+	 * @param blocker an {@code InputBlocker} implementation that will be in charge
+	 * of blocking the input during the complete execution of {@code task}
+	 */
 	final protected void submit(Task<?> task, InputBlocker blocker)
 	{
 		submit(task, blocker, null);
 	}
 	
+	/**
+	 * Immediately start background execution of the given {@code task}, using the
+	 * provided {@link ExecutorService} and {@link InputBlocker}.
+	 * <p/>
+	 * The method returns immediately without waiting for {@code task} to be finished.
+	 * 
+	 * @param task the task to execute in background
+	 * @param blocker an {@code InputBlocker} implementation that will be in charge
+	 * of blocking the input during the complete execution of {@code task}
+	 * @param executor the service in charge of executing {@code task}
+	 */
 	final protected void submit(Task<?> task, InputBlocker blocker, ExecutorService executor)
 	{
 		if (task != null)
