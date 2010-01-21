@@ -14,9 +14,8 @@
 
 /**
  * This package contains classes to handle {@link javax.swing.JMenu} and 
- * {@link javax.swing.JPopupMenu} creation based on names of {@code @Action}s 
- * annotated methods, managed by the {@link net.guts.gui.action.ActionManager} 
- * service.
+ * {@link javax.swing.JPopupMenu} creation based on {@link net.guts.gui.action.GutsAction} 
+ * instances.
  * <p/>
  * The package just defines one single {@link net.guts.gui.menu.MenuFactory} 
  * service. You can inject this service through Guice wherever you need by simply 
@@ -24,12 +23,5 @@
  * <pre>
  * &#64;Inject private MenuManager _menuManager;
  * </pre>
- * but you might not always need that since it is already injected into 
- * {@link net.guts.gui.application.AbstractGuiceApplication} where you should 
- * use it to construct your main menu bar (in the 
- * {@link org.jdesktop.application.Application#startup()} method).
- * <p/>
- * Default implementation details can be found in package 
- * {@link net.guts.gui.menu.impl}.
  */
 package net.guts.gui.menu;

@@ -32,7 +32,7 @@ public interface ExitController
 	 * <p/>
 	 * Here is an example of such a hook:
 	 * <pre>
-	 * @Consumes(topic = ExitController.SHUTDOWN_EVENT)
+	 * &#64;Consumes(topic = ExitController.SHUTDOWN_EVENT)
 	 * public void cleanUp(Void nothing)
 	 * {
 	 *     // Some cleanup tasks here, e.g. flush some cache to the DB
@@ -49,7 +49,7 @@ public interface ExitController
 	 * the EDT. The method first checks with all registered exit listener methods
 	 * (methods annotated with {@link ExitChecker}) that shutdown is allowed.
 	 * <p/>
-	 * Then if shutdown was not vetoed, a {@link SHUTDOWN_EVENT} is pushed to all
+	 * Then if shutdown was not vetoed, a {@link #SHUTDOWN_EVENT} is pushed to all
 	 * consumers of that event, as a last chance to perform cleanup actions before
 	 * actual shutdown. Finally, the application exits (this final task is delegated
 	 * to {@link ExitPerformer} which default implementation simply calls
