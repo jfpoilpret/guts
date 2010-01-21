@@ -68,6 +68,7 @@ class MessageFactoryImpl implements MessageFactory
 		}
 	}
 	
+	@SuppressWarnings("unused")
 	static final private class MessageInfo
 	{
 		public MessageType getMessageType()
