@@ -35,7 +35,7 @@ public final class InputBlockers
 	
 	static public InputBlocker actionBlocker(GutsAction action)
 	{
-		return new ActionInputBlocker(action);
+		return new ActionInputBlocker(action.action());
 	}
 	
 	static public InputBlocker componentBlocker(GutsAction action)
