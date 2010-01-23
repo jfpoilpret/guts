@@ -15,11 +15,41 @@
 package net.guts.gui.task;
 
 import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import net.guts.gui.task.blocker.InputBlocker;
 
+/**
+ * Factory of {@link TasksGroup}s. This service is the only way to create 
+ * {@code TasksGroup} instances.
+ * <p/>
+ * This factory is bound with Guice and must thus be injected into your own
+ * classes that need to create {@code TasksGroup}s.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface TasksGroupFactory
 {
+	/**
+	 * Create a new {@code TasksGroup}, ready to be added {@link Task}s and then
+	 * executed.
+	 * 
+	 * @param name the name to be given to the new {@code TasksGroup}, used for
+	 * TODO
+	 * @param cancellable make the new {@code TasksGroup} cancellable or not;
+	 * once a {@code TasksGroup} has been constructed, this property cannot be
+	 * changed.
+	 * @param executor the executor service that will be used to run all 
+	 * {@code Task}s of the new {@code TasksGroup}; if {@code null}, then the
+	 * default {@code ExecutorService}, as defined by 
+	 * {@link Tasks#bindDefaultExecutorService}; if no default has been defined,
+	 * then {@link ThreadPoolExecutor} is used.
+	 * @param blocker the {@code InputBlocker} that will be used to block user
+	 * input during execution of this {@code TasksGroup}; {@code blocker} will
+	 * be automatically injected (fields and methods, not constructor) by Guice,
+	 * and also resource injected (by {@link net.guts.gui.resource.ResourceInjector}).
+	 * @return a new {@code TasksGroup}
+	 */
 	public TasksGroup newTasksGroup(
 		String name, boolean cancellable, ExecutorService executor, InputBlocker blocker);
 }

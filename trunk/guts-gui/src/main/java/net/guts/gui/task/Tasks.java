@@ -16,16 +16,38 @@ package net.guts.gui.task;
 
 import java.util.concurrent.ExecutorService;
 
-
 import com.google.inject.Binder;
 import com.google.inject.binder.LinkedBindingBuilder;
 
+/**
+ * Utility class to define, from within a Guice {@link com.google.inject.Module}, the binding
+ * of the default {@link ExecutorService} to be used by {@link TasksGroup}s created by
+ * {@link TasksGroupFactory#newTasksGroup} when its {@code executor} argument is {@code null}.
+ *
+ * @author Jean-Francois Poilpret
+ */
 final public class Tasks
 {
 	private Tasks()
 	{
 	}
-	
+
+	/**
+	 * Initializes the binding for the default {@link ExecutorService} to be used by
+	 * {@link TasksGroup} when {@code executor} is {@code null} in calls to
+	 * {@code TasksGroupFactory#newTasksGroup(name, cancellable, executor, blocker)}.
+	 * <p/>
+	 * This is based on usual Guice EDSL for bindings:
+	 * <pre>
+	 * Tasks.bindDefaultExecutorService(binder()).toInstance(Executors.newFixedThreadPool(10));
+	 * </pre>
+	 * This must be called from {@link com.google.inject.Module#configure(Binder)}.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind to an 
+	 * {@link ExecutorService}
+	 */
 	static public LinkedBindingBuilder<ExecutorService> bindDefaultExecutorService(
 		Binder binder)
 	{
