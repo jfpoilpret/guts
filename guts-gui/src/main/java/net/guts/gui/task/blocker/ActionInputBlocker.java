@@ -14,12 +14,13 @@
 
 package net.guts.gui.task.blocker;
 
-import net.guts.gui.action.GutsAction;
+ import javax.swing.Action;
+
 import net.guts.gui.task.TasksGroup;
 
 public class ActionInputBlocker implements InputBlocker
 {
-	public ActionInputBlocker(GutsAction action)
+	public ActionInputBlocker(Action action)
 	{
 		_action = action;
 	}
@@ -29,7 +30,7 @@ public class ActionInputBlocker implements InputBlocker
 	 */
 	@Override public void block(TasksGroup tasks)
 	{
-		_action.action().setEnabled(false);
+		_action.setEnabled(false);
 	}
 
 	/* (non-Javadoc)
@@ -37,8 +38,8 @@ public class ActionInputBlocker implements InputBlocker
 	 */
 	@Override public void unblock(TasksGroup tasks)
 	{
-		_action.action().setEnabled(true);
+		_action.setEnabled(true);
 	}
 
-	final private GutsAction _action;
+	final private Action _action;
 }
