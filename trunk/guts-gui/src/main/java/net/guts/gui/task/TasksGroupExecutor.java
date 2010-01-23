@@ -109,6 +109,11 @@ final class TasksGroupExecutor
 		return _state.get() == State.CANCELLED;
 	}
 	
+	boolean isFinished()
+	{
+		return _state.get() == State.DONE;
+	}
+	
 	private void handleTasksFeedback()
 	{
 		while (!_group.tasks().isEmpty())
