@@ -16,7 +16,6 @@ package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
 
-import net.guts.gui.application.WindowController;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 
 import com.google.inject.ImplementedBy;

@@ -15,7 +15,6 @@
 package net.guts.gui.task;
 
 import java.util.concurrent.ExecutorService;
-import java.util.concurrent.ThreadPoolExecutor;
 
 import net.guts.gui.task.blocker.InputBlocker;
 
@@ -43,7 +42,7 @@ public interface TasksGroupFactory
 	 * {@code Task}s of the new {@code TasksGroup}; if {@code null}, then the
 	 * default {@code ExecutorService}, as defined by 
 	 * {@link Tasks#bindDefaultExecutorService}; if no default has been defined,
-	 * then {@link ThreadPoolExecutor} is used.
+	 * then {@link java.util.concurrent.ThreadPoolExecutor} is used.
 	 * @param blocker the {@code InputBlocker} that will be used to block user
 	 * input during execution of this {@code TasksGroup}; {@code blocker} will
 	 * be automatically injected (fields and methods, not constructor) by Guice,

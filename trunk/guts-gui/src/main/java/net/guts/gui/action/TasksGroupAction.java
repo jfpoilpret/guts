@@ -16,8 +16,6 @@ package net.guts.gui.action;
 
 import java.util.concurrent.ExecutorService;
 
-import net.guts.gui.task.Task;
-import net.guts.gui.task.Tasks;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TasksGroupFactory;
 import net.guts.gui.task.blocker.InputBlocker;
@@ -51,7 +49,7 @@ abstract public class TasksGroupAction extends GutsAction
 
 	/**
 	 * Create a new {@code TasksGroup} that can be used to set up and launch one
-	 * or more long {@link Task}s in background.
+	 * or more long {@link net.guts.gui.task.Task}s in background.
 	 * This method is exactly the same as {@link TasksGroupFactory#newTasksGroup}.
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
@@ -73,7 +71,7 @@ abstract public class TasksGroupAction extends GutsAction
 
 	/**
 	 * Create a new {@code TasksGroup} that can be used to set up and launch one
-	 * or more long {@link Task}s in background.
+	 * or more long {@link net.guts.gui.task.Task}s in background.
 	 * The created {@code TasksGroup} has no {@link InputBlocker}, meaning that
 	 * user input won't be blocked during execution of that {@code TasksGroup}.
 	 * 
@@ -93,9 +91,10 @@ abstract public class TasksGroupAction extends GutsAction
 
 	/**
 	 * Create a new {@code TasksGroup} that can be used to set up and launch one
-	 * or more long {@link Task}s in background.
+	 * or more long {@link net.guts.gui.task.Task}s in background.
 	 * The created {@code TasksGroup} will use the default {@link ExecutorService} for
-	 * {@code Task}s execution, which can be set with {@link Tasks#bindDefaultExecutorService}.
+	 * {@code Task}s execution, which can be set with 
+	 * {@link net.guts.gui.task.Tasks#bindDefaultExecutorService}.
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
@@ -114,11 +113,12 @@ abstract public class TasksGroupAction extends GutsAction
 
 	/**
 	 * Create a new {@code TasksGroup} that can be used to set up and launch one
-	 * or more long {@link Task}s in background.
+	 * or more long {@link net.guts.gui.task.Task}s in background.
 	 * The created {@code TasksGroup} has no {@link InputBlocker}, meaning that
 	 * user input won't be blocked during execution of that {@code TasksGroup};
 	 * also, it will use the default {@link ExecutorService} for
-	 * {@code Task}s execution, which can be set with {@link Tasks#bindDefaultExecutorService}.
+	 * {@code Task}s execution, which can be set with 
+	 * {@link net.guts.gui.task.Tasks#bindDefaultExecutorService}.
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
