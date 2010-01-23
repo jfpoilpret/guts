@@ -118,7 +118,7 @@ public class TasksGroup
 	 * @param listener a listener that will be notified of the progress and changes in 
 	 * status of the added {@code task}; if {@code null}, {@code task} is added without
 	 * any {@code TaskListener}.
-	 * @return {@this TasksGroup}, for chained calls (fluent API)
+	 * @return {@code this TasksGroup}, for chained calls (fluent API)
 	 * @throws IllegalStateException if this {@code TasksGroup} has completed its 
 	 * execution already
 	 */
@@ -157,7 +157,7 @@ public class TasksGroup
 	 * @param <T> the result type of {@link Task#execute} for {@code task}
 	 * @param task the task to be added to this {@code TasksGroup} for grouped execution;
 	 * if {@code null}, the method does nothing.
-	 * @return {@this TasksGroup}, for chained calls (fluent API)
+	 * @return {@code this TasksGroup}, for chained calls (fluent API)
 	 * @throws IllegalStateException if this {@code TasksGroup} has completed its 
 	 * execution already
 	 */

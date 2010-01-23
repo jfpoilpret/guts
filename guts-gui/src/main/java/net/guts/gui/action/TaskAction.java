@@ -14,12 +14,10 @@
 
 package net.guts.gui.action;
 
-import java.util.concurrent.ExecutorService;
+ import java.util.concurrent.ExecutorService;
 
 import net.guts.gui.task.Task;
-import net.guts.gui.task.Tasks;
 import net.guts.gui.task.TasksGroup;
-import net.guts.gui.task.TasksGroupFactory;
 import net.guts.gui.task.blocker.InputBlocker;
 
 /**
@@ -27,7 +25,8 @@ import net.guts.gui.task.blocker.InputBlocker;
  * background, based on Guts-GUI {@link net.guts.gui.task} package.
  * <p/>
  * This class is provided as a convenience as it reduces boiler-plate code
- * needed to inject {@link TasksGroupFactory} into {@code GutsAction} subclasses.
+ * needed to inject {@link net.guts.gui.task.TasksGroupFactory} into {@code GutsAction} 
+ * subclasses.
  *
  * @author Jean-Francois Poilpret
  * @see Task
@@ -65,8 +64,9 @@ abstract public class TaskAction extends TasksGroupAction
 	/**
 	 * Immediately start background execution of the given {@code task}, using the
 	 * default {@link ExecutorService} (as defined by 
-	 * {@link Tasks#bindDefaultExecutorService}) and no {@link InputBlocker}, meaning that
-	 * user input won't be blocked during execution of {@code task}.
+	 * {@link net.guts.gui.task.Tasks#bindDefaultExecutorService}) and no 
+	 * {@link InputBlocker}, meaning that user input won't be blocked during execution 
+	 * of {@code task}.
 	 * <p/>
 	 * The method returns immediately without waiting for {@code task} to be finished.
 	 * 
@@ -80,7 +80,8 @@ abstract public class TaskAction extends TasksGroupAction
 	/**
 	 * Immediately start background execution of the given {@code task}, using the
 	 * default {@link ExecutorService} (as defined by 
-	 * {@link Tasks#bindDefaultExecutorService}) and the provided {@link InputBlocker}.
+	 * {@link net.guts.gui.task.Tasks#bindDefaultExecutorService}) and the provided 
+	 * {@link InputBlocker}.
 	 * <p/>
 	 * The method returns immediately without waiting for {@code task} to be finished.
 	 * 

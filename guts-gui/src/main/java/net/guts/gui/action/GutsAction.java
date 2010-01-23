@@ -19,8 +19,6 @@ import java.awt.event.ActionEvent;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 
-import net.guts.gui.task.blocker.InputBlocker;
-
 import com.google.inject.Inject;
 
 /**
@@ -100,7 +98,8 @@ abstract public class GutsAction
 	 * {@code this} action. You normally don't need this method except in exceptional 
 	 * situations, inside {@link #perform()} method.
 	 * <p/>
-	 * This method may also be used from concrete {@link InputBlocker} implementations.
+	 * This method may also be used from {@link net.guts.gui.task.blocker.InputBlocker} 
+	 * concrete implementations.
 	 */
 	final public ActionEvent event()
 	{
