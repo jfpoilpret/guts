@@ -14,6 +14,7 @@
 
 package net.guts.gui.task;
 
+//TODO is this class really necessary????
 //CSOFF: AbstractClassNameCheck
 public abstract class DelegatingTask<T> extends AbstractTask<T>
 {
