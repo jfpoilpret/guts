@@ -22,42 +22,74 @@ import javax.swing.JRootPane;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.task.TasksGroup;
 
+/**
+ * Utility class that helps create various kinds of {@link InputBlocker}s instances.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class InputBlockers
 {
 	private InputBlockers()
 	{
 	}
-	
+
+	/**
+	 * Always returns an "empty" {@code InputBlocker}, which does nothing at all.
+	 */
 	static public InputBlocker noBlocker()
 	{
 		return NO_BLOCKER;
 	}
-	
+
+	/**
+	 * Creates an {@link ActionInputBlocker} for {@code action}. With that 
+	 * {@code InputBlocker}, during task execution, {@code action} is disabled.
+	 */
 	static public InputBlocker actionBlocker(GutsAction action)
 	{
 		return new ActionInputBlocker(action.action());
 	}
-	
+
+	/**
+	 * Creates a {@link ComponentInputBlocker} for the component that has triggered
+	 * {@code action}. With that {@code InputBlocker}, during task execution, that
+	 * component is disabled (but not {@code action} itself).
+	 */
 	static public InputBlocker componentBlocker(GutsAction action)
 	{
 		return new ComponentInputBlocker((Component) action.event().getSource());
 	}
-	
+
+	/**
+	 * Creates a {@link ComponentInputBlocker} that will block all {@code components}.
+	 */
 	static public InputBlocker componentsBlocker(Component... components)
 	{
 		return new ComponentInputBlocker(components);
 	}
-	
+
+	/**
+	 * Creates a {@link GlassPaneInputBlocker} that will block the Window that embeds
+	 * the component which triggered {@code action}.
+	 */
 	static public InputBlocker windowBlocker(GutsAction action)
 	{
 		return windowBlocker(findComponentRoot((Component) action.event().getSource()));
 	}
-	
+
+	/**
+	 * Creates a {@link GlassPaneInputBlocker} that will block {@code root}.
+	 */
 	static public InputBlocker windowBlocker(JRootPane root)
 	{
 		return new GlassPaneInputBlocker(root);
 	}
-	
+
+	/**
+	 * Creates a {@link ModalDialogInputBlocker} that will show a modal dialog during
+	 * task execution; the displayed modal dialog shows task progress and has a button
+	 * to cancel tasks.
+	 */
 	static public InputBlocker dialogBlocker()
 	{
 		return new ModalDialogInputBlocker();
