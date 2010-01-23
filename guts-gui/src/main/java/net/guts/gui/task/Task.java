@@ -14,7 +14,46 @@
 
 package net.guts.gui.task;
 
+/**
+ * Background operations that you want under control of a {@link TasksGroup} must
+ * implement the {@code Task<T>} interface.
+ * <p/>
+ * A {@code Task} is in charge of a processing operation that is too long to be
+ * directly executed from the EDT. {@code TasksGroup} guarantees that its tasks
+ * are executed outside the EDT (*).
+ * <p/>
+ * {@code Task<T>} implementations should not call Swing component methods (besides
+ * the ones explicitly documented as "thread-safe", like 
+ * {@link javax.swing.JComponent#repaint()}).
+ * <p/>
+ * TODO (*) not 100% correct, you may still define an ExecutorService that executes
+ * Runnables in the EDT... But that would be looking for trouble!
+ * 
+ * @param <T> the type of result returned by {@code this} task, which will be passed
+ * to all properly registered {@link TaskListener}s
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface Task<T>
 {
+	/**
+	 * This method shall perform the long operation of {@code this} task; it will be
+	 * called from a background {@code Thread}.
+	 * <p/>
+	 * The operation can use {@code controller} to give feedback about its own progress
+	 * to registered {@link TaskListener}s.
+	 * <p/>
+	 * If {@code this} task is cancellable, then it should, during its long processing,
+	 * call {@code controller.isCancelled()} and terminate immediately if that method
+	 * returns {@code true}.
+	 * 
+	 * @param controller a controller that can be used to give feedback about the current
+	 * progress of {@code this} task
+	 * @return the processing result of {@code this} task; it will be notified to
+	 * {@link TaskListener#succeeded(TasksGroup, Task, Object)}.
+	 * @throws Exception any exception can be thrown; if {@code execute} throws an
+	 * exception, it will be notified to 
+	 * {@link TaskListener#failed(TasksGroup, Task, Throwable)}.
+	 */
 	public T execute(FeedbackController controller) throws Exception;
 }

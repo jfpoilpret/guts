@@ -14,6 +14,20 @@
 
 package net.guts.gui.task;
 
+/**
+ * Special {@link Task} that derives from {@link TaskAdapter}, hence allows
+ * to combine a background operation with progress/state notifications called
+ * in the EDT.
+ * <p/>
+ * {@link TasksGroup#add(Task)} performs special handling of {@code AbstractTask}
+ * instances, ie it recognizes those instances as both a {@code Task<T>} and a
+ * {@code TaskListener<T>} and handles it as such.
+ * 
+ * @param <T> the type of result returned by {@code this} task, which will be passed
+ * to all properly registered {@link TaskListener}s
+ *
+ * @author Jean-Francois Poilpret
+ */
 public abstract class AbstractTask<T> extends TaskAdapter<T> implements Task<T>
 {
 }
