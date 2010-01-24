@@ -33,8 +33,8 @@ public interface TasksGroupFactory
 	 * Create a new {@code TasksGroup}, ready to be added {@link Task}s and then
 	 * executed.
 	 * 
-	 * @param name the name to be given to the new {@code TasksGroup}, used for
-	 * TODO
+	 * @param name the name to be given to the new {@code TasksGroup}, can be used 
+	 * for identifying a group of running {@code Task}s in a status bar for instance.
 	 * @param cancellable make the new {@code TasksGroup} cancellable or not;
 	 * once a {@code TasksGroup} has been constructed, this property cannot be
 	 * changed.
