@@ -43,7 +43,39 @@ import com.google.inject.Inject;
  * </pre>
  * By default, the waiting time is set to 250ms. 
  * <p/>
- * TODO changing the modal dialog with your own -> BlockerDialogPane injection!
+ * You can provide your own dialog to {@code ModalDialogInputBlocker} if the
+ * default dialog doesn't suit your needs. For this, you need to provide a
+ * {@link BlockerDialogPane} implementation and explicitly bind it with Guice:
+ * <pre>
+ * class MyUserInputModalDialog extends JPanel 
+ *     implements BlockerDialogPane, ParentDialogAware
+ * {
+ *     // Constructor handles UI setup...
+ *     
+ *     &#64;Override public JComponent getPane()
+ *     {
+ *         return this;
+ *     }
+ *     
+ *     &#64;Override public void setTasksGroup(TasksGroup tasks)
+ *     {
+ *         // Add listener to tasks in order to update the UI
+ *         tasks.addListener(new TaskAdapter&lt;Object&gt;()
+ *         {
+ *             // Override the interesting methods for UI update...
+ *         });
+ *     }
+ *     
+ *     &#64;Override public void close()
+ *     {
+ *         // Close the embedding JDialog
+ *     }
+ * }
+ * ...
+ * 
+ *     // Then, inside the configure() method of your Modules
+ *     bind(BlockerDialogPane.class).to(MyUserInputModalDialog.class);
+ * </pre>
  *
  * @author Jean-Francois Poilpret
  */
