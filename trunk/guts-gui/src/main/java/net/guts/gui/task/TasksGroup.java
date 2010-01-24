@@ -254,8 +254,11 @@ public class TasksGroup
 		return _executor.isCancelled();
 	}
 
-	//TODO make it public????
-	String name()
+	/**
+	 * Returns the name of this {@code TasksGroup} as passed to 
+	 * {@code TasksGroupFactory.newTasksGroup(name, ...)}.
+	 */
+	public String name()
 	{
 		return _name;
 	}
