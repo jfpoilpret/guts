@@ -25,6 +25,28 @@ import net.guts.gui.task.TasksGroup;
 
 import com.google.inject.Inject;
 
+/**
+ * This {@link InputBlocker} implementation displays a modal dialog after a given
+ * amount of time following start of tasks execution, until the execution end.
+ * The dialog displays tasks progress as reported by individual 
+ * {@link net.guts.gui.task.Task}s. It also includes a "cancel" button that is
+ * enabled for a cancellable {@link TasksGroup}.
+ * <p/>
+ * The time to wait (in ms) until the dialog is displayed is configurable as a 
+ * resource and can be set in the application resource bundle; resources for
+ * i18n of the modal dialog are also settable as follows:
+ * <pre>
+ * # Default delay before showing progress dialog (default 250ms)
+ * ModalDialogInputBlocker.waitBeforeDialog=500
+ * BlockerDialog.title=Task in progress...
+ * BlockerDialog-action-cancel.text=Cancel Task
+ * </pre>
+ * By default, the waiting time is set to 250ms. 
+ * <p/>
+ * TODO changing the modal dialog with your own -> BlockerDialogPane injection!
+ *
+ * @author Jean-Francois Poilpret
+ */
 //TODO make sure resource injection accounts for source GutsAction name!
 public class ModalDialogInputBlocker implements InputBlocker
 {
