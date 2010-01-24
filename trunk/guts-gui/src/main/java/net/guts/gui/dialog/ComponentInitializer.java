@@ -16,6 +16,7 @@ package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
 
+//CSOFF: LineLengthCheck
 /**
  * Interface allowing further initialization of dialog panels created by
  * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, ComponentInitializer)}.
@@ -31,6 +32,7 @@ import javax.swing.JComponent;
  * @param <T> the panel class which instances can be initialized by this
  * {@code ComponentInitializer}
  */
+//CSON: LineLengthCheck
 public interface ComponentInitializer<T extends JComponent>
 {
 	/**
