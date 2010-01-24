@@ -22,6 +22,13 @@ import net.guts.gui.task.TasksGroup;
 
 import com.google.inject.Inject;
 
+/**
+ * This {@link InputBlocker} implementation displays a semi-transparent glass pane
+ * over a given {@code JRootPane} for the whole duration of tasks execution. It
+ * also displays a spinning animation during that time.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class GlassPaneInputBlocker implements InputBlocker
 {
 	public GlassPaneInputBlocker(JRootPane root)

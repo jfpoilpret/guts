@@ -14,7 +14,7 @@
 
 package net.guts.gui.application;
 
-import java.awt.Component;
+ import java.awt.Component;
 import java.awt.KeyboardFocusManager;
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
@@ -34,6 +34,36 @@ import net.guts.gui.exit.ExitController;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * This class holds all {@code GutsAction}s generally used in an application:
+ * <ul>
+ * <li>{@code quit}</li>
+ * <li>{@code cut}</li>
+ * <li>{@code copy}</li>
+ * <li>{@code paste}</li>
+ * </ul>
+ * {@code GutsApplicationActions} automatically handles enabling of {@code cut},
+ * {@code copy} and {@code paste} actions based on existing text selection in the
+ * currently focused component, and on the content of the clipboard.
+ * <p/>
+ * This class is actually a singleton that is initialized by Guice and is thus
+ * injectable where you need it.
+ * <p/>
+ * To add actions from {@code GutsApplicationActions} into a menu item, you can
+ * proceed as in the following snippet:
+ * <pre>
+ * &#64;Inject void init(MenuFactory factory, GutsApplicationAction actions)
+ * {
+ *     JMenuBar menuBar = new JMenuBar();
+ *     ...
+ *     menuBar.add(factory.createMenu(
+ *         "editMenu", actions.cut(), actions.copy(), actions.paste()));
+ *     ...
+ * }
+ * </pre>
+ *
+ * @author Jean-Francois Poilpret
+ */
 @Singleton
 public class GutsApplicationActions
 {
@@ -56,21 +86,41 @@ public class GutsApplicationActions
 		});
 	}
 
+	/**
+	 * Returns the {@code "quit"} action which, when triggered, initiates an
+	 * application shutdown through {@link ExitController#shutdown()}.
+	 */
 	public GutsAction quit()
 	{
 		return _quit;
 	}
-	
+
+	/**
+	 * Returns the {@code "cut"} action which, when triggered, cuts the selected 
+	 * text of the currently focused component. If there's no current text selection
+	 * or focused component, then the action is automatically disabled.
+	 */
 	public GutsAction cut()
 	{
 		return _cut;
 	}
 	
+	/**
+	 * Returns the {@code "copy"} action which, when triggered, copies the selected 
+	 * text of the currently focused component. If there's no current text selection
+	 * or focused component, then the action is automatically disabled.
+	 */
 	public GutsAction copy()
 	{
 		return _copy;
 	}
 	
+	/**
+	 * Returns the {@code "paste"} action which, when triggered, pastes the text from
+	 * the clipboard into the currently focused text component. If there's no text in
+	 * the clipboard, or no focused text component, then the action is automatically 
+	 * disabled.
+	 */
 	public GutsAction paste()
 	{
 		return _paste;

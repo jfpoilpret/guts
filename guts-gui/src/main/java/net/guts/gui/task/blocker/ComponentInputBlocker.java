@@ -18,6 +18,12 @@ import java.awt.Component;
 
 import net.guts.gui.task.TasksGroup;
 
+/**
+ * Simple {@link InputBlocker} that just disables components during the whole 
+ * duration of tasks execution.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class ComponentInputBlocker implements InputBlocker
 {
 	public ComponentInputBlocker(Component... components)

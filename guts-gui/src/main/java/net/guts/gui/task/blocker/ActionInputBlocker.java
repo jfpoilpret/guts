@@ -18,6 +18,12 @@ package net.guts.gui.task.blocker;
 
 import net.guts.gui.task.TasksGroup;
 
+/**
+ * Simple {@link InputBlocker} which disables an {@link Action} for the whole duration
+ * of tasks execution.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class ActionInputBlocker implements InputBlocker
 {
 	public ActionInputBlocker(Action action)

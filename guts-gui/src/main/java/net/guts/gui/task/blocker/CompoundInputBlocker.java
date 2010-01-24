@@ -16,8 +16,29 @@ package net.guts.gui.task.blocker;
 
 import net.guts.gui.task.TasksGroup;
 
+/**
+ * {@link InputBlocker} implementation that combines the behavior of several other
+ * {@code InputBlocker} implementations.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class CompoundInputBlocker implements InputBlocker
 {
+	/**
+	 * Create a new {@code CompoundInputBlocker} that delegates its blocking 
+	 * behavior to {@code blockers}.
+	 * <p/>
+	 * The order of {@code blockers} is important:
+	 * <ul>
+	 * <li>{@code block()} will call {@code block()} of {@code blockers} in the 
+	 * normal order</li>
+	 * <li>{@code unblock()} will call {@code unblock()} of {@code blockers} in the 
+	 * reverse order</li>
+	 * </ul>
+	 * 
+	 * @param blockers blockers to which {@link #block} and {@link #unblock} will
+	 * delegate blocking behavior
+	 */
 	public CompoundInputBlocker(InputBlocker... blockers)
 	{
 		_blockers = blockers;
