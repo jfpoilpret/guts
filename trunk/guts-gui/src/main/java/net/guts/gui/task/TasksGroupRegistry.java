@@ -39,7 +39,8 @@ class TasksGroupRegistry
 		// Inject resources into group
 		if (_groups.add(group))
 		{
-			//TODO do we need to inject resources into TasksGroup????
+			//TODO do we need to inject resources into TasksGroup?
+			// Maybe this class is just useless!
 			// Inject resources into group
 			_injector.injectInstance(group, group.name());
 		}
