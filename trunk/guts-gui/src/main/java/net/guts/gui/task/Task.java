@@ -20,14 +20,16 @@ package net.guts.gui.task;
  * <p/>
  * A {@code Task} is in charge of a processing operation that is too long to be
  * directly executed from the EDT. {@code TasksGroup} guarantees that its tasks
- * are executed outside the EDT (*).
+ * are executed outside the EDT <a href="#footnote">(*)</a>.
  * <p/>
  * {@code Task<T>} implementations should not call Swing component methods (besides
  * the ones explicitly documented as "thread-safe", like 
  * {@link javax.swing.JComponent#repaint()}).
  * <p/>
- * TODO (*) not 100% correct, you may still define an ExecutorService that executes
- * Runnables in the EDT... But that would be looking for trouble!
+ * <a name="footnote">(*)</a> Actually, it is not absolutely 100% correct because you 
+ * may always define an {@link java.util.concurrent.ExecutorService} that executes all
+ * {@link Runnable}s in the EDT (by calling {@link javax.swing.SwingUtilities#invokeLater}).
+ * But we don't see any reason to do so and that would be looking for trouble!
  * 
  * @param <T> the type of result returned by {@code this} task, which will be passed
  * to all properly registered {@link TaskListener}s
