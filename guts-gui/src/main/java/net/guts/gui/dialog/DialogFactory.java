@@ -31,7 +31,6 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(DialogFactoryImpl.class)
 public interface DialogFactory
 {
-	//TODO complete javadoc!
 	/**
 	 * Shows a modal dialog.
 	 * <p/>
@@ -48,6 +47,11 @@ public interface DialogFactory
 	 * from {@link net.guts.gui.dialog.support.AbstractPanel}.
 	 * 
 	 * @param panel panel to be contained in the shown dialog
+	 * @param policy the policy to use for determining the size and location of
+	 * the new dialog
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, hence
+	 * only {@code policy} is used to set the bounds of the new dialog.
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
@@ -55,7 +59,6 @@ public interface DialogFactory
 	public boolean showDialog(
 		JComponent panel, BoundsPolicy policy, boolean restoreState);
 
-	//TODO complete javadoc!
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
@@ -64,6 +67,11 @@ public interface DialogFactory
 	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
+	 * @param policy the policy to use for determining the size and location of
+	 * the new dialog
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, hence
+	 * only {@code policy} is used to set the bounds of the new dialog.
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
@@ -71,7 +79,6 @@ public interface DialogFactory
 	public <T extends JComponent> boolean showDialog(
 		Class<T> clazz, BoundsPolicy policy, boolean restoreState);
 
-	//TODO complete javadoc!
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
@@ -91,6 +98,11 @@ public interface DialogFactory
 	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
+	 * @param policy the policy to use for determining the size and location of
+	 * the new dialog
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, hence
+	 * only {@code policy} is used to set the bounds of the new dialog.
 	 * @param initializer an initializer object
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog

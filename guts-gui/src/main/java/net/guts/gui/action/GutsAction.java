@@ -54,10 +54,29 @@ import com.google.inject.Inject;
  * bundles (properties or xml); the following snippet demonstrates the injectable 
  * resources for a given {@code GutsAction}:
  * <pre>
- * TODO resources snippet
+ * paste.text=&Paste
  * </pre>
  * <p/>
- * TODO resource overriding Action Vs. Widget
+ * The list of injectable properties is follwoing:
+ * <ul>
+ * <li>{@code text}: the text of the action (can include the mnemonic, prefixed with 
+ * {@code &} as in the above snippet)</li>
+ * <li>{@code accelerator}: the code of a {@link javax.swing.KeyStroke} as accepted by
+ * {@link javax.swing.KeyStroke#getKeyStroke(String)}</li>
+ * <li>{@code toolTipText}</li>
+ * <li>{@code smallIcon}, {@code largeIcon}: the icons to display for the action</li>
+ * <li>{@code longDescription}: directly maps to 
+ * {@link javax.swing.Action#LONG_DESCRIPTION} and could be used for contextual help</li>
+ * </ul>
+ * Note that, when a given component is set to a given action, you can always override 
+ * action resources for that component:
+ * <pre>
+ * # resources of the action (used in menu bar and tool bar)
+ * cut.text=Cut
+ * cut.smallIcon=cut.jpg
+ * # resources of the tool bar: remove text to only show the icon
+ * toolbar-cut.text=
+ * </pre>
  *
  * @author Jean-Francois Poilpret
  */
