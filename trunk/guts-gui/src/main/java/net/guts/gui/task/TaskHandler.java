@@ -19,23 +19,28 @@ import java.util.concurrent.CancellationException;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 
-class TaskHandler<T> implements Callable<T>, FeedbackController
+import net.guts.gui.util.ListenerDispatchProxy;
+import net.guts.gui.util.ListenerEdtProxy;
+
+import com.google.inject.TypeLiteral;
+
+class TaskHandler<T> implements Callable<T>, FeedbackController, TaskInfo
 {
-	TaskHandler(TasksGroup group, Task<T> task, TaskListener<? super T> listener)
+	TaskHandler(TasksGroup group, Task<T> task, TaskListener<? super T> taskListener, 
+		TasksGroupListener groupListener)
 	{
 		_group = group;
 		_task = task;
-		_listener = new EdtTaskDispatcher<T>();
-		addListener(listener);
-	}
-	
-	void addListener(TaskListener<? super T> listener)
-	{
-		_listener.addListener(listener);
+		_taskListeners.addListener(taskListener);
+		_groupListener = groupListener;
+		_taskListeners.addListener(_groupListener);
+		_groupListener.taskAdded(_group, this);
 	}
 	
 	@Override public T call() throws Exception
 	{
+		_state = State.RUNNING;
+		_groupListener.taskStarted(_group, this);
 		return _task.execute(this);
 	}
 	
@@ -48,12 +53,29 @@ class TaskHandler<T> implements Callable<T>, FeedbackController
 	{
 		int value = Math.max(MIN_PROGRESS, current);
 		value = Math.min(MAX_PROGRESS, current);
-		_listener.progress(_group, _task, value);
+		_progress = value;
+		_edtTaskListener.progress(_group, this, value);
 	}
 	
 	@Override public void setFeedback(String note)
 	{
-		_listener.feedback(_group, _task, note);
+		_feedback = note;
+		_edtTaskListener.feedback(_group, this, note);
+	}
+
+	@Override public State state()
+	{
+		return _state;
+	}
+	
+	@Override public int progress()
+	{
+		return _progress;
+	}
+	
+	@Override public String feedback()
+	{
+		return _feedback;
 	}
 
 	boolean handleResult(Future<?> future)
@@ -78,23 +100,30 @@ class TaskHandler<T> implements Callable<T>, FeedbackController
 	{
 		try
 		{
-			_listener.succeeded(_group, _task, _future.get());
+			T result = _future.get();
+			_progress = MAX_PROGRESS;
+			_state = State.FINISHED;
+			_edtTaskListener.succeeded(_group, this, result);
 		}
 		catch (InterruptedException e)
 		{
-			_listener.interrupted(_group, _task, e);
+			_state = State.CANCELLED;
+			_edtTaskListener.interrupted(_group, this, e);
 		}
 		catch (CancellationException e)
 		{
-			_listener.cancelled(_group, _task);
+			_state = State.CANCELLED;
+			_edtTaskListener.cancelled(_group, this);
 		}
 		catch (ExecutionException e)
 		{
-			_listener.failed(_group, _task, e.getCause());
+			_state = State.FAILED;
+			_edtTaskListener.failed(_group, this, e.getCause());
 		}
 		finally
 		{
-			_listener.finished(_group, _task);
+			_edtTaskListener.finished(_group, this);
+			_groupListener.taskEnded(_group, this);
 		}
 	}
 	
@@ -106,8 +135,20 @@ class TaskHandler<T> implements Callable<T>, FeedbackController
 	static private final int MIN_PROGRESS = 0;
 	static private final int MAX_PROGRESS = 100;
 	
+	final private TypeLiteral<TaskListener<? super T>> _type = 
+		new TypeLiteral<TaskListener<? super T>>(){};
+
 	final private TasksGroup _group;
 	final private Task<T> _task;
-	final private EdtTaskDispatcher<T> _listener;
+
+	final private ListenerDispatchProxy<TaskListener<? super T>> _taskListeners = 
+		ListenerDispatchProxy.createProxy(_type);
+	final private TaskListener<? super T> _edtTaskListener = 
+		ListenerEdtProxy.createProxy(_type, _taskListeners.notifier()).notifier();
+	final private TasksGroupListener _groupListener;
+
 	private Future<T> _future;
+	private State _state = State.NOT_STARTED;
+	private int _progress = MIN_PROGRESS;
+	private String _feedback = "";
 }

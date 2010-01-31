@@ -14,10 +14,21 @@
 
 package net.guts.gui.task;
 
-public interface TasksGroupListener extends TaskListener<Object>
+// Used for task monitoring support
+// Each instance represents the information of one Task
+public interface TaskInfo
 {
-	public void taskAdded(TasksGroup group, TaskInfo task);
-	public void taskStarted(TasksGroup group, TaskInfo task);
-	public void taskEnded(TasksGroup group, TaskInfo task);
-	public void allTasksEnded(TasksGroup group);
+	//TODO add more: group() or groupName(), task()
+	public State state();
+	public int progress();
+	public String feedback();
+	
+	public enum State
+	{
+		NOT_STARTED,
+		RUNNING,
+		FINISHED,
+		FAILED,
+		CANCELLED
+	}
 }

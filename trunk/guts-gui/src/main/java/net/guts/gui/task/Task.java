@@ -52,10 +52,10 @@ public interface Task<T>
 	 * @param controller a controller that can be used to give feedback about the current
 	 * progress of {@code this} task
 	 * @return the processing result of {@code this} task; it will be notified to
-	 * {@link TaskListener#succeeded(TasksGroup, Task, Object)}.
+	 * {@link TaskListener#succeeded(TasksGroup, TaskInfo, Object)}.
 	 * @throws Exception any exception can be thrown; if {@code execute} throws an
 	 * exception, it will be notified to 
-	 * {@link TaskListener#failed(TasksGroup, Task, Throwable)}.
+	 * {@link TaskListener#failed(TasksGroup, TaskInfo, Throwable)}.
 	 */
 	public T execute(FeedbackController controller) throws Exception;
 }

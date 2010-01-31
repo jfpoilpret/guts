@@ -31,7 +31,8 @@ import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
-import net.guts.gui.task.TaskAdapter;
+import net.guts.gui.task.TaskGroupAdapter;
+import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import static net.guts.gui.util.LayoutHelper.*;
 
@@ -68,16 +69,14 @@ class DefaultBlockerDialogPane extends JPanel
 		_note.setText("");
 		_progress.setValue(MIN_RATE);
 		_cancel.action().setEnabled(_tasks.isCancellable());
-		_tasks.addListener(new TaskAdapter<Object>()
+		_tasks.addGroupListener(new TaskGroupAdapter()
 		{
-			@Override public void feedback(TasksGroup group, Task<? extends Object> source,
-				String note)
+			@Override public void feedback(TasksGroup group, TaskInfo source, String note)
 			{
 				_note.setText(note);
 			}
 
-			@Override public void progress(TasksGroup group, Task<? extends Object> source,
-				int rate)
+			@Override public void progress(TasksGroup group, TaskInfo source, int rate)
 			{
 				_progress.setValue(rate);
 			}

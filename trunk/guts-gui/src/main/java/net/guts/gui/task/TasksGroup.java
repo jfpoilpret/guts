@@ -14,7 +14,8 @@
 
 package net.guts.gui.task;
 
-import java.util.List; 
+import java.util.Collections;
+import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -22,6 +23,8 @@ import java.util.concurrent.Executors;
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
 import net.guts.gui.task.blocker.InputBlockers;
+import net.guts.gui.util.ListenerDispatchProxy;
+import net.guts.gui.util.ListenerEdtProxy;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -81,7 +84,8 @@ public class TasksGroup
 		// Make sure InputBlocker is injected (we can't make sure of that fact before)
 		injector.injectMembers(actualBlocker);
 		resourceInjector.injectInstance(blocker);
-		_executor = new TasksGroupExecutor(this, actualBlocker, actualExecutor);
+		_executor = new TasksGroupExecutor(
+			this, actualBlocker, actualExecutor, _edtGroupListener);
 	}
 	//CSON: ParameterNumberCheck
 
@@ -129,15 +133,9 @@ public class TasksGroup
 		{
 			return this;
 		}
-		TaskHandler<T> handler = new TaskHandler<T>(this, task, listener);
-		// Add all general listeners (already registered) to the new TaskHandler
-		// But the problem is that we don't store them anywhere!
-		for (TaskListener<Object> taskListener: _tasksListeners)
-		{
-			handler.addListener(taskListener);
-		}
+		TaskHandler<T> handler = new TaskHandler<T>(this, task, listener, _edtGroupListener);
+		_handlers.add(handler);
 		_tasks.add(handler);
-		fireTaskAdded(task);
 		_executor.addTaskHandler(handler);
 		return this;
 	}
@@ -192,24 +190,13 @@ public class TasksGroup
 	 * @throws IllegalStateException if this {@code TasksGroup} has completed its 
 	 * execution already
 	 */
-	public void addListener(TaskListener<Object> listener)
+	public void addGroupListener(TasksGroupListener listener)
 	{
 		if (listener != null)
 		{
-			checkMutability("add TaskListener");
-			_tasksListeners.add(listener);
-			for (TaskHandler<?> handler: _tasks)
-			{
-				handler.addListener(listener);
-			}
+			checkMutability("add TasksGroupListener");
+			_groupListeners.addListener(listener);
 		}
-	}
-
-	//TODO javadoc when implementation is effective
-	public void addGroupListener(TasksGroupListener listener)
-	{
-		checkMutability("add TasksGroupListener");
-		_groupListeners.add(listener);
 	}
 
 	/**
@@ -263,9 +250,14 @@ public class TasksGroup
 		return _name;
 	}
 	
-	List<TaskHandler<?>> tasks()
+	public List<TaskInfo> tasks()
 	{
-		return _tasks;
+		return _immutableTasks;
+	}
+	
+	List<TaskHandler<?>> tasksHandlers()
+	{
+		return _handlers;
 	}
 
 	private void checkMutability(String operation)
@@ -282,38 +274,6 @@ public class TasksGroup
 		}
 	}
 	
-	void fireTaskAdded(Task<?> task)
-	{
-		for (TasksGroupListener groupListener: _groupListeners)
-		{
-			groupListener.taskAdded(this, task);
-		}
-	}
-
-	void fireTaskStarted(Task<?> task)
-	{
-		for (TasksGroupListener groupListener: _groupListeners)
-		{
-			groupListener.taskStarted(this, task);
-		}
-	}
-
-	void fireTaskEnded(Task<?> task)
-	{
-		for (TasksGroupListener groupListener: _groupListeners)
-		{
-			groupListener.taskEnded(this, task);
-		}
-	}
-
-	void fireAllTasksEnded()
-	{
-		for (TasksGroupListener groupListener: _groupListeners)
-		{
-			groupListener.allTasksEnded(this);
-		}
-	}
-
 	// Workaround to Guice limitation on injection of optional args to constructors
 	// See http://code.google.com/p/google-guice/wiki/FrequentlyAskedQuestions
 	// "How can I inject optional parameters into a constructor?"
@@ -327,10 +287,15 @@ public class TasksGroup
 
 	final private String _name;
 	final private boolean _cancellable;
-	final private List<TaskHandler<?>> _tasks = new CopyOnWriteArrayList<TaskHandler<?>>();
-	final private List<TaskListener<Object>> _tasksListeners = 
-		new CopyOnWriteArrayList<TaskListener<Object>>();
-	final private List<TasksGroupListener> _groupListeners = 
-		new CopyOnWriteArrayList<TasksGroupListener>();
+	//TODO optimize and use only one List of TaskHandler AND TaskInfo at the same time!!!!
+	// => will need to change the loop in TaslsGroupExecutor!
+	final private List<TaskHandler<?>> _handlers = new CopyOnWriteArrayList<TaskHandler<?>>();
+	final private List<TaskInfo> _tasks = new CopyOnWriteArrayList<TaskInfo>();
+	final private List<TaskInfo> _immutableTasks = Collections.unmodifiableList(_tasks);
+
+	final private ListenerDispatchProxy<TasksGroupListener> _groupListeners = 
+		ListenerDispatchProxy.createProxy(TasksGroupListener.class);
+	final private TasksGroupListener _edtGroupListener = ListenerEdtProxy.createProxy(
+		TasksGroupListener.class, _groupListeners.notifier()).notifier();
 	final private TasksGroupExecutor _executor;
 }
