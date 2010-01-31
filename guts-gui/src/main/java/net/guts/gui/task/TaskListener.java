@@ -45,7 +45,7 @@ public interface TaskListener<T>
 	 * @param rate the latest progress rate reported by {@code source}; rate is a
 	 * progress percentage (from 0 to 100).
 	 */
-	public void progress(TasksGroup group, Task<? extends T> source, int rate);
+	public void progress(TasksGroup group, TaskInfo source, int rate);
 	
 	/**
 	 * Called when the {@code source} Task reports feedback through 
@@ -55,7 +55,7 @@ public interface TaskListener<T>
 	 * @param source the task that has reported feedback
 	 * @param note the latest feedback note reported by {@code source}
 	 */
-	public void feedback(TasksGroup group, Task<? extends T> source, String note);
+	public void feedback(TasksGroup group, TaskInfo source, String note);
 
 	/**
 	 * Called when {@code source} Task has terminated successfully.
@@ -64,7 +64,7 @@ public interface TaskListener<T>
 	 * @param source the task that has just terminated
 	 * @param result the result returned by {@code source}
 	 */
-	public void succeeded(TasksGroup group, Task<? extends T> source, T result);
+	public void succeeded(TasksGroup group, TaskInfo source, T result);
 	
 	/**
 	 * Called when {@code source} Task has failed (ie has thrown an exception).
@@ -73,7 +73,7 @@ public interface TaskListener<T>
 	 * @param source the task that has just failed
 	 * @param cause the exception thrown by {@code source}, causing it to fail
 	 */
-	public void failed(TasksGroup group, Task<? extends T> source, Throwable cause);
+	public void failed(TasksGroup group, TaskInfo source, Throwable cause);
 	
 	/**
 	 * Called when {@code source} Task has been cancelled.
@@ -81,7 +81,7 @@ public interface TaskListener<T>
 	 * @param group group to which {@code source} belongs
 	 * @param source the task that has just failed
 	 */
-	public void cancelled(TasksGroup group, Task<? extends T> source);
+	public void cancelled(TasksGroup group, TaskInfo source);
 	
 	/**
 	 * Called when {@code source} Task has been interrupted (ie has thrown an 
@@ -91,8 +91,7 @@ public interface TaskListener<T>
 	 * @param source the task that has just been interrupted
 	 * @param cause the exception thrown by {@code source}, causing its interruption
 	 */
-	public void interrupted(
-		TasksGroup group, Task<? extends T> source, InterruptedException cause);
+	public void interrupted(TasksGroup group, TaskInfo source, InterruptedException cause);
 
 	/**
 	 * Called when {@code source} Task has finished, whether it was successful or
@@ -102,5 +101,5 @@ public interface TaskListener<T>
 	 * @param group group to which {@code source} belongs
 	 * @param source the task that has just finished
 	 */
-	public void finished(TasksGroup group, Task<? extends T> source);
+	public void finished(TasksGroup group, TaskInfo source);
 }

@@ -38,6 +38,9 @@ import com.google.inject.Inject;
  * <pre>
  * # Default delay before showing progress dialog (default 250ms)
  * ModalDialogInputBlocker.waitBeforeDialog=500
+ * # Default delay before closing progress dialog after all tasks finished (default 100ms)
+ * ModalDialogInputBlocker.waitBeforeClose=200
+ * 
  * BlockerDialog.title=Task in progress...
  * BlockerDialog-action-cancel.text=Cancel Task
  * </pre>
@@ -84,14 +87,25 @@ public class ModalDialogInputBlocker implements InputBlocker
 {
 	public ModalDialogInputBlocker()
 	{
-		_timeout = new Timer(0, new ActionListener()
+		_startDelay = new Timer(0, new ActionListener()
 		{
 			@Override public void actionPerformed(ActionEvent e)
 			{
 				showDialog();
 			}
 		});
-		_timeout.setInitialDelay(DEFAULT_WAIT_BEFORE_DIALOG);
+		_startDelay.setRepeats(false);
+		_startDelay.setInitialDelay(DEFAULT_WAIT_BEFORE_DIALOG);
+		
+		_closeDelay = new Timer(0, new ActionListener()
+		{
+			@Override public void actionPerformed(ActionEvent arg0)
+			{
+				_pane.close();
+			}
+		});
+		_closeDelay.setRepeats(false);
+		_closeDelay.setInitialDelay(DEFAULT_WAIT_BEFORE_CLOSE);
 	}
 	
 	@Inject void init(DialogFactory dialogFactory, BlockerDialogPane pane)
@@ -102,29 +116,42 @@ public class ModalDialogInputBlocker implements InputBlocker
 	
 	private void showDialog()
 	{
+		_openDialog = true;
 		_dialogFactory.showDialog(_pane.getPane(), BoundsPolicy.PACK_AND_CENTER, false);
 	}
 
 	@Override public void block(TasksGroup tasks)
 	{
+		_openDialog = false;
 		_pane.setTasksGroup(tasks);
-		_timeout.start();
+		_startDelay.start();
 	}
 
 	@Override public void unblock(TasksGroup tasks)
 	{
-		_timeout.stop();
-		_pane.close();
+		_startDelay.stop();
+		if (_openDialog)
+		{
+			_closeDelay.start();
+		}
 	}
 	
 	void setWaitBeforeDialog(int wait)
 	{
-		_timeout.setInitialDelay(Math.max(0, wait));
+		_startDelay.setInitialDelay(Math.max(0, wait));
+	}
+
+	void setWaitBeforeClose(int wait)
+	{
+		_closeDelay.setInitialDelay(Math.max(0, wait));
 	}
 
 	static final private int DEFAULT_WAIT_BEFORE_DIALOG = 250;
+	static final private int DEFAULT_WAIT_BEFORE_CLOSE = 100;
 	
-	final private Timer _timeout;
+	final private Timer _startDelay;
+	final private Timer _closeDelay;
 	private DialogFactory _dialogFactory;
 	private BlockerDialogPane _pane;
+	private boolean _openDialog = false;
 }

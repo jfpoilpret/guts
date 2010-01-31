@@ -27,7 +27,7 @@ package net.guts.gui.task;
  * <p/>
  * Create a listener object using the extended class and then register it with a 
  * {@code TasksGroup} using {@link TasksGroup#add(Task, TaskListener)} or
- * {@link TasksGroup#addListener(TaskListener)}.
+ * {@link TasksGroup#addGroupListener(TasksGroupListener)}.
  * 
  * @param <T> The type returned by the {@code Task<T>} that this 
  * {@link TaskListener} adapter wants to be notified about
@@ -41,7 +41,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#progress(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, int)
 	 */
-	@Override public void progress(TasksGroup group, Task<? extends T> source, int rate)
+	@Override public void progress(TasksGroup group, TaskInfo source, int rate)
 	{
 	}
 
@@ -49,7 +49,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#feedback(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, java.lang.String)
 	 */
-	@Override public void feedback(TasksGroup group, Task<? extends T> source, String note)
+	@Override public void feedback(TasksGroup group, TaskInfo source, String note)
 	{
 	}
 
@@ -57,7 +57,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#succeeded(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, java.lang.Object)
 	 */
-	@Override public void succeeded(TasksGroup group, Task<? extends T> source, T result)
+	@Override public void succeeded(TasksGroup group, TaskInfo source, T result)
 	{
 	}
 
@@ -65,7 +65,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#failed(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, java.lang.Throwable)
 	 */
-	@Override public void failed(TasksGroup group, Task<? extends T> source, Throwable cause)
+	@Override public void failed(TasksGroup group, TaskInfo source, Throwable cause)
 	{
 	}
 
@@ -73,7 +73,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#finished(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task)
 	 */
-	@Override public void finished(TasksGroup group, Task<? extends T> source)
+	@Override public void finished(TasksGroup group, TaskInfo source)
 	{
 	}
 
@@ -81,7 +81,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#cancelled(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task)
 	 */
-	@Override public void cancelled(TasksGroup group, Task<? extends T> source)
+	@Override public void cancelled(TasksGroup group, TaskInfo source)
 	{
 	}
 
@@ -90,7 +90,7 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 	 * @see net.guts.gui.task.TaskListener#interrupted(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, java.lang.InterruptedException)
 	 */
 	@Override public void interrupted(
-		TasksGroup group, Task<? extends T> source, InterruptedException cause)
+		TasksGroup group, TaskInfo source, InterruptedException cause)
 	{
 	}
 }

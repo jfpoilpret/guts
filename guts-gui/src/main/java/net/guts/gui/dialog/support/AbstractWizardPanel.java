@@ -28,6 +28,7 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
 import net.guts.gui.task.DelegatingTask;
 import net.guts.gui.task.Task;
+import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
 
@@ -87,7 +88,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 				return new DelegatingTask<R>(task)
 				{
 					@Override public void succeeded(
-						TasksGroup group, Task<? extends R> source, R result)
+						TasksGroup group, TaskInfo source, R result)
 					{
 						goToStep(++_current);
 					}

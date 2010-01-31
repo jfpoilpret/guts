@@ -32,6 +32,7 @@ import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.AbstractTask;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
+import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
 
@@ -137,7 +138,7 @@ public class ContactActions
 					}
 
 					@Override public void succeeded(
-						TasksGroup group, Task<? extends Void> source, Void result)
+						TasksGroup group, TaskInfo source, Void result)
 					{
 						_messageFactory.showMessage(parent, "delete-done");
 					}

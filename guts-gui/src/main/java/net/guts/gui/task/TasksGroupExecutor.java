@@ -32,11 +32,13 @@ import net.guts.gui.task.blocker.InputBlocker;
 final class TasksGroupExecutor
 {
 	@SuppressWarnings("unchecked")
-	TasksGroupExecutor(TasksGroup group, InputBlocker blocker, ExecutorService executor)
+	TasksGroupExecutor(TasksGroup group, InputBlocker blocker, ExecutorService executor,
+		TasksGroupListener groupListener)
 	{
 		_group = group;
 		_blocker = blocker;
 		_groupExecutor = new ExecutorCompletionService(executor);
+		_groupListener = groupListener;
 		_logger = LoggerFactory.getLogger(getClass().getSimpleName() + "-" + _group.name());
 	}
 	
@@ -49,7 +51,6 @@ final class TasksGroupExecutor
 		}
 	}
 	
-	@SuppressWarnings("unchecked") 
 	void execute()
 	{
 		if (!_state.compareAndSet(State.PENDING, State.STARTING))
@@ -58,38 +59,23 @@ final class TasksGroupExecutor
 				_group.name(), _state.get());
 			throw new IllegalStateException("execute() called twice!");
 		}
+		
+		//TODO add new state notification to listener for whole group
 
-		Runnable exec = new Runnable()
-		{
-			@Override public void run()
-			{
-				// Block input right now (in EDT)
-				_blocker.block(_group);
-				for (TaskHandler<?> handler: _group.tasks())
-				{
-					handler.init(_groupExecutor.submit(handler));
-				}
-				_state.set(State.RUNNING);
-				// Start a Thread to wait until all tasks are finished???
-				Runnable handleFeedback = new Runnable()
-				{
-					public void run()
-					{
-						handleTasksFeedback();
-					}
-				};
-				_threadFactory.newThread(handleFeedback).start();
-			}
-		};
-
-		// Make sure this is called from the EDT
+		// Make sure Task execution start is performed from the EDT
 		if (SwingUtilities.isEventDispatchThread())
 		{
-			exec.run();
+			handleTasksExecution();
 		}
 		else
 		{
-			SwingUtilities.invokeLater(exec);
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override public void run()
+				{
+					handleTasksExecution();
+				}
+			});
 		}
 	}
 	
@@ -97,7 +83,7 @@ final class TasksGroupExecutor
 	{
 		if (_state.compareAndSet(State.RUNNING, State.CANCELLED))
 		{
-			for (TaskHandler<?> handler: _group.tasks())
+			for (TaskHandler<?> handler: _group.tasksHandlers())
 			{
 				handler.cancel();
 			}
@@ -114,9 +100,30 @@ final class TasksGroupExecutor
 		return _state.get() == State.DONE;
 	}
 	
+	@SuppressWarnings("unchecked") 
+	private void handleTasksExecution()
+	{
+		// Block input right now (in EDT)
+		_blocker.block(_group);
+		for (TaskHandler<?> handler: _group.tasksHandlers())
+		{
+			handler.init(_groupExecutor.submit(handler));
+		}
+		_state.set(State.RUNNING);
+		// Start a Thread to wait until all tasks are finished???
+		Runnable handleFeedback = new Runnable()
+		{
+			public void run()
+			{
+				handleTasksFeedback();
+			}
+		};
+		_threadFactory.newThread(handleFeedback).start();
+	}
+
 	private void handleTasksFeedback()
 	{
-		while (!_group.tasks().isEmpty())
+		while (!_group.tasksHandlers().isEmpty())
 		{
 			try
 			{
@@ -128,6 +135,7 @@ final class TasksGroupExecutor
 			}
 		}
 		_state.compareAndSet(State.RUNNING, State.DONE);
+		_groupListener.allTasksEnded(_group);
 		// Make sure, at the end, to unblock input (must be in EDT)!
 		SwingUtilities.invokeLater(new Runnable()
 		{
@@ -141,12 +149,12 @@ final class TasksGroupExecutor
 	private void handleFuture(Future<?> future)
 	{
 		// Find the right task for that future and have it handle the result
-		for (TaskHandler<?> handler: _group.tasks())
+		for (TaskHandler<?> handler: _group.tasksHandlers())
 		{
 			if (handler.handleResult(future))
 			{
 				// Remove handler from _group.tasks() to eventually end the waiting loop
-				_group.tasks().remove(handler);
+				_group.tasksHandlers().remove(handler);
 				return;
 			}
 		}
@@ -168,5 +176,6 @@ final class TasksGroupExecutor
 	final private ThreadFactory _threadFactory = Executors.defaultThreadFactory();
 	final private AtomicReference<State> _state = new AtomicReference<State>(State.PENDING);
 	final private InputBlocker _blocker;
+	final private TasksGroupListener _groupListener;
 	@SuppressWarnings("unchecked") final private CompletionService _groupExecutor;
 }

@@ -24,6 +24,7 @@ import net.guts.gui.action.TasksGroupAction;
 import net.guts.gui.task.AbstractTask;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
+import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
 
@@ -163,7 +164,7 @@ public class TaskTestActions
 			return null;
 		}
 
-		@Override public void finished(TasksGroup group, Task<? extends Void> source)
+		@Override public void finished(TasksGroup group, TaskInfo source)
 		{
 			System.out.printf("Task `%s` finished\n", _name);
 		}
@@ -194,7 +195,7 @@ public class TaskTestActions
 			return null;
 		}
 
-		@Override public void finished(TasksGroup group, Task<? extends Void> source)
+		@Override public void finished(TasksGroup group, TaskInfo source)
 		{
 			System.out.printf("Task `%s` finished\n", _name);
 		}
