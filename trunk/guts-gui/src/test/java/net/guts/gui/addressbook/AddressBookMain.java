@@ -19,10 +19,12 @@ import java.util.List;
 import net.guts.event.Events;
 import net.guts.gui.addressbook.action.ContactActions;
 import net.guts.gui.addressbook.domain.Contact;
+import net.guts.gui.addressbook.util.TasksGroupProgressPanel;
 import net.guts.gui.application.AbstractAppLauncher;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.resource.Resources;
+import net.guts.gui.task.blocker.BlockerDialogPane;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -60,6 +62,9 @@ public class AddressBookMain extends AbstractAppLauncher
 			// Setup ResourceModule root bundle
 			Resources.bindRootBundle(binder(), getClass(), "resources");
 
+			// Set our own blocker dialog panel
+			bind(BlockerDialogPane.class).to(TasksGroupProgressPanel.class);
+			
 			//TODO remove after resource injection tests and performance comparison
 			Resources.bindInjectionStrategy(binder()).to(SimpleInjectionDecisionStrategy.class);
 		}
