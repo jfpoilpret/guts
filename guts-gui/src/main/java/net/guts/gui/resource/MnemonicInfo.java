@@ -171,8 +171,8 @@ public final class MnemonicInfo
 		_keyCodes.put(')', KeyEvent.VK_RIGHT_PARENTHESIS);
 
 		_keyCodes.put(' ', KeyEvent.VK_SPACE);
-		_keyCodes.put('€', KeyEvent.VK_EURO_SIGN);
-		_keyCodes.put('¡', KeyEvent.VK_INVERTED_EXCLAMATION_MARK);
+		_keyCodes.put('\u20AC', KeyEvent.VK_EURO_SIGN);
+		_keyCodes.put('\u00A1', KeyEvent.VK_INVERTED_EXCLAMATION_MARK);
 	}
 	// CSON: ExecutableStatementCountCheck
 	
