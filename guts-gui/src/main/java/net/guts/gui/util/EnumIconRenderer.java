@@ -26,6 +26,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 //TODO add system for automatic resource injection!
 public class EnumIconRenderer<T extends Enum<T>> extends DefaultTableCellRenderer
 {
+	private static final long serialVersionUID = 4287379175359009250L;
+
 	public EnumIconRenderer(Class<T> type)
 	{
 		setHorizontalAlignment(CENTER);
