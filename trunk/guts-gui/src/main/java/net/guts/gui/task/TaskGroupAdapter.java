@@ -14,6 +14,7 @@
 
 package net.guts.gui.task;
 
+//TODO rename to TasksGroupAdapter!
 //CSOFF: AbstractClassNameCheck
 public abstract class TaskGroupAdapter extends TaskAdapter<Object> 
 	implements TasksGroupListener
