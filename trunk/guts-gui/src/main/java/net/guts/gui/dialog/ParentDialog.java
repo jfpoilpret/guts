@@ -16,8 +16,6 @@ package net.guts.gui.dialog;
 
 import javax.swing.JButton;
 
-//TODO rename interface (and methods) to make it container-agnostic 
-// (JFrame, JDialog, JInternalFrame)
 /**
  * Interface that is passed to {@link ParentDialogAware} panels before their 
  * containing dialog is shown. Panels must use this interface to close their 
