@@ -23,13 +23,40 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 import com.google.inject.TypeLiteral;
 
+/**
+ * This class proxifies any listener of any class (whatever its type {@code T}) 
+ * so that any call to any of the proxy (as returned by {@link #notifier()} will
+ * be dispatched to all listeners of the same type, registered with 
+ * {@link #addListener(Object)}.
+ * <p/>
+ * 
+ * @param <T> the type to proxify
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class ListenerDispatchProxy<T>
 {
+	/**
+	 * Creates a new listener proxy. In order to use {@code this}, call 
+	 * {@link #notifier()} and call any of its methods.
+	 * 
+	 * @param <T> the type to proxify
+	 * @param type the type to proxify
+	 * @return a new proxy holder
+	 */
 	static public <T> ListenerDispatchProxy<T> createProxy(Class<T> type)
 	{
 		return new ListenerDispatchProxy<T>(TypeLiteral.get(type));
 	}
 	
+	/**
+	 * Creates a new listener proxy. In order to use {@code this}, call 
+	 * {@link #notifier()} and call any of its methods.
+	 * 
+	 * @param <T> the type to proxify
+	 * @param type the type to proxify
+	 * @return a new proxy holder
+	 */
 	static public <T> ListenerDispatchProxy<T> createProxy(TypeLiteral<T> type)
 	{
 		return new ListenerDispatchProxy<T>(type);
@@ -43,16 +70,35 @@ public final class ListenerDispatchProxy<T>
 			clazz.getClassLoader(), new Class[]{clazz}, new Handler());
 	}
 	
+	/**
+	 * Returns the actual proxy that will dispatch all method calls to all listeners 
+	 * registered with {@code this} proxy through {@link #addListener(Object)}.
+	 * 
+	 * @return the proxy that will dispatch all calls to registered listeners
+	 */
 	public T notifier()
 	{
 		return _proxy;
 	}
 
+	/**
+	 * Adds {@code listener} to the list of listeners to which calls to 
+	 * {@link #notifier()} will have to be dispatched.
+	 * 
+	 * @param listener the listener to be added to the list of dispatched listeners
+	 */
 	public void addListener(T listener)
 	{
 		_delegates.add(listener);
 	}
 	
+	/**
+	 * Removes {@code listener} from the list of listeners to which calls to 
+	 * {@link #notifier()} have to be dispatched.
+	 * Does nothing if {@code listener} was not previously in the list.
+	 * 
+	 * @param listener the listener to be removed to the list of dispatched listeners
+	 */
 	public void removeListener(T listener)
 	{
 		_delegates.remove(listener);
