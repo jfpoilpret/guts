@@ -26,15 +26,44 @@ import org.slf4j.LoggerFactory;
 
 import com.google.inject.TypeLiteral;
 
+/**
+ * This class proxifies any listener of any class (whatever its type {@code T}) 
+ * so that any call to any of the proxy (as returned by {@link #notifier()} will
+ * call the matching method of {@code listener} from the EDT.
+ * <p/>
+ * Calls are performed through {@link SwingUtilities#invokeAndWait(Runnable)}.
+ * 
+ * @param <T> the type to proxify
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class ListenerEdtProxy<T>
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ListenerEdtProxy.class);
-	
+
+	/**
+	 * Creates a new listener proxy. In order to use {@code this}, call 
+	 * {@link #notifier()} and call any of its methods.
+	 * 
+	 * @param <T> the type to proxify
+	 * @param type the type to proxify
+	 * @param listener the instance to proxify
+	 * @return a new proxy holder
+	 */
 	static public <T> ListenerEdtProxy<T> createProxy(Class<T> type, T listener)
 	{
 		return new ListenerEdtProxy<T>(TypeLiteral.get(type), listener);
 	}
 	
+	/**
+	 * Creates a new listener proxy. In order to use {@code this}, call 
+	 * {@link #notifier()} and call any of its methods.
+	 * 
+	 * @param <T> the type to proxify
+	 * @param type the type to proxify
+	 * @param listener the instance to proxify
+	 * @return a new proxy holder
+	 */
 	static public <T> ListenerEdtProxy<T> createProxy(TypeLiteral<T> type, T listener)
 	{
 		return new ListenerEdtProxy<T>(type, listener);
@@ -48,7 +77,16 @@ public final class ListenerEdtProxy<T>
 			clazz.getClassLoader(), new Class[]{clazz}, new Handler());
 		_listener = listener;
 	}
-	
+
+	/**
+	 * Returns the actual proxy that will wrap {@code listener} (as passed to
+	 * {@link #createProxy(Class, Object)} or 
+	 * {@link #createProxy(TypeLiteral, Object)}); any call to the returned
+	 * proxy will be mapped to the same call to {@code listener} but will make
+	 * sure this call is performed inside Swing EDT (Event Dispatch Thread).
+	 * 
+	 * @return a new proxy to {@code listener}
+	 */
 	public T notifier()
 	{
 		return _proxy;

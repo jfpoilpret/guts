@@ -20,6 +20,12 @@ import javax.swing.JComponent;
 import javax.swing.LayoutStyle;
 import javax.swing.SwingConstants;
 
+/**
+ * Utility class providing several methods dealing with gaps between components in
+ * their container or between a component and its container borders.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class LayoutHelper
 {
 	private LayoutHelper()

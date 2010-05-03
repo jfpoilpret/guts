@@ -20,6 +20,22 @@ import net.guts.gui.task.TasksGroup;
 
 import com.google.inject.ImplementedBy;
 
+/**
+ * This interface must be implemented by a panel you want to be used by 
+ * {@link ModalDialogInputBlocker}. For your panel to be used, you also have
+ * to add a binding to it in one of your Guice {@link com.google.inject.Module}s:
+ * <p>
+ * bind(BlockerDialogPane.class).to(MyBlockerDialogPane.class).in(Scopes.SINGLETON);
+ * </p>
+ * Note that your panel class can be bound as a singleton; every time before use,
+ * its {@link #setTasksGroup(TasksGroup)} will be called for the current executing
+ * {@code TasksGroup}.
+ * <p/>
+ * In general, you won't need to provide your own panel except if Guts-GUI default,
+ * {@link DefaultBlockerDialogPane}, doesn't suit you.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @ImplementedBy(DefaultBlockerDialogPane.class)
 public interface BlockerDialogPane
 {

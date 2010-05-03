@@ -26,8 +26,7 @@ package net.guts.gui.task;
  * events you care about).
  * <p/>
  * Create a listener object using the extended class and then register it with a 
- * {@code TasksGroup} using {@link TasksGroup#add(Task, TaskListener)} or
- * {@link TasksGroup#addGroupListener(TasksGroupListener)}.
+ * {@code TasksGroup} using {@link TasksGroup#add(Task, TaskListener)}.
  * 
  * @param <T> The type returned by the {@code Task<T>} that this 
  * {@link TaskListener} adapter wants to be notified about

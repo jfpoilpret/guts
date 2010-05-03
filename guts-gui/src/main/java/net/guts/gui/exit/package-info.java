@@ -18,13 +18,17 @@
  * <p/>
  * Guts-GUI Exit management system is quite simple:
  * <ul>
- * <li>{@link ExitController} is used to request application shutdown</li>
- * <li>{@link ExitChecker} instances, registered with {@link ExitController},
+ * <li>{@link net.guts.gui.exit.ExitController} is used to request application 
+ * shutdown</li>
+ * <li>{@link net.guts.gui.exit.ExitChecker} instances, registered with 
+ * {@link net.guts.gui.exit.ExitController},
  * are called in sequence to check if shutdown can be authorized or not</li>
- * <li>if shutdown can proceed, then {@link ExitController#SHUTDOWN_EVENT} event
+ * <li>if shutdown can proceed, then 
+ * {@link net.guts.gui.exit.ExitController#SHUTDOWN_EVENT} event
  * is sent to all registered {@link net.guts.event.Consumes} methods, as a last
  * chance opportunity to perform cleanup before actual shutdown</li>
- * <li>Finally, {@link ExitPerformer} is called to exit the application (and the JVM)</li>
+ * <li>Finally, {@link net.guts.gui.exit.ExitPerformer} is called to exit the 
+ * application (and the JVM)</li>
  * </ul>
  */
 package net.guts.gui.exit;
