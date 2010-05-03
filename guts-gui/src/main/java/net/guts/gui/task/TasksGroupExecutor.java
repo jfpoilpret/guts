@@ -60,8 +60,6 @@ final class TasksGroupExecutor
 			throw new IllegalStateException("execute() called twice!");
 		}
 		
-		//TODO add new state notification to listener for whole group
-
 		// Make sure Task execution start is performed from the EDT
 		if (SwingUtilities.isEventDispatchThread())
 		{

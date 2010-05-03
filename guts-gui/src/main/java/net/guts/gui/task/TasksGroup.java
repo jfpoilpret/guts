@@ -287,8 +287,6 @@ public class TasksGroup
 
 	final private String _name;
 	final private boolean _cancellable;
-	//TODO optimize and use only one List of TaskHandler AND TaskInfo at the same time!!!!
-	// => will need to change the loop in TaslsGroupExecutor!
 	final private List<TaskHandler<?>> _handlers = new CopyOnWriteArrayList<TaskHandler<?>>();
 	final private List<TaskInfo> _tasks = new CopyOnWriteArrayList<TaskInfo>();
 	final private List<TaskInfo> _immutableTasks = Collections.unmodifiableList(_tasks);
