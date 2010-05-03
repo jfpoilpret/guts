@@ -14,9 +14,24 @@
 
 package net.guts.gui.task;
 
-//TODO rename to TasksGroupAdapter!
+/**
+ * An abstract adapter class for listening to progress and status changes of 
+ * all {@link Task}s executed by a {@link TasksGroup}. The methods in this class 
+ * are empty. This class exists as a convenience for creating listener objects.
+ * <p/>
+ * Extend this class to create a {@code TasksGroupListener} and override the 
+ * methods for the events of interest (if you implement the 
+ * {@code TasksGroupListener} interface, you have to define all of the methods 
+ * in it; this abstract class defines null methods for them all, so you can only 
+ * have to define methods for events you care about).
+ * <p/>
+ * Create a listener object using the extended class and then register it with a 
+ * {@code TasksGroup} using {@link TasksGroup#addGroupListener(TasksGroupListener)}.
+ * 
+ * @author Jean-Francois Poilpret
+ */
 //CSOFF: AbstractClassNameCheck
-public abstract class TaskGroupAdapter extends TaskAdapter<Object> 
+public abstract class TasksGroupAdapter extends TaskAdapter<Object> 
 	implements TasksGroupListener
 {
 	/* (non-Javadoc)
