@@ -14,18 +14,26 @@
 
 package net.guts.gui.addressbook.util;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
 
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.TaskAction;
+import net.guts.gui.dialog.Closable;
 import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
+import net.guts.gui.task.FeedbackController;
+import net.guts.gui.task.Task;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TaskInfo.State;
 import net.guts.gui.task.blocker.BlockerDialogPane;
+import net.guts.gui.task.blocker.InputBlockers;
 import net.guts.gui.util.EnumIconRenderer;
 
 import com.google.inject.Inject;
@@ -33,10 +41,13 @@ import com.google.inject.Singleton;
 
 @Singleton
 public class TasksGroupProgressPanel extends JPanel 
-	implements BlockerDialogPane, ParentDialogAware
+	implements Closable, BlockerDialogPane, ParentDialogAware
 {
+	static final private String NAME = "MyBlockerDialog";
+
 	@Inject TasksGroupProgressPanel(TasksTableModel model)
 	{
+		setLayout(new BorderLayout());
 		_model = model;
 		_tasks = new JTable(_model);
 		// Add special renderers for state & progress
@@ -52,15 +63,21 @@ public class TasksGroupProgressPanel extends JPanel
 		int height = 6 * _tasks.getRowHeight();
 		_tasks.setPreferredScrollableViewportSize(new Dimension(width, height));
 
-		//TODO cancel button
-
 		JScrollPane scroller = new JScrollPane(_tasks);
-		add(scroller);
+		add(scroller, BorderLayout.CENTER);
+		add(_cancelBtn, BorderLayout.SOUTH);
 	}
 
 	@Override public void setTasksGroup(TasksGroup group)
 	{
+		_group = group;
 		_model.setTasksGroup(group);
+	}
+	
+	@Override public boolean canClose()
+	{
+		// It is not allowed to close the dialog through the close box
+		return false;
 	}
 	
 	@Override public void close()
@@ -78,9 +95,33 @@ public class TasksGroupProgressPanel extends JPanel
 		_parent = parent;
 	}
 
+	// Used for resource injection
+	void setTitle(String title)
+	{
+		_parent.setDialogTitle(title);
+	}
+
+	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
+	{
+		@Override protected void perform()
+		{
+			Task<Void> task = new Task<Void>()
+			{
+				@Override public Void execute(FeedbackController controller) throws Exception
+				{
+					_group.cancel();
+					return null;
+				}
+			};
+			submit(task, InputBlockers.actionBlocker(this));
+		}
+	};
+
 	final private TasksTableModel _model;
 	final private JTable _tasks;
 	final private EnumIconRenderer<State> _stateRenderer = 
 		new EnumIconRenderer<State>(State.class);
+	final private JButton _cancelBtn = new JButton(_cancel.action());
+	private TasksGroup _group;
 	private ParentDialog _parent;
 }
