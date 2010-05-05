@@ -89,7 +89,10 @@ public final class ListenerDispatchProxy<T>
 	 */
 	public void addListener(T listener)
 	{
-		_delegates.add(listener);
+		if (listener != null)
+		{
+			_delegates.add(listener);
+		}
 	}
 	
 	/**
@@ -101,7 +104,10 @@ public final class ListenerDispatchProxy<T>
 	 */
 	public void removeListener(T listener)
 	{
-		_delegates.remove(listener);
+		if (listener != null)
+		{
+			_delegates.remove(listener);
+		}
 	}
 
 	//CSOFF: IllegalThrowsCheck
