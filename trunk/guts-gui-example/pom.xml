@@ -22,7 +22,7 @@
 				<!-- Make the Address Book sample a runnable jar -->
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
-					<artefactId>maven-jar-plugin</artefactId>
+					<artifactId>maven-jar-plugin</artifactId>
 					<configuration>
 						<archive>
 							<manifest>
