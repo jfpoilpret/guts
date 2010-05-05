@@ -16,6 +16,26 @@
 	<name>Guts-GUI Address Book Example Application</name>
 	<url>http://kenai.com/projects/guts</url>
 
+	<project>
+		<build>
+			<plugins>
+				<!-- Make the Address Book sample a runnable jar -->
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artefactId>maven-jar-plugin</artefactId>
+					<configuration>
+						<archive>
+							<manifest>
+								<addClasspath>true</addClasspath>
+								<mainClass>net.guts.gui.addressbook.AddressBookMain</mainClass>
+							</manifest>
+						</archive>
+					</configuration>
+				</plugin>
+			</plugins>
+		</build>
+	</project>
+		
 	<dependencies>
 		<dependency>
 			<groupId>net.guts</groupId>
