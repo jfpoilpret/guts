@@ -48,6 +48,7 @@ public class TasksGroupProgressPanel extends JPanel
 	@Inject TasksGroupProgressPanel(TasksTableModel model)
 	{
 		setLayout(new BorderLayout());
+		setName(NAME);
 		_model = model;
 		_tasks = new JTable(_model);
 		// Add special renderers for state & progress
