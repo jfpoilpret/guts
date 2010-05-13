@@ -14,6 +14,7 @@
 	<packaging>jar</packaging>
 
 	<name>Guts-GUI Address Book Example Application</name>
+	<description>A simple Address Book example application using Guts-GUI framework</description>
 	<url>http://kenai.com/projects/guts</url>
 
 	<project>
@@ -30,6 +31,53 @@
 								<mainClass>net.guts.gui.addressbook.AddressBookMain</mainClass>
 							</manifest>
 						</archive>
+					</configuration>
+				</plugin>
+				<plugin>
+					<groupId>org.codehaus.mojo.webstart</groupId>
+					<artifactId>webstart-maven-plugin</artifactId>
+					<version>1.0-alpha-2</version>
+<!--Is that really useful? -->
+					<executions>
+						<execution>
+							<goals>
+								<goal>jnlp</goal>
+							</goals>
+						</execution>
+					</executions>
+<!-- -->
+					<configuration>
+						<jnlp>
+							<outputFile>guts-gui-example.jnlp</outputFile>
+							<j2seVersion>1.6+</j2seVersion>
+							<mainClass>net.guts.gui.addressbook.AddressBookMain</mainClass>
+						</jnlp>
+						<sign>
+							<keystore>keystore</keystore>
+							<keypass>password</keypass>
+							<storepass>password</storepass>
+							<alias>alias</alias>
+							<validity>3650</validity>
+
+							<!-- TODO: Check better values there -->
+							<dnameCn>Guts</dnameCn>
+							<dnameOu>Guts GUI</dnameOu>
+							<dnameO>Guts</dnameO>
+							<dnameL>Ho Chi Minh city</dnameL>
+							<dnameSt>NA</dnameSt>
+							<dnameC>VN</dnameC>
+							<verify>true</verify>
+							<keystoreConfig>
+								<delete>true</delete>
+								<gen>true</gen>
+							</keystoreConfig>
+						</sign>
+<!-- TODO: try it!
+						<pack200>true</pack200>
+-->
+<!-- TODO: why zip is generated? -->
+<!-- TODO: remove verbosity! -->
+						<verbose>true</verbose>
 					</configuration>
 				</plugin>
 			</plugins>
