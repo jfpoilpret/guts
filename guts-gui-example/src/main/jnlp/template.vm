@@ -5,7 +5,7 @@
     href="$outputFile">
   <information>
     <title>$project.Name</title>
-    <vendor>Jean-Francois Poilpret (Guts project on Kenai)</vendor>
+    <vendor>Jean-Francois Poilpret (Owner of Guts project on Kenai)</vendor>
     <homepage href="http://guts.kenai.com/jnlp"/>
     <description>$project.Description</description>
 #if($offlineAllowed)
