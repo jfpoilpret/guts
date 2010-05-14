@@ -37,15 +37,6 @@
 					<groupId>org.codehaus.mojo.webstart</groupId>
 					<artifactId>webstart-maven-plugin</artifactId>
 					<version>1.0-alpha-2</version>
-<!--Is that really useful? -->
-					<executions>
-						<execution>
-							<goals>
-								<goal>jnlp</goal>
-							</goals>
-						</execution>
-					</executions>
-<!-- -->
 					<configuration>
 						<jnlp>
 							<outputFile>guts-gui-example.jnlp</outputFile>
@@ -58,26 +49,20 @@
 							<storepass>password</storepass>
 							<alias>alias</alias>
 							<validity>3650</validity>
+							<keystoreConfig>
+								<delete>true</delete>
+								<gen>true</gen>
+							</keystoreConfig>
 
-							<!-- TODO: Check better values there -->
-							<dnameCn>Guts</dnameCn>
+							<dnameCn>Guts-GUI</dnameCn>
 							<dnameOu>Guts GUI</dnameOu>
 							<dnameO>Guts</dnameO>
 							<dnameL>Ho Chi Minh city</dnameL>
 							<dnameSt>NA</dnameSt>
 							<dnameC>VN</dnameC>
 							<verify>true</verify>
-							<keystoreConfig>
-								<delete>true</delete>
-								<gen>true</gen>
-							</keystoreConfig>
 						</sign>
-<!-- TODO: try it!
-						<pack200>true</pack200>
--->
-<!-- TODO: why zip is generated? -->
-<!-- TODO: remove verbosity! -->
-						<verbose>true</verbose>
+						<verbose>false</verbose>
 					</configuration>
 				</plugin>
 			</plugins>
