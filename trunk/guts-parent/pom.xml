@@ -67,7 +67,7 @@
 					<verbose>false</verbose>
 					<links>
 						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
-						<link>http://java.sun.com/j2se/1.6.0/docs/api</link>
+						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
 				</configuration>
@@ -158,7 +158,7 @@
 					<verbose>false</verbose>
 					<links>
 						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
-						<link>http://java.sun.com/j2se/1.6.0/docs/api</link>
+						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
 				</configuration>
@@ -299,17 +299,17 @@
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-api</artifactId>
-				<version>1.5.9-RC0</version>
+				<version>1.6.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-log4j12</artifactId>
-				<version>1.5.9-RC0</version>
+				<version>1.6.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.slf4j</groupId>
 				<artifactId>slf4j-simple</artifactId>
-				<version>1.5.9-RC0</version>
+				<version>1.6.0</version>
 			</dependency>
 			<dependency>
 				<groupId>cglib</groupId>
@@ -432,6 +432,15 @@
 			<timezone>-7</timezone>
 		</developer>
 		<developer>
+			<id>gradatz</id>
+			<name>Gerhard Radatz</name>
+			<email>gerhard.radatz@gmail.com</email>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+		<developer>
 			<id>trygvelaugstol</id>
 			<name>Trygve Laugstøl</name>
 			<email>trygvis@inamo.no</email>
@@ -439,6 +448,15 @@
 				<role>content developer</role>
 			</roles>
 			<timezone>+1</timezone>
+		</developer>
+		<developer>
+			<id>andrei.pozolotin</id>
+			<name>Andrei Pozolotin</name>
+			<email>andrei.pozolotin@gmail.com</email>
+			<roles>
+				<role>content developer</role>
+			</roles>
+			<timezone>-6</timezone>
 		</developer>
 	</developers>
 </project>
