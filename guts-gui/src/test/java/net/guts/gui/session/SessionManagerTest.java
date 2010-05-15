@@ -82,6 +82,7 @@ public class SessionManagerTest
 	private JSplitPane initSplitPaneWindow(Window window)
 	{
 		JSplitPane split = new JSplitPane();
+		split.setName("split");
 		split.setLeftComponent(new JLabel("LEFT"));
 		split.setRightComponent(new JLabel("RIGHT"));
 		window.add(split);
@@ -112,6 +113,7 @@ public class SessionManagerTest
 		Object[] columns = {"First column", "C2"};
 		Object[][] rows = {{23, 32}, {14, 41}, {67, 76}};
 		JTable table = new JTable(rows, columns);
+		table.setName("table");
 		window.add(table);
 		window.pack();
 		return table;
@@ -137,6 +139,7 @@ public class SessionManagerTest
 	private JTabbedPane initTabWindow(Window window)
 	{
 		JTabbedPane tabs = new JTabbedPane();
+		tabs.setName("tabs");
 		tabs.addTab("First Tab", new JLabel("ONE"));
 		tabs.addTab("Tab 2", new JLabel("TWO"));
 		window.add(tabs);
