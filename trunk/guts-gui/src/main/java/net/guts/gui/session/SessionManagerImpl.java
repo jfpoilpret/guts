@@ -22,10 +22,15 @@ import net.guts.common.type.TypeHelper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 @Singleton
 class SessionManagerImpl implements SessionManager
 {
+
+	static final private Logger _logger = LoggerFactory.getLogger(SessionManagerImpl.class);
+
 	@Inject
 	SessionManagerImpl(SerializationManager serializer, StorageMedium medium, 
 		Map<Class<?>, SessionState<?>> converters)
@@ -37,26 +42,36 @@ class SessionManagerImpl implements SessionManager
 
 	@Override public <T extends Component> void restore(T component)
 	{
-		inject(component);
+		restoreRecursive(component, component);
+	}
+
+	private <T extends Component> void restoreRecursive(Component parent, T component)
+	{
+		inject(parent, component);
 		if (component instanceof Container)
 		{
 			Container container = (Container) component;
 			for (Component child: container.getComponents())
 			{
-				restore(child);
+				restoreRecursive(parent, child);
 			}
 		}
 	}
 
 	@Override public <T extends Component> void save(T component)
 	{
-		extract(component);
+		saveRecursive(component, component);
+	}
+
+	private <T extends Component> void saveRecursive(Component parent, T component)
+	{
+		extract(parent, component);
 		if (component instanceof Container)
 		{
 			Container container = (Container) component;
 			for (Component child: container.getComponents())
 			{
-				save(child);
+				saveRecursive(parent, child);
 			}
 		}
 	}
@@ -84,41 +99,59 @@ class SessionManagerImpl implements SessionManager
 			_converters, component.getClass());
 	}
 	
-	private <T extends Component> void inject(T component)
+	private <T extends Component> void inject(Component parent, T component)
 	{
 		SessionState<T> state = findState(component);
 		if (state != null)
 		{
 			state.reset();
-			restore(name(component), state);
-			state.injectState(component);
+			String id = name(parent, component,"restore");
+			if (id != null)
+			{
+				restore(id, state);
+				state.injectState(component);
+			}
 		}
 	}
 	
-	private <T extends Component> void extract(T component)
+	private <T extends Component> void extract(Component parent, T component)
 	{
 		SessionState<T> state = findState(component);
 		if (state != null)
 		{
 			state.extractState(component);
-			save(name(component), state);
+			String id = name(parent, component, "save");
+			if (id != null)
+			{
+				save(id, state);
+			}
 		}
 	}
 	
-	private String name(Component component)
+	private String name(Component parent, Component component, String action)
 	{
 		String name = component.getName();
-		if (name != null)
+		String parentName = parent.getName();
+		if (name == null)
 		{
-			return name;
+			_logger.warn("cannot {} component state: missing name() for {}",
+				new Object[]{action, component.getClass().getSimpleName()});
+			return null;
 		}
-		else if (component.getParent() != null)
+		if (parentName == null)
 		{
-			return name(component.getParent()) + "." + component.getClass().getSimpleName();
+			_logger.warn("cannot {} component state: missing name() for {}'s parent {}",
+				new Object[]{action,
+							 component.getClass().getSimpleName(),
+							 parent.getClass().getSimpleName()});
+			return null;
 		}
-		else
+		if (parent == component)
 		{
-			return "noname";
+			return name; // toplevel container
+		} else
+		{
+			return parentName + '.' + name;
 		}
 	}
 
