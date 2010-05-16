@@ -18,17 +18,17 @@ import java.awt.Component;
 import java.awt.Container;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.guts.common.type.TypeHelper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Singleton
 class SessionManagerImpl implements SessionManager
 {
-
 	static final private Logger _logger = LoggerFactory.getLogger(SessionManagerImpl.class);
 
 	@Inject
@@ -105,7 +105,7 @@ class SessionManagerImpl implements SessionManager
 		if (state != null)
 		{
 			state.reset();
-			String id = name(parent, component,"restore");
+			String id = name(parent, component, "restore");
 			if (id != null)
 			{
 				restore(id, state);
@@ -128,6 +128,7 @@ class SessionManagerImpl implements SessionManager
 		}
 	}
 	
+	// GUTS-26: make names short so they can fit as a key (length < 80) in java.util.prefs
 	private String name(Component parent, Component component, String action)
 	{
 		String name = component.getName();
@@ -146,11 +147,15 @@ class SessionManagerImpl implements SessionManager
 							 parent.getClass().getSimpleName()});
 			return null;
 		}
+		// FIXME what if returned name is still too long? truncate? log and return null?
 		if (parent == component)
 		{
-			return name; // toplevel container
-		} else
+			// This is the toplevel container, return only its name
+			return name;
+		}
+		else
 		{
+			// Not the topelevel container, return (toplevel, component) names only
 			return parentName + '.' + name;
 		}
 	}
