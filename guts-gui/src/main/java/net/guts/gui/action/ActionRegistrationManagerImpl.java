@@ -15,16 +15,13 @@
 package net.guts.gui.action;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.ref.ReflectHelper;
 import net.guts.common.ref.WeakRefSet;
 import net.guts.common.ref.WeakRefSet.Performer;
 import net.guts.event.Consumes;
@@ -37,9 +34,6 @@ import com.google.inject.Singleton;
 @Singleton
 class ActionRegistrationManagerImpl implements ActionRegistrationManager
 {
-	static final private Logger _logger = 
-		LoggerFactory.getLogger(ActionRegistrationManagerImpl.class);
-	
 	@Inject ActionRegistrationManagerImpl(Injector injector, 
 		ResourceInjector resourceInjector, Cleaner cleaner)
 	{
@@ -48,31 +42,20 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 		cleaner.addCleanable(_actions);
 	}
 
-	// CSOFF: IllegalCatchCheck
 	@Override public void registerActions(Object instance)
 	{
 		// Check all fields of instance class
-		for (Field field: findActions(instance.getClass()))
+		List<Field> fields = findActions(instance.getClass());
+		ReflectHelper.processFieldsValues(instance, fields, GutsAction.class, 
+			new ReflectHelper.FieldValueProcessor<GutsAction>()
 		{
-			boolean accessible = field.isAccessible();
-			try
+			@Override public boolean process(Field field, GutsAction action)
 			{
-				field.setAccessible(true);
-				GutsAction action =  (GutsAction) field.get(instance);
 				registerAction(action);
+				return true;
 			}
-			catch (Exception e)
-			{
-				String name = field.getDeclaringClass().getName() + "." + field.getName();
-				_logger.error("registerActions(), field: " + name, e);
-			}
-			finally
-			{
-				field.setAccessible(accessible);
-			}
-		}
+		});
 	}
-	// CSON: IllegalCatchCheck
 	
 	@Override public void registerAction(GutsAction action)
 	{
@@ -98,7 +81,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			}
 		});
 	}
-	
+
 	private List<Field> findActions(Class<?> type)
 	{
 		synchronized (_actionClasses)
@@ -106,19 +89,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			List<Field> fields = _actionClasses.get(type);
 			if (fields == null)
 			{
-				fields = new ArrayList<Field>();
-				Class<?> clazz = type;
-				while (clazz != null)
-				{
-					for (Field field: clazz.getDeclaredFields())
-					{
-						if (GutsAction.class.isAssignableFrom(field.getType()))
-						{
-							fields.add(field);
-						}
-					}
-					clazz = clazz.getSuperclass();
-				}
+				fields = ReflectHelper.findFields(type, GutsAction.class);
 				_actionClasses.put(type, fields);
 			}
 			return fields;
