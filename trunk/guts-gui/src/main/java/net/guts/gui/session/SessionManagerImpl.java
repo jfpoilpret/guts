@@ -147,7 +147,9 @@ class SessionManagerImpl implements SessionManager
 							 parent.getClass().getSimpleName()});
 			return null;
 		}
-		// FIXME what if returned name is still too long? truncate? log and return null?
+		// TODO Handle the case where "name" is too long for StorageMedium
+		// That could be done by asking name check to StorageMedium 
+		// (implementation-dependent)
 		if (parent == component)
 		{
 			// This is the toplevel container, return only its name
