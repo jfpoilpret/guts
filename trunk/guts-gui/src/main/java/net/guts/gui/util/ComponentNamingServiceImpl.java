@@ -16,6 +16,9 @@ package net.guts.gui.util;
 
 import java.awt.Component;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
 
 import net.guts.common.ref.ReflectHelper;
 
@@ -40,7 +43,16 @@ class ComponentNamingServiceImpl implements ComponentNamingService
 		{
 			parent.setName(_namingPolicy.parentName(parent));
 		}
-		// Then set name of every component field in parent class
+		// Then set component names in all fields in parent class
+		// This is done recursively through fields that implement ComponentHolder
+		// marker interface
+		setChildrenNames(parent, parent, new LinkedList<String>());
+	}
+	
+	private void setChildrenNames(
+		final Component root, final Object parent, final LinkedList<String> holders)
+	{
+		// First set name of every Component field in parent class
 		ReflectHelper.processFieldsValues(parent, Component.class, 
 			new ReflectHelper.FieldValueProcessor<Component>()
 		{
@@ -48,8 +60,21 @@ class ComponentNamingServiceImpl implements ComponentNamingService
 			{
 				if (child.getName() == null)
 				{
-					child.setName(_namingPolicy.childName(parent, child, field.getName()));
+					child.setName(
+						_namingPolicy.childName(root, holders, child, field.getName()));
 				}
+				return true;
+			}
+		});
+		// Then recurse through all ComponentHolder instances
+		ReflectHelper.processFieldsValues(parent, ComponentHolder.class, 
+			new ReflectHelper.FieldValueProcessor<ComponentHolder>()
+		{
+			@Override public boolean process(Field field, ComponentHolder child)
+			{
+				holders.add(field.getName());
+				setChildrenNames(root, child, holders);
+				holders.removeLast();
 				return true;
 			}
 		});

@@ -15,29 +15,19 @@
 package net.guts.gui.addressbook.dialog;
 
 import javax.swing.JLabel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 import net.guts.gui.addressbook.domain.Address;
-import net.guts.gui.dialog.layout.GroupSeparator;
+import net.guts.gui.util.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
-public class AddressPanel
+public class AddressPanel implements ComponentHolder
 {
-	public AddressPanel(String name)
+	public AddressPanel()
 	{
-		_name = name;
-		_lblStreet1.setName(name + "-street-1-label");
-		_txfStreet1.setName(name + "-street-1");
-		_lblStreet2.setName(name + "-street-2-label");
-		_txfStreet2.setName(name + "-street-2");
-		_lblZip.setName(name + "-zip-label");
-		_txfZip.setName(name + "-zip");
-		_lblCity.setName(name + "-city-label");
-		_txfCity.setName(name + "-city");
-		_lblPhone.setName(name + "-phone-label");
-		_txfPhone.setName(name + "-phone");
-
 		_lblCity.setHorizontalAlignment(JLabel.RIGHT);
+		_lblAddressKind.setHorizontalAlignment(JLabel.LEADING);
 	}
 
 	public void layout(DesignGridLayout layout)
@@ -49,7 +39,8 @@ public class AddressPanel
 	{
 		if (separator)
 		{
-			GroupSeparator.add(_name + "-address", layout);
+			layout.emptyRow();
+			layout.row().left().fill().add(_lblAddressKind, new JSeparator());
 		}
 		layout.row().grid(_lblStreet1).add(_txfStreet1);
 		layout.row().grid(_lblStreet2).add(_txfStreet2);
@@ -84,7 +75,7 @@ public class AddressPanel
 		address.setPhone(_txfPhone.getText());
 	}
 
-	final private String _name;
+	final private JLabel _lblAddressKind = new JLabel();
 	final private JLabel _lblStreet1 = new JLabel();
 	final private JTextField _txfStreet1 = new JTextField(32);
 	final private JLabel _lblStreet2 = new JLabel();

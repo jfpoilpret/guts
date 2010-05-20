@@ -38,5 +38,4 @@ public final class ComponentNamingModule extends AbstractModule
 			new OneTypeListener<Component>(Component.class, injectionListener);
 		bindListener(Matchers.isSubtypeOf(Component.class), typeListener);
 	}
-
 }

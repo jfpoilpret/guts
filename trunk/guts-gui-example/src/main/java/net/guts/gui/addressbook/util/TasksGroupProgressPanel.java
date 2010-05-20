@@ -43,6 +43,7 @@ import com.google.inject.Singleton;
 public class TasksGroupProgressPanel extends JPanel 
 	implements Closable, BlockerDialogPane, ParentDialogAware
 {
+	static final private long serialVersionUID = 1L;
 	static final private String NAME = "MyBlockerDialog";
 
 	@Inject TasksGroupProgressPanel(TasksTableModel model)
@@ -51,7 +52,6 @@ public class TasksGroupProgressPanel extends JPanel
 		setName(NAME);
 		_model = model;
 		_tasks = new JTable(_model);
-		_tasks.setName(NAME + "-tasks");
 		// Add special renderers for state & progress
 		_stateRenderer.mapIcon(State.CANCELLED, "net/guts/gui/addressbook/icons/cross.png");
 		_stateRenderer.mapIcon(State.FAILED, "net/guts/gui/addressbook/icons/cog_error.png");

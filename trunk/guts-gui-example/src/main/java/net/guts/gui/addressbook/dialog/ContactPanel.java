@@ -39,13 +39,6 @@ public class ContactPanel extends AbstractPanel implements Resettable
 	public ContactPanel()
 	{
 		super(NAME);
-		// Initialize components & names
-		_lblFirstName.setName(NAME + "-first-name-label");
-		_txfFirstName.setName(NAME + "-first-name");
-		_lblLastName.setName(NAME + "-last-name-label");
-		_txfLastName.setName(NAME + "-last-name");
-		_lblBirth.setName(NAME + "-birth-label");
-		_txfBirth.setName(NAME + "-birth");
 
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
@@ -128,8 +121,8 @@ public class ContactPanel extends AbstractPanel implements Resettable
 	final private JTextField _txfLastName = new JTextField(20);
 	final private JLabel _lblBirth = new JLabel();
 	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private AddressPanel _home = new AddressPanel(NAME + "-home");
-	final private AddressPanel _office = new AddressPanel(NAME + "-office");
+	final private AddressPanel _home = new AddressPanel();
+	final private AddressPanel _office = new AddressPanel();
 	private Contact _contact;
 	@Inject private AddressBookService _service;
 }

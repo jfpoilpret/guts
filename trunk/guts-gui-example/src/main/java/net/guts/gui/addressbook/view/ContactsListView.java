@@ -39,15 +39,11 @@ import ca.odell.glazedlists.swing.EventTableModel;
 public class ContactsListView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
-	static final private String NAME = "ContactsListView";
 	
 	@Inject public ContactsListView(
 		AddressBookService service, final Channel<Contact> selectedContactChannel)
 	{
 		setLayout(new BorderLayout());
-		setName(NAME);
-		_table.setName(NAME + "-list");
-
 		_contacts = GlazedLists.eventList(service.getAllContacts());
 		String[] properties = {"firstName", "lastName", "home.city"};
 		TableFormat<Contact> format = GlazedLists.tableFormat(

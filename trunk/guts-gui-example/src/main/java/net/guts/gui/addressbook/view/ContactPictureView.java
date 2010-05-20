@@ -30,14 +30,12 @@ import com.google.inject.Singleton;
 public class ContactPictureView extends JLabel
 {
 	static final private long serialVersionUID = 7627517518039773295L;
-	static final private String NAME = "ContactPicture";
 	static final private int IMG_SIZE = 200;
 	
 	@Inject
 	public ContactPictureView(AddressBookService service)
 	{
 		_service = service;
-		setName(NAME);
 		setHorizontalAlignment(JLabel.CENTER);
 		setMinimumSize(new Dimension(IMG_SIZE, IMG_SIZE));
 	}

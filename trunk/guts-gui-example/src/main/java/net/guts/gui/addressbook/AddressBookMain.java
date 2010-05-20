@@ -25,6 +25,9 @@ import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.task.blocker.BlockerDialogPane;
+import net.guts.gui.util.ComponentNamePolicy;
+import net.guts.gui.util.ComponentNamingModule;
+import net.guts.gui.util.DefaultComponentNamePolicy;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -45,8 +48,10 @@ public class AddressBookMain extends AbstractAppLauncher
 		System.setProperty("sun.awt.noerasebackground", "true");
 		// Enable automatic content selection on focus gained for all text fields
 //		UIManager.put(LafWidget.TEXT_SELECT_ON_FOCUS, Boolean.TRUE);
-		// Finally, add our specific module
+		// Finally, add modules we use from guts-gui
 		modules.add(new MessageModule());
+		modules.add(new ComponentNamingModule());
+		// Finally, add our specific module
 		modules.add(new AddressBookModule());
 	}
 
@@ -65,8 +70,21 @@ public class AddressBookMain extends AbstractAppLauncher
 			// Set our own blocker dialog panel
 			bind(BlockerDialogPane.class).to(TasksGroupProgressPanel.class);
 			
+			// Set our own component naming policy
+			bind(ComponentNamePolicy.class).toInstance(new AddressBookNamePolicy());
+			
 			//TODO remove after resource injection tests and performance comparison
 			Resources.bindInjectionStrategy(binder()).to(SimpleInjectionDecisionStrategy.class);
+		}
+	}
+
+	// Special policy for automatically naming Swing components:
+	// Don't use "-" as a name separator, since all fields names already start with "_"
+	static private class AddressBookNamePolicy extends DefaultComponentNamePolicy
+	{
+		@Override protected String separator()
+		{
+			return "";
 		}
 	}
 }
