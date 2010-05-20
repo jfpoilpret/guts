@@ -40,7 +40,6 @@ public class ContactDetailView extends JPanel
 		
 		// Layout the view
 		DesignGridLayout layout = new DesignGridLayout(this);
-		setLayout(layout);
 		layout.row().grid(_lblFirstName).add(_txfFirstName);
 		layout.row().grid(_lblLastName).add(_txfLastName);
 		layout.row().grid(_lblBirth).add(_txfBirth);
