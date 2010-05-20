@@ -16,9 +16,7 @@ package net.guts.gui.util;
 
 import java.awt.Component;
 import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.LinkedList;
-import java.util.List;
 
 import net.guts.common.ref.ReflectHelper;
 
