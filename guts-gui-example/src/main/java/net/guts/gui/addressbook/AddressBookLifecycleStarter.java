@@ -113,7 +113,6 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		// Initialize the main frame content: 3 panels are there, separated by JSplitPanes
 		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(_mainView);
-//		mainFrame.pack();
 		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER, true);
 	}
 	
