@@ -111,7 +111,8 @@ public class ComponentNamingModuleTest
 		String expected = panel.getClass().getSimpleName(); 
 		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
 		assertThat(panel.myLabel1.getName()).as("Widget Name").isEqualTo("NAME7");
-		assertThat(panel.myLabel2.getName()).as("Widget Name").isEqualTo(expected + "-myLabel2");
+		assertThat(panel.myLabel2.getName()).as("Widget Name")
+			.isEqualTo(expected + "-myLabel2");
 	}
 	static public class UnnamedPanelWithMixedChildren extends JPanel
 	{
@@ -138,8 +139,10 @@ public class ComponentNamingModuleTest
 		PanelWithInheritedChild panel = getInstance(PanelWithInheritedChild.class);
 		String expected = panel.getClass().getSimpleName(); 
 		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
-		assertThat(panel.myLabel1.getName()).as("Widget Name").isEqualTo(expected + "-myLabel1");
-		assertThat(panel.myLabel2.getName()).as("Widget Name").isEqualTo(expected + "-myLabel2");
+		assertThat(panel.myLabel1.getName()).as("Widget Name")
+			.isEqualTo(expected + "-myLabel1");
+		assertThat(panel.myLabel2.getName()).as("Widget Name")
+			.isEqualTo(expected + "-myLabel2");
 	}
 	static public class PanelWithUnnamedChild extends JPanel
 	{
@@ -153,7 +156,8 @@ public class ComponentNamingModuleTest
 	// - test with a private field also
 	public void checkUnnamedPanelWithUnnamedPrivateChild()
 	{
-		UnnamedPanelWithUnnamedPrivateChild panel = getInstance(UnnamedPanelWithUnnamedPrivateChild.class);
+		UnnamedPanelWithUnnamedPrivateChild panel = 
+			getInstance(UnnamedPanelWithUnnamedPrivateChild.class);
 		String expected = panel.getClass().getSimpleName(); 
 		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
 		assertThat(panel.myLabel.getName()).as("Widget Name").isEqualTo(expected + "-myLabel");
@@ -162,7 +166,78 @@ public class ComponentNamingModuleTest
 	{
 		final private JLabel myLabel = new JLabel();
 	}
+	
+	public void checkNamedPanelWithComponentHolderChild()
+	{
+		NamedPanelWithComponentHolderChild panel = 
+			getInstance(NamedPanelWithComponentHolderChild.class);
+		String expected = panel.getClass().getSimpleName(); 
+		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
+		assertThat(panel.myLabel1.getName()).as("Widget Name")
+			.isEqualTo(expected + "-myLabel1");
+		assertThat(panel.child1.myLabel2.getName()).as("ComponentHolder Child 1 Widget Name")
+			.isEqualTo(expected + "-child1-myLabel2");
+		assertThat(panel.child2.myLabel2.getName()).as("ComponentHolder Child 2 Widget Name")
+			.isEqualTo(expected + "-child2-myLabel2");
+	}
+	static public class NamedPanelWithComponentHolderChild extends JPanel
+	{
+		final private JLabel myLabel1 = new JLabel();
+		final private ComponentHolderChild child1 = new ComponentHolderChild();
+		final private ComponentHolderChild child2 = new ComponentHolderChild();
+	}
+	static public class ComponentHolderChild implements ComponentHolder
+	{
+		final private JLabel myLabel2 = new JLabel();	
+	}
 
+	public void checkNamedPanelWithComponentHoldersHierarchy()
+	{
+		NamedPanelWithComponentHoldersHierarchy panel = 
+			getInstance(NamedPanelWithComponentHoldersHierarchy.class);
+		String expected = panel.getClass().getSimpleName(); 
+		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
+		assertThat(panel.child1.myLabel1.getName()).as("ComponentHolder Child 1 Widget Name")
+			.isEqualTo(expected + "-child1-myLabel1");
+		assertThat(panel.child1.child2.myLabel2.getName())
+			.as("ComponentHolder Child1 Child2 Widget Name")
+			.isEqualTo(expected + "-child1-child2-myLabel2");
+	}
+	static public class NamedPanelWithComponentHoldersHierarchy extends JPanel
+	{
+		final private ComponentHolderChild1 child1 = new ComponentHolderChild1();
+	}
+	static public class ComponentHolderChild1 implements ComponentHolder
+	{
+		final private JLabel myLabel1 = new JLabel();	
+		final private ComponentHolderChild2 child2 = new ComponentHolderChild2();
+	}
+	static public class ComponentHolderChild2 implements ComponentHolder
+	{
+		final private JLabel myLabel2 = new JLabel();	
+	}
+	
+	//TODO
+	// - test non-recursivity through panels that don't implement ComponentHolder
+	public void checkNonRecursivityThroughPanelsHierarchy()
+	{
+		NamedPanelWithPanelsHierarchy panel = getInstance(NamedPanelWithPanelsHierarchy.class);
+		String expected = panel.getClass().getSimpleName(); 
+		assertThat(panel.getName()).as("Panel Name").isEqualTo(expected);
+		assertThat(panel.myLabel1.getName()).as("Panel Widget Name")
+			.isEqualTo(expected + "-myLabel1");
+		assertThat(panel.child1.myLabel2.getName()).as("Sub-panel Widget Name").isNull();
+	}
+	static public class NamedPanelWithPanelsHierarchy extends JPanel
+	{
+		final private JLabel myLabel1 = new JLabel();	
+		final private PanelChild1 child1 = new PanelChild1();
+	}
+	static public class PanelChild1 extends JPanel
+	{
+		final private JLabel myLabel2 = new JLabel();	
+	}
+	
 	static private <T> T getInstance(Class<T> clazz)
 	{
 		Injector injector = Guice.createInjector(new ComponentNamingModule());

@@ -15,19 +15,42 @@
 package net.guts.gui.util;
 
 import java.awt.Component;
+import java.util.List;
 
 import com.google.inject.Singleton;
 
 @Singleton
-class DefaultComponentNamePolicy implements ComponentNamePolicy
+public class DefaultComponentNamePolicy implements ComponentNamePolicy
 {
-	@Override public String childName(Component parent, Component child, String field)
+	@Override public String childName(
+		Component parent, List<String> holders, Component child, String field)
 	{
-		return parent.getName() + "-" + field;
+		StringBuilder builder = new StringBuilder(parent.getName());
+		builder.append(separator());
+		if (!holders.isEmpty())
+		{
+			concatenateHolders(holders, builder);
+		}
+		builder.append(field);
+		return builder.toString();
 	}
 
 	@Override public String parentName(Component parent)
 	{
 		 return parent.getClass().getSimpleName();
+	}
+
+	protected void concatenateHolders(List<String> holders, StringBuilder builder)
+	{
+		for (String holder: holders)
+		{
+			builder.append(holder);
+			builder.append(separator());
+		}
+	}
+	
+	protected String separator()
+	{
+		return "-";
 	}
 }

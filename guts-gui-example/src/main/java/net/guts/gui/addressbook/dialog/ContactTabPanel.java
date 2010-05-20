@@ -27,6 +27,7 @@ import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.dialog.support.AbstractTabbedPanel;
 import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.dialog.support.TabPanelAcceptor;
+import net.guts.gui.util.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
@@ -42,8 +43,8 @@ public class ContactTabPanel extends AbstractTabbedPanel
     {
 	    super(NAME);
 	    _tabbedPane.add(_contactTab);
-	    _tabbedPane.add(_homeTab);
-	    _tabbedPane.add(_officeTab);
+	    _tabbedPane.add(_home);
+	    _tabbedPane.add(_office);
 	    initButtons(new AcceptGutsAction()
 	    {
 			@Override protected void perform()
@@ -66,8 +67,8 @@ public class ContactTabPanel extends AbstractTabbedPanel
 		    _create = false;
 		}
 		_contactTab.setContact(_contact);
-		_homeTab.setAddress(_contact.getHome());
-		_officeTab.setAddress(_contact.getOffice());
+		_home.setAddress(_contact.getHome());
+		_office.setAddress(_contact.getOffice());
 	}
 
 	@Override public void reset()
@@ -90,29 +91,19 @@ public class ContactTabPanel extends AbstractTabbedPanel
     }
 
 	private final ContactTab _contactTab = new ContactTab();
-	private final AddressTab _homeTab = new AddressTab(NAME + "-home");
-	private final AddressTab _officeTab = new AddressTab(NAME + "-office");
+	private final AddressTab _home = new AddressTab(NAME + "-home");
+	private final AddressTab _office = new AddressTab(NAME + "-office");
 	private Contact _contact;
 	private boolean _create;
 	@Inject private AddressBookService _service;
 }
 
-class ContactTab extends JPanel implements TabPanelAcceptor
+class ContactTab extends JPanel implements TabPanelAcceptor, ComponentHolder
 {
 	static final private long serialVersionUID = 1402493075589899746L;
-	static final private String NAME = "ContactDetailTabPanel-contact";
 
 	public ContactTab()
 	{
-		setName(NAME);
-		// Initialize components & names
-		_lblFirstName.setName(NAME + "-first-name-label");
-		_txfFirstName.setName(NAME + "-first-name");
-		_lblLastName.setName(NAME + "-last-name-label");
-		_txfLastName.setName(NAME + "-last-name");
-		_lblBirth.setName(NAME + "-birth-label");
-		_txfBirth.setName(NAME + "-birth");
-
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
 		setLayout(layout);
@@ -146,16 +137,13 @@ class ContactTab extends JPanel implements TabPanelAcceptor
 	private Contact _contact;
 }
 
-class AddressTab extends JPanel implements TabPanelAcceptor
+class AddressTab extends JPanel implements TabPanelAcceptor, ComponentHolder
 {
 	static final private long serialVersionUID = -8039187194458016644L;
 
 	public AddressTab(String id)
 	{
-		setName(id);
-		_addressPane = new AddressPanel(id);
 		DesignGridLayout layout = new DesignGridLayout(this);
-		setLayout(layout);
 		_addressPane.layout(layout, false);
 	}
 	
@@ -170,6 +158,6 @@ class AddressTab extends JPanel implements TabPanelAcceptor
 		_addressPane.updateAddress(_address);
     }
 	
-	private final AddressPanel _addressPane;
+	private final AddressPanel _addressPane = new AddressPanel();
 	private Address _address;
 }

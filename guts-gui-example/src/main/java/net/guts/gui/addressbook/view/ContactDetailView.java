@@ -29,22 +29,11 @@ import com.google.inject.Singleton;
 public class ContactDetailView extends JPanel
 {
 	static final private long serialVersionUID = -1436540113538430985L;
-
-	static final private String NAME = "ContactDetailView";
 	static final private double BORDER = 0.5;
 	
 	public ContactDetailView()
 	{
-		// Set names for every widget
-		setName(NAME);
-		_lblFirstName.setName(NAME + "-first-name-label");
-		_txfFirstName.setName(NAME + "-first-name");
-		_lblLastName.setName(NAME + "-last-name-label");
-		_txfLastName.setName(NAME + "-last-name");
-		_lblBirth.setName(NAME + "-birth-label");
-		_txfBirth.setName(NAME + "-birth");
-
-		// Further widget setup
+		// Widgets setup
 		_txfFirstName.setEditable(false);
 		_txfLastName.setEditable(false);
 		_txfBirth.setEditable(false);

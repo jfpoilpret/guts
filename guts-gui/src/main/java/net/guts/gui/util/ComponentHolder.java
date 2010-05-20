@@ -14,15 +14,7 @@
 
 package net.guts.gui.util;
 
-import java.awt.Component;
-import java.util.List;
-
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(DefaultComponentNamePolicy.class)
-public interface ComponentNamePolicy
+public interface ComponentHolder
 {
-	public String parentName(Component parent);
-	public String childName(
-		Component parent, List<String> holders, Component child, String field);
+
 }

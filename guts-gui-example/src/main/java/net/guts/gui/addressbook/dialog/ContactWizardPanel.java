@@ -27,6 +27,7 @@ import net.guts.gui.dialog.support.AbstractWizardPanel;
 import net.guts.gui.dialog.support.AbstractWizardStepPanel;
 import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.task.Task;
+import net.guts.gui.util.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
@@ -53,8 +54,8 @@ public class ContactWizardPanel extends AbstractWizardPanel
 	@Override protected void initWizard()
     {
 	    getController().addWizardPane(_contactPane, true);
-	    getController().addWizardPane(_homePane, true);
-	    getController().addWizardPane(_officePane, true);
+	    getController().addWizardPane(_home, true);
+	    getController().addWizardPane(_office, true);
 	    setContact(null);
     }
 
@@ -88,31 +89,21 @@ public class ContactWizardPanel extends AbstractWizardPanel
     }
 	
 	private final ContactPane _contactPane = new ContactPane();
-	private final AbstractAddressPane _homePane = 
+	private final AbstractAddressPane _home = 
 		new HomeAddressPane(NAME + "-home", false);
-	private final AbstractAddressPane _officePane = 
+	private final AbstractAddressPane _office = 
 		new OfficeAddressPane(NAME + "-office", true);
 	private Contact _contact;
 	private boolean _create;
 	@Inject private AddressBookService _service;
 }
 
-class ContactPane extends AbstractWizardStepPanel
+class ContactPane extends AbstractWizardStepPanel implements ComponentHolder
 {
 	static final private long serialVersionUID = 4307142630118960207L;
-	static final private String NAME = "ContactDetailWizardPanel-contact";
 
 	public ContactPane()
 	{
-		setName(NAME);
-		// Initialize components & names
-		_lblFirstName.setName(NAME + "-first-name-label");
-		_txfFirstName.setName(NAME + "-first-name");
-		_lblLastName.setName(NAME + "-last-name-label");
-		_txfLastName.setName(NAME + "-last-name");
-		_lblBirth.setName(NAME + "-birth-label");
-		_txfBirth.setName(NAME + "-birth");
-
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
 		setLayout(layout);
@@ -147,17 +138,14 @@ class ContactPane extends AbstractWizardStepPanel
 	private Contact _contact;
 }
 
-abstract class AbstractAddressPane extends AbstractWizardStepPanel
+abstract class AbstractAddressPane extends AbstractWizardStepPanel implements ComponentHolder
 {
 	static final private long serialVersionUID = -5584247386479109165L;
 
 	protected AbstractAddressPane(String id, boolean last)
 	{
-		setName(id);
 		_last = last;
-		_addressPane = new AddressPanel(id);
 		DesignGridLayout layout = new DesignGridLayout(this);
-		setLayout(layout);
 		_addressPane.layout(layout, false);
 	}
 	
@@ -176,7 +164,7 @@ abstract class AbstractAddressPane extends AbstractWizardStepPanel
 		return null;
     }
 	
-	private final AddressPanel _addressPane;
+	private final AddressPanel _addressPane = new AddressPanel();
 	private final boolean _last;
 	private Address _address;
 }
