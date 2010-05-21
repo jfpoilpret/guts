@@ -26,8 +26,8 @@ import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.dialog.support.AbstractWizardPanel;
 import net.guts.gui.dialog.support.AbstractWizardStepPanel;
 import net.guts.gui.dialog.support.AcceptGutsAction;
+import net.guts.gui.naming.ComponentHolder;
 import net.guts.gui.task.Task;
-import net.guts.gui.util.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
