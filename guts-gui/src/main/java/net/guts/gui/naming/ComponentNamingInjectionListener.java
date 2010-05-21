@@ -12,14 +12,28 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.util;
+package net.guts.gui.naming;
 
 import java.awt.Component;
 
-import com.google.inject.ImplementedBy;
+import net.guts.common.injection.AbstractInjectionListener;
 
-@ImplementedBy(ComponentNamingServiceImpl.class)
-public interface ComponentNamingService
+import com.google.inject.Inject;
+
+class ComponentNamingInjectionListener extends AbstractInjectionListener<Component>
 {
-	public void setComponentName(Component parent);
+	@Inject void setComponentNamingService(ComponentNamingService namingService)
+	{
+		_namingService = namingService;
+	}
+
+	/* (non-Javadoc)
+	 * @see net.guts.common.injection.AbstractInjectionListener#registerInjectee(java.lang.Object)
+	 */
+	@Override protected void registerInjectee(Component injectee)
+	{
+		_namingService.setComponentName(injectee);
+	}
+
+	private ComponentNamingService _namingService;
 }

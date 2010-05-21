@@ -19,7 +19,7 @@ import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
 import net.guts.gui.addressbook.domain.Address;
-import net.guts.gui.util.ComponentHolder;
+import net.guts.gui.naming.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 public class AddressPanel implements ComponentHolder

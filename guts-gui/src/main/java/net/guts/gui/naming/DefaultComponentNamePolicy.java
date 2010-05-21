@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.util;
+package net.guts.gui.naming;
 
 import java.awt.Component;
 import java.util.List;
