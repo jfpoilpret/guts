@@ -18,6 +18,7 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Image;
 import java.awt.event.KeyEvent;
 import java.awt.image.BufferedImage;
 import java.net.URL;
@@ -37,8 +38,6 @@ import javax.swing.table.TableColumnModel;
 
 import org.fest.assertions.Assertions;
 import org.testng.annotations.Test;
-
-import sun.awt.image.ToolkitImage;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -130,15 +129,7 @@ public class ResourceInjectorTest
 		// Check injection has worked
 		Assertions.assertThat(frame.getIconImage()).as("frame.iconImage").isNotNull();
 		BufferedImage actual = null;
-		// Ugly hack!
-		if (frame.getIconImage() instanceof BufferedImage)
-		{
-			actual = (BufferedImage) frame.getIconImage();
-		}
-		else if (frame.getIconImage() instanceof ToolkitImage)
-		{
-			actual = ((ToolkitImage) frame.getIconImage()).getBufferedImage();
-		}
+		actual = createImageFromImage(frame.getIconImage());
 		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/icon.jpg");
 		Assertions.assertThat(actual).as("frame.iconImage").isEqualTo(expected);
 	}
@@ -306,6 +297,26 @@ public class ResourceInjectorTest
 		try
 		{
 			icon.paintIcon(null, graf, 0, 0);
+			return image;
+		}
+		finally
+		{
+			graf.dispose();
+		}
+	}
+
+	static private BufferedImage createImageFromImage(Image source)
+	{
+		if (source instanceof BufferedImage)
+		{
+			return (BufferedImage) source;
+		}
+		BufferedImage image = new BufferedImage(
+			source.getWidth(null), source.getHeight(null), BufferedImage.TYPE_INT_ARGB);
+		Graphics2D graf = image.createGraphics();
+		try
+		{
+			graf.drawImage(source, 0, 0, null);
 			return image;
 		}
 		finally
