@@ -22,6 +22,34 @@ import net.guts.common.injection.OneTypeListener;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI component automatic
+ * naming feature. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new ComponentNamingModule(), ...);
+ * </pre>
+ * Once installed, this module will, for any {@link java.awt.Component} injected by 
+ * Guice, call {@link ComponentNamingService#setComponentName} in order to ensure
+ * automatic naming of the injected {@code Component} and all its fields.
+ * <p/>
+ * If the naming policy implemented by {@link ComponentNamingService} default 
+ * implementation doesn't fit your needs, you can bind your own implementation:
+ * <pre>
+ * bind(ComponentNamingService.class).to(MyNamingService.class);
+ * </pre>
+ * However, the default {@link ComponentNamingService} offers better and easier 
+ * options for component naming customization.
+ * <p/>
+ * <b>Important!</b> Note that {@code ComponentNamingModule} is not part of the 
+ * modules automatically registered when using Guts-GUI 
+ * {@link net.guts.gui.application.AbstractAppLauncher}, you have to add it to the
+ * {@code Module}s list explicitly.
+ *
+ * @see ComponentNamingService
+ * @author Jean-Francois Poilpret
+ */
 public final class ComponentNamingModule extends AbstractModule
 {
 	/* (non-Javadoc)
