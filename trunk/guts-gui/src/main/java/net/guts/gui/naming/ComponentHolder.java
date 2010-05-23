@@ -14,7 +14,13 @@
 
 package net.guts.gui.naming;
 
+/**
+ * Marker interface, used by {@link ComponentNamingService#setComponentName} to 
+ * decide whether a field in its passed argument's class should be traversed
+ * recursively, looking for other {@link java.awt.Component}s.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface ComponentHolder
 {
-
 }
