@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook.view;
+package net.guts.gui.examples.addressbook.view;
 
 import java.awt.BorderLayout;
 
@@ -24,8 +24,8 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.guts.event.Channel;
-import net.guts.gui.addressbook.business.AddressBookService;
-import net.guts.gui.addressbook.domain.Contact;
+import net.guts.gui.examples.addressbook.business.AddressBookService;
+import net.guts.gui.examples.addressbook.domain.Contact;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

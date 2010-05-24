@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook.util;
+package net.guts.gui.examples.addressbook.util;
 
 import java.awt.Component;
 

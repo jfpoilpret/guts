@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook;
+package net.guts.gui.examples.addressbook;
 
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -25,13 +25,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.addressbook.action.ContactActions;
-import net.guts.gui.addressbook.action.TaskTestActions;
-import net.guts.gui.addressbook.view.AddressBookMainView;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.application.WindowController;
 import static net.guts.gui.application.WindowController.BoundsPolicy;
+
+import net.guts.gui.examples.addressbook.action.ContactActions;
+import net.guts.gui.examples.addressbook.action.TaskTestActions;
+import net.guts.gui.examples.addressbook.view.AddressBookMainView;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;

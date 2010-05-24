@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook;
+package net.guts.gui.examples.addressbook.business;
 
-import java.util.Locale;
+import java.util.List;
 
-import net.guts.gui.resource.InjectionDecisionStrategy;
+import javax.swing.Icon;
 
-class SimpleInjectionDecisionStrategy implements InjectionDecisionStrategy
+import net.guts.gui.examples.addressbook.domain.Contact;
+
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(AddressBookServiceImpl.class)
+public interface AddressBookService
 {
-	@Override public void injectionPerformed(Object component, Locale locale)
-	{
-	}
-
-	@Override public InjectionDecision needsInjection(Object component, Locale locale)
-	{
-		return InjectionDecision.INJECT_HIERARCHY;
-	}
+	public List<Contact> getAllContacts();
+	public List<Contact> searchContacts(Contact criteria);
+	public void createContact(Contact contact);
+	public void modifyContact(Contact contact);
+	public void removeContact(Contact contact);
+	public Icon getContactPicture(int id);
 }

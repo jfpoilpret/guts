@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook.dialog;
+package net.guts.gui.examples.addressbook.dialog;
 
 import java.util.Date;
 
@@ -20,11 +20,11 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import net.guts.gui.addressbook.business.AddressBookService;
-import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.dialog.Resettable;
 import net.guts.gui.dialog.support.AbstractPanel;
 import net.guts.gui.dialog.support.AcceptGutsAction;
+import net.guts.gui.examples.addressbook.business.AddressBookService;
+import net.guts.gui.examples.addressbook.domain.Contact;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
