@@ -18,6 +18,9 @@ import javax.swing.AbstractButton;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
+/**
+ * Features of this injector are documented in {@link ResourceModule}.
+ */
 class AbstractButtonInjector extends BeanPropertiesInjector<AbstractButton>
 {
 	@Override protected boolean handleSpecialProperty(

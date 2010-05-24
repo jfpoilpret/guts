@@ -20,6 +20,9 @@ import javax.swing.table.TableColumnModel;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
+/**
+ * Features of this injector are documented in {@link ResourceModule}.
+ */
 class JTableInjector extends BeanPropertiesInjector<JTable>
 {
 	@Override protected boolean handleSpecialProperty(
@@ -48,7 +51,15 @@ class JTableInjector extends BeanPropertiesInjector<JTable>
 		try
 		{
 			TableColumnModel model = table.getColumnModel();
-			String suffix = name.substring(HEADER_TAG_LEN);
+			// we optionally allow a dot between the tag and the column index
+			// for better readability yet being backwards compatible
+			int ofs = HEADER_TAG_LEN;
+			if (ofs < name.length() && name.charAt(ofs) == '.')
+			{
+				ofs++;
+			}
+			
+			String suffix = name.substring(ofs);
 			int index = Integer.parseInt(suffix);
 			if (index < 0 || index >= model.getColumnCount())
 			{

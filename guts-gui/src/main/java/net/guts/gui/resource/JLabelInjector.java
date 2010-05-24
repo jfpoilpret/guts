@@ -18,6 +18,9 @@ import javax.swing.JLabel;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
+/**
+ * Features of this injector are documented in {@link ResourceModule}.
+ */
 class JLabelInjector extends BeanPropertiesInjector<JLabel>
 {
 	@Override protected boolean handleSpecialProperty(
