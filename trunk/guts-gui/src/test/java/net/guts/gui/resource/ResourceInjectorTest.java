@@ -145,7 +145,7 @@ public class ResourceInjectorTest
 		// Check injection has worked
 		TableColumnModel model = table.getColumnModel();
 		Assertions.assertThat(model.getColumn(0).getHeaderValue()).as("table.header0").isEqualTo("Column 0");
-		Assertions.assertThat(model.getColumn(1).getHeaderValue()).as("table.header1").isEqualTo("Column 1");
+		Assertions.assertThat(model.getColumn(1).getHeaderValue()).as("table.header.1").isEqualTo("Column 1");
 		Assertions.assertThat(model.getColumn(2).getHeaderValue()).as("table.header2").isEqualTo("Column 2");
 	}
 	
