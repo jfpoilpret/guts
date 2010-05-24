@@ -12,21 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook.action;
+package net.guts.gui.examples.addressbook.action;
 
 import java.awt.Component;
 
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.addressbook.business.AddressBookService;
-import net.guts.gui.addressbook.dialog.ContactPanel;
-import net.guts.gui.addressbook.dialog.ContactTabPanel;
-import net.guts.gui.addressbook.dialog.ContactWizardPanel;
-import net.guts.gui.addressbook.domain.Contact;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
+import net.guts.gui.examples.addressbook.business.AddressBookService;
+import net.guts.gui.examples.addressbook.dialog.ContactPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactTabPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactWizardPanel;
+import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.AbstractTask;

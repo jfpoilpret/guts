@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.addressbook;
+package net.guts.gui.examples.addressbook;
 
 import java.util.List;
 
 import net.guts.event.Events;
-import net.guts.gui.addressbook.action.ContactActions;
-import net.guts.gui.addressbook.domain.Contact;
-import net.guts.gui.addressbook.util.TasksGroupProgressPanel;
 import net.guts.gui.application.AbstractAppLauncher;
 import net.guts.gui.application.AppLifecycleStarter;
+import net.guts.gui.examples.addressbook.action.ContactActions;
+import net.guts.gui.examples.addressbook.domain.Contact;
+import net.guts.gui.examples.addressbook.util.TasksGroupProgressPanel;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.ComponentNamingModule;

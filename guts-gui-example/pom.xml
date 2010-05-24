@@ -28,7 +28,7 @@
 						<archive>
 							<manifest>
 								<addClasspath>true</addClasspath>
-								<mainClass>net.guts.gui.addressbook.AddressBookMain</mainClass>
+								<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
 							</manifest>
 						</archive>
 					</configuration>
@@ -41,7 +41,7 @@
 						<jnlp>
 							<outputFile>guts-gui-example.jnlp</outputFile>
 							<j2seVersion>1.6+</j2seVersion>
-							<mainClass>net.guts.gui.addressbook.AddressBookMain</mainClass>
+							<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
 						</jnlp>
 						<sign>
 							<keystore>keystore</keystore>
