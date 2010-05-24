@@ -18,6 +18,9 @@ import javax.swing.JFileChooser;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
+/**
+ * Features of this injector are documented in {@link ResourceModule}.
+ */
 class JFileChooserInjector extends BeanPropertiesInjector<JFileChooser>
 {
 	@Override protected boolean handleSpecialProperty(

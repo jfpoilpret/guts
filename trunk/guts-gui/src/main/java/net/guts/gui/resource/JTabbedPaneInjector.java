@@ -22,6 +22,9 @@ import javax.swing.JTabbedPane;
 
 import net.guts.gui.resource.ResourceMap.Key;
 
+/**
+ * Features of this injector are documented in {@link ResourceModule}.
+ */
 class JTabbedPaneInjector extends BeanPropertiesInjector<JTabbedPane>
 {
 	// CSOFF: ReturnCountCheck

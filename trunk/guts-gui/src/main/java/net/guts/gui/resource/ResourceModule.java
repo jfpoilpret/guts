@@ -51,44 +51,114 @@ import com.google.inject.TypeLiteral;
  * Guts-GUI Resource Injection system but don't want to use the whole Guts-GUI 
  * framework.
  * <p/>
+ *
+ * <h3>Standard ResourceConverters</h3>
+ * <p>
  * By default, {@code ResourceModule} binds several {@link ResourceConverter}s for
  * various types (examples of values are given for each type):
- * <ul>
- * <li>{@link String}: {@code Save}</li>
- * <li>{@link Boolean} and {@code boolean}: {@code true} or {@code false}</li>
- * <li>{@link Integer} and {@code integer}: {@code 12345}, {@code -10}, 
- * {@code 0xDEADBEEF} (hexa), {@code #FFFF}, {@code 0777} (octal)</li>
- * <li>{@link Color}: {@code #FF808080} (ARGB format in hexa)</li>
- * <li>{@link Font}: {@code Dialog-BOLD-14}</li>
- * <li>{@link Icon}: {@code /icons/save.png}</li>
- * <li>{@link Image}: {@code /icons/save.png}</li>
- * <li>{@link Cursor}: {@code CROSSHAIR} (or any value of 
- * {@link net.guts.gui.util.CursorType}), or for custom cursors, 
- * {@code /icons/mycursor.png,0.5,0.5} where both double values indicate the relative
- * location of the cursor "hot spot" (0.0 is topmost or leftmost, 1.0 is bottom-most 
- * or rightmost)</li>
- * <li>{@link CursorInfo}: same examples as above</li>
- * </ul>
+ * </p>
+ *
+ * <table border="2">
+ * <tr><th>Type                </th><th>Example</th></tr>
+ * <tr><td>{@link String}      </td><td>{@code Save}</td></tr>
+ * <tr><td>{@link Boolean} and
+ *         {@code boolean}     </td><td>{@code true} or {@code false}</td></tr>
+ * <tr><td>{@link Integer} and
+ *         {@code integer}     </td><td>{@code 12345}, {@code -10}, {@code 0xDEADBEEF} (hexa),
+ *                                      {@code #FFFF}, {@code 0777} (octal)</td></tr>
+ * <tr><td>{@link Color}       </td><td>{@code #FF808080} (ARGB format in hexa)</td></tr>
+ * <tr><td>{@link Font}        </td><td>{@code Dialog-BOLD-14}</td></tr>
+ * <tr><td>{@link Icon}        </td><td>{@code /icons/save.png}</td></tr>
+ * <tr><td>{@link Image}       </td><td>{@code /icons/save.png}</td></tr>
+ * <tr><td>{@link Cursor}      </td><td>{@code CROSSHAIR} (or any value of
+ *                             {@link net.guts.gui.util.CursorType}), or for custom cursors,<br>
+ *                             {@code /icons/mycursor.png,0.5,0.5} where both double values
+ *                             indicate the relative location of the cursor "hot spot"
+ *                             (0.0 is topmost or leftmost, 1.0 is bottom-most
+ *                             or rightmost)</td></tr>
+ * <tr><td>{@link CursorInfo}  </td><td>same examples as above</td></tr>
+ * </table>
+ *
+ * <p>
  * You can add your own {@link ResourceConverter}s by using {@link Resources#bindConverter}
  * methods.
  * <p/>
- * Besides, {@code ResourceModule} binds various {@link InstanceInjector}s for the
+
+ * <h3>Standard InstanceInjectors</h3>
+ * <p>
+ * {@code ResourceModule} also binds various {@link InstanceInjector}s for the
  * following types:
- * <ul>
- * <li>{@link Component}: used by default for all AWT and Swing components</li>
- * <li>{@link Object}: used by default for non GUI objects</li>
- * <li>{@link JLabel}: special injector for {@code JLabel}s, with mnemonic support</li>
- * <li>{@link AbstractButton}: special injector for {@code JButton}, {@code JMenu},
- * {@code JMenuItem}... with mnemonic support</li>
- * <li>{@link JTable}: special injector for titles of {@code JTable} column headers</li>
- * <li>{@link JTabbedPane}: special injector with support for mnemonics, tooltips, 
- * and icons for tabs inside a {@code JTabbedPane}</li>
- * <li>{@link JFileChooser}: injector for {@code JFileChooser}, with special support
- * of its "accept" button</li>
- * </ul>
+ * </p>
+ *
+ * <table border="2">
+ * <tr><th>Type</th><th>Description</th></tr>
+ *
+ * <tr>
+ * <td>{@link Component}</td>
+ * <td>Used by default for all AWT and Swing components. Injects any bean property from the
+ *     given resources.</td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link Object}</td>
+ * <td>Used by default for non GUI objects. Injects any bean property from the
+ *     given resources.</td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link JLabel}</td>
+ * <td>Special injector for {@code JLabel}s, with mnemonic support.
+ *      <br>Sets the properties {@code text}, {@code displayedMnemonic} and
+ *     {@code displayedMnemonicIndex} from a given {@code text} resource.
+ *     <br>Resource Example: {@code myLabel.text = Hello &World}</td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link AbstractButton}</td>
+ * <td>Special injector for {@code JButton}, {@code JMenu},
+ *     {@code JMenuItem}... with mnemonic support.
+ *     <br>Sets the properties {@code text}, {@code mnemonic} and
+ *     {@code displayedMnemonicIndex} from a given {@code text} resource.
+ *     <br>Resource Example: {@code myButton.text = Push &Me}</td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link JTable}</td>
+ * <td>Special injector for titles of {@code JTable} column headers.
+ *     <br>Resource Example: {@code myTable.header.1 = Column 1 Header}</td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link JTabbedPane}</td>
+ * <td>Special injector for tabs inside a {@code JTabbedPane}.
+ * 	   <br>The format of a resource is:
+ *         <code>tab&lt;&lt;index&gt;&gt;-&lt;&lt;resourceName&gt;&gt;</code>
+ *     <br>Supported resources are:
+ *         <ul>
+ *         <li>{@code title} - sets title and mnemonics as described for JLabel</li>
+ *         <li>{@code icon}</li>
+ *         <li>{@code disabledIcon}</li>
+ *         <li>{@code toolTipText}</li>
+ *         </ul>
+ * </td>
+ * </tr>
+ *
+ * <tr>
+ * <td>{@link JFileChooser}</td>
+ * <td>Injector for {@code JFileChooser}, with special support
+ * 	   of its "accept" button.
+ *      <br>Sets the properties {@code approveButtonText} and {@code approveButtonMnemonic}
+ *     from a given {@code approveButtonText} resource.
+ *     <br>Resource Example: {@code myAttachmentFileChooser.approveButtonText = &Attach}</td>
+ * </td>
+ * </tr>
+ * </table>
+ *
+ * <p>
  * You can add support for special components (such as 3rd-party widgets) by writing
  * your own {@link InstanceInjector} and bind it through 
  * {@link Resources#bindInstanceInjector}.
+ * </p>
  *
  * @author Jean-Francois Poilpret
  */
