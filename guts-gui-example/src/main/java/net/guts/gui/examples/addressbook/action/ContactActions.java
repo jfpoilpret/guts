@@ -16,6 +16,8 @@ package net.guts.gui.examples.addressbook.action;
 
 import java.awt.Component;
 
+import javax.swing.JComponent;
+
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
@@ -96,11 +98,23 @@ public class ContactActions
 		return _deleteContact;
 	}
 
+	// GUTS-22: showDialog convenience method to avoid repeats
+	private <T extends JComponent> void showDialog(
+		Class<T> clazz, ComponentInitializer<T> initializer)
+	{
+		_dialogFactory.showDialog(clazz, BoundsPolicy.PACK_AND_CENTER, true, initializer);
+	}
+
+	private <T extends JComponent> void showDialog(Class<T> clazz)
+	{
+		_dialogFactory.showDialog(clazz, BoundsPolicy.PACK_AND_CENTER, true);
+	}
+
 	final private GutsAction _createContact = new GutsAction("createContact")
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(ContactPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
+			showDialog(ContactPanel.class);
 		}
 	};
 
@@ -108,9 +122,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(
-				ContactPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
-				new ComponentInitializer<ContactPanel>()
+			showDialog(ContactPanel.class, new ComponentInitializer<ContactPanel>()
 			{
 				public void init(ContactPanel panel)
 				{
@@ -152,8 +164,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(
-				ContactTabPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
+			showDialog(ContactTabPanel.class);
 		}
 	};
 
@@ -161,9 +172,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(
-				ContactTabPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
-				new ComponentInitializer<ContactTabPanel>()
+			showDialog(ContactTabPanel.class, new ComponentInitializer<ContactTabPanel>()
 			{
 				public void init(ContactTabPanel panel)
 				{
@@ -178,8 +187,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(
-				ContactWizardPanel.class, BoundsPolicy.PACK_AND_CENTER, true);
+			showDialog(ContactWizardPanel.class);
 		}
 	};
 
@@ -188,9 +196,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			_dialogFactory.showDialog(
-				ContactWizardPanel.class, BoundsPolicy.PACK_AND_CENTER, true,
-				new ComponentInitializer<ContactWizardPanel>()
+			showDialog(ContactWizardPanel.class, new ComponentInitializer<ContactWizardPanel>()
 			{
 				public void init(ContactWizardPanel panel)
 				{
