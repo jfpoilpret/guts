@@ -53,11 +53,11 @@ public class TasksGroupProgressPanel extends JPanel
 		_model = model;
 		_tasks = new JTable(_model);
 		// Add special renderers for state & progress
-		_stateRenderer.mapIcon(State.CANCELLED, "net/guts/gui/addressbook/icons/cross.png");
-		_stateRenderer.mapIcon(State.FAILED, "net/guts/gui/addressbook/icons/cog_error.png");
-		_stateRenderer.mapIcon(State.FINISHED, "net/guts/gui/addressbook/icons/tick.png");
-		_stateRenderer.mapIcon(State.NOT_STARTED, "net/guts/gui/addressbook/icons/cog.png");
-		_stateRenderer.mapIcon(State.RUNNING, "net/guts/gui/addressbook/icons/cog_go.png");
+		_stateRenderer.mapIcon(State.CANCELLED, "net/guts/gui/examples/addressbook/icons/cross.png");
+		_stateRenderer.mapIcon(State.FAILED, "net/guts/gui/examples/addressbook/icons/cog_error.png");
+		_stateRenderer.mapIcon(State.FINISHED, "net/guts/gui/examples/addressbook/icons/tick.png");
+		_stateRenderer.mapIcon(State.NOT_STARTED, "net/guts/gui/examples/addressbook/icons/cog.png");
+		_stateRenderer.mapIcon(State.RUNNING, "net/guts/gui/examples/addressbook/icons/cog_go.png");
 		_tasks.setDefaultRenderer(State.class, _stateRenderer);
 		_tasks.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 		
