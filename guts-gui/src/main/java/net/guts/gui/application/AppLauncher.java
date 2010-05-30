@@ -52,7 +52,7 @@ class AppLauncher
 	private AppLauncher(String[] args, AppModuleInit init, Class<?> mainClass)
 	{
 		_args = (args != null ? args : new String[0]);
-		_modulesInitializer = init;
+		_appInit = init;
 		_mainClass = mainClass;
 	}
 	
@@ -83,7 +83,7 @@ class AppLauncher
 			modules.add(new ExitModule());
 			modules.add(new AppModule());
 			List<Module> applicationModules = new ArrayList<Module>();
-			_modulesInitializer.initModules(_args, applicationModules);
+			_appInit.initModules(_args, applicationModules);
 			modules.addAll(applicationModules);
 			
 			Injector injector = Guice.createInjector(modules);
@@ -93,6 +93,9 @@ class AppLauncher
 			final AppLifecycleStarter lifecycle = 
 				injector.getInstance(AppLifecycleStarter.class);
 			lifecycle.startup(_args);
+			_appInit.afterStartup();
+			
+			//TODO Call back to AppModuleInit (useful for applets)
 			
 			// Then wait for the EDT to finish processing all events
 			EdtHelper.waitForIdle(new Runnable()
@@ -135,6 +138,6 @@ class AppLauncher
 	}
 
 	final private String[] _args;
-	final private AppModuleInit _modulesInitializer;
+	final private AppModuleInit _appInit;
 	final private Class<?> _mainClass;
 }
