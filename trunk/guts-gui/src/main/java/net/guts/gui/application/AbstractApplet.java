@@ -18,7 +18,10 @@ import java.util.List;
 
 import javax.swing.JApplet;
 
+import net.guts.gui.resource.ResourceInjector;
+
 import com.google.inject.AbstractModule;
+import com.google.inject.Inject;
 import com.google.inject.Module;
 
 /**
@@ -99,10 +102,15 @@ public abstract class AbstractApplet extends JApplet
 	{
 		AppLauncher.launch(null, getClass(), new AppModuleInit()
 		{
-			@Override public void initModules(String[] passedArgs, List<Module> modules)
+			@Override void initModules(String[] passedArgs, List<Module> modules)
 			{
 				modules.add(new AppletModule());
 				AbstractApplet.this.initModules(modules);
+			}
+			
+			@Override void afterStartup()
+			{
+				injectAppletResources();
 			}
 		});
 	}
@@ -128,6 +136,16 @@ public abstract class AbstractApplet extends JApplet
 	 */
 	abstract protected void initModules(List<Module> modules);
 
+	void injectAppletResources()
+	{
+		_injector.injectHierarchy(this);
+	}
+	
+	@Inject void setResourceInjector(ResourceInjector injector)
+	{
+		_injector = injector;
+	}
+	
 	// Special module to allow injection of this applet itself
 	private class AppletModule extends AbstractModule
 	{
@@ -136,4 +154,6 @@ public abstract class AbstractApplet extends JApplet
 			bind(JApplet.class).toInstance(AbstractApplet.this);
 		}
 	}
+	
+	private ResourceInjector _injector = null;
 }

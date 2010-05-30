@@ -138,7 +138,7 @@ public abstract class AbstractApplication
 	{
 		AppLauncher.launch(args, getClass(), new AppModuleInit()
 		{
-			@Override public void initModules(String[] passedArgs, List<Module> modules)
+			@Override void initModules(String[] passedArgs, List<Module> modules)
 			{
 				AbstractApplication.this.initModules(passedArgs, modules);
 			}

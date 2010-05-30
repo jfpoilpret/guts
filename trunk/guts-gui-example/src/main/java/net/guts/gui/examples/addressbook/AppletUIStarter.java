@@ -18,16 +18,13 @@ import javax.swing.JApplet;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-import net.guts.gui.resource.ResourceInjector;
-
 import com.google.inject.Inject;
 
 public class AppletUIStarter implements AddressBookUIStarter
 {
-	@Inject public AppletUIStarter(JApplet applet, ResourceInjector injector)
+	@Inject public AppletUIStarter(JApplet applet)
 	{
 		_applet = applet;
-		_injector = injector;
 	}
 	
 	@Override public void showUI(JMenuBar menuBar, JPanel mainView)
@@ -35,16 +32,11 @@ public class AppletUIStarter implements AddressBookUIStarter
 		_applet.setName("mainFrame");
 		_applet.setJMenuBar(menuBar);
 		_applet.setContentPane(mainView);
-		//TODO need to set size?
-//		_applet.setSize(_applet.getLayout().preferredLayoutSize(_applet));
-//		_applet.setSize(800, 600);
-		// Inject resources
-		_injector.injectHierarchy(_applet);
-		//TODO Resource injection should be automatic when using AbstractApplet!!!
-		//TODO or something special in WindowController?
-		//TODO or a new AppletController service?
+		// Set size to best size (NB: this will only work within AppletViewer!)
+		_applet.setSize(_applet.getLayout().preferredLayoutSize(_applet));
+		//TODO add something special in WindowController?
+		//TODO or add a new AppletController service?
 	}
 	
 	final private JApplet _applet;
-	final private ResourceInjector _injector;
 }
