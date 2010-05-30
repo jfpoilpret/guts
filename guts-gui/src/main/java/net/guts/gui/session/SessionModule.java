@@ -31,7 +31,7 @@ import com.google.inject.AbstractModule;
  * <pre>
  * Injector injector = Guice.createInjector(new SessionModule(), ...);
  * </pre>
- * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractApplication}, then
  * {@code SessionModule} is automatically added to the list of {@code Module}s used
  * by Guts-GUI to create Guice {@code Injector}.
  * <p/>

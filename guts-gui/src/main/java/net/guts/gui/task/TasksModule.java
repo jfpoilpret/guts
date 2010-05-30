@@ -29,7 +29,7 @@ import com.google.inject.assistedinject.FactoryProvider;
  * <pre>
  * Injector injector = Guice.createInjector(new TasksModule(), ...);
  * </pre>
- * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractApplication}, then
  * {@code TasksModule} is automatically added to the list of {@code Module}s used
  * by Guts-GUI to create Guice {@code Injector}.
  * <p/>

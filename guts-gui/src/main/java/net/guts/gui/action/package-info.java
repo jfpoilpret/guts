@@ -30,7 +30,7 @@
  * <p/>
  * The only thing to do to get those {@code GutsAction} fields registered is to create
  * Guice {@link com.google.inject.Injector} with {@link net.guts.gui.action.ActionModule},
- * which is done automatically by {@link net.guts.gui.application.AbstractAppLauncher}
+ * which is done automatically by {@link net.guts.gui.application.AbstractApplication}
  * when using the whole Guts-GUI framework.
  * <p/>
  * This package also defines two convenient {@code GutsAction} subclasses,

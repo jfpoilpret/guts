@@ -29,7 +29,7 @@ import com.google.inject.AbstractModule;
  * <pre>
  * Injector injector = Guice.createInjector(new ExitModule(), ...);
  * </pre>
- * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractApplication}, then
  * {@code ExitModule} is automatically added to the list of {@code Module}s used
  * by Guts-GUI to create Guice {@code Injector}.
  * <p/>

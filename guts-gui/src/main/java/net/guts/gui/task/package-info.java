@@ -45,7 +45,7 @@
  * {@link net.guts.gui.task.TasksModule} must be part of the list of 
  * {@link com.google.inject.Module}s used to create the Guice
  * {@link com.google.inject.Injector}. If you use Guts-GUI as a whole, i.e. you use
- * {@link net.guts.gui.application.AbstractAppLauncher} to launch your application,
+ * {@link net.guts.gui.application.AbstractApplication} to launch your application,
  * then {@code TasksModule} is automatically added to the {@code Module}s list.
  * <p/>
  * TODO TasksGroupListener (later when implemented and tested)
