@@ -97,7 +97,7 @@ final public class ResourceMap
 	 * converted
 	 * @return the value of the resource identified by {@code key} converted to
 	 * {@code type}; {@code null} will be returned if there is no property with 
-	 * {@code key} or if ithat property cannot be converted to {@code type}.
+	 * {@code key} or if that property cannot be converted to {@code type}.
 	 */
 	public <T> T getValue(Key key, TypeLiteral<T> type)
 	{
