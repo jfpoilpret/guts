@@ -21,6 +21,74 @@ import javax.swing.JApplet;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
+/**
+ * This is the starting class to create a Guts-GUI based applet.
+ * It is used to bootstrap any Guts-GUI applet.
+ * {@code AbstractApplet} must be derived into your application's
+ * applet class.
+ * <p/>
+ * Your applet class should then override {@link #initModules(List)} to provide 
+ * the {@link com.google.inject.Module}s needed by your applet.
+ * <p/>
+ * As in the following example:
+ * <pre>
+ * public class AddressBookApplet extends AbstractApplet
+ * {
+ *     &#64;Override protected void initModules(List&lt;Module&gt; modules)
+ *     {
+ *         modules.add(new MessageModule());
+ *         modules.add(new AddressBookModule());
+ *     }
+ *     
+ *     private class AddressBookModule extends AbstractModule
+ *     {
+ *         &#64;Override protected void configure()
+ *         {
+ *             bind(AppLifecycleStarter.class)
+ *                 .to(AddressBookLifecycleStarter.class).asEagerSingleton();
+ *             // Add binding for "contact selection" events
+ *             Events.bindChannel(binder(), Contact.class);
+ *             bind(ContactActions.class).asEagerSingleton();
+ *             // Setup ResourceModule root bundle
+ *             Resources.bindRootBundle(binder(), getClass(), "resources");
+ *         }
+ *     }
+ * }
+ * </pre>
+ * Note, in the example above, as a minimum requirement for the {@code initModules()}
+ * method, you have to define a binding for {@link AppLifecycleStarter} to one of
+ * your own classes; failing that, your application will show nothing and will
+ * exit immediately!
+ * <p/>
+ * {@code AbstractApplet} automatically ensures that it is itself injectable 
+ * anywhere needed; this allows you, for instance, to inject {@link javax.swing.JApplet}
+ * in your {@link AppLifecycleStarter} implementing class and use it to set its
+ * {@code contentPane}, as in the following example:
+ * <pre>
+ * public class AddressBookLifecycle extends AppLifecycleStarter
+ * {
+ *     &#64;Override public void startup(String[] args)
+ *     {
+ *         _applet.setContentPane(...);
+ *         _applet.setJMenuBar(...);
+ *     }
+ *     
+ *     &#64;Override public void ready() {}
+ *     
+ *     &#64;Inject private JApplet _applet;
+ * }
+ * </pre>
+ * <p/>
+ * In case any error occurs during initialization process, it will be logged and an error
+ * message will be displayed to the end user. For localization of these fatal error
+ * message, {@code AbstractApplet} cannot use 
+ * {@link net.guts.gui.resource.ResourceInjector} but must use a special 
+ * {@link java.util.ResourceBundle}, which path (in classpath) is 
+ * {@code `/net/guts/gui/application/guts-gui.properties`}. You can localize it by
+ * providing files for specific {@link java.util.Locale}.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public abstract class AbstractApplet extends JApplet
 {
 	/*

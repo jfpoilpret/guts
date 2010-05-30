@@ -15,13 +15,14 @@
 package net.guts.gui.application;
 
 /**
- * Called by {@link AbstractApplication#launch} after Guice initialization, the bound
- * implementation of this interface is used to start the real application and, in 
- * particular, display the first window of the application.
+ * Called by {@link AbstractApplication#launch} or by {@link AbstractApplet#init()}
+ * after Guice initialization, the bound implementation of this interface is used to 
+ * start the real application (or applet) and, in particular, display the first 
+ * window of the application or set the applet's content pane.
  * <p/>
  * You have to provide an implementation of {@code AppLifecycleStarter} and bind it to
  * Guice in one of your {@link com.google.inject.Module}s as set in 
- * {@link AbstractApplication#initModules}:
+ * {@link AbstractApplication#initModules} or {@link AbstractApplet#initModules}:
  * <pre>
  * bind(AppLifecycleStarter.class).to(MyApplicationLifecycleStarter.class);
  * </pre>

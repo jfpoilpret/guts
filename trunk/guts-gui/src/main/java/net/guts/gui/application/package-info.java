@@ -14,20 +14,22 @@
 
 /**
  * This package contains the main classes and interfaces to be used to start a 
- * GUI application.
+ * GUI application or applet.
  * <p/>
  * It defines the following:
  * <ul>
  * <li>{@link net.guts.gui.application.AbstractApplication} which your application 
  * main class should derive from</li>
+ * <li>{@link net.guts.gui.application.AbstractApplet} to derive if you want to develop
+ * an applet</li>
  * <li>{@link net.guts.gui.application.AppLifecycleStarter} interface which you
  * must implement to actually "start up" your UI</li>
  * <li>{@link net.guts.gui.application.WindowController} service which you can 
  * inject in any of your own classes in order to initialize and display windows</li>
  * </ul>
  * <p/>
- * {@code AbstractAppLauncher} performs several initialization in order to put
- * various Guts-GUI standard services at your disposal:
+ * {@code AbstractApplication} and {@code AbstractApplet} perform several 
+ * initializations in order to put various Guts-GUI standard services at your disposal:
  * <ul>
  * <li>{@link net.guts.gui.exit.ExitController}, an injectable service that controls 
  * the shutdown of the application, and to which you can register 
@@ -38,7 +40,7 @@
  * to be notified of uncaught exceptions (uncaught exceptions may occur in the Event
  * Dispatch Thread and should be processed by any application, e.g. logging
  * the exception or showing a message to the user)</li>
- * <li></li>
+ * <li>TODO add other standard services here!</li>
  * </ul>
  */
 package net.guts.gui.application;
