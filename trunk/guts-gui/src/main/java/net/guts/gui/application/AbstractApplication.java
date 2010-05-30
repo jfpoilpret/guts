@@ -14,36 +14,14 @@
 
 package net.guts.gui.application;
 
-import java.awt.EventQueue;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.ResourceBundle;
 
-import javax.swing.JOptionPane;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import net.guts.common.injection.InjectionListeners;
-import net.guts.common.type.TypeHelper;
-import net.guts.gui.action.ActionModule;
-import net.guts.gui.exception.ExceptionHandlingModule;
-import net.guts.gui.exit.ExitModule;
-import net.guts.gui.resource.ResourceModule;
-import net.guts.gui.session.SessionModule;
-import net.guts.gui.session.Sessions;
-import net.guts.gui.task.TasksModule;
-
-import com.google.inject.AbstractModule;
-import com.google.inject.Guice;
-import com.google.inject.Inject;
-import com.google.inject.Injector;
 import com.google.inject.Module;
 
 /**
  * This is the starting class to create a Guts-GUI based application.
  * It is used to bootstrap any Guts-GUI application.
- * {@code AbstractAppLauncher} must be derived into your application's
+ * {@code AbstractApplication} must be derived into your application's
  * main class.
  * <p/>
  * Your application main class should then:
@@ -55,7 +33,7 @@ import com.google.inject.Module;
  * </ul>
  * As in the following example:
  * <pre>
- * public class AddressBookMain extends AbstractAppLauncher
+ * public class AddressBookMain extends AbstractApplication
  * {
  *     public static void main(String[] args)
  *     {
@@ -95,7 +73,7 @@ import com.google.inject.Module;
  * <p/>
  * In case any error occurs during intialization process, it will be logged and an error
  * message will be displayed to the end user. For localization of these fatal error
- * message, {@code AbstractAppLauncher} cannot use 
+ * message, {@code AbstractApplication} cannot use 
  * {@link net.guts.gui.resource.ResourceInjector} but must use a special 
  * {@link java.util.ResourceBundle}, which path (in classpath) is 
  * {@code `/net/guts/gui/application/guts-gui.properties`}. You can localize it by
@@ -103,15 +81,12 @@ import com.google.inject.Module;
  *
  * @author Jean-Francois Poilpret
  */
-public abstract class AbstractAppLauncher
+public abstract class AbstractApplication
 {
-	static final private Logger _logger = LoggerFactory.getLogger(AbstractAppLauncher.class);
-	static final private String ERROR_INIT_GUI = "initialization-error";
-
 	/**
 	 * Override this method in your own launcher class. It will be called during the
 	 * launch process, so that you can pass your {@link com.google.inject.Module}s
-	 * to be used by {@code AbstractAppLauncher} when creating the application
+	 * to be used by {@code AbstractApplication} when creating the application
 	 * {@link com.google.inject.Injector}.
 	 * <p/>
 	 * This method is called in Swing Event Dispatch Thread (EDT) but should not
@@ -149,11 +124,11 @@ public abstract class AbstractAppLauncher
 	 * <p/>
 	 * Here is the list of default {@code Module}s used to create Guice {@code Injector}:
 	 * <ul>
-	 * <li>{@link ResourceModule}</li>
-	 * <li>{@link SessionModule}</li>
-	 * <li>{@link ActionModule}</li>
-	 * <li>{@link ExceptionHandlingModule}</li>
-	 * <li>{@link ExitModule}</li>
+	 * <li>{@link net.guts.gui.resource.ResourceModule}</li>
+	 * <li>{@link net.guts.gui.session.SessionModule}</li>
+	 * <li>{@link net.guts.gui.action.ActionModule}</li>
+	 * <li>{@link net.guts.gui.exception.ExceptionHandlingModule}</li>
+	 * <li>{@link net.guts.gui.exit.ExitModule}</li>
 	 * <li>{@link net.guts.event.EventModule}</li>
 	 * </ul>
 	 * 
@@ -161,81 +136,12 @@ public abstract class AbstractAppLauncher
 	 */
 	final protected void launch(final String[] args)
 	{
-		// Now startup the GUI in the EDT
-		EventQueue.invokeLater(new Runnable()
+		AppLauncher.launch(args, getClass(), new AppModuleInit()
 		{
-			public void run()
+			@Override public void initModules(String[] passedArgs, List<Module> modules)
 			{
-				launchInEDT(args);
+				AbstractApplication.this.initModules(passedArgs, modules);
 			}
 		});
 	}
-	
-	// CSOFF: IllegalCatchCheck
-	private void launchInEDT(String[] args)
-	{
-		try
-		{
-			// Make sure we get all modules to initialize Guice injector
-			final List<Module> modules = new ArrayList<Module>();
-			modules.add(new ResourceModule());
-			modules.add(new SessionModule());
-			modules.add(new ActionModule());
-			modules.add(new TasksModule());
-			modules.add(new ExceptionHandlingModule());
-			modules.add(new ExitModule());
-			modules.add(new AppModule());
-			List<Module> applicationModules = new ArrayList<Module>();
-			initModules(args, applicationModules);
-			modules.addAll(applicationModules);
-			
-			Injector injector = Guice.createInjector(modules);
-			InjectionListeners.injectListeners(injector);
-			
-			// Now we can start the GUI initialization
-			_lifecycle.startup(args);
-			
-			// Then wait for the EDT to finish processing all events
-			EdtHelper.waitForIdle(new Runnable()
-			{
-				@Override public void run()
-				{
-					_lifecycle.ready();
-				}
-			});
-		}
-		catch (Exception e)
-		{
-			_logger.error("Could not start application", e);
-			fatalError(ERROR_INIT_GUI, e);
-		}
-	}
-	// CSON: IllegalCatchCheck
-
-	static private void fatalError(String id, Exception e)
-	{
-		// Fail graciously with Message Box!
-		// Needs a special bundle with system-level fatal error messages
-		String pack = TypeHelper.getPackagePath(AbstractAppLauncher.class);
-		ResourceBundle bundle = ResourceBundle.getBundle(pack + "/guts-gui");
-		String title = String.format(bundle.getString(id + ".title"), e);
-		String message = String.format(bundle.getString(id + ".message"), e);
-		JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
-		System.exit(-1);
-	}
-	
-	private class AppModule extends AbstractModule
-	{
-		@Override protected void configure()
-		{
-			// Make sure that we get ourselves injected: we'll soon need AppLifecycle!
-			requestInjection(AbstractAppLauncher.this);
-			// Bind the application class for SessionManager
-			Sessions.bindApplicationClass(binder(), AbstractAppLauncher.this.getClass());
-			// Bind the generic Application actions
-			bind(GutsApplicationActions.class).asEagerSingleton();
-		}
-	}
-	
-	@Inject private AppLifecycleStarter _lifecycle;
 }

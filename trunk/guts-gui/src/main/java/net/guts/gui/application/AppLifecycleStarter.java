@@ -15,13 +15,13 @@
 package net.guts.gui.application;
 
 /**
- * Called by {@link AbstractAppLauncher#launch} after Guice initialization, the bound
+ * Called by {@link AbstractApplication#launch} after Guice initialization, the bound
  * implementation of this interface is used to start the real application and, in 
  * particular, display the first window of the application.
  * <p/>
  * You have to provide an implementation of {@code AppLifecycleStarter} and bind it to
  * Guice in one of your {@link com.google.inject.Module}s as set in 
- * {@link AbstractAppLauncher#initModules}:
+ * {@link AbstractApplication#initModules}:
  * <pre>
  * bind(AppLifecycleStarter.class).to(MyApplicationLifecycleStarter.class);
  * </pre>
@@ -31,7 +31,7 @@ package net.guts.gui.application;
 public interface AppLifecycleStarter
 {
 	/**
-	 * This is the first method called by {@link AbstractAppLauncher#launch}; it should
+	 * This is the first method called by {@link AbstractApplication#launch}; it should
 	 * initialize and display its first window (or dialog).
 	 * At this time, Guice has been initialized already, so this {@code AppLifecycleStarter}
 	 * implementing class can be injected with any service, and in particular, 

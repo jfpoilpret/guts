@@ -43,7 +43,7 @@ import com.google.inject.TypeLiteral;
  * <pre>
  * Injector injector = Guice.createInjector(new ResourceModule(), ...);
  * </pre>
- * If you use Guts-GUI {@link net.guts.gui.application.AbstractAppLauncher}, then
+ * If you use Guts-GUI {@link net.guts.gui.application.AbstractApplication}, then
  * {@code ResourceModule} is automatically added to the list of {@code Module}s used
  * by Guts-GUI to create Guice {@code Injector}.
  * <p/>

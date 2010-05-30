@@ -44,7 +44,7 @@ import com.google.inject.AbstractModule;
  * <p/>
  * <b>Important!</b> Note that {@code ComponentNamingModule} is not part of the 
  * modules automatically registered when using Guts-GUI 
- * {@link net.guts.gui.application.AbstractAppLauncher}, you have to add it to the
+ * {@link net.guts.gui.application.AbstractApplication}, you have to add it to the
  * {@code Module}s list explicitly.
  *
  * @see ComponentNamingService

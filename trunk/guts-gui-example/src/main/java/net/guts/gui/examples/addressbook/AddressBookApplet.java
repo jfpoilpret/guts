@@ -16,21 +16,18 @@ package net.guts.gui.examples.addressbook;
 
 import java.util.List;
 
-import net.guts.gui.application.AbstractApplication;
+import net.guts.gui.application.AbstractApplet;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
-public class AddressBookMain extends AbstractApplication
+public class AddressBookApplet extends AbstractApplet
 {
-	public static void main(String[] args)
-	{
-		new AddressBookMain().launch(args);
-	}
-	
-	@Override protected void initModules(String[] args, List<Module> modules)
+	private static final long serialVersionUID = -8816671056057897538L;
+
+	@Override protected void initModules(List<Module> modules)
 	{
 		// Make sure frames & dialogs are decorated by the current PLAF (substance)
 //		JFrame.setDefaultLookAndFeelDecorated(true);
@@ -44,12 +41,12 @@ public class AddressBookMain extends AbstractApplication
 		modules.add(new ComponentNamingModule());
 		// Finally, add our specific module
 		modules.add(new AddressBookModule());
-		// And the module to start the UI as a JFrame (not an JApplet)
+		// And the module to start the UI as a JApplet (not a JFrame)
 		modules.add(new AbstractModule()
 		{
 			@Override protected void configure()
 			{
-				bind(AddressBookUIStarter.class).to(ApplicationUIStarter.class);
+				bind(AddressBookUIStarter.class).to(AppletUIStarter.class);
 			}
 		});
 	}

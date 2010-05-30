@@ -18,7 +18,7 @@
  * <p/>
  * It defines the following:
  * <ul>
- * <li>{@link net.guts.gui.application.AbstractAppLauncher} which your application 
+ * <li>{@link net.guts.gui.application.AbstractApplication} which your application 
  * main class should derive from</li>
  * <li>{@link net.guts.gui.application.AppLifecycleStarter} interface which you
  * must implement to actually "start up" your UI</li>
