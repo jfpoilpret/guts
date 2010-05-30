@@ -40,7 +40,7 @@ import com.google.inject.Module;
  *         new AddressBookMain().launch(args);
  *     }
  *     
- *     &#64;Override protected void initModules(String[] args, List<Module> modules)
+ *     &#64;Override protected void initModules(String[] args, List&lt;Module&gt; modules)
  *     {
  *         modules.add(new MessageModule());
  *         modules.add(new AddressBookModule());
@@ -71,7 +71,7 @@ import com.google.inject.Module;
  * to subclass it.
  * Refer to (TODO later when these classes exist).
  * <p/>
- * In case any error occurs during intialization process, it will be logged and an error
+ * In case any error occurs during initialization process, it will be logged and an error
  * message will be displayed to the end user. For localization of these fatal error
  * message, {@code AbstractApplication} cannot use 
  * {@link net.guts.gui.resource.ResourceInjector} but must use a special 
