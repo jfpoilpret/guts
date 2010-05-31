@@ -18,7 +18,8 @@ import java.util.List;
 
 import javax.swing.JApplet;
 
-import net.guts.gui.resource.ResourceInjector;
+import net.guts.gui.exit.ExitController;
+import net.guts.gui.exit.ExitPerformer;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -110,9 +111,14 @@ public abstract class AbstractApplet extends JApplet
 			
 			@Override void afterStartup()
 			{
-				injectAppletResources();
+				_windowController.showApplet(true);
 			}
 		});
+	}
+
+	@Override final public void destroy()
+	{
+		_exitController.shutdown();
 	}
 
 	/**
@@ -136,14 +142,11 @@ public abstract class AbstractApplet extends JApplet
 	 */
 	abstract protected void initModules(List<Module> modules);
 
-	void injectAppletResources()
+	@Inject void init(
+		WindowController windowController, ExitController exitController)
 	{
-		_injector.injectHierarchy(this);
-	}
-	
-	@Inject void setResourceInjector(ResourceInjector injector)
-	{
-		_injector = injector;
+		_windowController = windowController;
+		_exitController = exitController;
 	}
 	
 	// Special module to allow injection of this applet itself
@@ -151,9 +154,18 @@ public abstract class AbstractApplet extends JApplet
 	{
 		@Override protected void configure()
 		{
+			// Ensure this is injectable as JApplet
 			bind(JApplet.class).toInstance(AbstractApplet.this);
+			// Don't allow System.exit() for an applet!
+			bind(ExitPerformer.class).toInstance(new ExitPerformer()
+			{
+				@Override public void exitApplication()
+				{
+				}
+			});
 		}
 	}
 	
-	private ResourceInjector _injector = null;
+	private WindowController _windowController = null;
+	private ExitController _exitController = null;
 }

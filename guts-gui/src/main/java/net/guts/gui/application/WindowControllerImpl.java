@@ -15,6 +15,7 @@
 package net.guts.gui.application;
 
 import java.awt.AWTEvent;
+import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -23,6 +24,7 @@ import java.awt.event.WindowEvent;
 import java.util.EnumSet;
 import java.util.Locale;
 
+import javax.swing.JApplet;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
@@ -37,16 +39,19 @@ import net.guts.gui.session.SessionManager;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import com.google.inject.internal.Nullable;
 
 @Singleton
 class WindowControllerImpl implements WindowController
 {
 	static final private Logger _logger = LoggerFactory.getLogger(WindowControllerImpl.class);
 	
-	@Inject WindowControllerImpl(ResourceInjector injector, SessionManager sessions)
+	@Inject WindowControllerImpl(ResourceInjector injector, SessionManager sessions,
+		@Nullable JApplet applet)
 	{
 		_injector = injector;
 		_sessions = sessions;
+		_applet = applet;
 		_current = null;
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
 		{
@@ -71,6 +76,11 @@ class WindowControllerImpl implements WindowController
 			{
 				saveState(window);
 			}
+		}
+		// Special code for applets (not listed in Window.getWindows())
+		if (_applet != null)
+		{
+			saveState(_applet);
 		}
 	}
 	
@@ -115,6 +125,29 @@ class WindowControllerImpl implements WindowController
 		showWindow(dialog, policy, restoreState);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.application.WindowController#showApplet(boolean)
+	 */
+	@Override public void showApplet(boolean restoreState)
+	{
+		if (!EventQueue.isDispatchThread())
+		{
+			throw new IllegalStateException(
+				"WindowController.show() must be called from the EDT!");
+		}
+		if (_applet != null)
+		{
+			_injector.injectHierarchy(_applet);
+			_applet.setSize(_applet.getLayout().preferredLayoutSize(_applet));
+			if (restoreState)
+			{
+				// Restore size from session storage if any
+				_sessions.restore(_applet);
+			}
+		}
+	}
+
 	private void showWindow(Window container, BoundsPolicy policy, boolean restoreState)
 	{
 		if (!EventQueue.isDispatchThread())
@@ -153,7 +186,7 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 	
-	private void saveState(Window container)
+	private void saveState(Component container)
 	{
 		_sessions.save(container);
 	}
@@ -190,4 +223,5 @@ class WindowControllerImpl implements WindowController
 	private Window _current;
 	final private ResourceInjector _injector;
 	final private SessionManager _sessions;
+	final private JApplet _applet;
 }
