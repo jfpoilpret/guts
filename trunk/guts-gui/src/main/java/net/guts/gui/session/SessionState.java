@@ -22,6 +22,7 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.util.Arrays;
 
+import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -137,19 +138,19 @@ class ScreenEstate
 	private Rectangle _bounds;
 }
 
-class WindowState implements SessionState<Window>
+abstract class ScreenEstateState<T extends Component> implements SessionState<T>
 {
 	@Override public void reset()
 	{
 		_estate = null;
 	}
 	
-	@Override public void extractState(Window component)
+	@Override public void extractState(Component component)
 	{
 		_estate = new ScreenEstate(component.getBounds());
 	}
 
-	@Override public void injectState(Window component)
+	@Override public void injectState(T component)
 	{
 		Rectangle bounds = (_estate != null ? _estate.bounds() : null);
 		if (bounds != null)
@@ -159,6 +160,14 @@ class WindowState implements SessionState<Window>
 	}
 	
 	private ScreenEstate _estate = null;
+}
+
+class WindowState extends ScreenEstateState<Window>
+{
+}
+
+class AppletState extends ScreenEstateState<JApplet>
+{
 }
 
 class FrameState implements SessionState<JFrame>

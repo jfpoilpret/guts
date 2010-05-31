@@ -114,11 +114,14 @@ public interface WindowController
 	 * only {@code policy} is used to set the bounds of {@code dialog}.
 	 */
 	public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState);
+	
+	//TODO javadoc
+	public void showApplet(boolean restoreState);
 
 	/**
 	 * Get the current active foreground window in the application.
 	 * 
 	 * @return the current active foreground window
 	 */
-	public Window	getActiveWindow();
+	public Window getActiveWindow();
 }

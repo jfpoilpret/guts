@@ -17,6 +17,7 @@ package net.guts.gui.session;
 import java.awt.Component;
 import java.awt.Window;
 
+import javax.swing.JApplet;
 import javax.swing.JFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
@@ -54,6 +55,7 @@ public final class SessionModule extends AbstractModule
 		// Bind default SessionConverters for known types
 		// Window, TabbedPane, Table, Tree...
 		bindConverter(Window.class, WindowState.class);
+		bindConverter(JApplet.class, AppletState.class);
 		bindConverter(JFrame.class, FrameState.class);
 		bindConverter(JSplitPane.class, SplitPaneState.class);
 		bindConverter(JTable.class, TableState.class);

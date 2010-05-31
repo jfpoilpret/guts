@@ -32,10 +32,6 @@ public class AppletUIStarter implements AddressBookUIStarter
 		_applet.setName("mainFrame");
 		_applet.setJMenuBar(menuBar);
 		_applet.setContentPane(mainView);
-		// Set size to best size (NB: this will only work within AppletViewer!)
-		_applet.setSize(_applet.getLayout().preferredLayoutSize(_applet));
-		//TODO add something special in WindowController?
-		//TODO or add a new AppletController service?
 	}
 	
 	final private JApplet _applet;
