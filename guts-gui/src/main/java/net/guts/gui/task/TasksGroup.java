@@ -187,16 +187,18 @@ public class TasksGroup
 	 * @param listener a listener that will be notified of the progress and changes in 
 	 * status of tasks; if {@code null}, {@code task} is added without
 	 * any {@code TaskListener}.
+	 * @return {@code this TasksGroup}, for chained calls (fluent API)
 	 * @throws IllegalStateException if this {@code TasksGroup} has completed its 
 	 * execution already
 	 */
-	public void addGroupListener(TasksGroupListener listener)
+	public TasksGroup addGroupListener(TasksGroupListener listener)
 	{
 		if (listener != null)
 		{
 			checkMutability("add TasksGroupListener");
 			_groupListeners.addListener(listener);
 		}
+		return this;
 	}
 
 	/**
