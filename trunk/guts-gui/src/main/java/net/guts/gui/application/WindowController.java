@@ -114,8 +114,22 @@ public interface WindowController
 	 * only {@code policy} is used to set the bounds of {@code dialog}.
 	 */
 	public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState);
-	
-	//TODO javadoc
+
+	/**
+	 * Show the currently bound {@code JApplet} instance after possibly restoring
+	 * its size. The applet will have its resources automatically injected
+	 * (according to {@link net.guts.gui.resource.ResourceInjector} principles).
+	 * <p/>
+	 * When using {@link AbstractApplet}, this method is automatically called 
+	 * (with {@code restoreState} set to {@code true}) after calling
+	 * {@link AppLifecycleStarter#startup}.
+	 * 
+	 * @param restoreState if {@code true}, state (bounds) will be restored if it
+	 * was previously persisted; if {@code false}, state is not restored, applet 
+	 * size is automatically packed to preferred size of content. Note that this
+	 * will work only with AppletViewer; within a browser, you must use JavaScript
+	 * to dynamically set the size of an applet.
+	 */
 	public void showApplet(boolean restoreState);
 
 	/**
