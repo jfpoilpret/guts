@@ -28,6 +28,7 @@ import javax.swing.JApplet;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +146,8 @@ class WindowControllerImpl implements WindowController
 				// Restore size from session storage if any
 				_sessions.restore(_applet);
 			}
+			// Initialize current active window
+			_current = SwingUtilities.getWindowAncestor(_applet);
 		}
 	}
 
