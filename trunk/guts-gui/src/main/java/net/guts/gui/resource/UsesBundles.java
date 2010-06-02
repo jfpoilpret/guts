@@ -67,12 +67,25 @@ public @interface UsesBundles
 	 * bundles defined here. This bundle is global for the whole application and
 	 * is defined by {@link Resources#bindRootBundle}.
 	 * <p/>
-	 * When the list of paths is empty, this means that the package of the
-	 * annotated class (or the annotated package itself) <b>is</b> the resource
-	 * bundle location path. In this case, a resources bundle named {@code "resources"}
-	 * will be added to the list of bundles for the annotated class or package.
+	 * When the list of paths is empty, if {@link #useClassName()} is {@code false},
+	 * this means that the package of the annotated class (or the annotated package 
+	 * itself) <b>is</b> the resource bundle location path. In this case, a resources 
+	 * bundle named {@code "resources"} will be added to the list of bundles for the 
+	 * annotated class or package; if {@link #useClassName()} is {@code true}, then
+	 * the name of the class will be used as the resources bundle name, instead of
+	 * "resources".
 	 */
 	String[] value() default {};
-	
+
+	/**
+	 * Used only when {@link #value()} is empty, this indicates how the resources 
+	 * bundle file name is to be obtained: if {@code false} (the default), then
+	 * the bundle file will be named "resources", otherwise the name of the class
+	 * holding the annotation will be used as the bundle file name.
+	 * <p/>
+	 * In general, you won't need this option, as it is normally more convenient to
+	 * have all resources for all classes in one package in only one bundle file, 
+	 * rather than several. 
+	 */
 	boolean useClassName() default false;
 }
