@@ -117,8 +117,10 @@ class ResourceMapFactoryImpl implements ResourceMapFactory
 			// If uses.value() is empty, then take current class/package as bundle
 			if (uses.value().length == 0)
 			{
-				// and use "resources" as default name
-				addBundle(bundles, origin, DEFAULT_BUNDLE_NAME);
+				// and use "resources" or the class name as default name
+				String bundleName = 
+					(uses.useClassName() ? origin.getSimpleName() : DEFAULT_BUNDLE_NAME);
+				addBundle(bundles, origin, bundleName);
 			}
 		}
 		return bundles;

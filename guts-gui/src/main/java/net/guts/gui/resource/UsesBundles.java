@@ -73,4 +73,6 @@ public @interface UsesBundles
 	 * will be added to the list of bundles for the annotated class or package.
 	 */
 	String[] value() default {};
+	
+	boolean useClassName() default false;
 }
