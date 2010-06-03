@@ -37,6 +37,19 @@ package net.guts.gui.task;
 public interface TaskListener<T>
 {
 	/**
+	 * Called when {@code source} Task has just started.
+	 * <p/>
+	 * Note that since this call is made from the EDT, it is possible for it to
+	 * be called while the {@code source} task has already progressed a lot and even
+	 * finished maybe. What is guaranteed is that this method will be called first,
+	 * before any other {@code TaskListener} methods.
+	 * 
+	 * @param group group to which {@code source} belongs
+	 * @param source the task that has just started
+	 */
+	public void started(TasksGroup group, TaskInfo source);
+
+	/**
 	 * Called when the {@code source} Task reports progress through 
 	 * {@link FeedbackController#setProgress}.
 	 * 

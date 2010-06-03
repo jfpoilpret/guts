@@ -32,15 +32,14 @@ class TaskHandler<T> implements Callable<T>, FeedbackController, TaskInfo
 		_group = group;
 		_task = task;
 		_taskListeners.addListener(taskListener);
-		_groupListener = groupListener;
-		_taskListeners.addListener(_groupListener);
-		_groupListener.taskAdded(_group, this);
+		_taskListeners.addListener(groupListener);
+		groupListener.taskAdded(_group, this);
 	}
 	
 	@Override public T call() throws Exception
 	{
 		_state = State.RUNNING;
-		_groupListener.taskStarted(_group, this);
+		_edtTaskListener.started(_group, this);
 		return _task.execute(this);
 	}
 	
@@ -123,7 +122,6 @@ class TaskHandler<T> implements Callable<T>, FeedbackController, TaskInfo
 		finally
 		{
 			_edtTaskListener.finished(_group, this);
-			_groupListener.taskEnded(_group, this);
 		}
 	}
 	
@@ -145,7 +143,6 @@ class TaskHandler<T> implements Callable<T>, FeedbackController, TaskInfo
 		ListenerDispatchProxy.createProxy(_type);
 	final private TaskListener<? super T> _edtTaskListener = 
 		ListenerEdtProxy.createProxy(_type, _taskListeners.notifier()).notifier();
-	final private TasksGroupListener _groupListener;
 
 	private Future<T> _future;
 	private State _state = State.NOT_STARTED;

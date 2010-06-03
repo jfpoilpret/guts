@@ -164,6 +164,11 @@ public class TaskTestActions
 			return null;
 		}
 
+		@Override public void started(TasksGroup group, TaskInfo source)
+		{
+			System.out.printf("Task `%s` just started\n", _name);
+		}
+
 		@Override public void finished(TasksGroup group, TaskInfo source)
 		{
 			System.out.printf("Task `%s` finished\n", _name);
@@ -193,6 +198,11 @@ public class TaskTestActions
 			controller.setFeedback("Task done!");
 			System.out.printf("Task `%s` ending execute() after %d ms\n", _name, sleep);
 			return null;
+		}
+
+		@Override public void started(TasksGroup group, TaskInfo source)
+		{
+			System.out.printf("Task `%s` just started\n", _name);
 		}
 
 		@Override public void finished(TasksGroup group, TaskInfo source)

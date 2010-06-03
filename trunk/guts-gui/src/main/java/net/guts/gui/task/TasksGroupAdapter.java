@@ -47,19 +47,5 @@ public abstract class TasksGroupAdapter extends TaskAdapter<Object>
 	@Override public void taskAdded(TasksGroup group, TaskInfo task)
 	{
 	}
-
-	/* (non-Javadoc)
-	 * @see net.guts.gui.task.TasksGroupListener#taskEnded(net.guts.gui.task.TasksGroup, net.guts.gui.task.TaskInfo)
-	 */
-	@Override public void taskEnded(TasksGroup group, TaskInfo task)
-	{
-	}
-
-	/* (non-Javadoc)
-	 * @see net.guts.gui.task.TasksGroupListener#taskStarted(net.guts.gui.task.TasksGroup, net.guts.gui.task.TaskInfo)
-	 */
-	@Override public void taskStarted(TasksGroup group, TaskInfo task)
-	{
-	}
 }
 //CSON: AbstractClassNameCheck

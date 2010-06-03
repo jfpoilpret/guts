@@ -38,6 +38,14 @@ public abstract class TaskAdapter<T> implements TaskListener<T>
 {
 	/*
 	 * (non-Javadoc)
+	 * @see net.guts.gui.task.TaskListener#started(net.guts.gui.task.TasksGroup, net.guts.gui.task.TaskInfo)
+	 */
+	@Override public void started(TasksGroup group, TaskInfo source)
+	{
+	}
+
+	/*
+	 * (non-Javadoc)
 	 * @see net.guts.gui.task.TaskListener#progress(net.guts.gui.task.TasksGroup, net.guts.gui.task.Task, int)
 	 */
 	@Override public void progress(TasksGroup group, TaskInfo source, int rate)
