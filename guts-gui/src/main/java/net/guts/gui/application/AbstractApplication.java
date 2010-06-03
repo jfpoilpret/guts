@@ -140,7 +140,7 @@ public abstract class AbstractApplication
 	 */
 	final protected void launch(final String[] args)
 	{
-		AppLauncher.launch(args, getClass(), new AppModuleInit()
+		AppLauncher.launch(args, getClass(), new AbstractAppModuleInit()
 		{
 			@Override void initModules(String[] passedArgs, List<Module> modules)
 			{

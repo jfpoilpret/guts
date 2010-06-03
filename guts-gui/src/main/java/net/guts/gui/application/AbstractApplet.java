@@ -101,7 +101,7 @@ public abstract class AbstractApplet extends JApplet
 	 */
 	@Override final public void init()
 	{
-		AppLauncher.launch(null, getClass(), new AppModuleInit()
+		AppLauncher.launch(null, getClass(), new AbstractAppModuleInit()
 		{
 			@Override void initModules(String[] passedArgs, List<Module> modules)
 			{

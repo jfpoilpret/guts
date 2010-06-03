@@ -39,17 +39,17 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Module;
 
-class AppLauncher
+final class AppLauncher
 {
 	static final private Logger _logger = LoggerFactory.getLogger(AppLauncher.class);
 	static final private String ERROR_INIT_GUI = "initialization-error";
 
-	static void launch(String[] args, Class<?> mainClass, AppModuleInit init)
+	static void launch(String[] args, Class<?> mainClass, AbstractAppModuleInit init)
 	{
 		new AppLauncher(args, init, mainClass).launch();
 	}
 
-	private AppLauncher(String[] args, AppModuleInit init, Class<?> mainClass)
+	private AppLauncher(String[] args, AbstractAppModuleInit init, Class<?> mainClass)
 	{
 		_args = (args != null ? args : new String[0]);
 		_appInit = init;
@@ -93,9 +93,9 @@ class AppLauncher
 			final AppLifecycleStarter lifecycle = 
 				injector.getInstance(AppLifecycleStarter.class);
 			lifecycle.startup(_args);
+
+			// Call back to AppModuleInit (useful for applets)
 			_appInit.afterStartup();
-			
-			//TODO Call back to AppModuleInit (useful for applets)
 			
 			// Then wait for the EDT to finish processing all events
 			EdtHelper.waitForIdle(new Runnable()
@@ -138,6 +138,6 @@ class AppLauncher
 	}
 
 	final private String[] _args;
-	final private AppModuleInit _appInit;
+	final private AbstractAppModuleInit _appInit;
 	final private Class<?> _mainClass;
 }

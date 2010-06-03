@@ -138,7 +138,7 @@ class ScreenEstate
 	private Rectangle _bounds;
 }
 
-abstract class ScreenEstateState<T extends Component> implements SessionState<T>
+class ScreenEstateState<T extends Component> implements SessionState<T>
 {
 	@Override public void reset()
 	{

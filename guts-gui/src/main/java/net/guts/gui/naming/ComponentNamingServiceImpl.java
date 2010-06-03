@@ -26,9 +26,6 @@ import com.google.inject.Singleton;
 @Singleton
 class ComponentNamingServiceImpl implements ComponentNamingService
 {
-	//TODO add more flexibility (through injection of configuration such as:
-	// - Field name transformer
-	// - Separator to use
 	@Inject ComponentNamingServiceImpl(ComponentNamePolicy namingPolicy)
 	{
 		_namingPolicy = namingPolicy; 
