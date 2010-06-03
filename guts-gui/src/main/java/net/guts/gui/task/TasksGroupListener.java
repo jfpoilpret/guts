@@ -39,26 +39,6 @@ public interface TasksGroupListener extends TaskListener<Object>
 	public void taskAdded(TasksGroup group, TaskInfo task);
 	
 	/**
-	 * Called each time a {@link Task} is started inside a {@code TasksGroup} to
-	 * which {@code this} listener was added.
-	 * 
-	 * @param group group in which {@code task} was started
-	 * @param task the task that was just started in {@code group}
-	 */
-	public void taskStarted(TasksGroup group, TaskInfo task);
-	
-	/**
-	 * Called each time a {@link Task} has ended inside a {@code TasksGroup} to
-	 * which {@code this} listener was added. Task end may have occurred for any
-	 * reason: task finished normally, was interrupted, cancelled or threw an
-	 * exception.
-	 * 
-	 * @param group group in which {@code task} ended
-	 * @param task the task that has just ended in {@code group}
-	 */
-	public void taskEnded(TasksGroup group, TaskInfo task);
-	
-	/**
 	 * Called when all {@link Task}s inside a {@code TasksGroup} have ended. This
 	 * is the last called method of {@code this} listener for a given {@code group}.
 	 * 

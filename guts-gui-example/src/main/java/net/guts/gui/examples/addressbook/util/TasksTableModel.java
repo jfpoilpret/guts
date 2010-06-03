@@ -112,6 +112,12 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 		return _groupState;
 	}
 	
+	@Override public void started(TasksGroup group, TaskInfo task)
+	{
+		_groupState = State.RUNNING;
+		updateTask(task);
+	}
+
 	@Override public void cancelled(TasksGroup group, TaskInfo source)
 	{
 		_groupState = State.CANCELLED;
@@ -130,6 +136,7 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 
 	@Override public void finished(TasksGroup group, TaskInfo source)
 	{
+		_endedTasks++;
 		updateTask(source);
 	}
 
@@ -159,18 +166,6 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 	{
 		int index = _group.tasks().size();
 		fireTableRowsInserted(index, index);
-	}
-
-	@Override public void taskEnded(TasksGroup group, TaskInfo task)
-	{
-		_endedTasks++;
-		updateTask(task);
-	}
-
-	@Override public void taskStarted(TasksGroup group, TaskInfo task)
-	{
-		_groupState = State.RUNNING;
-		updateTask(task);
 	}
 
 	private void updateTask(TaskInfo task)
