@@ -18,7 +18,7 @@ import java.util.List;
 
 import com.google.inject.Module;
 
-abstract class AppModuleInit
+abstract class AbstractAppModuleInit
 {
 	abstract void initModules(String[] args, List<Module> modules);
 	void afterStartup()
