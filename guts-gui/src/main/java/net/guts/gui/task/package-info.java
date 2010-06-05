@@ -48,7 +48,9 @@
  * {@link net.guts.gui.application.AbstractApplication} to launch your application,
  * then {@code TasksModule} is automatically added to the {@code Module}s list.
  * <p/>
- * TODO TasksGroupListener (later when implemented and tested)
- * 
+ * You can also listen to all notifications for any tasks inside a {@code TaskGroup}
+ * with {@link net.guts.gui.task.TasksGroupListener}; you also get notified whenever
+ * a new {@code Task} has been dynamically added to the {@code TasksGroup}, or when
+ * all {@code Task}s have finished execution.
  */
 package net.guts.gui.task;
