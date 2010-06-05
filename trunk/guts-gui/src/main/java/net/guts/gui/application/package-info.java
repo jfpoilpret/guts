@@ -31,6 +31,10 @@
  * {@code AbstractApplication} and {@code AbstractApplet} perform several 
  * initializations in order to put various Guts-GUI standard services at your disposal:
  * <ul>
+ * <li>{@link net.guts.gui.application.WindowController}, an injectable service that
+ * controls window display, making sure windows get their resources injected (by
+ * {@link net.guts.gui.resource.ResourceInjector}) and their "geography" restored and
+ * saved (by {@link net.guts.gui.session.SessionManager}</li>
  * <li>{@link net.guts.gui.exit.ExitController}, an injectable service that controls 
  * the shutdown of the application, and to which you can register 
  * {@link net.guts.gui.exit.ExitChecker} implementations that will be called
@@ -40,7 +44,12 @@
  * to be notified of uncaught exceptions (uncaught exceptions may occur in the Event
  * Dispatch Thread and should be processed by any application, e.g. logging
  * the exception or showing a message to the user)</li>
- * <li>TODO add other standard services here!</li>
+ * <li>{@link net.guts.gui.application.GutsApplicationActions} an injectable class
+ * that contains {@link net.guts.gui.action.GutsAction} for common actions (cut, copy,
+ * paste, quit) that can be added to your menu bar</li>
+ * <li>{@link net.guts.gui.action.ActionModule} and {@link net.guts.gui.task.TasksModule}
+ * that allow effective {@link javax.swing.Action} definition with automatic resource 
+ * injection</li>
  * </ul>
  */
 package net.guts.gui.application;
