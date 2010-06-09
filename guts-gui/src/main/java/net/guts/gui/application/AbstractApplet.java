@@ -95,6 +95,8 @@ import com.google.inject.Module;
  */
 public abstract class AbstractApplet extends JApplet
 {
+	private static final long serialVersionUID = -4612796429377041791L;
+	
 	/*
 	 * (non-Javadoc)
 	 * @see java.applet.Applet#init()
