@@ -21,10 +21,22 @@ import java.awt.geom.RoundRectangle2D;
 
 import com.google.inject.Singleton;
 
+/**
+ * Little utility to draw a spinning animation (to notify users they have to wait).
+ * Its sue is starightforward: once you have instantiated it and set it up according 
+ * to your needs (number of bars, size...), you just need to call {@link #rotate()}
+ * periodically (which will update the internal state), and call {@link #paint(Graphics2D)}
+ * from your own {@link javax.swing.JComponent#paintComponents(java.awt.Graphics)}.
+ * <p/>
+ * One instance is not linked to any specific component, hence you can perfectly use it
+ * to draw over several components if you want.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @Singleton
 public class SpinningAnimator
 {
-	SpinningAnimator numBars(int numBars)
+	public SpinningAnimator numBars(int numBars)
 	{
 		if (numBars > _trailLength)
 		{
