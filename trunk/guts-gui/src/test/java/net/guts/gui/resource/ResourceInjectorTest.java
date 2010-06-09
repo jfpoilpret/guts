@@ -39,6 +39,8 @@ import javax.swing.table.TableColumnModel;
 import org.fest.assertions.Assertions;
 import org.testng.annotations.Test;
 
+import net.guts.gui.util.EnumIconRenderer;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
@@ -147,6 +149,32 @@ public class ResourceInjectorTest
 		Assertions.assertThat(model.getColumn(0).getHeaderValue()).as("table.header0").isEqualTo("Column 0");
 		Assertions.assertThat(model.getColumn(1).getHeaderValue()).as("table.header.1").isEqualTo("Column 1");
 		Assertions.assertThat(model.getColumn(2).getHeaderValue()).as("table.header2").isEqualTo("Column 2");
+	}
+
+	public void checkEnumIconRendererInjection()
+	{
+		ResourceInjector resourceInjector = createInjector();
+		EnumIconRendererHolder holder = new EnumIconRendererHolder();
+		resourceInjector.injectInstance(holder, NAME + "-" + "test-enum-icon-renderer");
+
+		// Check injection has worked
+		EnumIconRenderer<Status> renderer = holder.getRenderer();
+		Assertions.assertThat(renderer).as("Injected EnumIconRenderer").isNotNull();
+
+		JTable table = new JTable(1, 1);
+		table.setValueAt(Status.OK, 0, 0);
+		renderer.getTableCellRendererComponent(table, Status.OK, false, false, 0, 0);
+		Assertions.assertThat(renderer.getIcon()).as("OK Icon").isNotNull();
+		BufferedImage actual = createImageFromIcon(renderer.getIcon());
+		BufferedImage expected = createImageFromIcon("net/guts/gui/resource/images/ok.png");
+		Assertions.assertThat(actual).as("OK Icon").isEqualTo(expected);
+
+		table.setValueAt(Status.KO, 0, 0);
+		renderer.getTableCellRendererComponent(table, Status.KO, false, false, 0, 0);
+		Assertions.assertThat(renderer.getIcon()).as("KO Icon").isNotNull();
+		actual = createImageFromIcon(renderer.getIcon());
+		expected = createImageFromIcon("net/guts/gui/resource/images/ko.png");
+		Assertions.assertThat(actual).as("KO Icon").isEqualTo(expected);
 	}
 	
 	public void checkJTabbedPaneInjection()
@@ -276,6 +304,7 @@ public class ResourceInjectorTest
 				Resources.bindClassConverter(binder(), JComponent.class);
 				Resources.bindListConverter(binder(), String.class, ":");
 				Resources.bindListConverter(binder(), Icon.class, ":");
+				EnumIconRenderer.bind(binder(), Status.class);
 				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
 			}
 		});
@@ -331,7 +360,7 @@ public class ResourceInjectorTest
 		KO;
 	}
 	
-	static private class InjectableComponent
+	static class InjectableComponent
 	{
 		public Class<?> getKeyType()
 		{
@@ -378,5 +407,20 @@ public class ResourceInjectorTest
 		private Class<? extends JComponent> _valueType;
 		private List<String> _stringsList;
 		private List<Icon> _iconsList;
+	}
+	
+	static class EnumIconRendererHolder
+	{
+		public EnumIconRenderer<Status> getRenderer()
+		{
+			return _renderer;
+		}
+
+		public void setRenderer(EnumIconRenderer<Status> renderer)
+		{
+			_renderer = renderer;
+		}
+
+		private EnumIconRenderer<Status> _renderer;
 	}
 }

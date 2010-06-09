@@ -52,13 +52,7 @@ public class TasksGroupProgressPanel extends JPanel
 		setName(NAME);
 		_model = model;
 		_tasks = new JTable(_model);
-		// Add special renderers for state & progress
-		_stateRenderer.mapIcon(State.CANCELLED, "net/guts/gui/examples/addressbook/icons/cross.png");
-		_stateRenderer.mapIcon(State.FAILED, "net/guts/gui/examples/addressbook/icons/cog_error.png");
-		_stateRenderer.mapIcon(State.FINISHED, "net/guts/gui/examples/addressbook/icons/tick.png");
-		_stateRenderer.mapIcon(State.NOT_STARTED, "net/guts/gui/examples/addressbook/icons/cog.png");
-		_stateRenderer.mapIcon(State.RUNNING, "net/guts/gui/examples/addressbook/icons/cog_go.png");
-		_tasks.setDefaultRenderer(State.class, _stateRenderer);
+//		_tasks.setDefaultRenderer(State.class, _stateRenderer);
 		_tasks.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 		
 		int width = _tasks.getPreferredSize().width;
@@ -102,6 +96,13 @@ public class TasksGroupProgressPanel extends JPanel
 	{
 		_parent.setDialogTitle(title);
 	}
+	
+	// Used for resource injection
+	void setStateRenderer(EnumIconRenderer<State> stateRenderer)
+	{
+		_stateRenderer = stateRenderer;
+		_tasks.setDefaultRenderer(State.class, _stateRenderer);
+	}
 
 	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
 	{
@@ -121,8 +122,7 @@ public class TasksGroupProgressPanel extends JPanel
 
 	final private TasksTableModel _model;
 	final private JTable _tasks;
-	final private EnumIconRenderer<State> _stateRenderer = 
-		new EnumIconRenderer<State>(State.class);
+	private EnumIconRenderer<State> _stateRenderer;
 	final private JButton _cancelBtn = new JButton(_cancel.action());
 	private TasksGroup _group;
 	private ParentDialog _parent;

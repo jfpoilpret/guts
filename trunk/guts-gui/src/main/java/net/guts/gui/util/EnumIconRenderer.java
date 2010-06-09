@@ -15,15 +15,26 @@
 package net.guts.gui.util;
 
 import java.awt.Component;
-import java.net.URL;
+import java.lang.reflect.Type;
 import java.util.EnumMap;
+import java.util.StringTokenizer;
 
 import javax.swing.Icon;
-import javax.swing.ImageIcon;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
 
-//TODO add system for automatic resource injection!
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.guts.gui.resource.AbstractCompoundResourceConverter;
+import net.guts.gui.resource.ResourceConverter;
+import net.guts.gui.resource.ResourceEntry;
+import net.guts.gui.resource.Resources;
+
+import com.google.inject.Binder;
+import com.google.inject.TypeLiteral;
+import com.google.inject.util.Types;
+
 /**
  * A special {@link javax.swing.table.TableCellRenderer} that will render any 
  * {@code enum} value to a given icon.
@@ -37,6 +48,42 @@ public class EnumIconRenderer<T extends Enum<T>> extends DefaultTableCellRendere
 {
 	private static final long serialVersionUID = 4287379175359009250L;
 
+	/**
+	 * Creates a {@code ResourceConverter<EnumIconRenderer<T>>} and binds this
+	 * {@link ResourceConverter} to {@code EnumIconRenderer<T>} so that any
+	 * {@link EnumIconRenderer} can have its resources injected by
+	 * {@link net.guts.gui.resource.ResourceInjector}.
+	 * <p/>
+	 * For resource injection to work onto {@code EnumIconRenderer}, you need the 
+	 * following:
+	 * <ul>
+	 * <li>define a {@code void setRenderer(EnumIconRenderer<YourEnum>)} in the
+	 * injected component,</li>
+	 * <li>define a binding for {@code ResourceConverter<YourEnum>} with
+	 * {@link Resources#bindEnumConverter(Binder, Class)},</li>
+	 * <li>call {@link #bind(Binder, Class)} for {@code YourEnum} type.</li>
+	 * </ul>
+	 * The format of the resource for {@code renderer} is as follows:
+	 * <pre>
+	 * ComponentName.renderer=EnumValue1:IconPath1,EnumValue2:IconPath2,EnumValue3:IconPath3...
+	 * </pre>
+	 * 
+	 * @param <T> the {@code enum} type class for which to bind resource injection of
+	 * the matching {@link EnumIconRenderer}
+	 * @param binder the binder passed to {@link com.google.inject.Module#configure(Binder)}
+	 * @param enumType the {@code enum} type class for which to bind resource injection of
+	 * the matching {@link EnumIconRenderer}
+	 */
+	@SuppressWarnings("unchecked") 
+	static public <T extends Enum<T>> void bind(Binder binder, Class<T> enumType)
+	{
+		Type rendererType = Types.newParameterizedType(EnumIconRenderer.class, enumType);
+		TypeLiteral<EnumIconRenderer<T>> rendererLiteral =
+			(TypeLiteral<EnumIconRenderer<T>>) TypeLiteral.get(rendererType);
+		Resources.bindConverter(binder, rendererLiteral).toInstance(
+			new EnumIconRendererResourceConverter<T>(enumType));
+	}
+	
 	/**
 	 * Creates a new {@code EnumIconRenderer} for a given {@code enum type}.
 	 * 
@@ -61,13 +108,6 @@ public class EnumIconRenderer<T extends Enum<T>> extends DefaultTableCellRendere
 		return this;
 	}
 
-	//TODO remove later (when resource injection is handled); for tests only
-	public EnumIconRenderer<T> mapIcon(T value, String icon)
-	{
-		URL url = Thread.currentThread().getContextClassLoader().getResource(icon);
-		return mapIcon(value, new ImageIcon(url));
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * @see javax.swing.table.DefaultTableCellRenderer#getTableCellRendererComponent(javax.swing.JTable, java.lang.Object, boolean, boolean, int, int)
@@ -82,4 +122,55 @@ public class EnumIconRenderer<T extends Enum<T>> extends DefaultTableCellRendere
 	}
 
 	final private EnumMap<T, Icon> _icons;
+}
+
+class EnumIconRendererResourceConverter<T extends Enum<T>> 
+	extends AbstractCompoundResourceConverter<EnumIconRenderer<T>>
+{
+	EnumIconRendererResourceConverter(Class<T> enumType)
+	{
+		_enumType = enumType;
+	}
+	
+	/* (non-Javadoc)
+	 * @see net.guts.gui.resource.ResourceConverter#convert(net.guts.gui.resource.ResourceEntry)
+	 */
+	@Override public EnumIconRenderer<T> convert(ResourceEntry entry)
+	{
+		// Get all required converters for the job: IconConverter, EnumConverter
+		ResourceConverter<T> enumConverter = converter(_enumType);
+		if (enumConverter == null)
+		{
+			_logger.error("No ResourceConverter for {}. Binding must be explicitly defined!", 
+				_enumType);
+			return null;
+		}
+		ResourceConverter<Icon> iconConverter = converter(Icon.class);
+		// Create a new renderer for this type
+		EnumIconRenderer<T> renderer = new EnumIconRenderer<T>(_enumType);
+		// Tokenize in pairs (enum value:icon path,...)
+		StringTokenizer tokenize = new StringTokenizer(entry.value(), ",");
+		while (tokenize.hasMoreTokens())
+		{
+			String pair = tokenize.nextToken();
+			int index = pair.indexOf(':');
+			if (index == -1 || index == pair.length() - 1)
+			{
+				_logger.debug("Expected `enumValue:iconPath` for {} enum, but found: {}", 
+					_enumType.getSimpleName(), pair);
+			}
+			else
+			{
+				String enumValue = pair.substring(0, index);
+				String iconPath = pair.substring(index + 1);
+				renderer.mapIcon(	enumConverter.convert(entry.derive(enumValue)),
+									iconConverter.convert(entry.derive(iconPath)));
+			}
+		}
+		return renderer;
+	}
+	
+	static private final Logger _logger = 
+		LoggerFactory.getLogger(EnumIconRendererResourceConverter.class);
+	private final Class<T> _enumType;
 }

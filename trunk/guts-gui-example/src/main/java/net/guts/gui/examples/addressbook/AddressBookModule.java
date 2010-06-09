@@ -22,7 +22,9 @@ import net.guts.gui.examples.addressbook.util.TasksGroupProgressPanel;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
+import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.blocker.BlockerDialogPane;
+import net.guts.gui.util.EnumIconRenderer;
 
 import com.google.inject.AbstractModule;
 
@@ -37,6 +39,8 @@ class AddressBookModule extends AbstractModule
 		bind(ContactActions.class).asEagerSingleton();
 		// Setup ResourceModule root bundle
 		Resources.bindRootBundle(binder(), getClass(), "resources");
+		Resources.bindEnumConverter(binder(), TaskInfo.State.class);
+		EnumIconRenderer.bind(binder(), TaskInfo.State.class);
 
 		// Set our own blocker dialog panel
 		bind(BlockerDialogPane.class).to(TasksGroupProgressPanel.class);
