@@ -266,21 +266,27 @@ class EnumConverter<T extends Enum<T>> implements ResourceConverter<T>
 {
 	EnumConverter(Class<T> enumType)
 	{
+		_enumType = enumType;
 		_enumValues = enumType.getEnumConstants();
 	}
 
-	@Override public T convert(ResourceEntry value)
+	@Override public T convert(ResourceEntry entry)
 	{
 		for (T enumValue: _enumValues)
 		{
-			if (enumValue.name().equals(value.value()))
+			if (enumValue.name().equals(entry.value()))
 			{
 				return enumValue;
 			}
 		}
+		_logger.debug("Expected enum value from {} class, but found: {}", 
+			_enumType.getSimpleName(), entry.value());
 		return null;
 	}
 
+	static private final Logger _logger = LoggerFactory.getLogger(ClassConverter.class);
+
+	final private Class<T> _enumType;
 	final private T[] _enumValues;
 }
 
