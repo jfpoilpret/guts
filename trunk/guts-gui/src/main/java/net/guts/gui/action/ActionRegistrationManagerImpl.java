@@ -20,6 +20,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.guts.common.cleaner.Cleaner;
 import net.guts.common.ref.ReflectHelper;
 import net.guts.common.ref.WeakRefSet;
@@ -34,6 +37,9 @@ import com.google.inject.Singleton;
 @Singleton
 class ActionRegistrationManagerImpl implements ActionRegistrationManager
 {
+	static final private Logger _logger = 
+		LoggerFactory.getLogger(ActionRegistrationManagerImpl.class);
+
 	@Inject ActionRegistrationManagerImpl(Injector injector, 
 		ResourceInjector resourceInjector, ActionNamePolicy policy, Cleaner cleaner)
 	{
@@ -68,8 +74,16 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			{
 				_injector.injectMembers(action);
 			}
-			//FIXME handle case where name is null!!!
-			_resourceInjector.injectInstance(action, action.name());
+			String name = action.name();
+			if (name == null)
+			{
+				_logger.error("registerAction() can't register unnamed GutsAction class {}", 
+					action.getClass().getName());
+			}
+			else
+			{
+				_resourceInjector.injectInstance(action, name);
+			}
 		}
 	}
 	
