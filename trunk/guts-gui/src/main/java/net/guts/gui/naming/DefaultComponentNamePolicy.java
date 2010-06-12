@@ -92,7 +92,7 @@ public class DefaultComponentNamePolicy implements ComponentNamePolicy
 	 * Defines the string to use to separate field names when assembling the complete
 	 * name of a component.
 	 * 
-	 * @return a separator string
+	 * @return a separator string ({@code "-"} by default)
 	 */
 	protected String separator()
 	{
