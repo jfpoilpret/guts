@@ -110,7 +110,7 @@ public class ContactActions
 		_dialogFactory.showDialog(clazz, BoundsPolicy.PACK_AND_CENTER, true);
 	}
 
-	final private GutsAction _createContact = new GutsAction("createContact")
+	final private GutsAction _createContact = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -118,7 +118,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _modifyContact = new GutsAction("modifyContact")
+	final private GutsAction _modifyContact = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -132,7 +132,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _deleteContact = new TaskAction("deleteContact")
+	final private GutsAction _deleteContact = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -160,7 +160,7 @@ public class ContactActions
 		}
 	};
 	
-	final private GutsAction _createContactWithTabs = new GutsAction("createContactWithTabs")
+	final private GutsAction _createContactWithTabs = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -168,7 +168,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _modifyContactWithTabs = new GutsAction("modifyContactWithTabs")
+	final private GutsAction _modifyContactWithTabs = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -182,8 +182,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _createContactWithWizard = 
-		new GutsAction("createContactWithWizard")
+	final private GutsAction _createContactWithWizard = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -191,8 +190,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _modifyContactWithWizard = 
-		new GutsAction("modifyContactWithWizard")
+	final private GutsAction _modifyContactWithWizard = new GutsAction()
 	{
 		@Override protected void perform()
 		{

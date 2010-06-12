@@ -48,6 +48,16 @@ abstract public class TasksGroupAction extends GutsAction
 	}
 
 	/**
+	 * Create a new {@code TasksGroupAction} without a name. A name will be automatically
+	 * set by Guts-GUI before injecting resources into it, according to the naming
+	 * policy defined by a Guice binding for {@link ActionNamePolicy}.
+	 */
+	protected TasksGroupAction()
+	{
+		super();
+	}
+
+	/**
 	 * Create a new {@code TasksGroup} that can be used to set up and launch one
 	 * or more long {@link net.guts.gui.task.Task}s in background.
 	 * This method is exactly the same as {@link TasksGroupFactory#newTasksGroup}.

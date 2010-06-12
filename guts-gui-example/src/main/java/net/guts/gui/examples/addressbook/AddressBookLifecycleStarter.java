@@ -62,7 +62,6 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 		_menuFactory = menuFactory;
 		_messageFactory = messageFactory;
 		_injector = injector;
-		
 	}
 	//CSON: ParameterNumberCheck
 	
@@ -123,21 +122,21 @@ public class AddressBookLifecycleStarter implements AppLifecycleStarter
 	}
 	
 	// Only to demonstrate the exception handling
-	final private GutsAction _throwException = new GutsAction("throwException")
+	final private GutsAction _throwException = new GutsAction()
 	{
 		@Override protected void perform()
 		{
 			throw new IllegalArgumentException("Some message here");
 		}
 	};
-	final private GutsAction _french = new GutsAction("french")
+	final private GutsAction _french = new GutsAction()
 	{
 		@Override protected void perform()
 		{
 			_injector.setLocale(Locale.FRENCH);
 		}
 	};
-	final private GutsAction _english = new GutsAction("english")
+	final private GutsAction _english = new GutsAction()
 	{
 		@Override protected void perform()
 		{

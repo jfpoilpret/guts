@@ -47,6 +47,16 @@ abstract public class TaskAction extends TasksGroupAction
 	}
 
 	/**
+	 * Create a new {@code TaskAction} without a name. A name will be automatically
+	 * set by Guts-GUI before injecting resources into it, according to the naming
+	 * policy defined by a Guice binding for {@link ActionNamePolicy}.
+	 */
+	protected TaskAction()
+	{
+		this(null, false);
+	}
+
+	/**
 	 * Create a new {@code TaskAction} and assign it a {@code name} that 
 	 * will be used as a key for resource injection.
 	 * 

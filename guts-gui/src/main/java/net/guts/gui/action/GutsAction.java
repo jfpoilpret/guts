@@ -26,7 +26,10 @@ import com.google.inject.Inject;
  * internationalize and manage its actions.
  * <p/>
  * Each {@code GutsAction} instance must have a name, supposedly unique, that will be 
- * used as a key to find resources to inject into that action.
+ * used as a key to find resources to inject into that action. if a {@code GutsAction}
+ * doesn't have a name, guts-gui will try, through {@link ActionRegistrationManager} to
+ * automatically assign one to it, but this works only for actions that are fields
+ * of objects injected by Guice.
  * <p/>
  * {@code GutsAction} subclasses must implement method {@link #perform()} which will
  * be called every time the underlying {@link javax.swing.Action} is triggered.
@@ -95,6 +98,16 @@ abstract public class GutsAction
 	}
 
 	/**
+	 * Create a new {@code GutsAction} without a name. A name will be automatically
+	 * set by Guts-GUI before injecting resources into it, according to the naming
+	 * policy defined by a Guice binding for {@link ActionNamePolicy}.
+	 */
+	protected GutsAction()
+	{
+		this(null);
+	}
+
+	/**
 	 * Get the underlying {@link javax.swing.Action} so that you can bind it to a Swing 
 	 * component (such as a {@link javax.swing.JButton} or a {@link javax.swing.JMenuItem}),
 	 * or change its {@code enabled} state.
@@ -139,6 +152,16 @@ abstract public class GutsAction
 	 */
 	abstract protected void perform();
 
+	// Internal method used by ActionRegistrationManager to automatically name 
+	// action if necessary
+	void name(String name)
+	{
+		if (_name == null)
+		{
+			_name = name;
+		}
+	}
+	
 	@SuppressWarnings("serial") 
 	private class InternalAction extends AbstractAction
 	{
@@ -170,8 +193,8 @@ abstract public class GutsAction
 		return _injectedAlready;
 	}
 	
-	final private String _name;
 	final private Action _action = new InternalAction();
+	private String _name;
 	private ActionEvent _event = null;
 	
 	private boolean _injectedAlready = false;
