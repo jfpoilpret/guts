@@ -15,6 +15,8 @@
 package net.guts.gui.examples.addressbook;
 
 import net.guts.event.Events;
+import net.guts.gui.action.ActionNamePolicy;
+import net.guts.gui.action.DefaultActionNamePolicy;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.examples.addressbook.action.ContactActions;
 import net.guts.gui.examples.addressbook.domain.Contact;
@@ -46,7 +48,8 @@ class AddressBookModule extends AbstractModule
 		bind(BlockerDialogPane.class).to(TasksGroupProgressPanel.class);
 		
 		// Set our own component naming policy
-		bind(ComponentNamePolicy.class).toInstance(new AddressBookNamePolicy());
+		bind(ComponentNamePolicy.class).toInstance(new AddressBookComponentNamePolicy());
+		bind(ActionNamePolicy.class).toInstance(new AddressBookActionNamePolicy());
 		
 		//TODO remove after resource injection tests and performance comparison
 		Resources.bindInjectionStrategy(binder()).to(SimpleInjectionDecisionStrategy.class);
@@ -55,7 +58,15 @@ class AddressBookModule extends AbstractModule
 
 // Special policy for automatically naming Swing components:
 // Don't use "-" as a name separator, since all fields names already start with "_"
-class AddressBookNamePolicy extends DefaultComponentNamePolicy
+class AddressBookComponentNamePolicy extends DefaultComponentNamePolicy
+{
+	@Override protected String separator()
+	{
+		return "";
+	}
+}
+
+class AddressBookActionNamePolicy extends DefaultActionNamePolicy
 {
 	@Override protected String separator()
 	{

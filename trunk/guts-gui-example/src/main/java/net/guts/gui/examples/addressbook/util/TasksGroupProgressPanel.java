@@ -44,15 +44,12 @@ public class TasksGroupProgressPanel extends JPanel
 	implements Closable, BlockerDialogPane, ParentDialogAware
 {
 	static final private long serialVersionUID = 1L;
-	static final private String NAME = "MyBlockerDialog";
 
 	@Inject TasksGroupProgressPanel(TasksTableModel model)
 	{
 		setLayout(new BorderLayout());
-		setName(NAME);
 		_model = model;
 		_tasks = new JTable(_model);
-//		_tasks.setDefaultRenderer(State.class, _stateRenderer);
 		_tasks.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 		
 		int width = _tasks.getPreferredSize().width;
@@ -100,11 +97,10 @@ public class TasksGroupProgressPanel extends JPanel
 	// Used for resource injection
 	void setStateRenderer(EnumIconRenderer<State> stateRenderer)
 	{
-		_stateRenderer = stateRenderer;
-		_tasks.setDefaultRenderer(State.class, _stateRenderer);
+		_tasks.setDefaultRenderer(State.class, stateRenderer);
 	}
 
-	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
+	final private GutsAction _cancel = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -122,7 +118,6 @@ public class TasksGroupProgressPanel extends JPanel
 
 	final private TasksTableModel _model;
 	final private JTable _tasks;
-	private EnumIconRenderer<State> _stateRenderer;
 	final private JButton _cancelBtn = new JButton(_cancel.action());
 	private TasksGroup _group;
 	private ParentDialog _parent;

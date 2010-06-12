@@ -30,13 +30,12 @@ import net.guts.gui.task.blocker.InputBlockers;
 
 import com.google.inject.Singleton;
 
-//CSOFF: LineLengthCheck
 //CSOFF: VisibilityModifierCheck
 //CSOFF: MagicNumberCheck
 @Singleton
 public class TaskTestActions
 {
-	public final GutsAction _oneTaskNoBlocker = new TaskAction("oneTaskNoBlocker")
+	public final GutsAction _oneTaskNoBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -44,7 +43,7 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _oneTaskActionBlocker = new TaskAction("oneTaskActionBlocker")
+	public final GutsAction _oneTaskActionBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -52,15 +51,16 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _oneTaskComponentBlocker = new TaskAction("oneTaskComponentBlocker")
+	public final GutsAction _oneTaskComponentBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
-			submit(new LongTask("oneTaskComponentBlocker"), InputBlockers.componentBlocker(this));
+			submit(new LongTask("oneTaskComponentBlocker"), 
+				InputBlockers.componentBlocker(this));
 		}
 	};
 	
-	public final GutsAction _oneTaskWindowBlocker = new TaskAction("oneTaskWindowBlocker")
+	public final GutsAction _oneTaskWindowBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -68,7 +68,7 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _oneTaskDialogBlocker = new TaskAction("oneTaskDialogBlocker")
+	public final GutsAction _oneTaskDialogBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
@@ -76,23 +76,25 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _oneTaskProgressDialogBlocker = new TaskAction("oneTaskProgressDialogBlocker")
+	public final GutsAction _oneTaskProgressDialogBlocker = new TaskAction()
 	{
 		@Override protected void perform()
 		{
-			submit(new LongProgressTask("oneTaskProgressDialogBlocker"), InputBlockers.dialogBlocker());
+			submit(new LongProgressTask("oneTaskProgressDialogBlocker"), 
+				InputBlockers.dialogBlocker());
 		}
 	};
 	
-	public final GutsAction _oneTaskSerialExecutor = new TaskAction("oneTaskNoBlockerSerialExecutor")
+	public final GutsAction _oneTaskSerialExecutor = new TaskAction()
 	{
 		@Override protected void perform()
 		{
-			submit(new LongTask("oneTaskDialogBlocker"), InputBlockers.noBlocker(), _serialExecutor);
+			submit(new LongTask("oneTaskDialogBlocker"), InputBlockers.noBlocker(), 
+				_serialExecutor);
 		}
 	};
 	
-	public final GutsAction _fiveTasksDialogBlocker = new TasksGroupAction("fiveTasksDialogBlocker")
+	public final GutsAction _fiveTasksDialogBlocker = new TasksGroupAction()
 	{
 		@Override protected void perform()
 		{
@@ -106,7 +108,7 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _twoSerialTaskDialogBlocker = new TasksGroupAction("twoSerialTaskDialogBlocker")
+	public final GutsAction _twoSerialTaskDialogBlocker = new TasksGroupAction()
 	{
 		@Override protected void perform()
 		{
@@ -126,7 +128,7 @@ public class TaskTestActions
 		}
 	};
 	
-	public final GutsAction _twoSerialGroupsDialogBlocker = new TasksGroupAction("twoSerialGroupsDialogBlocker")
+	public final GutsAction _twoSerialGroupsDialogBlocker = new TasksGroupAction()
 	{
 		@Override protected void perform()
 		{
@@ -218,4 +220,3 @@ public class TaskTestActions
 }
 //CSON: MagicNumberCheck
 //CSON: VisibilityModifierCheck
-//CSON: LineLengthCheck

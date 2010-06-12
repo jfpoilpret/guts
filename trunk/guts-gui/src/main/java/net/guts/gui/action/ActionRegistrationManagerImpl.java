@@ -35,14 +35,15 @@ import com.google.inject.Singleton;
 class ActionRegistrationManagerImpl implements ActionRegistrationManager
 {
 	@Inject ActionRegistrationManagerImpl(Injector injector, 
-		ResourceInjector resourceInjector, Cleaner cleaner)
+		ResourceInjector resourceInjector, ActionNamePolicy policy, Cleaner cleaner)
 	{
 		_injector = injector;
 		_resourceInjector = resourceInjector;
+		_policy = policy;
 		cleaner.addCleanable(_actions);
 	}
 
-	@Override public void registerActions(Object instance)
+	@Override public void registerActions(final Object instance)
 	{
 		// Check all fields of instance class
 		List<Field> fields = findActions(instance.getClass());
@@ -51,6 +52,8 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 		{
 			@Override public boolean process(Field field, GutsAction action)
 			{
+				// First of all, ensure that action has a name
+				action.name(_policy.actionName(instance, action, field.getName()));
 				registerAction(action);
 				return true;
 			}
@@ -65,6 +68,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			{
 				_injector.injectMembers(action);
 			}
+			//FIXME handle case where name is null!!!
 			_resourceInjector.injectInstance(action, action.name());
 		}
 	}
@@ -101,4 +105,5 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 	final private WeakRefSet<GutsAction> _actions = WeakRefSet.create();
 	final private ResourceInjector _resourceInjector;
 	final private Injector _injector;
+	final private ActionNamePolicy _policy;
 }
