@@ -100,7 +100,7 @@ class DialogFactoryImpl implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_windowController.show(dialog, BoundsPolicy.PACK_AND_CENTER, restoreState);
+		_windowController.show(dialog, policy, restoreState);
 		return !dialog.wasCancelled();
 	}
 
