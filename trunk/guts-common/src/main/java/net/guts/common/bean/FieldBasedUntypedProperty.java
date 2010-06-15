@@ -14,47 +14,28 @@
 
 package net.guts.common.bean;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
+
 import com.google.inject.TypeLiteral;
 
-//TODO Improve to make it type-safe somehow!
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-public class TypedProperty<T, V>
+class FieldBasedUntypedProperty extends UntypedProperty
 {
-	TypedProperty(UntypedProperty property)
+	FieldBasedUntypedProperty(String name, TypeLiteral<?> type, Field field)
 	{
-		_property = property;
+		super(name, type, (Modifier.isFinal(field.getModifiers()) ? null : field), field);
+		_field = field;
+	}
+	
+	@Override Object getValue(Object bean) throws Exception
+	{
+		return _field.get(bean);
 	}
 
-	@SuppressWarnings("unchecked") 
-	public TypeLiteral<? extends V> type()
+	@Override void setValue(Object bean, Object value) throws Exception
 	{
-		return (TypeLiteral<? extends V>) _property.type();
+		_field.set(bean, value);
 	}
-	
-	public boolean isReadable()
-	{
-		return _property.isReadable();
-	}
-	
-	public boolean isWritable()
-	{
-		return _property.isWritable();
-	}
-	
-	public void set(T bean, V value)
-	{
-		_property.set(bean, value);
-	}
-	
-	@SuppressWarnings("unchecked") 
-	public V get(T bean)
-	{
-		return (V) _property.get(bean);
-	}
-	
-	final private UntypedProperty _property;
+
+	private final Field _field;
 }

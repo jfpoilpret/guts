@@ -14,8 +14,10 @@
 
 package net.guts.gui.resource;
 
+import org.fest.assertions.Assertions;
 import org.testng.annotations.Test;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 
@@ -26,5 +28,25 @@ public class ResourceInjectorSpecificsTest
 	{
 		Injector injector = Guice.createInjector(new ResourceModule());
 		injector.getInstance(ResourceInjector.class);
+	}
+
+	public void checkInjectionThroughFields()
+	{
+		Injector injector = Guice.createInjector(new ResourceModule(), new AbstractModule()
+		{
+			@Override protected void configure()
+			{
+				Resources.bindRootBundle(binder(), "/net/guts/gui/resource/resources");
+			}
+		});
+		ResourceInjector resourceInjector = injector.getInstance(ResourceInjector.class);
+		InjectableClass instance = new InjectableClass();
+		resourceInjector.injectInstance(instance, getClass().getSimpleName() + "-field-injection");
+		Assertions.assertThat(instance.dummy).as("instance.dummy").isEqualTo("TEXT-INJECTED-INTO-FIELD");
+	}
+	
+	static class InjectableClass
+	{
+		private String dummy = null;
 	}
 }

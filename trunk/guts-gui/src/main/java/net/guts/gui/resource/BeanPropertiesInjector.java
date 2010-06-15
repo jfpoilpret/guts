@@ -26,7 +26,8 @@ import com.google.inject.TypeLiteral;
 
 /**
  * Generic {@link InstanceInjector} implementation that can inject resources
- * into any java bean instances, by using normal property setters of these beans.
+ * into any java instances, by using either normal bean property setters of these 
+ * beans, or direct field setting (when no setter exists).
  * <p/>
  * If you need to implement a specific {@code InstanceInjector} for your own
  * classes, you should consider subclassing {@code BeanPropertiesInjector} and 
@@ -36,10 +37,6 @@ import com.google.inject.TypeLiteral;
  * {@code BeanPropertiesInjector<Object>} so that injection of an instance for
  * which no specific {@code InstanceInjector} can be found will fall back to that
  * general implementation.
- * <p/>
- * Note that, in the current version, {@code BeanPropertiesInjector} will inject
- * only bean properties that have a getter and setter, both public. This may be 
- * enhanced in a future version.
  * <p/>
  * Hereafter is a concrete example of a {@code BeanPropertiesInjector} subclass,
  * actually used inside Guts-GUI:
@@ -124,7 +121,7 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	 * <p/>
 	 * You can possibly override this method to change the way to inject a 
 	 * property into an object. By default, the method uses bean introspection
-	 * and reflection.
+	 * or field reflection (if no setter exists).
 	 * <p/>
 	 * You generally wouldn't need to override that method.
 	 * 
@@ -150,12 +147,12 @@ public class BeanPropertiesInjector<T> implements InstanceInjector<T>
 	}
 
 	/**
-	 * Looks for a bean property named {@code name }in {@code bean} class, and checks
-	 * it is writable. If no property exists or it exists but is not writable, this 
-	 * method logs a message (using <a href="http://www.slf4j.org/">SLF4J</a>) and 
+	 * Looks for a bean property (or a field) named {@code name} in {@code bean} class, 
+	 * and checks it is writable. If no property exists or it exists but is not writable, 
+	 * this method logs a message (using <a href="http://www.slf4j.org/">SLF4J</a>) and 
 	 * returns {@code null}.
 	 * 
-	 * @param name the name of the bean property to look for
+	 * @param name the name of the property to look for
 	 * @param bean the bean class in which to look for a writable property named 
 	 * {@code name}
 	 * @return an {@code UntypedProperty} mapping to the required property, which

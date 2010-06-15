@@ -14,8 +14,8 @@
 
 package net.guts.common.bean;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.lang.reflect.Type;
 import java.util.HashMap;
 import java.util.Locale;
 import java.util.Map;
@@ -88,7 +88,7 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		}
 		return property;
 	}
-	
+
 	static private UntypedProperty findProperty(Class<?> bean, String name)
 	{
 		// First find if there is a getter (is or get property)
@@ -102,23 +102,46 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		if (getter != null)
 		{
 			// Then find a setter for that property, if exists
-			Type type = getter.getGenericReturnType();
-			setter = findMethod(bean, "set" + propertyName, TypeLiteral.get(type));
+			TypeLiteral<?> type = TypeLiteral.get(getter.getGenericReturnType());
+			setter = findMethod(bean, "set" + propertyName, type);
 			// Return a new property
-			return new UntypedProperty(name, TypeLiteral.get(type), setter, getter);
+			return new MethodBasedUntypedProperty(name, type, setter, getter);
 		}
 
 		// Else try to find a setter (in the list of all methods)
 		setter = findAnySetter(bean, "set" + propertyName);
 		if (setter != null)
 		{
-			return new UntypedProperty(
+			return new MethodBasedUntypedProperty(
 				name, TypeLiteral.get(setter.getGenericParameterTypes()[0]), setter, null);
 		}
-		
+
+		// Otherwise, try to find a field with that name
+		Field field = findField(bean, name);
+		if (field != null)
+		{
+			return new FieldBasedUntypedProperty(
+				name, TypeLiteral.get(field.getGenericType()), field);
+		}
 		return null;
 	}
 
+	static private Field findField(Class<?> bean, String name)
+	{
+		while (bean != null)
+		{
+			try
+			{
+				return bean.getDeclaredField(name);
+			}
+			catch (Exception e)
+			{
+				bean = bean.getSuperclass();
+			}
+		}
+		return null;
+	}
+	
 	//CSOFF: IllegalCatchCheck
 	//CSOFF: ParameterAssignmentCheck
 	static private Method findMethod(Class<?> bean, String name, TypeLiteral<?> type)

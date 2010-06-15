@@ -213,11 +213,13 @@
  * <p/><a name="rsrc6"></a><h3>Support for special injection (other than bean setters)</h3>
  * Guts-GUI is able to inject any kind of resource into any property of any object, 
  * provided that this property has a setter method, named according to Java Beans 
- * specifications. Note that for a property to be injected, it doesn't need a getter and its
- * setter doesn't even need to be {@code public}; Guts-GUI resource injection will work
- * fine with {@code protected}, {@code private} or "package private" setters.
+ * specifications. Guts-GUI is also able to inject resources into a field if there is
+ * no setter for a given name. Note that for a property to be injected, it doesn't need 
+ * a getter and its setter (if any) doesn't even need to be {@code public}; Guts-GUI 
+ * resource injection will work fine with {@code protected}, {@code private} or 
+ * "package private" setters.
  * <p/>
- * Unfortunately, sometimes simply using property setters is not an option, or a
+ * Unfortunately, sometimes simply using property setters or fields is not an option, or a
  * single resource may need to be broken down and injected into several properties
  * (a typical example is a text with a mnemonic marker to be injected in 
  * {@link javax.swing.JLabel}); for this reason, Guts-GUI has a very open design that

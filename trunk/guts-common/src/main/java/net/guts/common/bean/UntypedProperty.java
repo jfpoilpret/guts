@@ -14,17 +14,18 @@
 
 package net.guts.common.bean;
 
-import java.lang.reflect.Method;
+import static net.guts.common.type.PrimitiveHelper.toWrapper;
+
+import java.lang.reflect.AccessibleObject;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
-import static net.guts.common.type.PrimitiveHelper.*;
-
 import com.google.inject.TypeLiteral;
 
-public class UntypedProperty
+abstract public class UntypedProperty
 {
-	UntypedProperty(String name, TypeLiteral<?> type, Method setter, Method getter)
+	UntypedProperty(String name, TypeLiteral<?> type, 
+		AccessibleObject setter, AccessibleObject getter)
 	{
 		_name = name;
 		_type = type;
@@ -32,30 +33,70 @@ public class UntypedProperty
 		_getter = getter;
 	}
 
-	public TypeLiteral<?> type()
+	final public TypeLiteral<?> type()
 	{
 		return _type;
 	}
-	
-	public boolean isReadable()
+
+	final public boolean isReadable()
 	{
 		return _getter != null;
 	}
-	
-	public boolean isWritable()
+	final public boolean isWritable()
 	{
 		return _setter != null;
 	}
-	
+
+	static void setAccessible(final AccessibleObject object, final boolean accessible)
+	{
+		AccessController.doPrivileged(new PrivilegedAction<Void>()
+			{
+				@Override public Void run()
+				{
+					object.setAccessible(accessible);
+					return null;
+				}
+			});
+	}
+
+	abstract void setValue(Object bean, Object value) throws Exception;
+	abstract Object getValue(Object bean) throws Exception;
+
 	public void set(Object bean, Object value)
 	{
-		if (value == null)
+		// Check that there is a setter!
+		if (!isWritable())
 		{
-			setValue(bean, null);
+			throw new PropertyException(
+				String.format("Property `%s` in bean `%s` is not writable",
+					_name, bean.getClass()));
 		}
-		else if (toWrapper(type().getRawType()).isAssignableFrom(value.getClass()))
+		
+		if (	value == null
+			||	toWrapper(type().getRawType()).isAssignableFrom(value.getClass()))
 		{
-			setValue(bean, value);
+			boolean accessible = _setter.isAccessible();
+			if (!accessible)
+			{
+				setAccessible(_setter, true);
+			}
+			try
+			{
+				setValue(bean, value);
+			}
+			catch (Exception e)
+			{
+				throw new PropertyException(
+					String.format("Could not write value `%s` into property `%s` of bean `%s`",
+						value, _name, bean.getClass()), e);
+			}
+			finally
+			{
+				if (!accessible)
+				{
+					setAccessible(_setter, false);
+				}
+			}
 		}
 		else
 		{
@@ -66,43 +107,6 @@ public class UntypedProperty
 		}
 	}
 
-	//CSOFF: IllegalCatchCheck
-	protected void setValue(Object bean, Object value)
-	{
-		// Check that there is a setter!
-		if (!isWritable())
-		{
-			throw new PropertyException(
-				String.format("Property `%s` in bean `%s` is not writable",
-					_name, bean.getClass()));
-		}
-		// Make setter available
-		boolean accessible = _setter.isAccessible();
-		if (!accessible)
-		{
-			setAccessible(_setter, true);
-		}
-		try
-		{
-			_setter.invoke(bean, value);
-		}
-		catch (Exception e)
-		{
-			throw new PropertyException(
-				String.format("Could not write value `%s` into property `%s` of bean `%s`",
-					value, _name, bean.getClass()), e);
-		}
-		finally
-		{
-			if (!accessible)
-			{
-				setAccessible(_setter, false);
-			}
-		}
-	}
-	//CSON: IllegalCatchCheck
-	
-	//CSOFF: IllegalCatchCheck
 	public Object get(Object bean)
 	{
 		// Check that there is a getter!
@@ -120,7 +124,7 @@ public class UntypedProperty
 		}
 		try
 		{
-			return _getter.invoke(bean);
+			return getValue(bean);
 		}
 		catch (Exception e)
 		{
@@ -137,21 +141,9 @@ public class UntypedProperty
 		}
 	}
 	//CSON: IllegalCatchCheck
-	
-	static private void setAccessible(final Method method, final boolean accessible)
-	{
-		AccessController.doPrivileged(new PrivilegedAction<Void>()
-			{
-				@Override public Void run()
-				{
-					method.setAccessible(accessible);
-					return null;
-				}
-			});
-	}
 
-	final private String _name;
-	final private TypeLiteral<?> _type;
-	final private Method _setter;
-	final private Method _getter;
+	private final String _name;
+	private final TypeLiteral<?> _type;
+	private final AccessibleObject _getter;
+	private final AccessibleObject _setter;
 }

@@ -68,7 +68,7 @@ import com.google.inject.ImplementedBy;
  * <li>Injection of instances of a given class: {@code ResourceInjector} uses
  * {@link InstanceInjector}s  to perform the actual work of injecting all necessary
  * properties into instances of a given class. By default, a general 
- * {@code InstanceInjector} subclass uses Java bean reflection to set properties from
+ * {@code InstanceInjector} subclass uses Java reflection to set properties from
  * resources found in resource bundles.</li>
  * </ul>
  *
