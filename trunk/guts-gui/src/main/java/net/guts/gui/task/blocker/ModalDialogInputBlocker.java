@@ -20,6 +20,7 @@ import java.awt.event.ActionListener;
 import javax.swing.Timer;
 
 import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.task.TasksGroup;
 
@@ -117,7 +118,8 @@ public class ModalDialogInputBlocker implements InputBlocker
 	private void showDialog()
 	{
 		_openDialog = true;
-		_dialogFactory.showDialog(_pane.getPane(), BoundsPolicy.PACK_AND_CENTER, false);
+		_dialogFactory.showDialog(
+			_pane.getPane(), BoundsPolicy.PACK_AND_CENTER, StatePolicy.DONT_RESTORE);
 	}
 
 	@Override public void block(TasksGroup tasks)

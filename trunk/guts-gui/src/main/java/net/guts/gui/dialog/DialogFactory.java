@@ -17,6 +17,7 @@ package net.guts.gui.dialog;
 import javax.swing.JComponent;
 
 import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
 
 import com.google.inject.ImplementedBy;
 
@@ -47,37 +48,34 @@ public interface DialogFactory
 	 * from {@link net.guts.gui.dialog.support.AbstractPanel}.
 	 * 
 	 * @param panel panel to be contained in the shown dialog
-	 * @param policy the policy to use for determining the size and location of
+	 * @param bounds the policy to use for determining the size and location of
 	 * the new dialog
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, hence
-	 * only {@code policy} is used to set the bounds of the new dialog.
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
-	public boolean showDialog(
-		JComponent panel, BoundsPolicy policy, boolean restoreState);
+	public boolean showDialog(JComponent panel, BoundsPolicy bounds, StatePolicy state);
 
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
+	 * for {@link #showDialog(JComponent, BoundsPolicy, StatePolicy)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
-	 * @param policy the policy to use for determining the size and location of
+	 * @param bounds the policy to use for determining the size and location of
 	 * the new dialog
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, hence
-	 * only {@code policy} is used to set the bounds of the new dialog.
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
 	public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, BoundsPolicy policy, boolean restoreState);
+		Class<T> clazz, BoundsPolicy bounds, StatePolicy state);
 
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
@@ -95,19 +93,18 @@ public interface DialogFactory
 	 * always performed, even if the contained panel was already created before.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent, WindowController.BoundsPolicy, boolean)}.
+	 * for {@link #showDialog(JComponent, BoundsPolicy, StatePolicy)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
-	 * @param policy the policy to use for determining the size and location of
+	 * @param bounds the policy to use for determining the size and location of
 	 * the new dialog
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, hence
-	 * only {@code policy} is used to set the bounds of the new dialog.
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state
 	 * @param initializer an initializer object
 	 * @return {@code true} if user has validated the dialog (i.e. clicked
 	 * the "OK" button), {@code false} if the user has cancelled the dialog
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
 	public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy policy, boolean restoreState, ComponentInitializer<T> initializer);
+		BoundsPolicy bounds, StatePolicy state, ComponentInitializer<T> initializer);
 }

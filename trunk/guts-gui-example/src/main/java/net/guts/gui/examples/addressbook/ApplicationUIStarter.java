@@ -23,6 +23,7 @@ import javax.swing.JPanel;
 
 import net.guts.gui.application.WindowController;
 import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.exit.ExitController;
 
 import com.google.inject.Inject;
@@ -53,7 +54,8 @@ public class ApplicationUIStarter implements AddressBookUIStarter
 		// Initialize the main frame content: 3 panels are there, separated by JSplitPanes
 		mainFrame.setJMenuBar(menuBar);
 		mainFrame.setContentPane(mainView);
-		_windowController.show(mainFrame, BoundsPolicy.PACK_AND_CENTER, true);
+		_windowController.show(
+			mainFrame, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	}
 
 	final private WindowController _windowController;
