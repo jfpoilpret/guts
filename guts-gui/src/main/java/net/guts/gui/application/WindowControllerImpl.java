@@ -113,24 +113,24 @@ class WindowControllerImpl implements WindowController
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JFrame)
 	 */
-	@Override public void show(JFrame frame, BoundsPolicy policy, boolean restoreState)
+	@Override public void show(JFrame frame, BoundsPolicy bounds, StatePolicy state)
 	{
-		showWindow(frame, policy, restoreState);
+		showWindow(frame, bounds, state);
 	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#show(javax.swing.JDialog)
 	 */
-	@Override public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState)
+	@Override public void show(JDialog dialog, BoundsPolicy bounds, StatePolicy state)
 	{
-		showWindow(dialog, policy, restoreState);
+		showWindow(dialog, bounds, state);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * @see net.guts.gui.application.WindowController#showApplet(boolean)
 	 */
-	@Override public void showApplet(boolean restoreState)
+	@Override public void showApplet(StatePolicy state)
 	{
 		if (!EventQueue.isDispatchThread())
 		{
@@ -141,7 +141,7 @@ class WindowControllerImpl implements WindowController
 		{
 			_injector.injectHierarchy(_applet);
 			_applet.setSize(_applet.getLayout().preferredLayoutSize(_applet));
-			if (restoreState)
+			if (state == StatePolicy.RESTORE_IF_EXISTS)
 			{
 				// Restore size from session storage if any
 				_sessions.restore(_applet);
@@ -151,7 +151,7 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 
-	private void showWindow(Window container, BoundsPolicy policy, boolean restoreState)
+	private void showWindow(Window container, BoundsPolicy bounds, StatePolicy state)
 	{
 		if (!EventQueue.isDispatchThread())
 		{
@@ -161,7 +161,7 @@ class WindowControllerImpl implements WindowController
 		// Perform i18n if not done already
 		injectResources(container);
 		// Calculate size (based on existing session state)
-		initBounds(container, policy, restoreState);
+		initBounds(container, bounds, state);
 		container.setVisible(true);
 	}
 	
@@ -170,19 +170,19 @@ class WindowControllerImpl implements WindowController
 		_injector.injectHierarchy(container);
 	}
 	
-	private void initBounds(Window container, BoundsPolicy policy, boolean restoreState)
+	private void initBounds(Window container, BoundsPolicy bounds, StatePolicy state)
 	{
 		// Initialize location and size according to policy
-		if (PACK_POLICY.contains(policy))
+		if (PACK_POLICY.contains(bounds))
 		{
 			container.pack();
 		}
-		if (CENTER_POLICY.contains(policy))
+		if (CENTER_POLICY.contains(bounds))
 		{
 			container.setLocationRelativeTo(getActiveWindow());
 		}
 
-		if (restoreState)
+		if (state == StatePolicy.RESTORE_IF_EXISTS)
 		{
 			// Restore size from session storage if any
 			_sessions.restore(container);

@@ -22,6 +22,7 @@ import javax.swing.JFrame;
 
 import net.guts.gui.application.WindowController;
 import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -41,10 +42,10 @@ class DialogFactoryImpl implements DialogFactory
 	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
 	 */
 	@Override public boolean showDialog(
-		JComponent panel, BoundsPolicy policy, boolean restoreState)
+		JComponent panel, BoundsPolicy bounds, StatePolicy state)
 	{
 		resetPanel(panel);
-		return show(panel, policy, restoreState);
+		return show(panel, bounds, state);
 	}
 
 	/*
@@ -52,9 +53,9 @@ class DialogFactoryImpl implements DialogFactory
 	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
 	 */
 	@Override public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, BoundsPolicy policy, boolean restoreState)
+		Class<T> clazz, BoundsPolicy bounds, StatePolicy state)
 	{
-		return showDialog(clazz, policy, restoreState, null);
+		return showDialog(clazz, bounds, state, null);
 	}
 	
 	/*
@@ -62,7 +63,7 @@ class DialogFactoryImpl implements DialogFactory
 	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.dialog.ComponentInitializer, net.guts.gui.application.WindowController.BoundsPolicy)
 	 */
 	@Override public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy policy, boolean restoreState, ComponentInitializer<T> initializer)
+		BoundsPolicy bounds, StatePolicy state, ComponentInitializer<T> initializer)
 	{
 		T panel = _injector.getInstance(clazz);
 		resetPanel(panel);
@@ -70,7 +71,7 @@ class DialogFactoryImpl implements DialogFactory
 		{
 			initializer.init(panel);
 		}
-		return show(panel, policy, restoreState);
+		return show(panel, bounds, state);
 	}
 
 	static private void resetPanel(JComponent panel)
@@ -81,7 +82,7 @@ class DialogFactoryImpl implements DialogFactory
 		}
 	}
 	
-	private boolean show(JComponent panel, BoundsPolicy policy, boolean restoreState)
+	private boolean show(JComponent panel, BoundsPolicy bounds, StatePolicy state)
 	{
 		// Find right parent first
 		Window active = _windowController.getActiveWindow();
@@ -100,7 +101,7 @@ class DialogFactoryImpl implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_windowController.show(dialog, policy, restoreState);
+		_windowController.show(dialog, bounds, state);
 		return !dialog.wasCancelled();
 	}
 

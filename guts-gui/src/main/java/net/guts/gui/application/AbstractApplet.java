@@ -18,6 +18,7 @@ import java.util.List;
 
 import javax.swing.JApplet;
 
+import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.exit.ExitPerformer;
 
@@ -113,7 +114,7 @@ public abstract class AbstractApplet extends JApplet
 			
 			@Override void afterStartup()
 			{
-				_windowController.showApplet(true);
+				_windowController.showApplet(StatePolicy.RESTORE_IF_EXISTS);
 			}
 		});
 	}

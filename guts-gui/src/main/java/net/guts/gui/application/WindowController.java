@@ -79,8 +79,27 @@ public interface WindowController
 		 * This policy doesn't change the window currently set position and size.
 		 */
 		KEEP_ORIGINAL_BOUNDS
-	};
+	}
 
+	/**
+	 * Policy, passed to {@link WindowController#show} methods, to determine if session
+	 * state (bounds) should be restored or not.
+	 */
+	public enum StatePolicy
+	{
+		/**
+		 * Session state won't be restored, only {@link BoundsPolicy} will be used when
+		 * showing a window.
+		 */
+		DONT_RESTORE,
+		
+		/**
+		 * Session state will be restored if it was saved previously; if state was never
+		 * saved before, then {@link BoundsPolicy} will be used instead.
+		 */
+		RESTORE_IF_EXISTS
+	}
+	
 	/**
 	 * Show the given {@code frame} after setting its location and size according
 	 * to {@code policy}. {@code frame} will have its resources automatically 
@@ -90,13 +109,12 @@ public interface WindowController
 	 * {@code policy} has no effect.
 	 * 
 	 * @param frame the frame to be displayed
-	 * @param policy the policy to use for determining {@code frame}'s size and 
+	 * @param bounds the policy to use for determining {@code frame}'s size and 
 	 * location
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, hence
-	 * only {@code policy} is used to set the bounds of {@code frame}.
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state
 	 */
-	public void show(JFrame frame, BoundsPolicy policy, boolean restoreState);
+	public void show(JFrame frame, BoundsPolicy bounds, StatePolicy state);
 	
 	/**
 	 * Show the given {@code dialog} after setting its location and size according
@@ -107,13 +125,12 @@ public interface WindowController
 	 * {@code policy} has no effect.
 	 * 
 	 * @param dialog the dialog to be displayed
-	 * @param policy the policy to use for determining {@code dialog}'s size and 
+	 * @param bounds the policy to use for determining {@code dialog}'s size and 
 	 * location
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, hence
-	 * only {@code policy} is used to set the bounds of {@code dialog}.
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state
 	 */
-	public void show(JDialog dialog, BoundsPolicy policy, boolean restoreState);
+	public void show(JDialog dialog, BoundsPolicy bounds, StatePolicy state);
 
 	/**
 	 * Show the currently bound {@code JApplet} instance after possibly restoring
@@ -124,13 +141,13 @@ public interface WindowController
 	 * (with {@code restoreState} set to {@code true}) after calling
 	 * {@link AppLifecycleStarter#startup}.
 	 * 
-	 * @param restoreState if {@code true}, state (bounds) will be restored if it
-	 * was previously persisted; if {@code false}, state is not restored, applet 
-	 * size is automatically packed to preferred size of content. Note that this
+	 * @param state the policy to use for determining how state (bounds) should
+	 * be restored from previously saved state; when {@link StatePolicy#DONT_RESTORE},
+	 * applet size is automatically packed to preferred size of content. Note that this
 	 * will work only with AppletViewer; within a browser, you must use JavaScript
 	 * to dynamically set the size of an applet.
 	 */
-	public void showApplet(boolean restoreState);
+	public void showApplet(StatePolicy state);
 
 	/**
 	 * Get the current active foreground window in the application.

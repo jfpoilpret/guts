@@ -22,6 +22,7 @@ import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
 import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
@@ -102,12 +103,14 @@ public class ContactActions
 	private <T extends JComponent> void showDialog(
 		Class<T> clazz, ComponentInitializer<T> initializer)
 	{
-		_dialogFactory.showDialog(clazz, BoundsPolicy.PACK_AND_CENTER, true, initializer);
+		_dialogFactory.showDialog(
+			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS, initializer);
 	}
 
 	private <T extends JComponent> void showDialog(Class<T> clazz)
 	{
-		_dialogFactory.showDialog(clazz, BoundsPolicy.PACK_AND_CENTER, true);
+		_dialogFactory.showDialog(
+			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	}
 
 	final private GutsAction _createContact = new GutsAction()
