@@ -23,6 +23,7 @@ import java.util.concurrent.Executors;
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
 import net.guts.gui.task.blocker.InputBlockers;
+import net.guts.gui.task.blocker.ModalDialogInputBlocker;
 import net.guts.gui.util.ListenerDispatchProxy;
 import net.guts.gui.util.ListenerEdtProxy;
 
@@ -65,17 +66,37 @@ import com.google.inject.internal.Nullable;
  */
 public class TasksGroup
 {
+	/**
+	 * Specify whether execution of a {@link TasksGroup} should be cancellable
+	 * or not. Defined at {@code TasksGroup} construction time with 
+	 * {@link TasksGroupFactory#newTasksGroup}. This can be used by 
+	 * {@link InputBlocker}s that can give users an opportunity to cancel tasks 
+	 * (e.g. {@link ModalDialogInputBlocker}).
+	 */
+	public enum Execution
+	{
+		/**
+		 * The {@code TasksGroup} can be canceled during its execution.
+		 */
+		CANCELLABLE,
+		
+		/**
+		 * The {@code TasksGroup} cannot be canceled once execution has started.
+		 */
+		NOT_CANCELLABLE
+	}
+	
 	// We don't care about the number of parameters because this constructor is injected
 	// Only 4 parameters are explicitly passed (through the Factory API)
 	//CSOFF: ParameterNumberCheck
 	@Inject TasksGroup(ExecutorServiceRegistry executorRegistry, Injector injector,
 		ResourceInjector resourceInjector, DefaultExecutorHolder holder, 
-		@Assisted String name, @Assisted boolean cancellable,
+		@Assisted String name, @Assisted Execution execution,
 		@Assisted @Nullable InputBlocker blocker, 
 		@Assisted @Nullable ExecutorService executor)
 	{
 		_name = name;
-		_cancellable = cancellable;
+		_execution = execution;
 		// Use default executor if needed
 		ExecutorService actualExecutor = (executor != null ? executor : holder._executor);
 		executorRegistry.registerExecutor(actualExecutor);
@@ -101,7 +122,7 @@ public class TasksGroup
 	 */
 	public boolean isCancellable()
 	{
-		return _cancellable;
+		return _execution == Execution.CANCELLABLE;
 	}
 
 	/**
@@ -226,7 +247,7 @@ public class TasksGroup
 	 */
 	public void cancel()
 	{
-		if (_cancellable)
+		if (_execution == Execution.CANCELLABLE)
 		{
 			_executor.cancel();
 		}
@@ -288,7 +309,7 @@ public class TasksGroup
 	//CSON: VisibilityModifierCheck
 
 	final private String _name;
-	final private boolean _cancellable;
+	final private Execution _execution;
 	final private List<TaskHandler<?>> _handlers = new CopyOnWriteArrayList<TaskHandler<?>>();
 	final private List<TaskInfo> _tasks = new CopyOnWriteArrayList<TaskInfo>();
 	final private List<TaskInfo> _immutableTasks = Collections.unmodifiableList(_tasks);

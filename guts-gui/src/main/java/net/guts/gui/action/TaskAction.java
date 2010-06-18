@@ -18,6 +18,7 @@ package net.guts.gui.action;
 
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.TasksGroup.Execution;
 import net.guts.gui.task.blocker.InputBlocker;
 
 /**
@@ -43,7 +44,7 @@ abstract public class TaskAction extends TasksGroupAction
 	 */
 	protected TaskAction(String name)
 	{
-		this(name, false);
+		this(name, Execution.NOT_CANCELLABLE);
 	}
 
 	/**
@@ -53,7 +54,7 @@ abstract public class TaskAction extends TasksGroupAction
 	 */
 	protected TaskAction()
 	{
-		this(null, false);
+		this(null, Execution.NOT_CANCELLABLE);
 	}
 
 	/**
@@ -61,14 +62,14 @@ abstract public class TaskAction extends TasksGroupAction
 	 * will be used as a key for resource injection.
 	 * 
 	 * @param name the name used as a key for resource injection
-	 * @param cancellable indicates whether {@link #submit(Task)} will create a 
+	 * @param execution indicates whether {@link #submit(Task)} will create a 
 	 * cancelable {@code TasksGroup} for {@code Task} execution
 	 * be canceled by the end user
 	 */
-	protected TaskAction(String name, boolean cancellable)
+	protected TaskAction(String name, Execution execution)
 	{
 		super(name);
-		_cancellable = cancellable;
+		_execution = execution;
 	}
 
 	/**
@@ -119,12 +120,12 @@ abstract public class TaskAction extends TasksGroupAction
 	{
 		if (task != null)
 		{
-			TasksGroup group = newTasksGroup(name(), _cancellable, executor, blocker);
+			TasksGroup group = newTasksGroup(name(), _execution, executor, blocker);
 			group.add(task);
 			group.execute();
 		}
 	}
 	
-	final private boolean _cancellable;
+	final private Execution _execution;
 }
 //CSON: AbstractClassNameCheck

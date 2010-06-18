@@ -26,6 +26,7 @@ import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.TasksGroup.Execution;
 import net.guts.gui.task.blocker.InputBlockers;
 
 import com.google.inject.Singleton;
@@ -98,8 +99,8 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			TasksGroup group = newTasksGroup(
-				"fiveTasksDialogBlocker", true, InputBlockers.dialogBlocker());
+			TasksGroup group = newTasksGroup("fiveTasksDialogBlocker", 
+				Execution.CANCELLABLE, InputBlockers.dialogBlocker());
 			for (int i = 0; i < 5; i++)
 			{
 				group.add(new LongTask("fiveTasksDialogBlocker #" + i));
@@ -112,8 +113,8 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			final TasksGroup theGroup = newTasksGroup(
-				"twoSerialTaskDialogBlocker", true, InputBlockers.dialogBlocker());
+			final TasksGroup theGroup = newTasksGroup("twoSerialTaskDialogBlocker", 
+				Execution.CANCELLABLE, InputBlockers.dialogBlocker());
 			Task<?> task1 = new LongProgressTask("twoSerialTaskDialogBlocker #1")
 			{
 				@Override public Void execute(FeedbackController controller) throws Exception
@@ -132,10 +133,10 @@ public class TaskTestActions
 	{
 		@Override protected void perform()
 		{
-			TasksGroup group1 = newTasksGroup(
-				"twoSerialGroupsDialogBlocker #1", true, InputBlockers.dialogBlocker());
-			final TasksGroup group2 = newTasksGroup(
-				"twoSerialGroupsDialogBlocker #2", true, InputBlockers.dialogBlocker());
+			TasksGroup group1 = newTasksGroup("twoSerialGroupsDialogBlocker #1", 
+				Execution.CANCELLABLE, InputBlockers.dialogBlocker());
+			final TasksGroup group2 = newTasksGroup("twoSerialGroupsDialogBlocker #2", 
+				Execution.CANCELLABLE, InputBlockers.dialogBlocker());
 			final Task<?> task2 = new LongTask("twoSerialGroupsDialogBlocker #2");
 			Task<?> task1 = new LongTask("twoSerialGroupsDialogBlocker #1")
 			{

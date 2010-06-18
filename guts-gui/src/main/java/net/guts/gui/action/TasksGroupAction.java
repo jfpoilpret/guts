@@ -17,6 +17,7 @@ package net.guts.gui.action;
 import java.util.concurrent.ExecutorService;
 
 import net.guts.gui.task.TasksGroup;
+import net.guts.gui.task.TasksGroup.Execution;
 import net.guts.gui.task.TasksGroupFactory;
 import net.guts.gui.task.blocker.InputBlocker;
 
@@ -64,7 +65,7 @@ abstract public class TasksGroupAction extends GutsAction
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
-	 * @param cancellable indicates whether the new {@code TasksGroup} can potentially
+	 * @param execution indicates whether the new {@code TasksGroup} can potentially
 	 * be canceled by the end user
 	 * @param executor the service in charge of executing all {@code Task}s added to
 	 * the new {@code TasksGroup}
@@ -74,9 +75,9 @@ abstract public class TasksGroupAction extends GutsAction
 	 * @return a new {@code TasksGroup} ready to be added {@code Task}s and executed
 	 */
 	final protected TasksGroup newTasksGroup(
-		String name, boolean cancellable, ExecutorService executor, InputBlocker blocker)
+		String name, Execution execution, ExecutorService executor, InputBlocker blocker)
 	{
-		return _factory.newTasksGroup(name, cancellable, executor, blocker);
+		return _factory.newTasksGroup(name, execution, executor, blocker);
 	}
 
 	/**
@@ -87,16 +88,16 @@ abstract public class TasksGroupAction extends GutsAction
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
-	 * @param cancellable indicates whether the new {@code TasksGroup} can potentially
+	 * @param execution indicates whether the new {@code TasksGroup} can potentially
 	 * be canceled by the end user
 	 * @param executor the service in charge of executing all {@code Task}s added to
 	 * the new {@code TasksGroup}
 	 * @return a new {@code TasksGroup} ready to be added {@code Task}s and executed
 	 */
 	final protected TasksGroup newTasksGroup(
-		String name, boolean cancellable, ExecutorService executor)
+		String name, Execution execution, ExecutorService executor)
 	{
-		return _factory.newTasksGroup(name, cancellable, executor, null);
+		return _factory.newTasksGroup(name, execution, executor, null);
 	}
 
 	/**
@@ -108,7 +109,7 @@ abstract public class TasksGroupAction extends GutsAction
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
-	 * @param cancellable indicates whether the new {@code TasksGroup} can potentially
+	 * @param execution indicates whether the new {@code TasksGroup} can potentially
 	 * be canceled by the end user
 	 * @param blocker an {@code InputBlocker} implementation that will be in charge
 	 * of blocking the input during the whole execution of {@code Task}s added to
@@ -116,9 +117,9 @@ abstract public class TasksGroupAction extends GutsAction
 	 * @return a new {@code TasksGroup} ready to be added {@code Task}s and executed
 	 */
 	final protected TasksGroup newTasksGroup(
-		String name, boolean cancellable, InputBlocker blocker)
+		String name, Execution execution, InputBlocker blocker)
 	{
-		return _factory.newTasksGroup(name, cancellable, null, blocker);
+		return _factory.newTasksGroup(name, execution, null, blocker);
 	}
 
 	/**
@@ -132,13 +133,13 @@ abstract public class TasksGroupAction extends GutsAction
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, used as a key
 	 * for resource injection
-	 * @param cancellable indicates whether the new {@code TasksGroup} can potentially
+	 * @param execution indicates whether the new {@code TasksGroup} can potentially
 	 * be canceled by the end user
 	 * @return a new {@code TasksGroup} ready to be added {@code Task}s and executed
 	 */
-	final protected TasksGroup newTasksGroup(String name, boolean cancellable)
+	final protected TasksGroup newTasksGroup(String name, Execution execution)
 	{
-		return _factory.newTasksGroup(name, cancellable, null, null);
+		return _factory.newTasksGroup(name, execution, null, null);
 	}
 
 	@Inject void init(TasksGroupFactory factory)
