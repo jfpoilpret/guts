@@ -16,6 +16,7 @@ package net.guts.gui.task;
 
 import java.util.concurrent.ExecutorService;
 
+import net.guts.gui.task.TasksGroup.Execution;
 import net.guts.gui.task.blocker.InputBlocker;
 
 /**
@@ -35,7 +36,7 @@ public interface TasksGroupFactory
 	 * 
 	 * @param name the name to be given to the new {@code TasksGroup}, can be used 
 	 * for identifying a group of running {@code Task}s in a status bar for instance.
-	 * @param cancellable make the new {@code TasksGroup} cancellable or not;
+	 * @param execution make the new {@code TasksGroup} cancellable or not;
 	 * once a {@code TasksGroup} has been constructed, this property cannot be
 	 * changed.
 	 * @param executor the executor service that will be used to run all 
@@ -50,5 +51,5 @@ public interface TasksGroupFactory
 	 * @return a new {@code TasksGroup}
 	 */
 	public TasksGroup newTasksGroup(
-		String name, boolean cancellable, ExecutorService executor, InputBlocker blocker);
+		String name, Execution execution, ExecutorService executor, InputBlocker blocker);
 }
