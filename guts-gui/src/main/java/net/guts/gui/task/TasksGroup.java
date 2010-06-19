@@ -23,7 +23,6 @@ import java.util.concurrent.Executors;
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
 import net.guts.gui.task.blocker.InputBlockers;
-import net.guts.gui.task.blocker.ModalDialogInputBlocker;
 import net.guts.gui.util.ListenerDispatchProxy;
 import net.guts.gui.util.ListenerEdtProxy;
 
@@ -71,7 +70,7 @@ public class TasksGroup
 	 * or not. Defined at {@code TasksGroup} construction time with 
 	 * {@link TasksGroupFactory#newTasksGroup}. This can be used by 
 	 * {@link InputBlocker}s that can give users an opportunity to cancel tasks 
-	 * (e.g. {@link ModalDialogInputBlocker}).
+	 * (e.g. {@link net.guts.gui.task.blocker.ModalDialogInputBlocker}).
 	 */
 	public enum Execution
 	{
