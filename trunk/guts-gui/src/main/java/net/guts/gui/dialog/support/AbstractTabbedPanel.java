@@ -23,6 +23,9 @@ import java.util.AbstractList;
 import javax.swing.JComponent;
 import javax.swing.JTabbedPane;
 
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.GutsActionDecorator;
+
 /**
  * Abstract panel to be used in dialogs containing several tabs managed in a
  * single {@link JTabbedPane}.
@@ -105,12 +108,21 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		_tabbedPane.setName(id + TABPANE_NAME_SUFFIX);
 		initLayout();
 	}
-
-	@Override final protected AcceptGutsAction validateAcceptAction(AcceptGutsAction accept)
+	
+	@Override final protected GutsAction getAcceptAction()
 	{
-		return (accept != null ? new TabAcceptAction(accept) : null);
+		if (_accept == null)
+		{
+			_accept = new TabAcceptAction(getTabsAcceptAction());
+		}
+		return _accept;
 	}
 	
+	protected GutsAction getTabsAcceptAction()
+	{
+		return null;
+	}
+
 	private void initLayout()
     {
 		setLayout(new GridBagLayout());
@@ -147,15 +159,14 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		};
     }
 
-	//TODO should listen to enabling of delegate action!
-	private class TabAcceptAction extends AcceptGutsAction
+	private class TabAcceptAction extends GutsActionDecorator
 	{
-		TabAcceptAction(AcceptGutsAction delegate)
+		TabAcceptAction(GutsAction delegate)
 		{
-			_delegate = delegate;
+			super(ACCEPT_ACTION, delegate != null ? delegate : _empty);
 		}
 		
-		@Override protected void perform()
+		@Override protected void beforeTargetPerform()
 		{
 			for (Component subpane: getSubComponents())
 			{
@@ -165,11 +176,15 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 					((TabPanelAcceptor) subpane).accept();
 				}
 			}
-			_delegate.action().actionPerformed(event());
 		}
-		
-		final private AcceptGutsAction _delegate;
 	}
+	
+	static final private GutsAction _empty = new GutsAction("empty")
+	{
+		@Override protected void perform()
+		{
+		}
+	}; 
 
 	private static final long serialVersionUID = -4667291820304038305L;
 
@@ -181,4 +196,6 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 	 * add individual tabs.
 	 */
 	final protected JTabbedPane _tabbedPane = new JTabbedPane();
+	
+	private GutsAction _accept = null;
 }

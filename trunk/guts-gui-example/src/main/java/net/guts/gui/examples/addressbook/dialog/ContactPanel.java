@@ -20,9 +20,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.dialog.Resettable;
 import net.guts.gui.dialog.support.AbstractPanel;
-import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.java.dev.designgridlayout.DesignGridLayout;
@@ -48,11 +48,13 @@ public class ContactPanel extends AbstractPanel implements Resettable
 
 		_home.layout(layout);
 		_office.layout(layout);
-		
-		// Finish initializing AbstractPanel
-		initButtons(_accept);
 	}
 	
+	@Override protected GutsAction getAcceptAction()
+	{
+		return _accept;
+	}
+
 	public void reset()
 	{
 		_contact = null;
@@ -106,7 +108,7 @@ public class ContactPanel extends AbstractPanel implements Resettable
 		getParentDialog().close(false);
 	}
 
-	final private AcceptGutsAction _accept = new AcceptGutsAction()
+	final private GutsAction _accept = new GutsAction()
 	{
 		@Override protected void perform()
 		{

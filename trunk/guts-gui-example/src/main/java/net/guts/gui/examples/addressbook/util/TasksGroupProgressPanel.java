@@ -83,7 +83,7 @@ public class TasksGroupProgressPanel extends JPanel
 		return this;
 	}
 
-	@Override public void setParentDialog(ParentDialog parent)
+	@Override public void init(ParentDialog parent)
 	{
 		_parent = parent;
 	}

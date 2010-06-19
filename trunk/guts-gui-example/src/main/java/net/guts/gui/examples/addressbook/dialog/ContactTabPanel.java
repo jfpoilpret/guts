@@ -21,8 +21,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.dialog.support.AbstractTabbedPanel;
-import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.dialog.support.TabPanelAcceptor;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Address;
@@ -45,15 +45,13 @@ public class ContactTabPanel extends AbstractTabbedPanel
 	    _tabbedPane.add(_contactTab);
 	    _tabbedPane.add(_home);
 	    _tabbedPane.add(_office);
-	    initButtons(new AcceptGutsAction()
-	    {
-			@Override protected void perform()
-			{
-				accept();
-			}
-	    });
     }
-	
+
+	@Override protected GutsAction getTabsAcceptAction()
+	{
+		return _accept;
+	}
+
 	public void setContact(Contact contact)
 	{
 		if (contact == null)
@@ -76,20 +74,23 @@ public class ContactTabPanel extends AbstractTabbedPanel
 		setContact(null);
     }
 
-	private void accept()
-    {
-	    // Save everything
-		if (_create)
+	private final GutsAction _accept = new GutsAction()
+	{
+		@Override protected void perform()
 		{
-			_service.createContact(_contact);
+		    // Save everything
+			if (_create)
+			{
+				_service.createContact(_contact);
+			}
+			else
+			{
+				_service.modifyContact(_contact);
+			}
+			getParentDialog().close(false);
 		}
-		else
-		{
-			_service.modifyContact(_contact);
-		}
-		getParentDialog().close(false);
-    }
-
+	};
+	
 	private final ContactTab _contactTab = new ContactTab();
 	private final AddressTab _home = new AddressTab(NAME + "-home");
 	private final AddressTab _office = new AddressTab(NAME + "-office");
