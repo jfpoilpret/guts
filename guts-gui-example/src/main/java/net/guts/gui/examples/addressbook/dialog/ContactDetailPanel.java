@@ -31,15 +31,12 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ContactPanel extends AbstractPanel implements Resettable
+public class ContactDetailPanel extends AbstractPanel implements Resettable
 {
 	static final private long serialVersionUID = -2653616540903403972L;
-	static final private String NAME = "ContactDetailPanel";
 
-	public ContactPanel()
+	public ContactDetailPanel()
 	{
-		setName(NAME);
-
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
 		layout.row().grid(_lblFirstName).add(_txfFirstName);
