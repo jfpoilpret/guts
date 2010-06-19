@@ -89,7 +89,7 @@ public interface DialogFactory
 	 * passed to the supplied {@code initializer} for further processing
 	 * before the dialog is shown. This is useful for instance to pass data
 	 * that is displayed by the panel but can change for every display of the
-	 * dialog. The call to {@link ComponentInitializer#init(JComponent)} is
+	 * dialog. The call to {@link PanelInitializer#init(JComponent)} is
 	 * always performed, even if the contained panel was already created before.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as
@@ -106,5 +106,5 @@ public interface DialogFactory
 	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
 	 */
 	public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy bounds, StatePolicy state, ComponentInitializer<T> initializer);
+		BoundsPolicy bounds, StatePolicy state, PanelInitializer<T> initializer);
 }
