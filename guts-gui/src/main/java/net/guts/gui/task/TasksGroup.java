@@ -112,7 +112,7 @@ public class TasksGroup
 	/**
 	 * Indicates if this {@code TasksGroup} can be cancelled after {@code Task}s 
 	 * execution has started. This depends on parameters passed at construction time, in
-	 * {@link TasksGroupFactory#newTasksGroup(String, boolean, ExecutorService, InputBlocker)}.
+	 * {@link TasksGroupFactory#newTasksGroup(String, TasksGroup.Execution, ExecutorService, InputBlocker)}.
 	 * <p/>
 	 * This method would generally be used by an {@link InputBlocker} implementation that
 	 * offers a UI to allow the end user to cancel this {@code TasksGroup} execution.
@@ -225,7 +225,7 @@ public class TasksGroup
 	 * Starts execution of this {@code TasksGroup}, ie of all {@code Task}s added
 	 * to this {@code TasksGroup}. Execution of all {@code Task}s is submitted to
 	 * the {@link ExecutorService} that was passed to 
-	 * {@link TasksGroupFactory#newTasksGroup(String, boolean, ExecutorService, InputBlocker)}.
+	 * {@link TasksGroupFactory#newTasksGroup(String, TasksGroup.Execution, ExecutorService, InputBlocker)}.
 	 * 
 	 * @throws IllegalStateException if this {@code TasksGroup} has completed its 
 	 * execution already

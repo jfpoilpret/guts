@@ -62,8 +62,8 @@ public interface DialogFactory
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
 	 * <p/>
-	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent, BoundsPolicy, StatePolicy)}.
+	 * The rules and comments for instances of {@code clazz} are the same as for
+	 * {@link #showDialog(JComponent, WindowController.BoundsPolicy, WindowController.StatePolicy)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
 	 * @param bounds the policy to use for determining the size and location of
@@ -92,8 +92,8 @@ public interface DialogFactory
 	 * dialog. The call to {@link PanelInitializer#init(JComponent)} is
 	 * always performed, even if the contained panel was already created before.
 	 * <p/>
-	 * The rules and comments for instances of {@code clazz} are the same as
-	 * for {@link #showDialog(JComponent, BoundsPolicy, StatePolicy)}.
+	 * The rules and comments for instances of {@code clazz} are the same as for
+	 * {@link #showDialog(JComponent, WindowController.BoundsPolicy, WindowController.StatePolicy)}.
 	 * 
 	 * @param clazz class of the panel to be contained in the shown dialog
 	 * @param bounds the policy to use for determining the size and location of
