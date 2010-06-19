@@ -18,44 +18,37 @@ import java.util.Date;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.dialog.support.AbstractWizardPanel;
-import net.guts.gui.dialog.support.AbstractWizardStepPanel;
+import net.guts.gui.dialog.support.AbstractTabbedPanel;
+import net.guts.gui.dialog.support.TabPanelAcceptor;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Address;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.naming.ComponentHolder;
-import net.guts.gui.task.Task;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class ContactWizardPanel extends AbstractWizardPanel
+public class ContactDetailTabPanel extends AbstractTabbedPanel
 {
-	static final private long serialVersionUID = -8845317327842500636L;
-	static final private String NAME = "ContactDetailWizardPanel";
+	static final private long serialVersionUID = -2466527938965223045L;
 
-	public ContactWizardPanel()
+	public ContactDetailTabPanel()
     {
-	    setName(NAME);
+	    _tabbedPane.add(_contactTab);
+	    _tabbedPane.add(_home);
+	    _tabbedPane.add(_office);
     }
 
-	@Override protected GutsAction getAcceptAction()
+	@Override protected GutsAction getTabsAcceptAction()
 	{
 		return _accept;
 	}
-
-	@Override protected void initWizard()
-    {
-	    getController().addWizardPane(_contactPane, true);
-	    getController().addWizardPane(_home, true);
-	    getController().addWizardPane(_office, true);
-	    setContact(null);
-    }
 
 	public void setContact(Contact contact)
 	{
@@ -69,14 +62,21 @@ public class ContactWizardPanel extends AbstractWizardPanel
 			_contact = contact.copy();
 		    _create = false;
 		}
-		getController().setContext(_contact);
+		_contactTab.setContact(_contact);
+		_home.setAddress(_contact.getHome());
+		_office.setAddress(_contact.getOffice());
 	}
+
+	@Override public void reset()
+    {
+		setContact(null);
+    }
 
 	private final GutsAction _accept = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-		    // Now save
+		    // Save everything
 			if (_create)
 			{
 				_service.createContact(_contact);
@@ -89,21 +89,19 @@ public class ContactWizardPanel extends AbstractWizardPanel
 		}
 	};
 	
-	private final ContactPane _contactPane = new ContactPane();
-	private final AbstractAddressPane _home = 
-		new HomeAddressPane(NAME + "-home", false);
-	private final AbstractAddressPane _office = 
-		new OfficeAddressPane(NAME + "-office", true);
+	private final ContactTab _contactTab = new ContactTab();
+	private final AddressTab _home = new AddressTab();
+	private final AddressTab _office = new AddressTab();
 	private Contact _contact;
 	private boolean _create;
 	@Inject private AddressBookService _service;
 }
 
-class ContactPane extends AbstractWizardStepPanel implements ComponentHolder
+class ContactTab extends JPanel implements TabPanelAcceptor, ComponentHolder
 {
-	static final private long serialVersionUID = 4307142630118960207L;
+	static final private long serialVersionUID = 1402493075589899746L;
 
-	public ContactPane()
+	public ContactTab()
 	{
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
@@ -112,23 +110,22 @@ class ContactPane extends AbstractWizardStepPanel implements ComponentHolder
 		layout.row().grid(_lblBirth).add(_txfBirth);
 	}
 
-	@Override public void enter()
-    {
-		_contact = getController().getContext(Contact.class);
-		_txfFirstName.setText(_contact.getFirstName());
-		_txfLastName.setText(_contact.getLastName());
-		_txfBirth.setValue(_contact.getBirth());
-    }
+	public void setContact(Contact contact)
+	{
+		_contact = contact;
+		_txfFirstName.setText(contact.getFirstName());
+		_txfLastName.setText(contact.getLastName());
+		_txfBirth.setValue(contact.getBirth());
+	}
 
-	@Override public <T> Task<T> leave()
+	public void accept()
     {
 		// Binding from Swing to Domain
 		_contact.setFirstName(_txfFirstName.getText());
 		_contact.setLastName(_txfLastName.getText());
 		_contact.setBirth((Date) _txfBirth.getValue());
-	    return null;
     }
-
+	
 	final private JLabel _lblFirstName = new JLabel();
 	final private JTextField _txfFirstName = new JTextField(20);
 	final private JLabel _lblLastName = new JLabel();
@@ -138,63 +135,27 @@ class ContactPane extends AbstractWizardStepPanel implements ComponentHolder
 	private Contact _contact;
 }
 
-abstract class AbstractAddressPane extends AbstractWizardStepPanel implements ComponentHolder
+class AddressTab extends JPanel implements TabPanelAcceptor, ComponentHolder
 {
-	static final private long serialVersionUID = -5584247386479109165L;
+	static final private long serialVersionUID = -8039187194458016644L;
 
-	protected AbstractAddressPane(String id, boolean last)
+	public AddressTab()
 	{
-		_last = last;
 		DesignGridLayout layout = new DesignGridLayout(this);
 		_addressPane.layout(layout, false);
 	}
 	
-	abstract protected Address getAddress(Contact contact);
-	
-	@Override public void enter()
-    {
-		_address = getAddress(getController().getContext(Contact.class));
-		_addressPane.setAddress(_address);
-    }
+	public void setAddress(Address address)
+	{
+		_address = address;
+		_addressPane.setAddress(address);
+	}
 
-	@Override public <T> Task<T> leave()
+	public void accept()
     {
 		_addressPane.updateAddress(_address);
-		getController().setAcceptEnabled(_last);
-		return null;
     }
 	
 	private final AddressPanel _addressPane = new AddressPanel();
-	private final boolean _last;
 	private Address _address;
-}
-
-class HomeAddressPane extends AbstractAddressPane
-{
-	static final private long serialVersionUID = -5631169946204437002L;
-
-	protected HomeAddressPane(String id, boolean last)
-    {
-	    super(id, last);
-    }
-
-	@Override protected Address getAddress(Contact contact)
-    {
-	    return contact.getHome();
-    }
-}
-
-class OfficeAddressPane extends AbstractAddressPane
-{
-	static final private long serialVersionUID = -7544475684452085579L;
-
-	protected OfficeAddressPane(String id, boolean last)
-    {
-	    super(id, last);
-    }
-
-	@Override protected Address getAddress(Contact contact)
-    {
-	    return contact.getOffice();
-    }
 }

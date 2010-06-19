@@ -26,9 +26,9 @@ import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.PanelInitializer;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.dialog.ContactPanel;
-import net.guts.gui.examples.addressbook.dialog.ContactTabPanel;
-import net.guts.gui.examples.addressbook.dialog.ContactWizardPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactDetailPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactDetailTabPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactDetailWizardPanel;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
@@ -117,7 +117,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactPanel.class);
+			showDialog(ContactDetailPanel.class);
 		}
 	};
 
@@ -125,9 +125,9 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactPanel.class, new PanelInitializer<ContactPanel>()
+			showDialog(ContactDetailPanel.class, new PanelInitializer<ContactDetailPanel>()
 			{
-				public void init(ContactPanel panel)
+				public void init(ContactDetailPanel panel)
 				{
 					panel.setContact(_selected);
 				}
@@ -167,7 +167,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactTabPanel.class);
+			showDialog(ContactDetailTabPanel.class);
 		}
 	};
 
@@ -175,9 +175,9 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactTabPanel.class, new PanelInitializer<ContactTabPanel>()
+			showDialog(ContactDetailTabPanel.class, new PanelInitializer<ContactDetailTabPanel>()
 			{
-				public void init(ContactTabPanel panel)
+				public void init(ContactDetailTabPanel panel)
 				{
 					panel.setContact(_selected);
 				}
@@ -189,7 +189,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactWizardPanel.class);
+			showDialog(ContactDetailWizardPanel.class);
 		}
 	};
 
@@ -197,9 +197,9 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactWizardPanel.class, new PanelInitializer<ContactWizardPanel>()
+			showDialog(ContactDetailWizardPanel.class, new PanelInitializer<ContactDetailWizardPanel>()
 			{
-				public void init(ContactWizardPanel panel)
+				public void init(ContactDetailWizardPanel panel)
 				{
 					panel.setContact(_selected);
 				}
