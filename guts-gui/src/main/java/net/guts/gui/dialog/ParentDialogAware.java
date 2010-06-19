@@ -36,5 +36,5 @@ public interface ParentDialogAware
 	 * 
 	 * @param parent the parent dialog of the panel
 	 */
-	public void setParentDialog(ParentDialog parent);
+	public void init(ParentDialog parent);
 }

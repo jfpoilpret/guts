@@ -62,10 +62,13 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	    });
 		_mainPane.initLayout(this);
     }
-	
-	final protected void initButtons(AcceptGutsAction accept)
+
+	@Override final protected void setupActions(List<GutsAction> actions)
 	{
-		initButtons(accept, _previous, _next, accept);
+		actions.add(_previous);
+		actions.add(_next);
+		actions.add(getAcceptAction());
+		actions.add(getCancelAction());
 	}
 
 	final private GutsAction _next = new TaskAction("next")
@@ -164,7 +167,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	private final void setAcceptEnabled(boolean enabled)
 	{
-		acceptAction().action().setEnabled(enabled);
+		getAcceptAction().action().setEnabled(enabled);
 	}
 	
 	private final void setPreviousEnabled(boolean enabled)

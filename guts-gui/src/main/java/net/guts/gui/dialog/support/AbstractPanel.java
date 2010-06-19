@@ -18,7 +18,6 @@ import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JPanel;
@@ -28,13 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.GutsActionDecorator;
 import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.dialog.layout.ButtonsPanelAdder;
 import net.guts.gui.dialog.layout.ButtonsPanelAdderFactory;
 
-import com.google.inject.Inject;
-
+//TODO rework javadoc from scratch!!!
 /**
  * Abstract Panel that you can (should?) subclass for all your "main" panels,
  * ie panels that are aimed to be set as content panes of a dialog (using
@@ -115,60 +114,20 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	{
 		setName(id);
 	}
-	
-	@Inject void checkConstructionComplete()
-	{
-		if (!_initButtonsCalled)
-		{
-			_logger.error("initButtons() was not called from {}'s constructor",
-				getClass().getSimpleName());
-		}
-	}
-	
-	/**
-	 * Creates 2 default buttons for the dialog panel: "OK" and "Cancel". 
-	 * The "OK" button will be created <b>only if</b> an {@code @Action}
-	 * method named {@code accept()} exists in this panel class.
-	 * <p/>
-	 * This method also takes care of mapping the "escape" key to the "Cancel"
-	 * action.
-	 */
-	final protected void initButtons(AcceptGutsAction accept, GutsAction... actions)
-	{
-		_ok = validateAcceptAction(accept);
-		JButton btnCancel = createButton(_cancel);
-		JButton btnAccept = (_ok != null ? createButton(_ok) : null);
 
-		// Set escape button
-		getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-					KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-		getActionMap().put("cancel", btnCancel.getAction());
-		
-		// Add these and all buttons to the list of buttons that will be added
-		// at the bottom of the dialog
-		boolean hasAccept = false;
-		List<JButton> buttons = new ArrayList<JButton>();
+	//TODO add no-arg constructor also
+	
+	private void initButtons(List<GutsAction> actions)
+	{
+		// Create all buttons that will be added at the bottom of the dialog
+		List<JButton> buttons = new ArrayList<JButton>(actions.size());
 		for (GutsAction action: actions)
 		{
 			if (action != null)
 			{
-				if (action != _ok)
-				{
-					buttons.add(createButton(action));
-				}
-				else
-				{
-					hasAccept = true;
-					buttons.add(btnAccept);
-				}
+				buttons.add(createButton(action));
 			}
 		}
-		// Make sure "ok" and "cancel" have been added to the list else add them
-		if (!hasAccept)
-		{
-			buttons.add(0, btnAccept);
-		}
-		buttons.add(btnCancel);
 
 		// Add the buttons to the layout
 		// NB: don't try to replace this with an injected Map, it would have to be static!
@@ -182,14 +141,8 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 			_logger.warn("initButtons(): No ButtonsPanelAdder for {} LayoutManager",
 				getLayout().getClass());
 		}
-		_initButtonsCalled = true;
 	}
 
-	protected AcceptGutsAction validateAcceptAction(AcceptGutsAction accept)
-	{
-		return accept;
-	}
-	
 	/**
 	 * Creates a button for the given {@code gutsAction}.
 	 * <p/>
@@ -197,17 +150,16 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	 * id of this panel: "{@code id-name}" where {@code name} is 
 	 * {@code gutsAction.name()}.
 	 * 
-	 * @param gutsAction the action for which to create a new button; if {@code null},
+	 * @param action the action for which to create a new button; if {@code null},
 	 * the method returns {@code null}.
 	 * @return the new button or {@code null} if {@code gutsAction} is {@code null}
 	 */
-	final protected JButton	createButton(GutsAction gutsAction)
+	final protected JButton	createButton(GutsAction action)
 	{
-		Action action = gutsAction.action();
 		if (action != null)
 		{
-			JButton button = new JButton(action);
-			button.setName(getName() + "-" + gutsAction.name());
+			JButton button = new JButton(action.action());
+			button.setName(getName() + "-" + action.name());
 			return button;
 		}
 		else
@@ -216,10 +168,63 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		}
 	}
 
-	@Override final public void setParentDialog(ParentDialog parent)
+	protected GutsAction getAcceptAction()
+	{
+		return null;
+	}
+	
+	protected GutsAction getCancelAction()
+	{
+		return _cancel;
+	}
+	
+	protected void setupActions(List<GutsAction> actions)
+	{
+	}
+
+	@Override final public void init(ParentDialog parent)
 	{
 		_parent = parent;
-		//TODO hook for subclasses to do something when parent dialog is known
+		if (!_buttonsBarAdded)
+		{
+			//TODO get list of actions, create buttons out of these, lay them out
+			GutsAction accept = getAcceptAction();
+			GutsAction cancel = getCancelAction();
+			List<GutsAction> actions = new ArrayList<GutsAction>();
+			setupActions(actions);
+			if (cancel != null && !actions.contains(cancel))
+			{
+				actions.add(cancel);
+			}
+			if (accept != null && !actions.contains(accept))
+			{
+				actions.add(0, accept);
+			}
+	
+			// Set escape button
+			if (cancel != null)
+			{
+				getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+							KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+				getActionMap().put("cancel", cancel.action());
+				// Force action name to "cancel"
+				if (!CANCEL_ACTION.equals(cancel.name()))
+				{
+					int index = actions.indexOf(cancel);
+					actions.set(index, new GutsActionDecorator(CANCEL_ACTION, accept));
+				}
+			}
+	
+			if (accept != null && !ACCEPT_ACTION.equals(accept.name()))
+			{
+				// Force action name to "ok"
+				int index = actions.indexOf(accept);
+				actions.set(index, new GutsActionDecorator(ACCEPT_ACTION, accept));
+			}
+			
+			initButtons(actions);
+			_buttonsBarAdded = true;
+		}
 	}
 
 	final protected ParentDialog getParentDialog()
@@ -246,36 +251,28 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 		return EMPTY_ARGS;
 	}
 
-	protected void cancel()
-	{
-	}
-	
-	protected AcceptGutsAction acceptAction()
-	{
-		return _ok;
-	}
-	
 	// Used for resource injection
 	void setTitle(String title)
 	{
-		getParentDialog().setDialogTitle(String.format(title, getTitleFormatArgs()));
+		_parent.setDialogTitle(String.format(title, getTitleFormatArgs()));
 	}
+	
+	static final protected String CANCEL_ACTION = "cancel";
+	static final protected String ACCEPT_ACTION = "ok";
 	
 	static final private long serialVersionUID = 9182634284361356808L;
 	static final private Object[] EMPTY_ARGS = new Object[0];
 
-	final private GutsAction _cancel = new GutsAction("cancel")
+	final private GutsAction _cancel = new GutsAction(CANCEL_ACTION)
 	{
 		@Override protected void perform()
 		{
-			cancel();
 			_parent.close(true);
 		}
 	};
 	
 	final protected Logger _logger = LoggerFactory.getLogger(getClass());
 
-	private AcceptGutsAction _ok;
 	private ParentDialog _parent;
-	private boolean _initButtonsCalled = false;
+	private boolean _buttonsBarAdded = false;
 }

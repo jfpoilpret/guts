@@ -21,7 +21,7 @@ import javax.swing.JButton;
  * containing dialog is shown. Panels must use this interface to close their 
  * embedding dialog upon user's action (e.g. click on "OK" or "Cancel" button).
  * 
- * @see ParentDialogAware#setParentDialog(ParentDialog)
+ * @see ParentDialogAware#init(ParentDialog)
  * @author Jean-Francois Poilpret
  */
 public interface ParentDialog

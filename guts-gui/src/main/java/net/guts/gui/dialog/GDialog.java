@@ -71,7 +71,7 @@ final class GDialog extends JDialog implements ParentDialog
 		addWindowListener(_listener);
 		if (_panel instanceof ParentDialogAware)
 		{
-			((ParentDialogAware) _panel).setParentDialog(this);
+			((ParentDialogAware) _panel).init(this);
 		}
 		setContentPane(_panel);
 	}

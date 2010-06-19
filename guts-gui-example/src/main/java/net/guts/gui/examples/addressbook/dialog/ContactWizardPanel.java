@@ -20,9 +20,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.dialog.support.AbstractWizardPanel;
 import net.guts.gui.dialog.support.AbstractWizardStepPanel;
-import net.guts.gui.dialog.support.AcceptGutsAction;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Address;
 import net.guts.gui.examples.addressbook.domain.Contact;
@@ -42,14 +42,12 @@ public class ContactWizardPanel extends AbstractWizardPanel
 	public ContactWizardPanel()
     {
 	    super(NAME);
-	    initButtons(new AcceptGutsAction()
-		{
-			@Override protected void perform()
-			{
-				accept();
-			}
-		});
     }
+
+	@Override protected GutsAction getAcceptAction()
+	{
+		return _accept;
+	}
 
 	@Override protected void initWizard()
     {
@@ -74,19 +72,22 @@ public class ContactWizardPanel extends AbstractWizardPanel
 		getController().setContext(_contact);
 	}
 
-	private void accept()
-    {
-	    // Now save
-		if (_create)
+	private final GutsAction _accept = new GutsAction()
+	{
+		@Override protected void perform()
 		{
-			_service.createContact(_contact);
+		    // Now save
+			if (_create)
+			{
+				_service.createContact(_contact);
+			}
+			else
+			{
+				_service.modifyContact(_contact);
+			}
+			getParentDialog().close(false);
 		}
-		else
-		{
-			_service.modifyContact(_contact);
-		}
-		getParentDialog().close(false);
-    }
+	};
 	
 	private final ContactPane _contactPane = new ContactPane();
 	private final AbstractAddressPane _home = 

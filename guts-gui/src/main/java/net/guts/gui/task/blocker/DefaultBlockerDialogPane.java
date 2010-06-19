@@ -125,7 +125,7 @@ class DefaultBlockerDialogPane extends JPanel
 		return false;
 	}
 
-	@Override public void setParentDialog(ParentDialog parent)
+	@Override public void init(ParentDialog parent)
 	{
 		_parent = parent;
 	}
