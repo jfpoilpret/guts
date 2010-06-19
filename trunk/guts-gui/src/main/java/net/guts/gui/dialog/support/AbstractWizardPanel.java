@@ -36,15 +36,10 @@ import net.guts.gui.task.blocker.InputBlockers;
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
 {
 	/**
-	 * Constructs a new abstract wizard panel, with a unique identifier, used 
-	 * for resources internationalization.
-	 * 
-	 * @param id unique identifier for this dialog panel
+	 * Constructs a new abstract wizard panel.
 	 */
-	protected AbstractWizardPanel(String id)
+	protected AbstractWizardPanel()
     {
-	    super(id);
-		_mainPane = new WizardPanelHelper(id);
 	    addHierarchyListener(new HierarchyListener()
 	    {
 			public void hierarchyChanged(HierarchyEvent e)
@@ -62,6 +57,11 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	    });
 		_mainPane.initLayout(this);
     }
+
+	@Override final protected void finishInitialization()
+	{
+		_mainPane.setName(getName());
+	}
 
 	@Override final protected void setupActions(List<GutsAction> actions)
 	{
@@ -235,7 +235,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	
 	private static final long serialVersionUID = 7779160067777339171L;
 
-	private final WizardPanelHelper _mainPane;
+	private final WizardPanelHelper _mainPane = new WizardPanelHelper();
 	private final WizardController _controller = new WizardControllerImpl();
 	private final Map<String, JComponent> _panes =  new HashMap<String, JComponent>();
 	private final List<String> _sequence = new ArrayList<String>();

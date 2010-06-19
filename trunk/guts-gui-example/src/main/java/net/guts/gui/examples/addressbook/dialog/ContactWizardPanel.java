@@ -41,7 +41,7 @@ public class ContactWizardPanel extends AbstractWizardPanel
 
 	public ContactWizardPanel()
     {
-	    super(NAME);
+	    setName(NAME);
     }
 
 	@Override protected GutsAction getAcceptAction()

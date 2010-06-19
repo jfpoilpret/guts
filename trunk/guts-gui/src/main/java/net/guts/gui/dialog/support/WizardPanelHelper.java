@@ -29,7 +29,7 @@ import net.java.dev.designgridlayout.DesignGridLayout;
 // (one at a time)).
 final class WizardPanelHelper
 {
-	WizardPanelHelper(String id)
+	void setName(String id)
 	{
 	    _wizard.setName(id + MAINPANE_NAME_SUFFIX);
 	}
