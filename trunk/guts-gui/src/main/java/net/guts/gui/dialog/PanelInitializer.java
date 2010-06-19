@@ -19,14 +19,14 @@ import javax.swing.JComponent;
 //CSOFF: LineLengthCheck
 /**
  * Interface allowing further initialization of dialog panels created by
- * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, PanelInitializer)}.
+ * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, net.guts.gui.application.WindowController.StatePolicy, PanelInitializer)}.
  * <p/>
  * This is useful when the panel, created by Guice facilities, needs extra
  * arguments that cannot be injected by Guice, such as a Domain Model Object 
  * instance which detail data should be displayed in the dialog.
  * <p/>
  * Typically, implementing classes will be inlined in the code that calls
- * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, PanelInitializer)}.
+ * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, net.guts.gui.application.WindowController.StatePolicy, PanelInitializer)}.
  * 
  * @author Jean-Francois Poilpret
  * @param <T> the panel class which instances can be initialized by this
