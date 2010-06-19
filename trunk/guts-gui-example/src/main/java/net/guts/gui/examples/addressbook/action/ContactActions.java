@@ -23,8 +23,8 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.application.WindowController.StatePolicy;
-import net.guts.gui.dialog.ComponentInitializer;
 import net.guts.gui.dialog.DialogFactory;
+import net.guts.gui.dialog.PanelInitializer;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.dialog.ContactPanel;
 import net.guts.gui.examples.addressbook.dialog.ContactTabPanel;
@@ -101,7 +101,7 @@ public class ContactActions
 
 	// GUTS-22: showDialog convenience method to avoid repeats
 	private <T extends JComponent> void showDialog(
-		Class<T> clazz, ComponentInitializer<T> initializer)
+		Class<T> clazz, PanelInitializer<T> initializer)
 	{
 		_dialogFactory.showDialog(
 			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS, initializer);
@@ -125,7 +125,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactPanel.class, new ComponentInitializer<ContactPanel>()
+			showDialog(ContactPanel.class, new PanelInitializer<ContactPanel>()
 			{
 				public void init(ContactPanel panel)
 				{
@@ -175,7 +175,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactTabPanel.class, new ComponentInitializer<ContactTabPanel>()
+			showDialog(ContactTabPanel.class, new PanelInitializer<ContactTabPanel>()
 			{
 				public void init(ContactTabPanel panel)
 				{
@@ -197,7 +197,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactWizardPanel.class, new ComponentInitializer<ContactWizardPanel>()
+			showDialog(ContactWizardPanel.class, new PanelInitializer<ContactWizardPanel>()
 			{
 				public void init(ContactWizardPanel panel)
 				{

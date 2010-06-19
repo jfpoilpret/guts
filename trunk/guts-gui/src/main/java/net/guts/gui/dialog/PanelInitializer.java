@@ -19,25 +19,25 @@ import javax.swing.JComponent;
 //CSOFF: LineLengthCheck
 /**
  * Interface allowing further initialization of dialog panels created by
- * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, ComponentInitializer)}.
+ * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, PanelInitializer)}.
  * <p/>
  * This is useful when the panel, created by Guice facilities, needs extra
  * arguments that cannot be injected by Guice, such as a Domain Model Object 
  * instance which detail data should be displayed in the dialog.
  * <p/>
  * Typically, implementing classes will be inlined in the code that calls
- * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, ComponentInitializer)}.
+ * {@link DialogFactory#showDialog(Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean, PanelInitializer)}.
  * 
  * @author Jean-Francois Poilpret
  * @param <T> the panel class which instances can be initialized by this
- * {@code ComponentInitializer}
+ * {@code PanelInitializer}
  */
 //CSON: LineLengthCheck
-public interface ComponentInitializer<T extends JComponent>
+public interface PanelInitializer<T extends JComponent>
 {
 	/**
 	 * Called immediately before the dialog embedding {@code panel} is
-	 * shown, giving the last opportunity to set finish initialization of
+	 * shown, giving the last opportunity to finish initialization of
 	 * {@code panel} (eg setting its fields with values of a Domain Object).
 	 * 
 	 * @param panel dialog panel to be initialized before its dialog is made 

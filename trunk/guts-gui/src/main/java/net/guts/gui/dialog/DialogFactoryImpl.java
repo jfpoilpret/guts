@@ -63,7 +63,7 @@ class DialogFactoryImpl implements DialogFactory
 	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.dialog.ComponentInitializer, net.guts.gui.application.WindowController.BoundsPolicy)
 	 */
 	@Override public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy bounds, StatePolicy state, ComponentInitializer<T> initializer)
+		BoundsPolicy bounds, StatePolicy state, PanelInitializer<T> initializer)
 	{
 		T panel = _injector.getInstance(clazz);
 		resetPanel(panel);
