@@ -38,7 +38,7 @@ public class ContactPanel extends AbstractPanel implements Resettable
 
 	public ContactPanel()
 	{
-		super(NAME);
+		setName(NAME);
 
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);

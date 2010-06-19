@@ -41,7 +41,7 @@ public class ContactTabPanel extends AbstractTabbedPanel
 
 	public ContactTabPanel()
     {
-	    super(NAME);
+	    setName(NAME);
 	    _tabbedPane.add(_contactTab);
 	    _tabbedPane.add(_home);
 	    _tabbedPane.add(_office);

@@ -46,19 +46,23 @@ import net.guts.gui.action.GutsActionDecorator;
  *     ...
  *     
  *     public MyTabbedPanel() {
- *         super(ID);
+ *         setName(ID);
  *         _tabbedPane.add(_tab1);
  *         _tabbedPane.add(_tab2);
  *         ...
  *         // Register listeners
  *     }
  *     
- *     &#64;Override public Task accept(ParentDialog parent) {
- *         // super method will call accept on each individual tab
- *         super.accept();
- *         // Something to be done when user clicks OK
- *         ...
+ *     &#64;Override protected GutsAction getTabsAcceptAction() {
+ *         return _accept;
  *     }
+ *     
+ *     final private GutsAction _accept = new GutsAction() {
+ *         &#64;Override protected void perform() {
+ *             // Something to be done when user clicks OK
+ *             ...
+ *         }
+ *     };
  * }
  * 
  * class Tab1Panel extends JPanel implements TabPanelAcceptor {
@@ -97,16 +101,16 @@ import net.guts.gui.action.GutsActionDecorator;
 public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 {
 	/**
-	 * Constructs a new abstract tabbed panel, with a unique identifier, used 
-	 * for resources internationalization.
-	 * 
-	 * @param id unique identifier for this dialog panel
+	 * Constructs a new abstract tabbed panel.
 	 */
-	protected AbstractTabbedPanel(String id)
+	protected AbstractTabbedPanel()
 	{
-		super(id);
-		_tabbedPane.setName(id + TABPANE_NAME_SUFFIX);
 		initLayout();
+	}
+	
+	@Override final protected void finishInitialization()
+	{
+		_tabbedPane.setName(getName() + TABPANE_NAME_SUFFIX);
 	}
 	
 	@Override final protected GutsAction getAcceptAction()

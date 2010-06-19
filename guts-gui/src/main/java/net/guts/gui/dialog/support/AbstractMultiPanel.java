@@ -43,17 +43,6 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 	implements Closable, Resettable 
 {
 	/**
-	 * Constructs a new abstract multi panel, with a unique identifier, used 
-	 * for resources internationalization.
-	 * 
-	 * @param id unique identifier for this dialog panel
-	 */
-	protected AbstractMultiPanel(String id)
-	{
-		super(id);
-	}
-	
-	/**
 	 * Gets the list of sub panes.
 	 */
 	abstract protected Iterable<JComponent> getSubComponents();
