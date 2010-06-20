@@ -226,7 +226,6 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 			{
 				if (subpane instanceof TabPanelAcceptor)
 				{
-					//TODO use actions instead of TabPanelAcceptor.accept!
 					((TabPanelAcceptor) subpane).accept();
 				}
 			}
