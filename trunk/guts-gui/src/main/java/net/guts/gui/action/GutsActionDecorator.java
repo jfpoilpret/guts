@@ -19,8 +19,23 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 
+/**
+ * This class wraps an existing {@link GutsAction} in order to either add 
+ * specific behavior before or after the {@code target} action is performed, 
+ * or change its name, or both.
+ * <p/>
+ * Both {@code target} and {@code this} actions share the same {@link Action} 
+ * properties at all times, so that you can manipulate either {@link #action()},
+ * it will impact both {@code Action} instances.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class GutsActionDecorator extends GutsAction
 {
+	/**
+	 * Create a new wrapper for the given {@code target}, while enforcing a new
+	 * {@code name} for it.
+	 */
 	public GutsActionDecorator(String name, GutsAction target)
 	{
 		super(name);
@@ -49,17 +64,31 @@ public class GutsActionDecorator extends GutsAction
 		action().addPropertyChangeListener(listener);
 		_target.action().addPropertyChangeListener(listener);
 	}
-	
-	private void copyProperty(String name)
-	{
-		action().putValue(name, _target.action().getValue(name));
-	}
-	
+
+	/**
+	 * Create a new wrapper for the given {@code target} but keeps its original
+	 * name, as returned by {@code target.name()}.
+	 * <p/>
+	 * Note that, if {@code target} doesn't have a name yet (e.g. automatic naming
+	 * has not occurred yet), then {@code this} action won't have a name either,
+	 * and any later name change (through automatic naming) for any of these 
+	 * actions will not impact the other action name.
+	 */
 	public GutsActionDecorator(GutsAction target)
 	{
 		this(target.name(), target);
 	}
 	
+	private void copyProperty(String name)
+	{
+		action().putValue(name, _target.action().getValue(name));
+	}
+
+	/**
+	 * Called just before calling {@code target} {@link #perform()}, this method
+	 * can be overridden to perform any necessary preliminary work.
+	 * Does nothing by default.
+	 */
 	protected void beforeTargetPerform()
 	{
 	}
@@ -74,6 +103,11 @@ public class GutsActionDecorator extends GutsAction
 		afterTargetPerform();
 	}
 
+	/**
+	 * Called just after calling {@code target} {@link #perform()}, this method
+	 * can be overridden to perform any necessary post-performance work.
+	 * Does nothing by default.
+	 */
 	protected void afterTargetPerform()
 	{
 	}

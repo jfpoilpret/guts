@@ -32,7 +32,99 @@ import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
 
-//TODO better exception handling and/or logging on error conditions
+//TODO better exception handling and/or logging on error conditions?
+/**
+ * Abstract panel to be used in "wizard" dialogs.
+ * <p/>
+ * This class manages most repetitive stuff for you: creating 
+ * OK/Cancel/Previous/Next buttons and associated Actions, inject resources 
+ * into components from properties files...
+ * <p/>
+ * Typically, your panels would look like:
+ * <pre>
+ * public class MyPanel extends AbstractWizardPanel {
+ *     static final private String ID = "my-panel-id";
+ *     
+ *     final private WizardPane1 _pane1 = new WizardPane1();
+ *     final private WizardPane2 _pane2 = new WizardPane2();
+ *     ...
+ *     &#64;Inject private SomeService _service;
+ *     ...
+ *     
+ *     public MyPanel() {
+ *         setName(ID);
+ *     }
+ *     
+ *     &#64;Override protected void initWizard() {
+ *         getController().addWizardPane(_pane1, true);
+ *         getController().addWizardPane(_pane2, true);
+ *     }
+ *     
+ *     &#64;Override protected GutsAction getAcceptAction() {
+ *         return _accept;
+ *     }
+ *     
+ *     final private GutsAction _accept = new GutsAction() {
+ *         &#64;Override protected void perform() {
+ *             // Something to be done when user clicks OK
+ *             ...
+ *         }
+ *     };
+ * }
+ * </pre>
+ * In the snippet above, note the {@link #initWizard()} and {@link #getAcceptAction()} 
+ * methods, further explained hereafter:
+ * <p/>
+ * {@code initWizard()} adds 2 wizard panes, {@code _pane1} and {@code _pane2} to 
+ * the wizard dialog; the first added panel will be the first wizard pane to appear.
+ * <p/>
+ * {@code getAcceptAction()} must return the action that will be executed once the
+ * user clicks the "Finish" button.
+ * <p/>
+ * {@code AbstractWizardPanel} automatically manages enabling of "Previous", "Next"
+ * and "Finish" buttons in the following way:
+ * <ul>
+ * <li>"Previous" is enabled if there is at least one wizard pane before the current
+ * pane; this behavior cannot be changed.</li>
+ * <li>"Next" is enabled if there is at least one wizard pane after the current
+ * pane.</li>
+ * <li>"Finish" is enabled if there is no wizard pane after the current pane.</li>
+ * </ul>
+ * This default behavior matches the most common cases of wizard usage, but enabling
+ * of "Next" and "Finish" can be directly set by {@link WizardStepPanel#enter}, 
+ * through {@link WizardController#setNextEnabled(boolean)} and 
+ * {@link WizardController#setAcceptEnabled(boolean)}.
+ * <p/>
+ * The following snippet shows an example of a wizard pane:
+ * <pre>
+ * class WizardPane1 extends JPanel implements WizardStepPanel {
+ *     final private JTextField _txfFirstName = new JTextField(20);
+ *     final private JTextField _txfLastName = new JTextField(20);
+ *     private Contact _contact;
+ * 
+ *     public WizardPane1() {
+ *         // Init components and set layout
+ *         ...
+ *     }
+ *     
+ *     &#64;Override public void enter(WizardController controller) {
+ *         // Copy from domain to widgets
+ *         _contact = controller.getContext(Contact.class);
+ *         _txfFirstName.setText(_contact.getFirstName());
+ *         _txfLastName.setText(_contact.getLastName());
+ *     }
+ *     
+ *     &#64;Override public &lt;T&gt; Task&lt;T&gt; leave(WizardController controller) {
+ *         // Copy from widgets to Domain
+ *         _contact.setFirstName(_txfFirstName.getText());
+ *         _contact.setLastName(_txfLastName.getText());
+ *         return null;
+ *     }
+ * }
+ * </pre>
+ *
+ * @author Jean-Francois Poilpret
+ */
 abstract public class AbstractWizardPanel extends AbstractMultiPanel
 {
 	/**
@@ -58,11 +150,19 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		_mainPane.initLayout(this);
     }
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.support.AbstractPanel#finishInitialization()
+	 */
 	@Override final protected void finishInitialization()
 	{
 		_mainPane.setName(getName());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.support.AbstractPanel#setupActions(java.util.List)
+	 */
 	@Override final protected void setupActions(List<GutsAction> actions)
 	{
 		actions.add(_previous);
@@ -85,7 +185,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		JComponent current = _panes.get(_sequence.get(_current));
 		if (current instanceof WizardStepPanel)
 		{
-			Task<R> task = ((WizardStepPanel) current).leave();
+			Task<R> task = ((WizardStepPanel) current).leave(_controller);
 			if (task != null)
 			{
 				return new DelegatingTask<R>(task)
@@ -112,8 +212,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		if (pane instanceof WizardStepPanel)
 		{
 			WizardStepPanel stepPane = (WizardStepPanel) pane;
-			stepPane.setController(_controller);
-			stepPane.enter();
+			stepPane.enter(_controller);
 		}
 		setPreviousEnabled(index > 0);
 		_mainPane.showStep(step);
@@ -136,6 +235,10 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.support.AbstractMultiPanel#reset()
+	 */
 	@Override final public void reset()
     {
 		_mainPane.reset();
@@ -148,12 +251,25 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 	    super.reset();
 	    initWizard();
     }
-	
+
+	/**
+	 * Get the wizard controller for {@code this} wizard dialog. This controller
+	 * must be used to control the sequence of steps and wizard panes that make
+	 * this wizard dialog.
+	 */
 	protected final WizardController getController()
     {
     	return _controller;
     }
 
+	/**
+	 * Called every time this wizard dialog is {@link #reset()}, this abstract 
+	 * method must be implemented to initialize the dialog state and the path of
+	 * wizard panes to be displayed, through the use of {@link #getController()}.
+	 * <p/>
+	 * This method must {@linkplain WizardController#addWizardPane(JComponent, boolean) add} 
+	 * at least one wizard pane (the first to be displayed).
+	 */
 	abstract protected void initWizard();
 
 	/*

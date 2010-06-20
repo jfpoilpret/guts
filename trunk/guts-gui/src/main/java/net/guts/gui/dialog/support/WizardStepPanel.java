@@ -16,12 +16,43 @@ package net.guts.gui.dialog.support;
 
 import net.guts.gui.task.Task;
 
+/**
+ * Interface that wizard panes (added to an {@link AbstractWizardPanel} through
+ * {@link WizardController#addWizardPane(javax.swing.JComponent, boolean)}) can 
+ * choose to implement, in order to be notified of when they are displayed in the 
+ * wizard dialog and when they are left for another wizard pane.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface WizardStepPanel
 {
-	public void setController(WizardController controller);
+	/**
+	 * Called by {@link AbstractWizardPanel} just before {@code this} wizard pane
+	 * is going to be made visible in the current wizard dialog, this method 
+	 * allows the current wizard pane to use {@code controller} to get context
+	 * information from the previous wizard panes. 
+	 * 
+	 * @param controller the wizard controller for the wizard dialog {@code this}
+	 * wizard pane belongs to
+	 */
+	public void enter(WizardController controller);
 
-	public void enter();
+	/**
+	 * Called by {@link AbstractWizardPanel} just before {@code this} wizard pane
+	 * is going to be made invisible in the current wizard dialog, because another
+	 * wizard pane is to be made visible.
+	 * <p/>
+	 * This can be used to {@linkplain WizardController#setContext(Object) save new context} 
+	 * for the next wizard pane.
+	 * 
+	 * @param <T>
+	 * @param controller the wizard controller for the wizard dialog {@code this}
+	 * wizard pane belongs to
+	 * @return a {@code Task} that will be executed in background before the next 
+	 * wizard pane is made visible; this is advised if the work to be performed is 
+	 * too long and might block Swing EDT; otherwise, {@code null} is just fine.
+	 */
 	//#### check if this can be easily instantiable (because impl will hardcode
 	// T parameter type!)
-	public <T> Task<T> leave();
+	public <T> Task<T> leave(WizardController controller);
 }

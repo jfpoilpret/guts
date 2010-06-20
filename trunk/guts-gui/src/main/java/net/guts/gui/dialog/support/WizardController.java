@@ -16,24 +16,96 @@ package net.guts.gui.dialog.support;
 
 import javax.swing.JComponent;
 
-// Can be passed to any Wizard subpane if it implements WizardStepPanel
-// or better system: injectability? => provider, maybe more complex
+/**
+ * Main controller to be used when developing a 
+ * {@linkplain AbstractWizardPanel wizard dialog}. It is available from:
+ * <ul>
+ * <li>the {@linkplain AbstractWizardPanel main wizard panel} through 
+ * {@link AbstractWizardPanel#getController()}</li>
+ * <li>any {@linkplain WizardStepPanel wizard pane} through 
+ * {@link WizardStepPanel#enter(WizardController)}</li>
+ * </ul>
+ * This is used to:
+ * <ul>
+ * <li>set up the list of wizard panes that will be used during use of the wizard 
+ * dialog</li>
+ * <li>dynamically define the sequence of wizard panes until the end of the 
+ * wizard dialog</li>
+ * <li>change the enabled state of "next" and "finish" buttons</li>
+ * <li>pass context information across wizard panes</li>
+ * </ul>
+ * All methods can be used at any time during the lifecycle of the wizard dialog,
+ * with the possibility to dynamically define wizard paths, based on user 
+ * selections.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface WizardController
 {
-	// All potential wizard panes must be added early if you want to have
-	// correct calculation of dialog dimensions.
-	// This method must be called for any wizard pane before it is used in
-	// a wizard sequence.
-	// If appendToSequence is true, then a default sequence is
-	// built from the added pane in the adding order.
+	/**
+	 * Add a wizard {@code pane} to the current wizard dialog. Such panes must 
+	 * be added early if you want to have correct calculation of wizard dialog 
+	 * dimensions; however, you can call it later, in a more dynamic way, if you
+	 * need.
+	 * <p/>
+	 * This method must be called for any wizard pane before it is used in a 
+	 * wizard sequence.
+	 * <p/>
+	 * If {@code appendToSequence} is {@code true}, then a default sequence is
+	 * built from the added {@code pane} in the adding order.
+	 * <p/>
+	 * If {@code pane} implements {@link WizardStepPanel}, then it will be notified
+	 * when it becomes the current wizard pane.
+	 */
 	public void addWizardPane(JComponent pane, boolean appendToSequence);
 
-	// throws IllegalArgExc
+	/**
+	 * Set the next steps (wizard pane names) in the current wizard panel
+	 * sequence. You would use this method when user's options in the current
+	 * wizard pane dynamically define the path for next wizard panes.
+	 * <p/>
+	 * If your wizard dialog defines a static and linear path of steps, then
+	 * you won't need this method.
+	 * <p/>
+	 * You must make sure all {@code steps} have been first added by calling
+	 * {@link #addWizardPane(JComponent, boolean)}.
+	 * 
+	 * @throws IllegalArgumentException if any step in {@code steps} doesn't
+	 * match to the name of a wizard pane previously added with 
+	 * {@link #addWizardPane(JComponent, boolean)}
+	 */
 	public void setNextStepsSequence(String... steps);
 
+	/**
+	 * Change enabling of the "next" button of the wizard panel.
+	 */
 	public void setNextEnabled(boolean enabled);
+
+	/**
+	 * Change enabling of the "finish" button of the wizard panel.
+	 */
 	public void setAcceptEnabled(boolean enabled);
-	
+
+	/**
+	 * Pass context information for other wizard panes to access through
+	 * {@link #getContext(Class)}.
+	 * 
+	 * @param <T> the type of context to pass
+	 * @param context the context data to pass
+	 */
 	public <T> void setContext(T context);
+
+	/**
+	 * Retrieve context information previously passed through 
+	 * {@link #setContext(Object)}.
+	 * <p/>
+	 * Note that {@code clazz} must match exactly the class of a {@code context}
+	 * in a previous call to {@code setContext(T context)}.
+	 * 
+	 * @param <T> the type of passed context to retrieve
+	 * @param clazz the type of passed context to retrieve
+	 * @return context data previously of type {@code T} previously passed,
+	 * or {@code null} if no such context was passed
+	 */
 	public <T> T getContext(Class<T> clazz);
 }
