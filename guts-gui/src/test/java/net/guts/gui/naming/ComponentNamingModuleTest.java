@@ -217,8 +217,6 @@ public class ComponentNamingModuleTest
 		final private JLabel myLabel2 = new JLabel();	
 	}
 	
-	//TODO
-	// - test non-recursivity through panels that don't implement ComponentHolder
 	public void checkNonRecursivityThroughPanelsHierarchy()
 	{
 		NamedPanelWithPanelsHierarchy panel = getInstance(NamedPanelWithPanelsHierarchy.class);
