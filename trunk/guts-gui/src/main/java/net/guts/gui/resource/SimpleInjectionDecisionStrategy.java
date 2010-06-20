@@ -12,20 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook;
+package net.guts.gui.resource;
 
 import java.util.Locale;
 
-import net.guts.gui.resource.InjectionDecisionStrategy;
+import com.google.inject.Singleton;
 
+@Singleton
 class SimpleInjectionDecisionStrategy implements InjectionDecisionStrategy
 {
-	@Override public void injectionPerformed(Object component, Locale locale)
-	{
-	}
-
 	@Override public InjectionDecision needsInjection(Object component, Locale locale)
 	{
 		return InjectionDecision.INJECT_HIERARCHY;
+	}
+	
+	@Override public void injectionPerformed(Object component, Locale locale)
+	{
 	}
 }

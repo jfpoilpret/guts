@@ -27,19 +27,11 @@ import com.google.inject.ImplementedBy;
  * application lifecycle. Avoiding unnecessary injection is useful because it
  * is a time-consuming operation.
  * <p/>
- * Default strategy systematically re-injects any non Swing component; for
- * Swing components, it checks if the component was already injected for the
- * given {@code Locale} (by inspecting a special Client Property on that component).
- * <p/>
- * If the Swing component is a {@link javax.swing.RootPaneContainer} (e.g. 
- * {@link javax.swing.JDialog}), then it will require re-injection of that component
- * itself but not necessarily its whole hierarchy (in case the content pane was 
- * already injected but not the {@code RootPaneContainer} itself, which happens
- * when reusing content panes for consecutive dialogs).
+ * Default strategy systematically re-injects any object or Swing component.
  *
  * @author Jean-Francois Poilpret
  */
-@ImplementedBy(DefaultInjectionDecisionStrategy.class)
+@ImplementedBy(SimpleInjectionDecisionStrategy.class)
 public interface InjectionDecisionStrategy
 {
 	/**
