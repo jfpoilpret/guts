@@ -50,9 +50,6 @@ class AddressBookModule extends AbstractModule
 		// Set our own component naming policy
 		bind(ComponentNamePolicy.class).toInstance(new AddressBookComponentNamePolicy());
 		bind(ActionNamePolicy.class).toInstance(new AddressBookActionNamePolicy());
-		
-		//TODO remove after resource injection tests and performance comparison
-		Resources.bindInjectionStrategy(binder()).to(SimpleInjectionDecisionStrategy.class);
 	}
 }
 
