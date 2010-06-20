@@ -14,7 +14,17 @@
 
 package net.guts.gui.dialog.support;
 
+/**
+ * Interface to be implemented by tab panels (used in {@link AbstractTabbedPanel})
+ * if they want to be notified of a click on "OK" button.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface TabPanelAcceptor
 {
+	/**
+	 * Automatically called when the user clicks "OK" for the {@link AbstractTabbedPanel}
+	 * in which {@code this} panel is embedded.
+	 */
 	public void accept();
 }

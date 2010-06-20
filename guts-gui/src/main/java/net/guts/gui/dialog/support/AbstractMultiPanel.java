@@ -47,7 +47,6 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 	 */
 	abstract protected Iterable<JComponent> getSubComponents();
 
-	//TODO rework to make it final with an empty overridable hook
 	/**
 	 * Resets all individual tab panes added to this panel (if they implement
 	 * {@link Resettable}). You may override this method if you need further 
@@ -65,7 +64,10 @@ public abstract class AbstractMultiPanel extends AbstractPanel
 		}
     }
 
-	//TODO same as above
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.Closable#canClose()
+	 */
 	@Override public boolean canClose()
 	{
 		for (Component subpane: getSubComponents())

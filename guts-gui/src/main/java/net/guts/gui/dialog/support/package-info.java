@@ -19,8 +19,7 @@
  * At the package core is the 
  * {@link net.guts.gui.dialog.support.AbstractPanel} abstract base class 
  * that you can use to build the main panels of all your general dialogs. This 
- * class takes care of adding the usual "OK" and "Cancel" buttons, declaring the 
- * necessary {@code @Action} methods...
+ * class takes care of adding the usual "OK" and "Cancel" buttons.
  * <p/>
  * When you use {@link net.guts.gui.dialog.support.AbstractPanel}, "OK" and 
  * "Cancel" buttons are automatically added thanks to a 

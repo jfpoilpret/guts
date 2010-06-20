@@ -81,7 +81,7 @@ import net.guts.gui.action.GutsActionDecorator;
  *         // Register listeners
  *     }
  *     
- *     public void accept() {
+ *     &#64;Override public void accept() {
  *         // Something to be done when user clicks OK
  *         ...
  *     }
@@ -105,30 +105,6 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 	 */
 	protected AbstractTabbedPanel()
 	{
-		initLayout();
-	}
-	
-	@Override final protected void finishInitialization()
-	{
-		_tabbedPane.setName(getName() + TABPANE_NAME_SUFFIX);
-	}
-	
-	@Override final protected GutsAction getAcceptAction()
-	{
-		if (_accept == null)
-		{
-			_accept = new TabAcceptAction(getTabsAcceptAction());
-		}
-		return _accept;
-	}
-	
-	protected GutsAction getTabsAcceptAction()
-	{
-		return null;
-	}
-
-	private void initLayout()
-    {
 		setLayout(new GridBagLayout());
 		GridBagConstraints constraints = new GridBagConstraints();
 		constraints.gridx = 0;
@@ -141,7 +117,81 @@ public abstract class AbstractTabbedPanel extends AbstractMultiPanel
 		constraints.weighty = 1.0;
 		constraints.insets = new Insets(INSETS, INSETS, INSETS, INSETS);
 		add(_tabbedPane, constraints);
-    }
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see net.guts.gui.dialog.support.AbstractPanel#finishInitialization()
+	 */
+	@Override final protected void finishInitialization()
+	{
+		_tabbedPane.setName(getName() + TABPANE_NAME_SUFFIX);
+	}
+
+	/**
+	 * Creates the "OK" action based on the actual action returned by 
+	 * {@link #getTabsAcceptAction()}. Cannot be overridden.
+	 */
+	@Override final protected GutsAction getAcceptAction()
+	{
+		if (_accept == null)
+		{
+			_accept = new TabAcceptAction(getTabsAcceptAction());
+		}
+		return _accept;
+	}
+
+	/**
+	 * This method is automatically called during initialization of {@code this}
+	 * panel. It may indicate which action is to be executed when user clicks
+	 * the "OK" button.
+	 * <p/>
+	 * By default, it returns {@code null}, meaning that the action will be
+	 * exclusively delegated to tab-panels that implement {@link TabPanelAcceptor}.
+	 * <p/>
+	 * If you want extra work to be performed <b>after</b> tab-panels have been
+	 * called, then you should override this method.
+	 * <p/>
+	 * Note that this method, if called several times, must always return the
+	 * same result, otherwise results are unpredictable.
+	 * <p/>
+	 * In general, the returned action, in addition to the expected work to be
+	 * performed by the "OK" button in this panel, would normally close the parent
+	 * dialog; this is shown in the following snippet:
+	 * <pre>
+	 *     &#64;Override protected GutsAction getTabsAcceptAction() {
+	 *         return _accept;
+	 *     }
+	 *     
+	 *     final private GutsAction _accept = new GutsAction() {
+	 *         &#64;Override protected void perform() {
+	 *             // Something to be done when user clicks OK
+	 *             ...
+	 *             // Close the parent dialog
+	 *             getParentDialog().close(false);
+	 *         }
+	 *     };
+	 * </pre>
+	 * <p/>
+	 * Whatever the name of the returned {@link GutsAction}, Guts-GUI will
+	 * override it to just {@code "ok"}, so that general resources can be used for
+	 * all dialogs by default:
+	 * <pre>
+	 * ok.text = &amp;OK
+	 * </pre>
+	 * However, this can be changed for a specific dialog, by defining resources
+	 * for the {@link javax.swing.JButton} that will be created by {@code AbstractPanel} 
+	 * for this action. That button is named {@code "panelName-ok"} where {@code panelName}
+	 * is the name of {@code this} panel (as set by {@code setName()} or automatically
+	 * by using {@link net.guts.gui.naming.ComponentNamingModule}.
+	 * 
+	 * @see #getParentDialog()
+	 * @see net.guts.gui.dialog.ParentDialog#close(boolean)
+	 */
+	protected GutsAction getTabsAcceptAction()
+	{
+		return null;
+	}
 
 	/*
 	 * (non-Javadoc)
