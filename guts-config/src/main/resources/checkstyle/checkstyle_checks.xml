@@ -5,9 +5,9 @@
     This configuration file was written by the eclipse-cs plugin configuration editor
 -->
 <!--
-    Checkstyle-Configuration: guts-gui
+    Checkstyle-Configuration: guts-settings
     Description: 
-Checkstyle rules used in guts-gui module. That will -hopefully- be set to its own pom config module later on, and used by all other guts pom modules.
+Checkstyle rules for all guts modules.
 -->
 <module name="Checker">
   <property name="severity" value="error"/>
@@ -93,7 +93,7 @@ Checkstyle rules used in guts-gui module. That will -hopefully- be set to its ow
     </module>
     <module name="LineLength">
       <property name="severity" value="error"/>
-      <property name="ignorePattern" value="^(( |\t)*\* *[^ ]+)$|^(import [^ ]+)$|^(( |\t)*\* *@[^ ]+ [^ ]+)$|^(( |\t)*\* *@see .*)$"/>
+      <property name="ignorePattern" value="^(( |\t)*\* *[^ ]+)$|^(import [^ ]+)$|^(( |\t)*\* *@[^ ]+ [^ ]+)$|^(( |\t)*\* *@see .*)$|^(( |\t)*\* *\{@link .*\}\.?)$"/>
       <property name="max" value="96"/>
       <property name="tabWidth" value="4"/>
     </module>
