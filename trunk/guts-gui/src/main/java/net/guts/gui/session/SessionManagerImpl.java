@@ -147,19 +147,23 @@ class SessionManagerImpl implements SessionManager
 							 parent.getClass().getSimpleName()});
 			return null;
 		}
-		// TODO Handle the case where "name" is too long for StorageMedium
-		// That could be done by asking name check to StorageMedium 
-		// (implementation-dependent)
-		if (parent == component)
+
+		// Is this the top-level container? if yes, just keep its name
+		if (parent != component)
 		{
-			// This is the toplevel container, return only its name
-			return name;
+			// Not the top level container, return (top level, component) names only
+			name = parentName + '.' + name;
 		}
-		else
+
+		// Handle the case where "name" is too long for StorageMedium
+		String error = _medium.checkName(name);
+		if (error != null)
 		{
-			// Not the topelevel container, return (toplevel, component) names only
-			return parentName + '.' + name;
+			_logger.warn("cannot {} component state: problem with {} name(): {}",
+				new Object[]{action, component.getClass().getSimpleName(), error});
+			return null;
 		}
+		return name;
 	}
 
 	final private SerializationManager _serializer;

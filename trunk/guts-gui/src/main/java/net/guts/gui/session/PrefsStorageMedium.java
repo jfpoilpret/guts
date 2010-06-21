@@ -34,6 +34,18 @@ class PrefsStorageMedium implements StorageMedium
 		_root = Preferences.userNodeForPackage(applicationNode);
 	}
 
+	@Override public String checkName(String name)
+	{
+		if (name.length() > Preferences.MAX_KEY_LENGTH)
+		{
+			return KEY_LENGTH_ERROR;
+		}
+		else
+		{
+			return null;
+		}
+	}
+	
 	@Override public byte[] load(String name)
 	{
 		byte[] content = _root.getByteArray(name, null);
@@ -57,5 +69,8 @@ class PrefsStorageMedium implements StorageMedium
 		}
 	}
 
+	static final private String KEY_LENGTH_ERROR = String.format(
+		"java.util.prefs package allows key names of max %d characters.",
+		Preferences.MAX_KEY_LENGTH);
 	final private Preferences _root;
 }

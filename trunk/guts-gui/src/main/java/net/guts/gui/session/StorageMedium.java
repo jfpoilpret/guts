@@ -39,6 +39,8 @@ import com.google.inject.ImplementedBy;
 @ImplementedBy(PrefsStorageMedium.class)
 public interface StorageMedium
 {
+	public String checkName(String name);
+	
 	/**
 	 * Save binary {@code content} under the name {@code name}.
 	 * 
