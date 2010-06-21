@@ -114,7 +114,7 @@ class ContactPane extends JPanel implements WizardStepPanel, ComponentHolder
 		_txfBirth.setValue(_contact.getBirth());
     }
 
-	@Override public <T> Task<T> leave(WizardController controller)
+	@Override public Task<?> leave(WizardController controller)
     {
 		// Binding from Swing to Domain
 		_contact.setFirstName(_txfFirstName.getText());
@@ -151,7 +151,7 @@ abstract class AbstractAddressPane extends JPanel implements WizardStepPanel, Co
 		_addressPane.setAddress(_address);
     }
 
-	@Override public <T> Task<T> leave(WizardController controller)
+	@Override public Task<?> leave(WizardController controller)
     {
 		_addressPane.updateAddress(_address);
 		controller.setAcceptEnabled(_last);
