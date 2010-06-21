@@ -15,9 +15,9 @@
 package net.guts.gui.examples.addressbook.dialog;
 
 import javax.swing.JLabel;
-import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
+import net.guts.gui.dialog.layout.GroupHeader;
 import net.guts.gui.examples.addressbook.domain.Address;
 import net.guts.gui.naming.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
@@ -27,7 +27,6 @@ public class AddressPanel implements ComponentHolder
 	public AddressPanel()
 	{
 		_lblCity.setHorizontalAlignment(JLabel.RIGHT);
-		_lblAddressKind.setHorizontalAlignment(JLabel.LEADING);
 	}
 
 	public void layout(DesignGridLayout layout)
@@ -39,8 +38,7 @@ public class AddressPanel implements ComponentHolder
 	{
 		if (separator)
 		{
-			layout.emptyRow();
-			layout.row().left().fill().add(_lblAddressKind, new JSeparator());
+			_header.layout(layout);
 		}
 		layout.row().grid(_lblStreet1).add(_txfStreet1);
 		layout.row().grid(_lblStreet2).add(_txfStreet2);
@@ -75,7 +73,7 @@ public class AddressPanel implements ComponentHolder
 		address.setPhone(_txfPhone.getText());
 	}
 
-	final private JLabel _lblAddressKind = new JLabel();
+	final private GroupHeader _header = GroupHeader.create();
 	final private JLabel _lblStreet1 = new JLabel();
 	final private JTextField _txfStreet1 = new JTextField(32);
 	final private JLabel _lblStreet2 = new JLabel();
