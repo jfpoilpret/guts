@@ -32,7 +32,6 @@ import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
 
-//TODO better exception handling and/or logging on error conditions?
 /**
  * Abstract panel to be used in "wizard" dialogs.
  * <p/>
@@ -122,6 +121,10 @@ import net.guts.gui.task.blocker.InputBlockers;
  *     }
  * }
  * </pre>
+ * <p/>
+ * <b>Important!</b> Note that {@code AbstractWizardPanel} makes use of 
+ * <a href="https://designgridlayout.dev.java.net/">DesignGridLayout</a>, hence
+ * this dependency becomes mandatory if you use {@code AbstractWizardPanel}.
  *
  * @author Jean-Francois Poilpret
  */
@@ -179,19 +182,19 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		}
 	};
 	
-	private <R> Task<R> next()
+	@SuppressWarnings("unchecked") private Task<?> next()
 	{
 		// First accept current pane
 		JComponent current = _panes.get(_sequence.get(_current));
 		if (current instanceof WizardStepPanel)
 		{
-			Task<R> task = ((WizardStepPanel) current).leave(_controller);
+			Task<?> task = ((WizardStepPanel) current).leave(_controller);
 			if (task != null)
 			{
-				return new DelegatingTask<R>(task)
+				return new DelegatingTask(task)
 				{
 					@Override public void succeeded(
-						TasksGroup group, TaskInfo source, R result)
+						TasksGroup group, TaskInfo source, Object result)
 					{
 						goToStep(++_current);
 					}

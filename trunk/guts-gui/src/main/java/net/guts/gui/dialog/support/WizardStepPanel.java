@@ -45,14 +45,11 @@ public interface WizardStepPanel
 	 * This can be used to {@linkplain WizardController#setContext(Object) save new context} 
 	 * for the next wizard pane.
 	 * 
-	 * @param <T>
 	 * @param controller the wizard controller for the wizard dialog {@code this}
 	 * wizard pane belongs to
 	 * @return a {@code Task} that will be executed in background before the next 
 	 * wizard pane is made visible; this is advised if the work to be performed is 
 	 * too long and might block Swing EDT; otherwise, {@code null} is just fine.
 	 */
-	//#### check if this can be easily instantiable (because impl will hardcode
-	// T parameter type!)
-	public <T> Task<T> leave(WizardController controller);
+	public Task<?> leave(WizardController controller);
 }
