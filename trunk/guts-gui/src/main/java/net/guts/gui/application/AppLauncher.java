@@ -27,9 +27,11 @@ import org.slf4j.LoggerFactory;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.type.TypeHelper;
 import net.guts.gui.action.ActionModule;
+import net.guts.gui.dialog.support.AbstractPanel;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
 import net.guts.gui.resource.ResourceModule;
+import net.guts.gui.resource.Resources;
 import net.guts.gui.session.SessionModule;
 import net.guts.gui.session.Sessions;
 import net.guts.gui.task.TasksModule;
@@ -134,6 +136,13 @@ final class AppLauncher
 			Sessions.bindApplicationClass(binder(), _mainClass);
 			// Bind the generic Application actions
 			bind(GutsApplicationActions.class).asEagerSingleton();
+			// Provide default resource values for common stuff: GutsApplicationActions
+			String pack = "/" + TypeHelper.getPackagePath(AppLauncher.class);
+			Resources.bindPackageBundles(
+				binder(), GutsApplicationActions.class, pack + "/guts-gui");
+			// Provide default resource values for common stuff: AbstractPanel...
+			Resources.bindPackageBundles(
+				binder(), AbstractPanel.class, pack + "/guts-gui");
 		}
 	}
 
