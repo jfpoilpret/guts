@@ -17,7 +17,6 @@ package net.guts.gui.examples.addressbook;
 import net.guts.event.Events;
 import net.guts.gui.action.ActionNamePolicy;
 import net.guts.gui.action.DefaultActionNamePolicy;
-import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.examples.addressbook.action.ContactActions;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.examples.addressbook.util.TasksGroupProgressPanel;
@@ -34,8 +33,6 @@ class AddressBookModule extends AbstractModule
 {
 	@Override protected void configure()
 	{
-		bind(AppLifecycleStarter.class)
-			.to(AddressBookLifecycleStarter.class).asEagerSingleton();
 		// Add binding for "contact selection" events
 		Events.bindChannel(binder(), Contact.class);
 		bind(ContactActions.class).asEagerSingleton();
