@@ -29,6 +29,34 @@ import net.guts.gui.menu.MenuFactory;
 
 import com.google.inject.Inject;
 
+/**
+ * Abstract {@link AppLifecycleStarter} that you can subclass if you are
+ * developing a single frame based application.
+ * <p/>
+ * The following snippet shows an example:
+ * <pre>
+ * public class MyAppLifecycleStarter extends SingleFrameLifecycle
+ * {
+ *     &#64;Override protected void initFrame(JFrame mainFrame)
+ *     {
+ *         mainFrame.setJMenuBar(createMenuBar());
+ *         mainFrame.setContentPane(createMainView());
+ *     }
+ * }
+ * </pre>
+ * You will have to make sure you bind you subclass to {@link AppLifecycleStarter}
+ * from one of your {@link com.google.inject.Module}s:
+ * <pre>
+ *     &#64;Override protected void configure()
+ *     {
+ *         bind(AppLifecycleStarter.class)
+ *             .to(MyAppLifecycleStarter.class).asEagerSingleton();
+ *     }
+ * </pre>
+ *
+ * @author Jean-Francois Poilpret
+ */
+//CSOFF: AbstractClassName
 abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 {
 	@Inject void init(
@@ -40,7 +68,24 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 		_menuFactory = menuFactory;
 		_appActions = appActions;
 	}
-	
+
+	/**
+	 * Implement this method to setup the initial content of {@code mainFrame}.
+	 * This includes setting up a {@linkplain JFrame#setContentPane content pane}
+	 * and a {@linkplain JFrame#setJMenuBar menu bar}.
+	 * <p/>
+	 * {@code mainFrame} is named {@code "mainFrame"} and already initialized to 
+	 * ensure that when the user closes it, the whole application is 
+	 * {@linkplain ExitController#shutdown() shut down}. It will be 
+	 * {@linkplain WindowController#show(JFrame, BoundsPolicy, StatePolicy) displayed}
+	 * immediately after {@link #initFrame(JFrame)} returns.
+	 * <p/>
+	 * In {@code initFrame()}, you can use {@link #menuFactory()} and 
+	 * {@link #appActions()} to build and set a {@link javax.swing.JMenuBar}, these
+	 * are already injected in {@code this SingleFrameLifecycle} instance.
+	 * 
+	 * @param mainFrame the main frame to initialize
+	 */
 	abstract protected void initFrame(JFrame mainFrame);
 	
 	final protected GutsApplicationActions appActions()
@@ -87,3 +132,4 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	private MenuFactory _menuFactory;
 	private GutsApplicationActions _appActions;
 }
+//CSON: AbstractClassName
