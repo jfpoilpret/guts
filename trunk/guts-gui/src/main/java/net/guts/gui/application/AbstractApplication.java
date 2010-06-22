@@ -72,8 +72,8 @@ import com.google.inject.util.Providers;
  * <p/>
  * Guts-GUI also has default implementations that will dynamically find the
  * {@link com.google.inject.Module}s for your application, without any need
- * to subclass it.
- * Refer to (TODO later when these classes exist).
+ * to subclass it. Refer to
+ * <a href="net/guts/gui/application/support/package-summary.html">lifecycle support</a>.
  * <p/>
  * In case any error occurs during initialization process, it will be logged and an error
  * message will be displayed to the end user. For localization of these fatal error
