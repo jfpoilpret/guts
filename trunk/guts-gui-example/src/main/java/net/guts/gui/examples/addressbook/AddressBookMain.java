@@ -17,6 +17,7 @@ package net.guts.gui.examples.addressbook;
 import java.util.List;
 
 import net.guts.gui.application.AbstractApplication;
+import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 
@@ -49,7 +50,8 @@ public class AddressBookMain extends AbstractApplication
 		{
 			@Override protected void configure()
 			{
-				bind(AddressBookUIStarter.class).to(ApplicationUIStarter.class);
+				bind(AppLifecycleStarter.class)
+					.to(AddressBookAppLifecycleStarter.class).asEagerSingleton();
 			}
 		});
 	}

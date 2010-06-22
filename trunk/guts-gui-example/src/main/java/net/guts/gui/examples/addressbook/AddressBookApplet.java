@@ -17,6 +17,7 @@ package net.guts.gui.examples.addressbook;
 import java.util.List;
 
 import net.guts.gui.application.AbstractApplet;
+import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 
@@ -46,7 +47,8 @@ public class AddressBookApplet extends AbstractApplet
 		{
 			@Override protected void configure()
 			{
-				bind(AddressBookUIStarter.class).to(AppletUIStarter.class);
+				bind(AppLifecycleStarter.class)
+					.to(AddressBookAppletLifecycleStarter.class).asEagerSingleton();
 			}
 		});
 	}
