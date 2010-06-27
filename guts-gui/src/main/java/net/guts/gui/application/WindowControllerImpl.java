@@ -21,7 +21,6 @@ import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.WindowEvent;
-import java.util.EnumSet;
 import java.util.Locale;
 
 import javax.swing.JApplet;
@@ -66,7 +65,7 @@ class WindowControllerImpl implements WindowController
 		}, AWTEvent.WINDOW_EVENT_MASK | AWTEvent.COMPONENT_EVENT_MASK);
 	}
 	
-	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
+	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE + 1)
 	public void shutdown(Void nothing)
 	{
 		_logger.debug("shutdown()");
@@ -173,11 +172,11 @@ class WindowControllerImpl implements WindowController
 	private void initBounds(Window container, BoundsPolicy bounds, StatePolicy state)
 	{
 		// Initialize location and size according to policy
-		if (PACK_POLICY.contains(bounds))
+		if (bounds.mustPack())
 		{
 			container.pack();
 		}
-		if (CENTER_POLICY.contains(bounds))
+		if (bounds.mustCenter())
 		{
 			container.setLocationRelativeTo(getActiveWindow());
 		}
@@ -219,10 +218,6 @@ class WindowControllerImpl implements WindowController
 		}
 	}
 
-	static final private EnumSet<BoundsPolicy> PACK_POLICY = 
-		EnumSet.of(BoundsPolicy.PACK_AND_CENTER, BoundsPolicy.PACK_ONLY);
-	static final private EnumSet<BoundsPolicy> CENTER_POLICY =
-		EnumSet.of(BoundsPolicy.PACK_AND_CENTER, BoundsPolicy.CENTER_ONLY);
 	private Window _current;
 	final private ResourceInjector _injector;
 	final private SessionManager _sessions;

@@ -78,7 +78,23 @@ public interface WindowController
 		/**
 		 * This policy doesn't change the window currently set position and size.
 		 */
-		KEEP_ORIGINAL_BOUNDS
+		KEEP_ORIGINAL_BOUNDS;
+
+		/**
+		 * Indicates whether this policy requires {@code pack()}.
+		 */
+		public boolean mustPack()
+		{
+			return this == PACK_AND_CENTER || this == PACK_ONLY;
+		}
+
+		/**
+		 * Indicates whether this policy requires centering the window over its parent.
+		 */
+		public boolean mustCenter()
+		{
+			return this == PACK_AND_CENTER || this == CENTER_ONLY;
+		}
 	}
 
 	/**
