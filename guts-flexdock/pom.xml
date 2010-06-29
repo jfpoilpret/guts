@@ -1,0 +1,63 @@
+<project 
+	xmlns="http://maven.apache.org/POM/4.0.0" 
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.guts</groupId>
+		<artifactId>guts-parent</artifactId>
+		<version>0.1-SNAPSHOT</version>
+		<relativePath>../guts-parent</relativePath>
+	</parent>
+	<artifactId>guts-flexdock</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Guts-GUI flexdock integration</name>
+	<url>http://kenai.com/projects/guts</url>
+
+	<dependencies>
+		<!-- GUTS-GUI -->
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-gui</artifactId>
+		</dependency>
+
+		<!-- flexdock -->
+		<dependency>
+			<groupId>net.java.dev.flexdock</groupId>
+			<artifactId>flexdock</artifactId>
+			<version>0.5.1</version>
+		</dependency>
+
+		<!-- Logging -->
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>jcl-over-slf4j</artifactId>
+			<version>1.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- TODO is it really used in the current tests? -->
+		<!-- For Swing tests -->
+		<dependency>
+			<groupId>org.easytesting</groupId>
+			<artifactId>fest-swing-testng</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+
+	<repositories>
+		<!-- Used for flexdock dependency -->
+		<!-- TODO remove later, but need to put flexdock into GUTS maven repo first -->
+		<repository>
+			<id>griddynamics</id>
+			<name>Grid Dynamics repository</name>
+			<url>https://nexus.griddynamics.net/nexus/content/groups/public/</url>
+		</repository>
+	</repositories>
+</project>
