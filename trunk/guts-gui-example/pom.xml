@@ -17,57 +17,55 @@
 	<description>A simple Address Book example application using Guts-GUI framework</description>
 	<url>http://kenai.com/projects/guts</url>
 
-	<project>
-		<build>
-			<plugins>
-				<!-- Make the Address Book sample a runnable jar -->
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-jar-plugin</artifactId>
-					<configuration>
-						<archive>
-							<manifest>
-								<addClasspath>true</addClasspath>
-								<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
-							</manifest>
-						</archive>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.codehaus.mojo.webstart</groupId>
-					<artifactId>webstart-maven-plugin</artifactId>
-					<version>1.0-alpha-2</version>
-					<configuration>
-						<jnlp>
-							<outputFile>guts-gui-example.jnlp</outputFile>
-							<j2seVersion>1.6+</j2seVersion>
+	<build>
+		<plugins>
+			<!-- Make the Address Book sample a runnable jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
 							<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
-						</jnlp>
-						<sign>
-							<keystore>keystore</keystore>
-							<keypass>password</keypass>
-							<storepass>password</storepass>
-							<alias>alias</alias>
-							<validity>3650</validity>
-							<keystoreConfig>
-								<delete>true</delete>
-								<gen>true</gen>
-							</keystoreConfig>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<version>1.0-alpha-2</version>
+				<configuration>
+					<jnlp>
+						<outputFile>guts-gui-example.jnlp</outputFile>
+						<j2seVersion>1.6+</j2seVersion>
+						<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
+					</jnlp>
+					<sign>
+						<keystore>keystore</keystore>
+						<keypass>password</keypass>
+						<storepass>password</storepass>
+						<alias>alias</alias>
+						<validity>3650</validity>
+						<keystoreConfig>
+							<delete>true</delete>
+							<gen>true</gen>
+						</keystoreConfig>
 
-							<dnameCn>Guts-GUI</dnameCn>
-							<dnameOu>Guts GUI</dnameOu>
-							<dnameO>Guts</dnameO>
-							<dnameL>Ho Chi Minh city</dnameL>
-							<dnameSt>NA</dnameSt>
-							<dnameC>VN</dnameC>
-							<verify>true</verify>
-						</sign>
-						<verbose>false</verbose>
-					</configuration>
-				</plugin>
-			</plugins>
-		</build>
-	</project>
+						<dnameCn>Guts-GUI</dnameCn>
+						<dnameOu>Guts GUI</dnameOu>
+						<dnameO>Guts</dnameO>
+						<dnameL>Ho Chi Minh city</dnameL>
+						<dnameSt>NA</dnameSt>
+						<dnameC>VN</dnameC>
+						<verify>true</verify>
+					</sign>
+					<verbose>false</verbose>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
 		
 	<dependencies>
 		<dependency>
