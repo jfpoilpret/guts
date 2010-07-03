@@ -25,9 +25,8 @@ import com.google.inject.Singleton;
 @Singleton
 class DefaultViewContentFactory implements ViewContentFactory
 {
-	//TODO add internal annotation to disambiguate views map!
 	@Inject DefaultViewContentFactory(
-		Injector injector, Map<String, Class<? extends JComponent>> views)
+		Injector injector, @BindViewsMap Map<String, Class<? extends JComponent>> views)
 	{
 		_injector = injector;
 		_views = views;

@@ -66,7 +66,7 @@ public final class Docking
 	static MapBinder<String, Class<? extends JComponent>> views(Binder binder)
 	{
 		return MapBinder.newMapBinder(
-			binder, TypeLiteral.get(String.class), COMPONENT_CLASS_TYPE);
+			binder, TypeLiteral.get(String.class), COMPONENT_CLASS_TYPE, BindViewsMap.class);
 	}
 
 	static final String DEFAULT_PERSPECTIVE = "DEFAULT_PERSPECTIVE";
