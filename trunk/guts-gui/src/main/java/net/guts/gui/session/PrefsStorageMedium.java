@@ -14,6 +14,8 @@
 
 package net.guts.gui.session;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
@@ -48,10 +50,54 @@ class PrefsStorageMedium implements StorageMedium
 	
 	@Override public byte[] load(String name)
 	{
-		byte[] content = _root.getByteArray(name, null);
+		byte[] content = restoreAndMergeIfNeeded(name);
 		if (content == null)
 		{
 			_logger.debug("load({}): nothing found in Backing Store.", name);
+		}
+		return content;
+	}
+	
+	private byte[] restoreAndMergeIfNeeded(String name)
+	{
+		// First try to get content in one, whole, piece
+		byte[] content = _root.getByteArray(name, null);
+		if (content != null)
+		{
+			return content;
+		}
+
+		// Try to get indexed content instead
+		List<byte[]> chunks = new ArrayList<byte[]>();
+		int index = 1;
+		while (true)
+		{
+			byte[] chunk = _root.getByteArray(name + index, null);
+			if (chunk == null)
+			{
+				break;
+			}
+			chunks.add(chunk);
+			index++;
+		}
+		// Was there indexed content?
+		if (chunks.isEmpty())
+		{
+			return null;
+		}
+		// Calculate the whole content size
+		int size = 0;
+		for (byte[] chunk: chunks)
+		{
+			size += chunk.length;
+		}
+		// Merge the whole content
+		content = new byte[size];
+		int location = 0;
+		for (byte[] chunk: chunks)
+		{
+			System.arraycopy(chunk, 0, content, location, chunk.length);
+			location += chunk.length;
 		}
 		return content;
 	}
@@ -60,7 +106,7 @@ class PrefsStorageMedium implements StorageMedium
 	{
 		try
 		{
-			_root.putByteArray(name, content);
+			storeAndSplitIfNeeded(name, content);
 			_root.flush();
 		}
 		catch (BackingStoreException e)
@@ -68,7 +114,31 @@ class PrefsStorageMedium implements StorageMedium
 			_logger.warn("Error saving state id " + name, e);
 		}
 	}
+	
+	private void storeAndSplitIfNeeded(String name, byte[] content)
+	{
+		if (content.length <= MAX_LENGTH)
+		{
+			_root.putByteArray(name, content);
+		}
+		else
+		{
+			int index = 1;
+			int location = 0;
+			while (location < content.length)
+			{
+				int size = Math.min(MAX_LENGTH, content.length - location);
+				byte[] chunk = new byte[size];
+				System.arraycopy(content, location, chunk, 0, size);
+				_root.putByteArray(name + index, chunk);
+				location += size;
+				index++;
+			}
+		}
+	}
 
+	// Maximum value length is 3/4 of actual prefs limit, due to Base64 encoding
+	static final private int MAX_LENGTH = Preferences.MAX_VALUE_LENGTH * 3 / 4;
 	static final private String KEY_LENGTH_ERROR = String.format(
 		"java.util.prefs package allows key names of max %d characters.",
 		Preferences.MAX_KEY_LENGTH);
