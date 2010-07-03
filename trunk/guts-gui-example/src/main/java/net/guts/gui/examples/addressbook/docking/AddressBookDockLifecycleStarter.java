@@ -19,10 +19,14 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.gui.action.ActionRegistrationManager;
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.docking.DockingLifecycle;
+import net.guts.gui.application.docking.OpenViewAction;
 
 import net.guts.gui.examples.addressbook.AddressBookMenuBar;
 import net.guts.gui.exception.HandlesException;
+import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
 
 import com.google.inject.Inject;
@@ -34,11 +38,24 @@ public class AddressBookDockLifecycleStarter extends DockingLifecycle
 	
 	@Inject
 	public AddressBookDockLifecycleStarter(
-		AddressBookMenuBar menuBar,
+		AddressBookMenuBar menuBar, 
+		MenuFactory menuFactory, ActionRegistrationManager actionManager,
 		MessageFactory messageFactory)
 	{
 		_menuBar = menuBar;
+		// Add Views menu
+		_menuBar.add(menuFactory.createMenu("viewsMenu", 
+			createViewAction(actionManager, Views.ContactList),
+			createViewAction(actionManager, Views.ContactDetail),
+			createViewAction(actionManager, Views.ContactPicture)));
 		_messageFactory = messageFactory;
+	}
+	
+	private GutsAction createViewAction(ActionRegistrationManager manager, Views view)
+	{
+		OpenViewAction action = new OpenViewAction(view.name());
+		manager.registerAction(action);
+		return action;
 	}
 	
 	/* (non-Javadoc)

@@ -12,11 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.docking;
+package net.guts.gui.application.docking;
 
-public enum Views
+import org.flexdock.docking.DockingManager;
+
+import net.guts.gui.action.GutsAction;
+
+public class OpenViewAction extends GutsAction
 {
-	ContactList,
-	ContactDetail,
-	ContactPicture
+	public OpenViewAction(String view)
+	{
+		super("OpenView-" + view);
+		_view = view;
+	}
+
+	@Override protected void perform()
+	{
+		DockingManager.display(_view);
+	}
+	
+	final private String _view;
 }

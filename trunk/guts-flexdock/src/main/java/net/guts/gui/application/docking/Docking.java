@@ -57,10 +57,10 @@ public final class Docking
 		return MapBinder.newMapBinder(binder, String.class, PerspectiveInitializer.class);
 	}
 	
-	static public LinkedBindingBuilder<Class<? extends JComponent>> bindView(
-		Binder binder, String id)
+	static public void bindView(
+		Binder binder, String id, Class<? extends JComponent> viewClass)
 	{
-		return views(binder).addBinding(id);
+		views(binder).addBinding(id).toInstance(viewClass);
 	}
 	
 	static MapBinder<String, Class<? extends JComponent>> views(Binder binder)

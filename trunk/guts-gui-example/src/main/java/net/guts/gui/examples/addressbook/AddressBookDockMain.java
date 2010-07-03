@@ -20,7 +20,6 @@ import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.docking.Docking;
 import net.guts.gui.application.docking.DockingModule;
-import net.guts.gui.application.docking.EmptyableViewport;
 import net.guts.gui.examples.addressbook.docking.AddressBookDockLifecycleStarter;
 import net.guts.gui.examples.addressbook.docking.AddressBookPerspective;
 import net.guts.gui.examples.addressbook.docking.Views;
@@ -65,12 +64,12 @@ public class AddressBookDockMain extends AbstractApplication
 					.to(AddressBookDockLifecycleStarter.class).asEagerSingleton();
 				Docking.bindDefaultPerspective(binder())
 					.to(AddressBookPerspective.class).in(Scopes.SINGLETON);
-				Docking.bindView(binder(), EmptyableViewport.EMPTY_VIEW_ID)
-					.toInstance(ContactPictureView.class);
-				Docking.bindView(binder(), Views.ContactList.name())
-					.toInstance(ContactsListView.class);
-				Docking.bindView(binder(), Views.ContactDetail.name())
-					.toInstance(ContactDetailView.class);
+				Docking.bindView(
+					binder(), Views.ContactPicture.name(), ContactPictureView.class);
+				Docking.bindView(
+					binder(), Views.ContactList.name(), ContactsListView.class);
+				Docking.bindView(
+					binder(), Views.ContactDetail.name(), ContactDetailView.class);
 			}
 		});
 	}
