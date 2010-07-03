@@ -22,14 +22,6 @@ import net.guts.gui.application.docking.PerspectiveInitializer;
 public class AddressBookPerspective implements PerspectiveInitializer
 {
 	/* (non-Javadoc)
-	 * @see net.guts.gui.application.docking.PerspectiveInitializer#getDescription()
-	 */
-	@Override public String getDescription()
-	{
-		return "Default Address Book Perspective";
-	}
-
-	/* (non-Javadoc)
 	 * @see net.guts.gui.application.docking.PerspectiveInitializer#initLayout(org.flexdock.perspective.LayoutSequence)
 	 */
 	@Override public void initLayout(LayoutSequence seq)

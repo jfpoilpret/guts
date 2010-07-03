@@ -29,15 +29,14 @@ class DefaultPerspectiveFactory implements PerspectiveFactory
 		_perspectives = perspectives;
 	}
 	
-	public Perspective getPerspective(String persistentId)
+	@Override public Perspective getPerspective(String persistentId)
 	{
 		PerspectiveInitializer initializer = _perspectives.get(persistentId);
 		if (initializer == null)
 		{
 			return null;
 		}
-		//TODO shouldn't description be resource injected instead?
-		Perspective perspective = new Perspective(persistentId, initializer.getDescription());
+		Perspective perspective = new Perspective(persistentId, persistentId);
 		LayoutSequence seq = perspective.getInitialSequence(true);
 		initializer.initLayout(seq);
 		return perspective;

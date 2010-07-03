@@ -14,9 +14,22 @@
 
 package net.guts.gui.application.docking;
 
-import org.flexdock.perspective.LayoutSequence;
+import org.flexdock.perspective.PerspectiveManager;
 
-public interface PerspectiveInitializer
+import net.guts.gui.action.GutsAction;
+
+public class OpenPerspectiveAction extends GutsAction
 {
-	public void initLayout(LayoutSequence seq);
+	public OpenPerspectiveAction(String perspective)
+	{
+		super("OpenPerspective-" + perspective);
+		_perspective = perspective;
+	}
+
+	@Override protected void perform()
+	{
+		PerspectiveManager.getInstance().loadPerspective(_perspective);
+	}
+	
+	final private String _perspective;
 }
