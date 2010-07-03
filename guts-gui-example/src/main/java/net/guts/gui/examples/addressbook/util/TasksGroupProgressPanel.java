@@ -30,8 +30,8 @@ import net.guts.gui.dialog.ParentDialog;
 import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
-import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TaskInfo.State;
+import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.BlockerDialogPane;
 import net.guts.gui.task.blocker.InputBlockers;
 import net.guts.gui.util.EnumIconRenderer;
@@ -53,7 +53,7 @@ public class TasksGroupProgressPanel extends JPanel
 		_tasks.getColumnModel().getColumn(1).setCellRenderer(new ProgressCellRenderer());
 		
 		int width = _tasks.getPreferredSize().width;
-		int height = 6 * _tasks.getRowHeight();
+		int height = NUM_VISIBLE_TASKS * _tasks.getRowHeight();
 		_tasks.setPreferredScrollableViewportSize(new Dimension(width, height));
 
 		JScrollPane scroller = new JScrollPane(_tasks);
@@ -116,6 +116,8 @@ public class TasksGroupProgressPanel extends JPanel
 		}
 	};
 
+	static final private int NUM_VISIBLE_TASKS = 6;
+	
 	final private TasksTableModel _model;
 	final private JTable _tasks;
 	final private JButton _cancelBtn = new JButton(_cancel.action());

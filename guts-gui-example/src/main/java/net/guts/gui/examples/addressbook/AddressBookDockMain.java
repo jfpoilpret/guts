@@ -19,12 +19,14 @@ import java.util.List;
 import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.docking.Docking;
-import net.guts.gui.application.docking.DockingLifecycle;
 import net.guts.gui.application.docking.DockingModule;
-import net.guts.gui.application.docking.ViewContentFactory;
+import net.guts.gui.application.docking.EmptyableViewport;
 import net.guts.gui.examples.addressbook.docking.AddressBookDockLifecycleStarter;
 import net.guts.gui.examples.addressbook.docking.AddressBookPerspective;
-import net.guts.gui.examples.addressbook.docking.AddressBookViewFactory;
+import net.guts.gui.examples.addressbook.docking.Views;
+import net.guts.gui.examples.addressbook.view.ContactDetailView;
+import net.guts.gui.examples.addressbook.view.ContactPictureView;
+import net.guts.gui.examples.addressbook.view.ContactsListView;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 
@@ -61,11 +63,14 @@ public class AddressBookDockMain extends AbstractApplication
 			{
 				bind(AppLifecycleStarter.class)
 					.to(AddressBookDockLifecycleStarter.class).asEagerSingleton();
-				//TODO need special bindDefaultPerspective()!
-				Docking.bindPerspective(binder(), DockingLifecycle.DEFAULT_PERSPECTIVE)
+				Docking.bindDefaultPerspective(binder())
 					.to(AddressBookPerspective.class).in(Scopes.SINGLETON);
-				bind(ViewContentFactory.class)
-					.to(AddressBookViewFactory.class).in(Scopes.SINGLETON);
+				Docking.bindView(binder(), EmptyableViewport.EMPTY_VIEW_ID)
+					.toInstance(ContactPictureView.class);
+				Docking.bindView(binder(), Views.ContactList.name())
+					.toInstance(ContactsListView.class);
+				Docking.bindView(binder(), Views.ContactDetail.name())
+					.toInstance(ContactDetailView.class);
 			}
 		});
 	}

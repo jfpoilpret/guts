@@ -162,7 +162,7 @@ public class ContactActions
 			}
 		}
 	};
-	
+
 	final private GutsAction _createContactWithTabs = new GutsAction()
 	{
 		@Override protected void perform()
@@ -175,7 +175,8 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactDetailTabPanel.class, new PanelInitializer<ContactDetailTabPanel>()
+			showDialog(ContactDetailTabPanel.class, 
+				new PanelInitializer<ContactDetailTabPanel>()
 			{
 				public void init(ContactDetailTabPanel panel)
 				{
@@ -197,7 +198,8 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactDetailWizardPanel.class, new PanelInitializer<ContactDetailWizardPanel>()
+			showDialog(ContactDetailWizardPanel.class, 
+				new PanelInitializer<ContactDetailWizardPanel>()
 			{
 				public void init(ContactDetailWizardPanel panel)
 				{

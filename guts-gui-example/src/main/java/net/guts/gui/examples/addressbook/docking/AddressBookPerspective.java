@@ -22,7 +22,6 @@ import net.guts.gui.application.docking.PerspectiveInitializer;
 
 public class AddressBookPerspective implements PerspectiveInitializer
 {
-
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.docking.PerspectiveInitializer#getDescription()
 	 */
@@ -32,11 +31,10 @@ public class AddressBookPerspective implements PerspectiveInitializer
 	}
 
 	/* (non-Javadoc)
-	 * @see net.guts.gui.application.docking.PerspectiveInitializer#initLayout(java.lang.String, org.flexdock.perspective.LayoutSequence)
+	 * @see net.guts.gui.application.docking.PerspectiveInitializer#initLayout(org.flexdock.perspective.LayoutSequence)
 	 */
-	@Override public void initLayout(String persistentId, LayoutSequence seq)
+	@Override public void initLayout(LayoutSequence seq)
 	{
-		//TODO Why do we have persistentId here????????????????????????
 		seq.add(EmptyableViewport.EMPTY_VIEW_ID);
 		seq.add(Views.ContactList.name(), EmptyableViewport.EMPTY_VIEW_ID, 
 			DockingConstants.WEST_REGION, 0.33f);

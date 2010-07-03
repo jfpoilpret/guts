@@ -17,9 +17,9 @@ package net.guts.gui.examples.addressbook.util;
 import javax.swing.table.AbstractTableModel;
 
 import net.guts.gui.task.TaskInfo;
+import net.guts.gui.task.TaskInfo.State;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TasksGroupListener;
-import net.guts.gui.task.TaskInfo.State;
 
 import com.google.inject.Singleton;
 
@@ -47,8 +47,10 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 			
 			case COLUMN_FEEDBACK:
 			return String.class;
+			
+			default:
+			return Object.class;
 		}
-		return Object.class;
 	}
 
 	@Override public int getColumnCount()
@@ -81,6 +83,7 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 				return groupProgress();
 				
 				case COLUMN_FEEDBACK:
+				default:
 				return "";
 			}
 		}
@@ -97,9 +100,11 @@ public class TasksTableModel extends AbstractTableModel implements TasksGroupLis
 				
 				case COLUMN_FEEDBACK:
 				return info.feedback();
+				
+				default:
+				return "";
 			}
 		}
-		return null;
 	}
 	
 	private int groupProgress()
