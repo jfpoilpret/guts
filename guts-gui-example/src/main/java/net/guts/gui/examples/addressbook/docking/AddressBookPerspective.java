@@ -17,7 +17,6 @@ package net.guts.gui.examples.addressbook.docking;
 import org.flexdock.docking.DockingConstants;
 import org.flexdock.perspective.LayoutSequence;
 
-import net.guts.gui.application.docking.EmptyableViewport;
 import net.guts.gui.application.docking.PerspectiveInitializer;
 
 public class AddressBookPerspective implements PerspectiveInitializer
@@ -35,8 +34,8 @@ public class AddressBookPerspective implements PerspectiveInitializer
 	 */
 	@Override public void initLayout(LayoutSequence seq)
 	{
-		seq.add(EmptyableViewport.EMPTY_VIEW_ID);
-		seq.add(Views.ContactList.name(), EmptyableViewport.EMPTY_VIEW_ID, 
+		seq.add(Views.ContactPicture.name());
+		seq.add(Views.ContactList.name(), Views.ContactPicture.name(), 
 			DockingConstants.WEST_REGION, 0.33f);
 		seq.add(Views.ContactDetail.name(), Views.ContactList.name(), 
 			DockingConstants.SOUTH_REGION, 0.5f);
