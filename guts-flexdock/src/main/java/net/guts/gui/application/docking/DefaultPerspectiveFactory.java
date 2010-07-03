@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -36,9 +36,10 @@ class DefaultPerspectiveFactory implements PerspectiveFactory
 		{
 			return null;
 		}
+		//TODO shouldn't description be resource injected instead?
 		Perspective perspective = new Perspective(persistentId, initializer.getDescription());
 		LayoutSequence seq = perspective.getInitialSequence(true);
-		initializer.initLayout(persistentId, seq);
+		initializer.initLayout(seq);
 		return perspective;
 	}
 

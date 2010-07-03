@@ -14,6 +14,8 @@
 
 package net.guts.gui.application.docking;
 
+import javax.swing.JComponent;
+
 import org.flexdock.docking.DockingStrategy;
 
 import com.google.inject.Binder;
@@ -44,13 +46,35 @@ public final class Docking
 		return perspectives(binder).addBinding(id);
 	}
 	
-	static MapBinder<String,PerspectiveInitializer> perspectives(Binder binder)
+	static public LinkedBindingBuilder<PerspectiveInitializer> bindDefaultPerspective(
+		Binder binder)
+	{
+		return bindPerspective(binder, DEFAULT_PERSPECTIVE);
+	}
+	
+	static MapBinder<String, PerspectiveInitializer> perspectives(Binder binder)
 	{
 		return MapBinder.newMapBinder(binder, String.class, PerspectiveInitializer.class);
 	}
+	
+	static public LinkedBindingBuilder<Class<? extends JComponent>> bindView(
+		Binder binder, String id)
+	{
+		return views(binder).addBinding(id);
+	}
+	
+	static MapBinder<String, Class<? extends JComponent>> views(Binder binder)
+	{
+		return MapBinder.newMapBinder(
+			binder, TypeLiteral.get(String.class), COMPONENT_CLASS_TYPE);
+	}
+
+	static final String DEFAULT_PERSPECTIVE = "DEFAULT_PERSPECTIVE";
 
 	static final private TypeLiteral<Class<?>> CLASS_TYPE = 
 		new TypeLiteral<Class<?>>(){};
 	static final private TypeLiteral<DockingStrategy> STRATEGY_TYPE = 
 		TypeLiteral.get(DockingStrategy.class);
+	static final private TypeLiteral<Class<? extends JComponent>> COMPONENT_CLASS_TYPE = 
+		new TypeLiteral<Class<? extends JComponent>>(){};
 }

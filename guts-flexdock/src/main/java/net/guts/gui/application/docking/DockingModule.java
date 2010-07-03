@@ -18,9 +18,14 @@ import org.flexdock.docking.DockableFactory;
 import org.flexdock.docking.DockingStrategy;
 import org.flexdock.docking.drag.effects.DragPreview;
 import org.flexdock.perspective.PerspectiveFactory;
+import org.flexdock.perspective.persist.PersistenceHandler;
+import org.flexdock.view.View;
 
+import net.guts.event.EventModule;
+import net.guts.event.Events;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
+import net.guts.gui.session.SessionModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
@@ -32,10 +37,18 @@ public final class DockingModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		install(new EventModule());
 		install(new ResourceModule());
+		install(new SessionModule());
 		
 		// Provide default resource values for docking-related stuff (mainly icons)
 		Resources.bindPackageBundles(binder(), DockingModule.class);
+		
+		// Bind Channel<View>, triggered whenever the focused view changes
+		Events.bindChannel(binder(), View.class);
+		
+		// Make sure perspective will be stored/restored with guts-gui SessionManager
+		bind(PersistenceHandler.class).to(SessionPersistenceHandler.class);
 
 		bind(DockableFactory.class)
 			.to(GutsDockableFactory.class).in(Scopes.SINGLETON);
@@ -54,6 +67,9 @@ public final class DockingModule extends AbstractModule
 
 		// Make sure Map<String, PerspectiveInitializer> is injectable
 		Docking.perspectives(binder());
+
+		// Make sure Map<String, Class<? extends JComponent> (views) is injectable
+		Docking.views(binder());
 	}
 
 	@Override public boolean equals(Object other)

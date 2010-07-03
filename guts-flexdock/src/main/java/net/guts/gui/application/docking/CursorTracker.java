@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -61,6 +61,8 @@ class CursorTracker implements DockingConstants
 		return true;
 	}
 
+	//CSOFF: MemberNameCheck
+	//CSOFF: VisibilityModifierCheck
 	static class RegionCursors
 	{
 		Cursor regionNone;
@@ -70,6 +72,8 @@ class CursorTracker implements DockingConstants
 		Cursor regionEast;
 		Cursor regionCenter;
 	}
+	//CSON: VisibilityModifierCheck
+	//CSON: MemberNameCheck
 
 	final private Cursor _none;
 	final private Map<String, Cursor> _regionCursor = new HashMap<String, Cursor>();

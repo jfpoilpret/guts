@@ -14,53 +14,41 @@
 
 package net.guts.gui.application.docking;
 
+import java.util.Map;
+
 import javax.swing.JComponent;
 
-import org.flexdock.view.View;
-
-import net.guts.gui.resource.ResourceInjector;
-
 import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
 @Singleton
-public class DefaultViewFactory implements ViewFactory
+class DefaultViewContentFactory implements ViewContentFactory
 {
-	@Inject void init(ResourceInjector injector)
+	//TODO add internal annotation to disambiguate views map!
+	@Inject DefaultViewContentFactory(
+		Injector injector, Map<String, Class<? extends JComponent>> views)
 	{
 		_injector = injector;
+		_views = views;
 	}
-	
-	public View	createView(String id, JComponent content)
+
+	/* (non-Javadoc)
+	 * @see net.guts.gui.application.docking.ViewContentFactory#createContent(java.lang.String)
+	 */
+	@Override public JComponent createContent(String id)
 	{
-		if (content == null)
+		Class<? extends JComponent> clazz = _views.get(id);
+		if (clazz != null)
 		{
-			return null;
-		}
-		View view = createView(id);
-		view.setName(id);
-		view.setContentPane(content);
-		initView(view, id);
-		_injector.injectHierarchy(view);
-		return view;
-	}
-	
-	protected View	createView(String id)
-	{
-		return new View(id);
-	}
-	
-	protected void	initView(View view, String id)
-	{
-		if (EmptyableViewport.EMPTY_VIEW_ID.equals(id))
-		{
-			view.setTitlebar(null);
+			return _injector.getInstance(clazz);
 		}
 		else
 		{
-			view.addAction(View.CLOSE_ACTION);
+			return null;
 		}
 	}
 
-	private ResourceInjector _injector;
+	final private Injector _injector;
+	final private Map<String, Class<? extends JComponent>> _views;
 }

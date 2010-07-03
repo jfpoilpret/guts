@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,6 +16,9 @@ package net.guts.gui.application.docking;
 
 import javax.swing.JComponent;
 
+import com.google.inject.ImplementedBy;
+
+@ImplementedBy(DefaultViewContentFactory.class)
 public interface ViewContentFactory
 {
 	public JComponent createContent(String id);
