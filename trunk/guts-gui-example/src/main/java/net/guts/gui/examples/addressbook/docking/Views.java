@@ -14,8 +14,10 @@
 
 package net.guts.gui.examples.addressbook.docking;
 
-enum Views
+public enum Views
 {
 	ContactList,
-	ContactDetail
+	ContactDetail,
+	//TODO use later when using "normal" docking (without "emptyable viewport" 
+	ContactPicture
 }
