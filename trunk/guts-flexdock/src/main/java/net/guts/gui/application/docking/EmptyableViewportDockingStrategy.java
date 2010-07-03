@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -27,15 +27,25 @@ import org.flexdock.docking.drag.DragOperation;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 
+import net.guts.event.Channel;
+
+import com.google.inject.Inject;
+
 public class EmptyableViewportDockingStrategy
 extends DefaultDockingStrategy implements ViewportFactory
 {
+	//TODO if this class becomes package-private change method into ctor!
+	@Inject void init(Channel<View> selectedView)
+	{
+		_selectedView = selectedView;
+	}
+	
 	@Override protected DockingPort createDockingPortImpl(DockingPort parent)
 	{
 		return createViewport();
 	}
 	
-	public Viewport	createViewport()
+	@Override final public Viewport createViewport()
 	{
 		EmptyableViewport port = createViewportImpl();
 		EmptyableViewChangeListener listener = new EmptyableViewChangeListener();
@@ -44,7 +54,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 		return port;
 	}
 	
-	protected EmptyableViewport	createViewportImpl()
+	protected EmptyableViewport createViewportImpl()
 	{
 		return new EmptyableViewport();
 	}
@@ -129,10 +139,9 @@ extends DefaultDockingStrategy implements ViewportFactory
 		}
 	}
 	
-	//TODO better listening to events (by using Channels!)
-	//TODO then we can make this class package-private!
 	protected void viewChanged(View view)
 	{
+		_selectedView.publish(view);
 	}
 	
 	final protected Dockable getEmptyView()
@@ -164,6 +173,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 		private EmptyableViewport _port;
 	}
 	
+	protected Channel<View> _selectedView;
 	protected Dockable _emptyView = null;
 	protected int _disableListener = 0;
 }

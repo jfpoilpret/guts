@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,24 +25,20 @@ import org.flexdock.docking.drag.effects.DragPreview;
 import org.flexdock.event.EventManager;
 import org.flexdock.perspective.PerspectiveFactory;
 import org.flexdock.perspective.PerspectiveManager;
-import org.flexdock.perspective.persist.FilePersistenceHandler;
+import org.flexdock.perspective.persist.PersistenceHandler;
 import org.flexdock.view.Viewport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
-import net.guts.gui.application.docking.EmptyableViewport;
-import net.guts.gui.application.docking.ViewportFactory;
 import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.exit.ExitController;
 
 import com.google.inject.Inject;
 
-//TODO replace persistence in order to use SessionManager!
+//CSOFF: AbstractClassNameCheck
 abstract public class DockingLifecycle extends SingleFrameLifecycle
 {
-	static final public String	DEFAULT_PERSPECTIVE = "DEFAULT_PERSPECTIVE";
-
 	static final private Logger _logger = LoggerFactory.getLogger(DockingLifecycle.class);
 
 	/* (non-Javadoc)
@@ -67,7 +63,7 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	
 	@Inject void init(DockableFactory dockableFactory, DragPreview dragPreview,
 		PerspectiveFactory perspectiveFactory, Map<Class<?>, DockingStrategy> strategies,
-		ViewportFactory portFactory)
+		PersistenceHandler persistenceHandler, ViewportFactory portFactory)
 	{
 		_portFactory = portFactory;
 		DockingManager.setDockableFactory(dockableFactory);
@@ -82,14 +78,13 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		DockingManager.setAutoPersist(false);
 		
 		PerspectiveManager.setFactory(perspectiveFactory);
-		String dockingFile = System.getProperty("user.home") + "/" + getDockingStateFile();
-		PerspectiveManager.setPersistenceHandler(new FilePersistenceHandler(dockingFile));
+		PerspectiveManager.setPersistenceHandler(persistenceHandler);
 		PerspectiveManager.getInstance().setCurrentPerspective(getDefaultPerspectiveId(), true);
 	}
 	
 	protected String getDefaultPerspectiveId()
 	{
-		return DEFAULT_PERSPECTIVE;
+		return Docking.DEFAULT_PERSPECTIVE;
 	}
 
 	// CSOFF: IllegalCatchCheck
@@ -103,7 +98,7 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		catch (Exception e)
 		{
 			//#### Try to recreate perspective from scratch (in case of a 
-			// problem with docking.xml file
+			// problem with session previously stored!
 			_logger.error("loadLayout", e);
 		}
 		DockingManager.restoreLayout();
@@ -115,6 +110,8 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
 	public void shutdown(Void nothing)
 	{
+		//TODO remove once sure it works without a public method, but it doesn't work yet...
+		_logger.debug("shutdown()");
 		saveLayout();
 	}
 	
@@ -132,11 +129,7 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	}
 	// CSON: IllegalCatchCheck
 
-	protected String getDockingStateFile()
-	{
-		return "docking.xml";
-	}
-	
+	//TODO add special injection for that? Use a bound DockingConfig class?
 	public void setAllowSingleTabs(boolean allowSingleTabs)
 	{
 		_allowSingleTabs = allowSingleTabs;
@@ -145,3 +138,4 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	private ViewportFactory _portFactory;
 	private boolean _allowSingleTabs;
 }
+//CSON: AbstractClassNameCheck

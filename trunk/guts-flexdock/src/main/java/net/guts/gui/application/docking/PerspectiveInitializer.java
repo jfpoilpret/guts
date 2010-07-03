@@ -19,5 +19,5 @@ import org.flexdock.perspective.LayoutSequence;
 public interface PerspectiveInitializer
 {
 	public String getDescription();
-	public void initLayout(String persistentId, LayoutSequence seq);
+	public void initLayout(LayoutSequence seq);
 }

@@ -1,4 +1,4 @@
-//  Copyright 2004-2007 Jean-Francois Poilpret
+//  Copyright 2009 Jean-Francois Poilpret
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ package net.guts.gui.application.docking;
 
 import java.awt.Component;
 import java.awt.Container;
-import java.awt.KeyboardFocusManager;
 
 import javax.swing.JTabbedPane;
 
@@ -36,12 +35,11 @@ public final class DockingHelper
 	static public boolean selectView(Viewport port, String id)
 	{
 		// Get current focused component
-		KeyboardFocusManager focusManager =
-					KeyboardFocusManager.getCurrentKeyboardFocusManager();
-		Component focused = focusManager.getPermanentFocusOwner();
-//		Component focused = focusManager.getFocusOwner();
-		try
-		{
+//		KeyboardFocusManager focusManager =
+//					KeyboardFocusManager.getCurrentKeyboardFocusManager();
+//		Component focused = focusManager.getPermanentFocusOwner();
+//		try
+//		{
 			Component docked = port.getDockedComponent();
 			if (docked instanceof JTabbedPane)
 			{
@@ -57,15 +55,15 @@ public final class DockingHelper
 				}
 			}
 			return false;
-		}
-		finally
-		{
-			// Restore previously focused component
-			if (focused != null)
-			{
+//		}
+//		finally
+//		{
+//			// Restore previously focused component
+//			if (focused != null)
+//			{
 //				focused.requestFocusInWindow();
-			}
-		}
+//			}
+//		}
 	}
 
 	static public void trace(Component comp, String indent)
