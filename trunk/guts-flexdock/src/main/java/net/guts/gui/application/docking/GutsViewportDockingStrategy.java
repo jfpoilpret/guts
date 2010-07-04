@@ -30,12 +30,12 @@ import org.flexdock.view.Viewport;
 import net.guts.event.Channel;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
-public class EmptyableViewportDockingStrategy
-extends DefaultDockingStrategy implements ViewportFactory
+@Singleton
+class GutsViewportDockingStrategy extends DefaultDockingStrategy implements ViewportFactory
 {
-	//TODO if this class becomes package-private change method into ctor!
-	@Inject void init(Channel<View> selectedView)
+	@Inject GutsViewportDockingStrategy(Channel<View> selectedView)
 	{
 		_selectedView = selectedView;
 	}
@@ -47,18 +47,13 @@ extends DefaultDockingStrategy implements ViewportFactory
 	
 	@Override final public Viewport createViewport()
 	{
-		EmptyableViewport port = createViewportImpl();
-		EmptyableViewChangeListener listener = new EmptyableViewChangeListener();
+		GutsViewport port = new GutsViewport();
+		ViewChangeListener listener = new ViewChangeListener();
 		port.setListener(listener);
 		listener.setViewport(port);
 		return port;
 	}
 	
-	protected EmptyableViewport createViewportImpl()
-	{
-		return new EmptyableViewport();
-	}
-
 	@SuppressWarnings("unchecked") 
 	@Override public boolean dock(
 		Dockable dockable, DockingPort port, String region, DragOperation operation)
@@ -67,7 +62,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 		{
 			_disableListener++;
 			boolean result = super.dock(dockable, port, region, operation);
-			EmptyableViewport viewport = (EmptyableViewport) port;
+			GutsViewport viewport = (GutsViewport) port;
 			if (	result
 				&&	viewport.isEmptyablePort()
 				&&	CENTER_REGION.equals(region))
@@ -111,7 +106,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 				return false;
 			}
 			View view = (View) dockable;
-			EmptyableViewport port = (EmptyableViewport) view.getDockingPort();
+			GutsViewport port = (GutsViewport) view.getDockingPort();
 			if (port != null && port.isEmptyablePort())
 			{
 				if (port.getViewset().size() == 1)
@@ -149,14 +144,14 @@ extends DefaultDockingStrategy implements ViewportFactory
 		if (_emptyView == null)
 		{
 			_emptyView = DockingManager.getDockableFactory().getDockable(
-				EmptyableViewport.EMPTY_VIEW_ID);
+				GutsViewport.EMPTY_VIEW_ID);
 		}
 		return _emptyView;
 	}
 
-	protected class EmptyableViewChangeListener implements ChangeListener
+	protected class ViewChangeListener implements ChangeListener
 	{
-		public void	setViewport(EmptyableViewport port)
+		public void	setViewport(GutsViewport port)
 		{
 			_port = port;
 		}
@@ -170,7 +165,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 			}
 		}
 		
-		private EmptyableViewport _port;
+		private GutsViewport _port;
 	}
 	
 	protected Channel<View> _selectedView;

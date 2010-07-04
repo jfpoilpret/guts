@@ -31,7 +31,7 @@ class GutsDockableFactory extends DockableFactory.Stub
 	
 	@Override public Dockable getDockable(String id)
 	{
-		if (EmptyableViewport.EMPTY_VIEW_ID.equals(id))
+		if (GutsViewport.EMPTY_VIEW_ID.equals(id))
 		{
 			return getEmptyView();
 		}
@@ -53,7 +53,7 @@ class GutsDockableFactory extends DockableFactory.Stub
 	{
 		if (_emptyView == null)
 		{
-			_emptyView = createDockable(EmptyableViewport.EMPTY_VIEW_ID);
+			_emptyView = createDockable(GutsViewport.EMPTY_VIEW_ID);
 		}
 		return _emptyView;
 	}

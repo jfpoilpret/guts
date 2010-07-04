@@ -14,8 +14,7 @@
 
 package net.guts.gui.application.docking;
 
-import java.util.Map;
-
+import javax.swing.JComponent;
 import javax.swing.JFrame;
 
 import org.flexdock.docking.DockableFactory;
@@ -53,24 +52,21 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		EventManager.addListener(new GutsDockingListener());
 		mainFrame.add(mainPort);
 		// Now we can set actual function of EmptyableViewport
-		if (mainPort instanceof EmptyableViewport)
+		if (mainPort instanceof GutsViewport)
 		{
-			EmptyableViewport.setInitDone();
+			GutsViewport.setInitDone();
 		}
 		// Initialize main frame
 		initMainFrame(mainFrame);
 	}
 	
-	@Inject void init(DockableFactory dockableFactory, DragPreview dragPreview,
-		PerspectiveFactory perspectiveFactory, Map<Class<?>, DockingStrategy> strategies,
-		PersistenceHandler persistenceHandler, ViewportFactory portFactory)
+	@Inject void init(DockableFactory dockableFactory, DockingStrategy strategy, 
+		PerspectiveFactory perspectiveFactory, PersistenceHandler persistenceHandler,
+		DragPreview dragPreview, ViewportFactory portFactory)
 	{
 		_portFactory = portFactory;
 		DockingManager.setDockableFactory(dockableFactory);
-		for (Map.Entry<Class<?>, DockingStrategy> strategy: strategies.entrySet())
-		{
-			DockingManager.setDockingStrategy(strategy.getKey(), strategy.getValue());
-		}
+		DockingManager.setDockingStrategy(JComponent.class, strategy);
 		DockingManager.setDragPreview(dragPreview);
 		//TODO: add support for floating and minimization
 		DockingManager.setFloatingEnabled(false);

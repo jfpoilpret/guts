@@ -37,18 +37,18 @@ import org.flexdock.view.Viewport;
 // to allow one (or more) empty region.
 // This port accepts in its center only views which content implement a special 
 // marker interface. Those special views are accepted no where else.
-public class EmptyableViewport extends Viewport
+public class GutsViewport extends Viewport
 {
 	private static final long serialVersionUID = 5917540060674540240L;
 
 	static public final String	EMPTY_VIEW_ID = "EMPTY_VIEW";
 
-	public EmptyableViewport()
+	public GutsViewport()
 	{
 		this(EmptyableViewMarker.class);
 	}
 
-	public EmptyableViewport(Class<?> viewMarker)
+	public GutsViewport(Class<?> viewMarker)
 	{
 		_viewMarker = viewMarker;
 	}
@@ -142,10 +142,10 @@ public class EmptyableViewport extends Viewport
 	}
 		
 	@SuppressWarnings("unchecked")
-	static public EmptyableViewport getEmptyablePort()
+	static public GutsViewport getEmptyablePort()
 	{
-		Set<EmptyableViewport> ports = DockingPortTracker.getDockingPorts();
-		for (EmptyableViewport port: ports)
+		Set<GutsViewport> ports = DockingPortTracker.getDockingPorts();
+		for (GutsViewport port: ports)
 		{
 			if (port.isEmptyablePort())
 			{
