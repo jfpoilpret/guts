@@ -29,6 +29,10 @@ import org.flexdock.util.LookAndFeelSettings;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 
+//TODO: find a better way to set which View should use the empty viewport?
+// -> avoid keeping public API...
+// - also remove EmptyableViewMarker!
+
 // Special viewport that must be used in lieu of Viewport (everywhere) in order
 // to allow one (or more) empty region.
 // This port accepts in its center only views which content implement a special 
