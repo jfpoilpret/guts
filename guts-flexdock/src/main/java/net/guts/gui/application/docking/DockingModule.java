@@ -58,12 +58,10 @@ public final class DockingModule extends AbstractModule
 			.to(CursorTrackGhostPreview.class).in(Scopes.SINGLETON);
 
 		// Defaults for ViewportFactory along with DockingStrategy
-		bind(EmptyableViewportDockingStrategy.class).in(Scopes.SINGLETON);
-		bind(ViewportFactory.class).to(EmptyableViewportDockingStrategy.class);
-		bind(DockingStrategy.class).to(EmptyableViewportDockingStrategy.class);
-
-		// Make sure Map<Class<?>, DockingStrategy> is injectable
-		Docking.strategies(binder());
+		bind(GutsViewportDockingStrategy.class).in(Scopes.SINGLETON);
+		//TODO remove later on
+		bind(ViewportFactory.class).to(GutsViewportDockingStrategy.class);
+		bind(DockingStrategy.class).to(GutsViewportDockingStrategy.class);
 
 		// Make sure Map<String, PerspectiveInitializer> is injectable
 		Docking.perspectives(binder());

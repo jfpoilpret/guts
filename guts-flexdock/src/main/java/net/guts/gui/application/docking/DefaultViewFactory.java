@@ -54,7 +54,7 @@ public class DefaultViewFactory implements ViewFactory
 	// rather than requiring subclassing?
 	protected void initView(View view, String id)
 	{
-		if (EmptyableViewport.EMPTY_VIEW_ID.equals(id))
+		if (GutsViewport.EMPTY_VIEW_ID.equals(id))
 		{
 			view.setTitlebar(null);
 		}
