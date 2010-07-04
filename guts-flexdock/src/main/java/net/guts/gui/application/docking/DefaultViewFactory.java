@@ -31,7 +31,7 @@ public class DefaultViewFactory implements ViewFactory
 		_injector = injector;
 	}
 	
-	public View	createView(String id, JComponent content)
+	@Override public View createView(String id, JComponent content)
 	{
 		if (content == null)
 		{
@@ -45,12 +45,14 @@ public class DefaultViewFactory implements ViewFactory
 		return view;
 	}
 	
-	protected View	createView(String id)
+	final protected View createView(String id)
 	{
 		return new View(id);
 	}
-	
-	protected void	initView(View view, String id)
+
+	//TODO find some better way to configure which actions should be added to the view,
+	// rather than requiring subclassing?
+	protected void initView(View view, String id)
 	{
 		if (EmptyableViewport.EMPTY_VIEW_ID.equals(id))
 		{
