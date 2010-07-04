@@ -149,7 +149,7 @@ extends DefaultDockingStrategy implements ViewportFactory
 		if (_emptyView == null)
 		{
 			_emptyView = DockingManager.getDockableFactory().getDockable(
-			                     				EmptyableViewport.EMPTY_VIEW_ID);
+				EmptyableViewport.EMPTY_VIEW_ID);
 		}
 		return _emptyView;
 	}
