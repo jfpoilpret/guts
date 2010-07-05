@@ -13,7 +13,7 @@
 	<artifactId>guts-gui-ex-flexdock</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Guts-GUI Address Book Example Application with a Single Frame layout</name>
+	<name>Guts-GUI Address Book Example Application with a flexdock-based Docking layout</name>
 	<description>A simple Address Book example application using Guts-GUI framework</description>
 	<url>http://kenai.com/projects/guts</url>
 

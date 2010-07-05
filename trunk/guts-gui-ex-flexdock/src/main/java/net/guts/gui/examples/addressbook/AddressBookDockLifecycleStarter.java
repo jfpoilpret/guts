@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.docking;
+package net.guts.gui.examples.addressbook;
 
 import javax.swing.JFrame;
 
@@ -24,7 +24,7 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.docking.DockingLifecycle;
 import net.guts.gui.application.docking.OpenViewAction;
 
-import net.guts.gui.examples.addressbook.AddressBookMenuBar;
+import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;

@@ -21,7 +21,6 @@ import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.docking.Docking;
 import net.guts.gui.application.docking.DockingModule;
-import net.guts.gui.examples.addressbook.docking.AddressBookDockLifecycleStarter;
 import net.guts.gui.examples.addressbook.docking.AddressBookPerspective;
 import net.guts.gui.examples.addressbook.docking.AddressBookViewportPolicy;
 import net.guts.gui.examples.addressbook.docking.Views;
