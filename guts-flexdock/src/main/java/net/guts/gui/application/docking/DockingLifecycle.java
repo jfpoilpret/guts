@@ -51,11 +51,6 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		// Fix for Flexdock bug if drop on forbidden port
 		EventManager.addListener(new GutsDockingListener());
 		mainFrame.add(mainPort);
-		// Now we can set actual function of EmptyableViewport
-		if (mainPort instanceof GutsViewport)
-		{
-			GutsViewport.setInitDone();
-		}
 		// Initialize main frame
 		initMainFrame(mainFrame);
 	}

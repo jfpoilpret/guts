@@ -30,14 +30,19 @@ import org.flexdock.view.Viewport;
 import net.guts.event.Channel;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
 class GutsViewportDockingStrategy extends DefaultDockingStrategy implements ViewportFactory
 {
-	@Inject GutsViewportDockingStrategy(Channel<View> selectedView)
+	@Inject GutsViewportDockingStrategy(
+		Channel<View> selectedView, EmptyViewsRegistry emptyViewsRegistry,
+		Provider<GutsViewport> portProvider)
 	{
 		_selectedView = selectedView;
+		_emptyViewsRegistry = emptyViewsRegistry;
+		_portProvider = portProvider;
 	}
 	
 	@Override protected DockingPort createDockingPortImpl(DockingPort parent)
@@ -45,9 +50,9 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 		return createViewport();
 	}
 	
-	@Override final public Viewport createViewport()
+	@Override public Viewport createViewport()
 	{
-		GutsViewport port = new GutsViewport();
+		GutsViewport port = _portProvider.get();
 		ViewChangeListener listener = new ViewChangeListener();
 		port.setListener(listener);
 		listener.setViewport(port);
@@ -67,10 +72,10 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 				&&	viewport.isEmptyablePort()
 				&&	CENTER_REGION.equals(region))
 			{
-				if (	dockable != getEmptyView()
-					&&	viewport.getViewset().contains(getEmptyView()))
+				View empty = _emptyViewsRegistry.getEmptyView(viewport);
+				if (empty != null && dockable != empty)
 				{
-					super.undock(getEmptyView());
+					super.undock(empty);
 				}
 				// Push selection event
 				viewChanged((View) dockable);
@@ -111,7 +116,8 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 			{
 				if (port.getViewset().size() == 1)
 				{
-					super.dock(getEmptyView(), port, DockingManager.CENTER_REGION);
+					super.dock(_emptyViewsRegistry.getEmptyView(port), port, 
+						DockingManager.CENTER_REGION);
 					// Push board area selection event
 					viewChanged(null);
 				}
@@ -139,16 +145,6 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 		_selectedView.publish(view);
 	}
 	
-	final protected Dockable getEmptyView()
-	{
-		if (_emptyView == null)
-		{
-			_emptyView = DockingManager.getDockableFactory().getDockable(
-				GutsViewport.EMPTY_VIEW_ID);
-		}
-		return _emptyView;
-	}
-
 	protected class ViewChangeListener implements ChangeListener
 	{
 		public void	setViewport(GutsViewport port)
@@ -168,7 +164,8 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 		private GutsViewport _port;
 	}
 	
-	protected Channel<View> _selectedView;
-	protected Dockable _emptyView = null;
+	private final Channel<View> _selectedView;
+	private final Provider<GutsViewport> _portProvider;
+	private final EmptyViewsRegistry _emptyViewsRegistry;
 	protected int _disableListener = 0;
 }
