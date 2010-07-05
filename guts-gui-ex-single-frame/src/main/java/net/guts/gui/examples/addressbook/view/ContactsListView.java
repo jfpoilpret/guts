@@ -15,8 +15,6 @@
 package net.guts.gui.examples.addressbook.view;
 
 import java.awt.BorderLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,7 +24,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.guts.event.Channel;
-import net.guts.event.Event;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Contact;
 
@@ -43,10 +40,8 @@ public class ContactsListView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
 
-	//TODO constant for channel topic name!!!
 	@Inject public ContactsListView(AddressBookService service, 
-		final Channel<Contact> selectedContactChannel,
-		final @Event(topic = "OpenContactPicture") Channel<Contact> openContactChannel)
+		final Channel<Contact> selectedContactChannel)
 	{
 		setLayout(new BorderLayout());
 		_contacts = GlazedLists.eventList(service.getAllContacts());
@@ -57,9 +52,6 @@ public class ContactsListView extends JPanel
 			new EventTableModel<Contact>(_contacts, format);
 		_table.setModel(model);
 
-		//TODO Table utilities to which you just pass a Channel<T> and they create and
-		// register a new listener
-		
 		// Add selection listener to publish events
 		_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		_table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
@@ -80,25 +72,6 @@ public class ContactsListView extends JPanel
 			}
 			
 			private int _lastSelection = -1;
-		});
-
-		// Manage double-click: open a new ContactPicture tab
-		_table.addMouseListener(new MouseAdapter()
-		{
-			@Override public void mouseClicked(MouseEvent evt)
-			{
-				if (evt.getClickCount() == 2)
-				{
-					//TODO factor out???
-					int selected = _table.getSelectedRow();
-					Contact row = null;
-					if (selected > -1)
-					{
-						row = model.getElementAt(selected);
-					}
-					openContactChannel.publish(row);
-				}
-			}
 		});
 		
 		add(new JScrollPane(_table));

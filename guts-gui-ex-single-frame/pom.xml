@@ -73,11 +73,6 @@
 			<artifactId>guts-gui</artifactId>
 		</dependency>
 
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-flexdock</artifactId>
-		</dependency>
-
 		<!-- swing-layout and DesignGridLayout -->
 		<dependency>
 			<groupId>net.java.dev.designgridlayout</groupId>
