@@ -10,10 +10,10 @@
 		<version>0.1-SNAPSHOT</version>
 		<relativePath>../guts-parent</relativePath>
 	</parent>
-	<artifactId>guts-gui-example</artifactId>
+	<artifactId>guts-gui-ex-single-frame</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Guts-GUI Address Book Example Application</name>
+	<name>Guts-GUI Address Book Example Application with a Single Frame layout</name>
 	<description>A simple Address Book example application using Guts-GUI framework</description>
 	<url>http://kenai.com/projects/guts</url>
 
@@ -38,7 +38,7 @@
 				<version>1.0-alpha-2</version>
 				<configuration>
 					<jnlp>
-						<outputFile>guts-gui-example.jnlp</outputFile>
+						<outputFile>guts-gui-ex-single-frame.jnlp</outputFile>
 						<j2seVersion>1.6+</j2seVersion>
 						<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
 					</jnlp>
