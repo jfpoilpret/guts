@@ -16,13 +16,16 @@ package net.guts.gui.examples.addressbook;
 
 import java.util.List;
 
+import net.guts.event.Events;
 import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.docking.Docking;
 import net.guts.gui.application.docking.DockingModule;
 import net.guts.gui.examples.addressbook.docking.AddressBookDockLifecycleStarter;
 import net.guts.gui.examples.addressbook.docking.AddressBookPerspective;
+import net.guts.gui.examples.addressbook.docking.AddressBookViewportPolicy;
 import net.guts.gui.examples.addressbook.docking.Views;
+import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.examples.addressbook.view.ContactDetailView;
 import net.guts.gui.examples.addressbook.view.ContactPictureView;
 import net.guts.gui.examples.addressbook.view.ContactsListView;
@@ -60,10 +63,12 @@ public class AddressBookDockMain extends AbstractApplication
 		{
 			@Override protected void configure()
 			{
+				Events.bindChannel(binder(), Contact.class, "OpenContactPicture");
 				bind(AppLifecycleStarter.class)
 					.to(AddressBookDockLifecycleStarter.class).asEagerSingleton();
 				Docking.bindDefaultPerspective(binder())
 					.to(AddressBookPerspective.class).in(Scopes.SINGLETON);
+				Docking.bindViewportPolicy(binder()).to(AddressBookViewportPolicy.class);
 				Docking.bindView(
 					binder(), Views.ContactPicture.name(), ContactPictureView.class);
 				Docking.bindView(

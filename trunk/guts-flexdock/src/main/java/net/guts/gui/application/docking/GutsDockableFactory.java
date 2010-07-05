@@ -23,22 +23,18 @@ import com.google.inject.Inject;
 
 class GutsDockableFactory extends DockableFactory.Stub
 {
-	@Inject GutsDockableFactory(ViewContentFactory contentFactory, ViewFactory viewFactory)
+	@Inject GutsDockableFactory(EmptyViewsRegistry emptyViewsRegistry,
+		ViewContentFactory contentFactory, ViewFactory viewFactory)
 	{
+		_emptyViewsRegistry = emptyViewsRegistry;
 		_contentFactory = contentFactory;
 		_viewFactory = viewFactory;
 	}
 	
 	@Override public Dockable getDockable(String id)
 	{
-		if (GutsViewport.EMPTY_VIEW_ID.equals(id))
-		{
-			return getEmptyView();
-		}
-		else
-		{
-			return createDockable(id);
-		}
+		Dockable dockable = _emptyViewsRegistry.getEmptyView(id);
+		return (dockable != null ? dockable : createDockable(id));
 	}
 	
 	protected Dockable createDockable(String id)
@@ -49,16 +45,7 @@ class GutsDockableFactory extends DockableFactory.Stub
 		return _viewFactory.createView(id, content);
 	}
 	
-	protected Dockable getEmptyView()
-	{
-		if (_emptyView == null)
-		{
-			_emptyView = createDockable(GutsViewport.EMPTY_VIEW_ID);
-		}
-		return _emptyView;
-	}
-	
-	protected final ViewContentFactory _contentFactory;
-	protected final ViewFactory _viewFactory;
-	protected Dockable _emptyView;
+	private final EmptyViewsRegistry _emptyViewsRegistry;
+	private final ViewContentFactory _contentFactory;
+	private final ViewFactory _viewFactory;
 }

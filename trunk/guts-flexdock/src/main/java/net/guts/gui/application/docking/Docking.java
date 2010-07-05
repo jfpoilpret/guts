@@ -38,6 +38,12 @@ public final class Docking
 	{
 		return bindPerspective(binder, DEFAULT_PERSPECTIVE);
 	}
+
+	static public LinkedBindingBuilder<EmptyableViewportPolicy> 
+		bindViewportPolicy(Binder binder)
+	{
+		return binder.bind(EmptyableViewportPolicy.class);
+	}
 	
 	static MapBinder<String, PerspectiveInitializer> perspectives(Binder binder)
 	{

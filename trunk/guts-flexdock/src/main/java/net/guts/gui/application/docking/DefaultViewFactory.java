@@ -26,9 +26,10 @@ import com.google.inject.Singleton;
 @Singleton
 public class DefaultViewFactory implements ViewFactory
 {
-	@Inject void init(ResourceInjector injector)
+	@Inject void init(ResourceInjector injector, EmptyableViewportPolicy viewportPolicy)
 	{
 		_injector = injector;
+		_viewportPolicy = viewportPolicy;
 	}
 	
 	@Override public View createView(String id, JComponent content)
@@ -54,7 +55,7 @@ public class DefaultViewFactory implements ViewFactory
 	// rather than requiring subclassing?
 	protected void initView(View view, String id)
 	{
-		if (GutsViewport.EMPTY_VIEW_ID.equals(id))
+		if (_viewportPolicy.isEmptyView(id))
 		{
 			view.setTitlebar(null);
 		}
@@ -65,4 +66,5 @@ public class DefaultViewFactory implements ViewFactory
 	}
 
 	private ResourceInjector _injector;
+	private EmptyableViewportPolicy _viewportPolicy;
 }
