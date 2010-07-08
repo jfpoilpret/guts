@@ -22,7 +22,9 @@ import javax.swing.JPanel;
 import org.flexdock.view.View;
 
 import com.google.inject.Inject;
+import com.google.inject.Singleton;
 
+@Singleton
 class EmptyViewsRegistry
 {
 	@Inject EmptyViewsRegistry(EmptyableViewportPolicy viewportPolicy, ViewFactory viewFactory)

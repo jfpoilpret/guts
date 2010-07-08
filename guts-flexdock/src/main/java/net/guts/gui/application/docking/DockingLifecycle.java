@@ -48,6 +48,8 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		Viewport mainPort = _portFactory.createViewport();
 		// Initialize flexdock
 		loadLayout();
+		// Finalize initialization of all created viewports once layout has been created
+		GutsViewport.completeInitialization();
 		// Fix for Flexdock bug if drop on forbidden port
 		EventManager.addListener(new GutsDockingListener());
 		mainFrame.add(mainPort);
@@ -61,6 +63,9 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	{
 		_portFactory = portFactory;
 		DockingManager.setDockableFactory(dockableFactory);
+		// make sure the right DockingStrategy is used for GutsViewport
+		DockingManager.setDockingStrategy(GutsViewport.class, strategy);
+		// make sure the right DockingStrategy is used for any Dockable
 		DockingManager.setDockingStrategy(JComponent.class, strategy);
 		DockingManager.setDragPreview(dragPreview);
 		//TODO: add support for floating and minimization

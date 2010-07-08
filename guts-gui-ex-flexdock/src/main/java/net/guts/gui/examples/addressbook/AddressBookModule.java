@@ -17,9 +17,17 @@ package net.guts.gui.examples.addressbook;
 import net.guts.event.Events;
 import net.guts.gui.action.ActionNamePolicy;
 import net.guts.gui.action.DefaultActionNamePolicy;
-import net.guts.gui.examples.addressbook.action.ContactActions;
+import net.guts.gui.application.AppLifecycleStarter;
+import net.guts.gui.application.docking.Docking;
+import static net.guts.gui.examples.addressbook.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
+
+import net.guts.gui.examples.addressbook.docking.AddressBookPerspective;
+import net.guts.gui.examples.addressbook.docking.AddressBookViewportPolicy;
+import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.examples.addressbook.util.TasksGroupProgressPanel;
+import net.guts.gui.examples.addressbook.view.ContactDetailView;
+import net.guts.gui.examples.addressbook.view.ContactsListView;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
@@ -28,14 +36,28 @@ import net.guts.gui.task.blocker.BlockerDialogPane;
 import net.guts.gui.util.EnumIconRenderer;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
 
 class AddressBookModule extends AbstractModule
 {
 	@Override protected void configure()
 	{
-		// Add binding for "contact selection" events
+		bind(AppLifecycleStarter.class).to(AddressBookLifecycleStarter.class)
+			.asEagerSingleton();
+		
+		// Docking setup
+		Docking.bindDefaultPerspective(binder())
+			.to(AddressBookPerspective.class).in(Scopes.SINGLETON);
+		Docking.bindViewportPolicy(binder())
+			.to(AddressBookViewportPolicy.class).in(Scopes.SINGLETON);
+		Docking.bindView(binder(), Views.ContactList.name(), ContactsListView.class);
+		Docking.bindView(binder(), Views.ContactDetail.name(), ContactDetailView.class);
+
+		// Add binding for "contact selection" and "picture open" events
 		Events.bindChannel(binder(), Contact.class);
-		bind(ContactActions.class).asEagerSingleton();
+		Events.bindChannel(binder(), Contact.class, OPEN_CONTACT_PICT_TOPIC);
+//		bind(ContactActions.class).asEagerSingleton();
+
 		// Setup ResourceModule root bundle
 		Resources.bindRootBundle(binder(), getClass(), "resources");
 		Resources.bindEnumConverter(binder(), TaskInfo.State.class);

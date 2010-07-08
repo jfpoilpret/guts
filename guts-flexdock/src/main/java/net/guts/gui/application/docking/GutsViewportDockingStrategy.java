@@ -104,12 +104,12 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 	{
 		try
 		{
-			boolean mustCallViewChanged = false;
 			_disableListener++;
 			if (dockable == null)
 			{
 				return false;
 			}
+			boolean mustCallViewChanged = false;
 			View view = (View) dockable;
 			GutsViewport port = (GutsViewport) view.getDockingPort();
 			if (port != null && port.isEmptyablePort())

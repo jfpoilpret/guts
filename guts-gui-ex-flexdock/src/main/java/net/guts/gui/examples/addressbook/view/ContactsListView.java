@@ -53,9 +53,8 @@ public class ContactsListView extends JPanel
 		String[] properties = {"firstName", "lastName", "home.city"};
 		TableFormat<Contact> format = GlazedLists.tableFormat(
 			Contact.class, properties, properties);
-		final EventTableModel<Contact> model =
-			new EventTableModel<Contact>(_contacts, format);
-		_table.setModel(model);
+		_model = new EventTableModel<Contact>(_contacts, format);
+		_table.setModel(_model);
 
 		//TODO Table utilities to which you just pass a Channel<T> and they create and
 		// register a new listener
@@ -69,13 +68,8 @@ public class ContactsListView extends JPanel
 				int selected = _table.getSelectedRow();
 				if (selected != _lastSelection)
 				{
-					Contact row = null;
-					if (selected > -1)
-					{
-						row = model.getElementAt(selected);
-					}
 					_lastSelection = selected;
-					selectedContactChannel.publish(row);
+					selectedContactChannel.publish(getSelectedContact());
 				}
 			}
 			
@@ -89,14 +83,7 @@ public class ContactsListView extends JPanel
 			{
 				if (evt.getClickCount() == 2)
 				{
-					//TODO factor out???
-					int selected = _table.getSelectedRow();
-					Contact row = null;
-					if (selected > -1)
-					{
-						row = model.getElementAt(selected);
-					}
-					openContactChannel.publish(row);
+					openContactChannel.publish(getSelectedContact());
 				}
 			}
 		});
@@ -104,6 +91,13 @@ public class ContactsListView extends JPanel
 		add(new JScrollPane(_table));
 	}
 	
+	private Contact getSelectedContact()
+	{
+		int selected = _table.getSelectedRow();
+		return (selected > -1 ? _model.getElementAt(selected) : null);
+	}
+	
 	final private EventList<Contact> _contacts;
+	final private EventTableModel<Contact> _model;
 	final private JTable _table = new JTable();
 }

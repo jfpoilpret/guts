@@ -16,9 +16,12 @@ package net.guts.gui.application.docking;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.util.Set;
 
 import javax.swing.JTabbedPane;
 
+import org.flexdock.docking.Dockable;
+import org.flexdock.docking.DockingManager;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.slf4j.Logger;
@@ -30,6 +33,23 @@ public final class DockingHelper
 
 	private DockingHelper()
 	{
+	}
+	
+	@SuppressWarnings("unchecked") 
+	static public Viewport findEmptyableViewport(String idEmptyView)
+	{
+		// Check ALL currently visible viewports
+		Set<String> views = DockingManager.getDockableIds();
+		for (String id: views)
+		{
+			Dockable view = DockingManager.getDockable(id);
+			GutsViewport port = (GutsViewport) view.getDockingPort();
+			if (port != null && idEmptyView.equals(port.getEmptyViewId()))
+			{
+				return port;
+			}
+		}
+		return null;
 	}
 
 	static public boolean selectView(Viewport port, String id)

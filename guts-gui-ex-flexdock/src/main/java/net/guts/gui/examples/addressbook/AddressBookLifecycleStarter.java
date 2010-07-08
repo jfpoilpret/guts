@@ -31,13 +31,13 @@ import net.guts.gui.message.MessageFactory;
 
 import com.google.inject.Inject;
 
-public class AddressBookDockLifecycleStarter extends DockingLifecycle
+public class AddressBookLifecycleStarter extends DockingLifecycle
 {
 	static private final Logger _logger = 
-		LoggerFactory.getLogger(AddressBookDockLifecycleStarter.class);
+		LoggerFactory.getLogger(AddressBookLifecycleStarter.class);
 	
 	@Inject
-	public AddressBookDockLifecycleStarter(
+	public AddressBookLifecycleStarter(
 		AddressBookMenuBar menuBar, 
 		MenuFactory menuFactory, ActionRegistrationManager actionManager,
 		MessageFactory messageFactory)

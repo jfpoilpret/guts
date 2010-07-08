@@ -19,49 +19,23 @@ import java.awt.Dimension;
 import javax.swing.Icon;
 import javax.swing.JLabel;
 
-import net.guts.event.Consumes;
-import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.domain.Contact;
-
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-@Singleton
 public class ContactPictureView extends JLabel
 {
 	static final private long serialVersionUID = 7627517518039773295L;
 	static final private int IMG_SIZE = 200;
 	
-	@Inject
-	public ContactPictureView(AddressBookService service)
+	public ContactPictureView(Icon picture)
 	{
-		_service = service;
 		setHorizontalAlignment(JLabel.CENTER);
 		setMinimumSize(new Dimension(IMG_SIZE, IMG_SIZE));
-	}
-	
-	@Consumes public void onEvent(Contact selected)
-	{
-		if (selected != null)
+		setIcon(picture);
+		if (picture != null)
 		{
-			// Get icon from external picture file
-			Icon icon = _service.getContactPicture(selected.getId());
-			setIcon(icon);
-			if (icon != null)
-			{
-				setText("");
-			}
-			else
-			{
-				setText("No picture for this contact");
-			}
+			setText("");
 		}
 		else
 		{
-			setIcon(null);
-			setText("No contact selected");
+			setText("No picture for this contact");
 		}
 	}
-	
-	private final AddressBookService _service;
 }
