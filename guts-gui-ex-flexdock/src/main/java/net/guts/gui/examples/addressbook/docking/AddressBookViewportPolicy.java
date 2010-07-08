@@ -17,7 +17,7 @@ package net.guts.gui.examples.addressbook.docking;
 import org.flexdock.view.View;
 
 import net.guts.gui.application.docking.EmptyableViewportPolicy;
-import net.guts.gui.examples.addressbook.view.ContactPictureView;
+import net.guts.gui.examples.addressbook.view.ViewHelper;
 
 public class AddressBookViewportPolicy implements EmptyableViewportPolicy
 {
@@ -26,8 +26,20 @@ public class AddressBookViewportPolicy implements EmptyableViewportPolicy
 		return Views.ContactPicture.name().equals(idView);
 	}
 
-	@Override public boolean isTargetForEmptyableViewport(String idView, View view)
+//	@Override public boolean isTargetForEmptyableViewport(String idView, View view)
+//	{
+//		return isEmptyView(idView) && view.getContentPane() instanceof ContactPictureView;
+//	}
+
+	@Override public String getTargetViewportEmptyView(View view)
 	{
-		return isEmptyView(idView) && view.getContentPane() instanceof ContactPictureView;
+		if (ViewHelper.isContactPictureViewId(view.getPersistentId()))
+		{
+			return Views.ContactPicture.name();
+		}
+		else
+		{
+			return null;
+		}
 	}
 }
