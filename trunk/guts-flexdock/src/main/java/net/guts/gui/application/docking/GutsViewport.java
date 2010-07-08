@@ -81,12 +81,23 @@ class GutsViewport extends Viewport
 		return _emptyViewId != null;
 	}
 	
-	private boolean isMarkedView(View view)
+	private boolean isCenterTargetView(View view)
 	{
-		return		view.getPersistentId().equals(_emptyViewId)
-				||	_viewportPolicy.isTargetForEmptyableViewport(_emptyViewId, view);
+		if (view.getPersistentId().equals(_emptyViewId))
+		{
+			return true;
+		}
+		else
+		{
+			return equals(_viewportPolicy.getTargetViewportEmptyView(view), _emptyViewId);
+		}
 	}
-
+	
+	static private boolean equals(String a, String b)
+	{
+		return (a == null ? b == null : a.equals(b));
+	}
+	
 	@Override protected JTabbedPane createTabbedPane()
 	{
 		Insets oldInsets = UIManager.getInsets(LookAndFeelSettings.TAB_PANE_BORDER_INSETS);
@@ -138,11 +149,12 @@ class GutsViewport extends Viewport
 		boolean allow = super.isDockingAllowed(comp, region);
 		if (allow && _initDone)
 		{
+			allow = isCenterTargetView((View) comp);
 			// Special check for emptyable viewports
-			allow = isEmptyablePort() && CENTER_REGION.equals(region);
-			if (!isMarkedView((View) comp))
+			if (isEmptyablePort())
 			{
-				allow = !allow;
+				// Docking in emptyable viewport: view must be special target and CENTER
+				allow = allow && CENTER_REGION.equals(region);
 			}
 		}
 		return allow;

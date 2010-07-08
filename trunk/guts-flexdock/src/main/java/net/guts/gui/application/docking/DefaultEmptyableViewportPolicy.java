@@ -26,8 +26,8 @@ class DefaultEmptyableViewportPolicy implements EmptyableViewportPolicy
 		return false;
 	}
 
-	@Override public boolean isTargetForEmptyableViewport(String idView, View view)
+	@Override public String getTargetViewportEmptyView(View view)
 	{
-		return false;
+		return null;
 	}
 }
