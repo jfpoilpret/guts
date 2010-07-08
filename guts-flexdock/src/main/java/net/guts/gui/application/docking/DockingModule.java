@@ -21,6 +21,7 @@ import org.flexdock.perspective.PerspectiveFactory;
 import org.flexdock.perspective.persist.PersistenceHandler;
 import org.flexdock.view.View;
 
+import net.guts.common.type.TypeHelper;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
 import net.guts.gui.resource.ResourceModule;
@@ -42,7 +43,10 @@ public final class DockingModule extends AbstractModule
 		install(new SessionModule());
 		
 		// Provide default resource values for docking-related stuff (mainly icons)
-		Resources.bindPackageBundles(binder(), DockingModule.class);
+		String pack = "/" + TypeHelper.getPackagePath(DockingModule.class);
+		Resources.bindPackageBundles(binder(), DockingModule.class, pack + "/resources");
+		//TODO Why the following line doesn't work????
+//		Resources.bindPackageBundles(binder(), DockingModule.class);
 		
 		// Bind Channel<View>, triggered whenever the focused view changes
 		Events.bindChannel(binder(), View.class);
