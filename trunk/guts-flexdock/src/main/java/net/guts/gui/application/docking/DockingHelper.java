@@ -20,8 +20,7 @@ import java.util.Set;
 
 import javax.swing.JTabbedPane;
 
-import org.flexdock.docking.Dockable;
-import org.flexdock.docking.DockingManager;
+import org.flexdock.docking.event.hierarchy.DockingPortTracker;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.slf4j.Logger;
@@ -38,17 +37,26 @@ public final class DockingHelper
 	@SuppressWarnings("unchecked") 
 	static public Viewport findEmptyableViewport(String idEmptyView)
 	{
-		// Check ALL currently visible viewports
-		Set<String> views = DockingManager.getDockableIds();
-		for (String id: views)
+		// Check all viewports
+		Set<GutsViewport> ports = DockingPortTracker.getDockingPorts();
+		for (GutsViewport port: ports)
 		{
-			Dockable view = DockingManager.getDockable(id);
-			GutsViewport port = (GutsViewport) view.getDockingPort();
-			if (port != null && idEmptyView.equals(port.getEmptyViewId()))
+			if (idEmptyView.equals(port.getEmptyViewId()))
 			{
 				return port;
 			}
 		}
+//		// Check ALL currently visible viewports
+//		Set<String> views = DockingManager.getDockableIds();
+//		for (String id: views)
+//		{
+//			Dockable view = DockingManager.getDockable(id);
+//			GutsViewport port = (GutsViewport) view.getDockingPort();
+//			if (port != null && idEmptyView.equals(port.getEmptyViewId()))
+//			{
+//				return port;
+//			}
+//		}
 		return null;
 	}
 
