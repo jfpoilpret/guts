@@ -16,12 +16,14 @@ package net.guts.gui.application.docking;
 
 import java.awt.Component;
 import java.awt.Insets;
+import java.util.Set;
 
 import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
 
 import org.flexdock.docking.Dockable;
+import org.flexdock.docking.DockingManager;
 import org.flexdock.docking.activation.ActiveDockableListener;
 import org.flexdock.docking.event.TabbedDragListener;
 import org.flexdock.util.LookAndFeelSettings;
@@ -29,10 +31,6 @@ import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 
 import com.google.inject.Inject;
-
-//TODO: find a better way to set which View should use the empty viewport?
-// -> avoid keeping public API...
-// - also remove EmptyableViewMarker!
 
 // Special viewport that must be used in lieu of Viewport (everywhere) in order
 // to allow one (or more) empty region.
@@ -47,20 +45,32 @@ class GutsViewport extends Viewport
 		_viewportPolicy = viewportPolicy;
 	}
 	
-	@Override public boolean dock(Dockable dockable, String region)
+	@SuppressWarnings("unchecked") 
+	static void completeInitialization()
 	{
-		boolean result = super.dock(dockable, region);
-		if (_initDone)
+		Set<String> ids = DockingManager.getDockableIds();
+		for (String id: ids)
 		{
-			if (result && _viewportPolicy.isEmptyView(dockable.getPersistentId()))
+			Dockable view = DockingManager.getDockable(id);
+			GutsViewport port = (GutsViewport) view.getDockingPort();
+			if (port != null)
 			{
-				_emptyViewId = dockable.getPersistentId();
+				port.updateState(id);
 			}
-			_initDone = true;
 		}
-		return result;
+		_initDone = true;
 	}
-
+	
+	private void updateState(String idView)
+	{
+		if (_viewportPolicy.isEmptyView(idView))
+		{
+			_emptyViewId = idView;
+			// By default, emptyable viewports always use a tab pane
+			setSingleTabAllowed(true);
+		}
+	}
+	
 	String getEmptyViewId()
 	{
 		return _emptyViewId;
@@ -73,7 +83,8 @@ class GutsViewport extends Viewport
 	
 	private boolean isMarkedView(View view)
 	{
-		return _viewportPolicy.isTargetForEmptyableViewport(_emptyViewId, view);
+		return		view.getPersistentId().equals(_emptyViewId)
+				||	_viewportPolicy.isTargetForEmptyableViewport(_emptyViewId, view);
 	}
 
 	@Override protected JTabbedPane createTabbedPane()
@@ -127,7 +138,7 @@ class GutsViewport extends Viewport
 		boolean allow = super.isDockingAllowed(comp, region);
 		if (allow && _initDone)
 		{
-			// Special check for board drawing areas
+			// Special check for emptyable viewports
 			allow = isEmptyablePort() && CENTER_REGION.equals(region);
 			if (!isMarkedView((View) comp))
 			{
@@ -142,8 +153,8 @@ class GutsViewport extends Viewport
 		_listener = listener;
 	}
 	
+	static private boolean _initDone = false;
 	private final EmptyableViewportPolicy _viewportPolicy;
 	private String _emptyViewId = null;
-	private boolean _initDone = false;
 	private ChangeListener _listener;
 }

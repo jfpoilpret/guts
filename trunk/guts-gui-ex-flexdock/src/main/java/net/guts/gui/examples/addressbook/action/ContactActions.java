@@ -16,20 +16,32 @@ package net.guts.gui.examples.addressbook.action;
 
 import java.awt.Component;
 
+import javax.swing.Icon;
 import javax.swing.JComponent;
+
+import org.flexdock.docking.Dockable;
+import org.flexdock.docking.DockingConstants;
+import org.flexdock.docking.DockingManager;
+import org.flexdock.view.View;
+import org.flexdock.view.Viewport;
 
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.application.WindowController.StatePolicy;
+import net.guts.gui.application.docking.DockingHelper;
+import net.guts.gui.application.docking.ViewFactory;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.PanelInitializer;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.dialog.ContactDetailPanel;
 import net.guts.gui.examples.addressbook.dialog.ContactDetailTabPanel;
 import net.guts.gui.examples.addressbook.dialog.ContactDetailWizardPanel;
+import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.examples.addressbook.domain.Contact;
+import net.guts.gui.examples.addressbook.view.ContactPictureView;
+import net.guts.gui.examples.addressbook.view.ViewHelper;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.AbstractTask;
@@ -45,8 +57,16 @@ import com.google.inject.Singleton;
 @Singleton
 public class ContactActions
 {
-	public ContactActions()
+	static final public String OPEN_CONTACT_PICT_TOPIC = "OpenContactPicture";
+
+	@Inject public ContactActions(AddressBookService service,
+		DialogFactory dialogFactory, MessageFactory messageFactory,
+		ViewFactory viewFactory)
 	{
+		_service = service;
+		_dialogFactory = dialogFactory;
+		_messageFactory = messageFactory;
+		_viewFactory = viewFactory;
 		setContactSelected(false);
 	}
 	
@@ -56,6 +76,14 @@ public class ContactActions
 		setContactSelected(selected != null);
 	}
 	
+	@Consumes(topic = OPEN_CONTACT_PICT_TOPIC) 
+	public void onContactPictureOpen(Contact selected)
+	{
+		_selected = selected;
+		setContactSelected(selected != null);
+		_openContactPicture.action().actionPerformed(null);
+	}
+
 	public void setContactSelected(boolean contactSelected)
 	{
 		_modifyContact.action().setEnabled(contactSelected);
@@ -113,6 +141,11 @@ public class ContactActions
 			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	}
 
+	static private Viewport findPictureViewport()
+	{
+		return DockingHelper.findEmptyableViewport(Views.ContactPicture.name());
+	}
+	
 	final private GutsAction _createContact = new GutsAction()
 	{
 		@Override protected void perform()
@@ -162,6 +195,38 @@ public class ContactActions
 			}
 		}
 	};
+	
+	final private GutsAction _openContactPicture = new TaskAction()
+	{
+		@Override protected void perform()
+		{
+			final Contact contact = _selected;
+			Task<Icon> task = new AbstractTask<Icon>()
+			{
+				@Override public Icon execute(FeedbackController controller) 
+					throws InterruptedException
+				{
+					return _service.getContactPicture(contact.getId());
+				}
+
+				//TODO should be more complex than that in fact...
+				// reopen view if already exists, rather than re-create
+				@Override public void succeeded(
+					TasksGroup group, TaskInfo source, Icon picture)
+				{
+					// Find the Viewport onto which pictures must be displayed
+					Viewport port = findPictureViewport();
+					ContactPictureView content = new ContactPictureView(picture);
+					// Build view
+					String idView = ViewHelper.getContactPictureViewId(contact);
+					View view = _viewFactory.createView(idView, content);
+					// Dock view at the right place
+					DockingManager.dock((Dockable) view, port, DockingConstants.CENTER_REGION);
+				}
+			};
+			submit(task, InputBlockers.actionBlocker(this));
+		}
+	};
 
 	final private GutsAction _createContactWithTabs = new GutsAction()
 	{
@@ -209,8 +274,9 @@ public class ContactActions
 		}
 	};
 
-	@Inject private DialogFactory _dialogFactory;
-	@Inject private MessageFactory _messageFactory;
-	@Inject private AddressBookService _service;
+	final private DialogFactory _dialogFactory;
+	final private MessageFactory _messageFactory;
+	final private ViewFactory _viewFactory;
+	final private AddressBookService _service;
 	private Contact _selected = null;
 }

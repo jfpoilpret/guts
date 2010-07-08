@@ -12,8 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.docking;
+package net.guts.gui.examples.addressbook.view;
 
-public interface EmptyableViewMarker
+import net.guts.gui.examples.addressbook.docking.Views;
+import net.guts.gui.examples.addressbook.domain.Contact;
+
+final public class ViewHelper
 {
+	private ViewHelper()
+	{
+	}
+
+	static public boolean isContactPictureViewId(String id)
+	{
+		return id.startsWith(Views.ContactPicture.name());
+	}
+	
+	static public String getContactPictureViewId(Contact contact)
+	{
+		return Views.ContactPicture.name() + contact.getId();
+	}
 }
