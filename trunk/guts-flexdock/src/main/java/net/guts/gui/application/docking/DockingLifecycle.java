@@ -70,7 +70,6 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		DockingManager.setDragPreview(dragPreview);
 		//TODO: add support for floating and minimization
 		DockingManager.setFloatingEnabled(false);
-		DockingManager.setSingleTabsAllowed(_allowSingleTabs);
 		DockingManager.setAutoPersist(false);
 		
 		PerspectiveManager.setFactory(perspectiveFactory);
@@ -125,13 +124,6 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	}
 	// CSON: IllegalCatchCheck
 
-	//TODO add special injection for that? Use a bound DockingConfig class?
-	public void setAllowSingleTabs(boolean allowSingleTabs)
-	{
-		_allowSingleTabs = allowSingleTabs;
-	}
-
 	private ViewportFactory _portFactory;
-	private boolean _allowSingleTabs;
 }
 //CSON: AbstractClassNameCheck
