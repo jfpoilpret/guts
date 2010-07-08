@@ -12,9 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.view;
+package net.guts.gui.examples.addressbook.docking;
 
-import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.examples.addressbook.domain.Contact;
 
 final public class ViewHelper

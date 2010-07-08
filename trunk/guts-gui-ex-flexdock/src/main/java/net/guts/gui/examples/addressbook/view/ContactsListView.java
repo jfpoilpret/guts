@@ -27,6 +27,7 @@ import javax.swing.event.ListSelectionListener;
 
 import net.guts.event.Channel;
 import net.guts.event.Event;
+import static net.guts.gui.examples.addressbook.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Contact;
 
@@ -43,10 +44,9 @@ public class ContactsListView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
 
-	//TODO constant for channel topic name!!!
 	@Inject public ContactsListView(AddressBookService service, 
 		final Channel<Contact> selectedContactChannel,
-		final @Event(topic = "OpenContactPicture") Channel<Contact> openContactChannel)
+		final @Event(topic = OPEN_CONTACT_PICT_TOPIC) Channel<Contact> openContactChannel)
 	{
 		setLayout(new BorderLayout());
 		_contacts = GlazedLists.eventList(service.getAllContacts());
