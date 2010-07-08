@@ -43,10 +43,8 @@ class CursorTracker implements DockingConstants
 		_regionCursor.put(CENTER_REGION, cursors.regionCenter);
 	}
 	
-	public boolean trackCursor(	Component	dockable, 
-								DockingPort	port, 
-								String		targetRegion, 
-								Component	paintingTarget)
+	public boolean trackCursor(
+		Component dockable, DockingPort port, String targetRegion, Component paintingTarget)
 	{
 		if (UNKNOWN_REGION.equals(targetRegion))
 		{
