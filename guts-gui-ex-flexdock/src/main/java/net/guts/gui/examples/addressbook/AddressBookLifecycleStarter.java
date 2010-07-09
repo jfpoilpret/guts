@@ -21,6 +21,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.application.docking.DockingHelper;
 import net.guts.gui.application.docking.DockingLifecycle;
 import net.guts.gui.application.docking.OpenViewAction;
 
@@ -43,6 +44,7 @@ public class AddressBookLifecycleStarter extends DockingLifecycle
 		MessageFactory messageFactory)
 	{
 		_menuBar = menuBar;
+		//TODO put into AddressBookMenuBar!
 		// Add Views menu
 		_menuBar.add(menuFactory.createMenu("viewsMenu", 
 			createViewAction(actionManager, Views.ContactList),
@@ -63,6 +65,7 @@ public class AddressBookLifecycleStarter extends DockingLifecycle
 	 */
 	@Override protected void initMainFrame(JFrame frame)
 	{
+		DockingHelper.trace(frame.getContentPane(), "");
 		frame.setJMenuBar(_menuBar);
 	}
 	
