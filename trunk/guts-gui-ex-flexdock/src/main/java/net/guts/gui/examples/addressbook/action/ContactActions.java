@@ -220,6 +220,10 @@ public class ContactActions
 					// Build view
 					String idView = ViewHelper.getContactPictureViewId(contact);
 					View view = _viewFactory.createView(idView, content);
+					//TODO inject resources into this class and then use hereafter
+					// Set the right tabtext/icon
+//					view.setTabIcon(icon);
+//					view.setTabText(tabText);
 					// Dock view at the right place
 					DockingManager.dock((Dockable) view, port, DockingConstants.CENTER_REGION);
 				}

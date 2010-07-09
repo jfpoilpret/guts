@@ -25,6 +25,11 @@ public class AddressBookViewportPolicy implements EmptyableViewportPolicy
 		return Views.ContactPicture.name().equals(idView);
 	}
 
+	@Override public boolean emptyViewportNeedsCleanup(String idEmptyView)
+	{
+		return true;
+	}
+
 	@Override public String getTargetViewportEmptyView(View view)
 	{
 		if (ViewHelper.isContactPictureViewId(view.getPersistentId()))
