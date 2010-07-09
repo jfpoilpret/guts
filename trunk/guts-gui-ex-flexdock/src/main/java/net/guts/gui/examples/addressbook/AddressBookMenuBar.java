@@ -16,10 +16,14 @@ package net.guts.gui.examples.addressbook;
 
 import javax.swing.JMenuBar;
 
+import net.guts.gui.action.ActionRegistrationManager;
+import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.GutsApplicationActions;
+import net.guts.gui.application.docking.OpenViewAction;
 import net.guts.gui.examples.addressbook.action.ContactActions;
 import net.guts.gui.examples.addressbook.action.GeneralActions;
 import net.guts.gui.examples.addressbook.action.TaskTestActions;
+import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.menu.MenuFactory;
 
 import com.google.inject.Inject;
@@ -33,7 +37,8 @@ public class AddressBookMenuBar extends JMenuBar
 	@Inject
 	public AddressBookMenuBar(MenuFactory menuFactory, 
 		GutsApplicationActions appActions, GeneralActions genActions,
-		ContactActions contactActions, TaskTestActions taskTestActions)
+		ContactActions contactActions, TaskTestActions taskTestActions,
+		ActionRegistrationManager actionManager)
 	{
 		add(menuFactory.createMenu("fileMenu", 
 			genActions.throwException(), 
@@ -67,5 +72,16 @@ public class AddressBookMenuBar extends JMenuBar
 			taskTestActions._fiveTasksDialogBlocker,
 			taskTestActions._twoSerialTaskDialogBlocker,
 			taskTestActions._twoSerialGroupsDialogBlocker));
+		add(menuFactory.createMenu("viewsMenu", 
+			createViewAction(actionManager, Views.ContactList),
+			createViewAction(actionManager, Views.ContactDetail),
+			createViewAction(actionManager, Views.ContactPicture)));
+	}
+
+	private GutsAction createViewAction(ActionRegistrationManager manager, Views view)
+	{
+		OpenViewAction action = new OpenViewAction(view.name());
+		manager.registerAction(action);
+		return action;
 	}
 }
