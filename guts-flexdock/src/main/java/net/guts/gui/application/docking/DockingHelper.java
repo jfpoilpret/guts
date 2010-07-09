@@ -96,7 +96,18 @@ public final class DockingHelper
 
 	static public void trace(Component comp, String indent)
 	{
-		_logger.debug(indent + comp.getName() + " [" + comp.getClass() + "]");
+		if (comp instanceof GutsViewport)
+		{
+			String debug = String.format("%sGutsViewport(emptyViewId=%s)", 
+				indent, ((GutsViewport) comp).getEmptyViewId());
+			_logger.debug(debug);
+		}
+		else if (comp instanceof View)
+		{
+			String debug = String.format("%sView(id=%s)", 
+				indent, ((View) comp).getPersistentId());
+			_logger.debug(debug);
+		}
 		if (comp instanceof Container)
 		{
 			for (Component child: ((Container) comp).getComponents())
