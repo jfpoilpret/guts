@@ -22,5 +22,6 @@ import com.google.inject.ImplementedBy;
 public interface EmptyableViewportPolicy
 {
 	public boolean isEmptyView(String idView);
+	public boolean emptyViewportNeedsCleanup(String idEmptyView);
 	public String getTargetViewportEmptyView(View view);
 }

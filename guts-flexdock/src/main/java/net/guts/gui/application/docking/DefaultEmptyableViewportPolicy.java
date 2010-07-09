@@ -26,6 +26,11 @@ class DefaultEmptyableViewportPolicy implements EmptyableViewportPolicy
 		return false;
 	}
 
+	@Override public boolean emptyViewportNeedsCleanup(String idEmptyView)
+	{
+		return false;
+	}
+	
 	@Override public String getTargetViewportEmptyView(View view)
 	{
 		return null;
