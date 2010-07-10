@@ -151,8 +151,6 @@ public class ContactActions
 		return DockingHelper.findEmptyableViewport(Views.ContactPicture.name());
 	}
 	
-	//TODO should be more complex than that in fact...
-	// reopen view if already exists, rather than re-create
 	private void showPictureView(Contact contact, Icon picture)
 	{
 		// Find the Viewport onto which pictures must be displayed
