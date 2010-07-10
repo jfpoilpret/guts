@@ -223,22 +223,26 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			final Contact contact = _selected;
-			Task<Icon> task = new AbstractTask<Icon>()
+			// First check if this picture already has an open view
+			if (!ViewHelper.selectPictureView(_selected))
 			{
-				@Override public Icon execute(FeedbackController controller) 
-					throws InterruptedException
+				final Contact contact = _selected;
+				Task<Icon> task = new AbstractTask<Icon>()
 				{
-					return _service.getContactPicture(contact.getId());
-				}
-
-				@Override public void succeeded(
-					TasksGroup group, TaskInfo source, Icon picture)
-				{
-					showPictureView(contact, picture);
-				}
-			};
-			submit(task, InputBlockers.actionBlocker(this));
+					@Override public Icon execute(FeedbackController controller) 
+						throws InterruptedException
+					{
+						return _service.getContactPicture(contact.getId());
+					}
+	
+					@Override public void succeeded(
+						TasksGroup group, TaskInfo source, Icon picture)
+					{
+						showPictureView(contact, picture);
+					}
+				};
+				submit(task, InputBlockers.actionBlocker(this));
+			}
 		}
 	};
 
