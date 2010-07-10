@@ -46,17 +46,6 @@ public final class DockingHelper
 				return port;
 			}
 		}
-//		// Check ALL currently visible viewports
-//		Set<String> views = DockingManager.getDockableIds();
-//		for (String id: views)
-//		{
-//			Dockable view = DockingManager.getDockable(id);
-//			GutsViewport port = (GutsViewport) view.getDockingPort();
-//			if (port != null && idEmptyView.equals(port.getEmptyViewId()))
-//			{
-//				return port;
-//			}
-//		}
 		return null;
 	}
 
