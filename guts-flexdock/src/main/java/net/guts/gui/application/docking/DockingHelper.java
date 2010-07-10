@@ -71,6 +71,10 @@ public final class DockingHelper
 					}
 				}
 			}
+			else if (docked instanceof View)
+			{
+				return ((View) docked).getPersistentId().equals(id);
+			}
 			return false;
 //		}
 //		finally
