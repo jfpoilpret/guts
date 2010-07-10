@@ -77,6 +77,8 @@ public class ContactActions
 	{
 		_selected = selected;
 		setContactSelected(selected != null);
+		// Make sure to select the right picture view if it is open
+		ViewHelper.selectPictureView(selected);
 	}
 	
 	@Consumes(topic = OPEN_CONTACT_PICT_TOPIC) 
