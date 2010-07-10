@@ -44,6 +44,7 @@ import net.guts.gui.examples.addressbook.domain.Contact;
 import net.guts.gui.examples.addressbook.view.ContactPictureView;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
+import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.AbstractTask;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
@@ -61,13 +62,15 @@ public class ContactActions
 
 	@Inject public ContactActions(AddressBookService service,
 		DialogFactory dialogFactory, MessageFactory messageFactory,
-		ViewFactory viewFactory)
+		ViewFactory viewFactory, ResourceInjector injector)
 	{
 		_service = service;
 		_dialogFactory = dialogFactory;
 		_messageFactory = messageFactory;
 		_viewFactory = viewFactory;
 		setContactSelected(false);
+		// Make sure resources (used for picture view tab) get injected
+		injector.injectInstance(this);
 	}
 	
 	@Consumes public void onContactSelectionChange(Contact selected)
@@ -146,6 +149,25 @@ public class ContactActions
 		return DockingHelper.findEmptyableViewport(Views.ContactPicture.name());
 	}
 	
+	//TODO should be more complex than that in fact...
+	// reopen view if already exists, rather than re-create
+	private void showPictureView(Contact contact, Icon picture)
+	{
+		// Find the Viewport onto which pictures must be displayed
+		Viewport port = findPictureViewport();
+		ContactPictureView content = new ContactPictureView(picture);
+		// Build view
+		String idView = ViewHelper.getContactPictureViewId(contact);
+		View view = _viewFactory.createView(idView, content);
+		// Set the right tabtext/icon
+		view.setTabIcon(_pictureViewIcon);
+		String tabText = String.format(
+			_pictureViewTabText, contact.getFirstName(), contact.getLastName());
+		view.setTabText(tabText);
+		// Dock view at the right place
+		DockingManager.dock((Dockable) view, port, DockingConstants.CENTER_REGION);
+	}
+	
 	final private GutsAction _createContact = new GutsAction()
 	{
 		@Override protected void perform()
@@ -175,13 +197,14 @@ public class ContactActions
 			if (UserChoice.YES == _messageFactory.showMessage(
 				"confirm-delete", _selected.getFirstName(), _selected.getLastName()))
 			{
+				final Contact contact = _selected;
 				final Component parent = (Component) event().getSource();
 				Task<Void> task = new AbstractTask<Void>()
 				{
 					@Override public Void execute(FeedbackController controller)
 						throws InterruptedException
 					{
-						_service.removeContact(_selected);
+						_service.removeContact(contact);
 						return null;
 					}
 
@@ -209,23 +232,10 @@ public class ContactActions
 					return _service.getContactPicture(contact.getId());
 				}
 
-				//TODO should be more complex than that in fact...
-				// reopen view if already exists, rather than re-create
 				@Override public void succeeded(
 					TasksGroup group, TaskInfo source, Icon picture)
 				{
-					// Find the Viewport onto which pictures must be displayed
-					Viewport port = findPictureViewport();
-					ContactPictureView content = new ContactPictureView(picture);
-					// Build view
-					String idView = ViewHelper.getContactPictureViewId(contact);
-					View view = _viewFactory.createView(idView, content);
-					//TODO inject resources into this class and then use hereafter
-					// Set the right tabtext/icon
-//					view.setTabIcon(icon);
-//					view.setTabText(tabText);
-					// Dock view at the right place
-					DockingManager.dock((Dockable) view, port, DockingConstants.CENTER_REGION);
+					showPictureView(contact, picture);
 				}
 			};
 			submit(task, InputBlockers.actionBlocker(this));
@@ -283,4 +293,7 @@ public class ContactActions
 	final private ViewFactory _viewFactory;
 	final private AddressBookService _service;
 	private Contact _selected = null;
+	// The following fields are injected resources
+	private Icon _pictureViewIcon;
+	private String _pictureViewTabText;
 }
