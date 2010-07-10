@@ -75,9 +75,9 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 				View empty = _emptyViewsRegistry.getEmptyView(viewport);
 				if (empty != null && dockable != empty)
 				{
-					super.undock(empty);
 					// Make sure to show tabs when port is not empty
 					viewport.getDockingProperties().setSingleTabsAllowed(true);
+					super.undock(empty);
 				}
 				// Push selection event
 				viewChanged((View) dockable);
