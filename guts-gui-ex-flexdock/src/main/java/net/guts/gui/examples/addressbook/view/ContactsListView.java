@@ -25,10 +25,14 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import org.flexdock.view.View;
+
 import net.guts.event.Channel;
+import net.guts.event.Consumes;
 import net.guts.event.Event;
 import static net.guts.gui.examples.addressbook.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
+import net.guts.gui.examples.addressbook.docking.ViewHelper;
 import net.guts.gui.examples.addressbook.domain.Contact;
 
 import com.google.inject.Inject;
@@ -89,6 +93,32 @@ public class ContactsListView extends JPanel
 		});
 		
 		add(new JScrollPane(_table));
+	}
+
+	// Listen to changes in selected view so that when a new picture view is selected,
+	// we select the right row in the list of contacts
+	@Consumes public void onViewChanged(View selectedView)
+	{
+		Integer id = ViewHelper.getContactIdFromView(selectedView);
+		if (id != null)
+		{
+			int index = findContactInModel(id);
+			_table.getSelectionModel().setSelectionInterval(index, index);
+		}
+	}
+	
+	private int findContactInModel(int id)
+	{
+		int index = 0;
+		for (Contact contact: _contacts)
+		{
+			if (contact.getId() == id)
+			{
+				return index;
+			}
+			index++;
+		}
+		return -1;
 	}
 	
 	private Contact getSelectedContact()

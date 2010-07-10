@@ -14,6 +14,7 @@
 
 package net.guts.gui.examples.addressbook.docking;
 
+import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 
 import net.guts.gui.application.docking.DockingHelper;
@@ -35,10 +36,33 @@ final public class ViewHelper
 		return Views.ContactPicture.name() + contact.getId();
 	}
 	
+	static public Integer getContactIdFromView(View view)
+	{
+		if (view != null)
+		{
+			String id = view.getPersistentId();
+			if (isContactPictureViewId(id))
+			{
+				id = id.substring(Views.ContactPicture.name().length());
+				if (!"".equals(id))
+				{
+					return Integer.parseInt(id);
+				}
+			}
+		}
+		return null;
+	}
+	
 	static public boolean selectPictureView(Contact contact)
 	{
-		Viewport port = DockingHelper.findEmptyableViewport(Views.ContactPicture.name());
-		return DockingHelper.selectView(port, getContactPictureViewId(contact));
-		
+		if (contact != null)
+		{
+			Viewport port = DockingHelper.findEmptyableViewport(Views.ContactPicture.name());
+			return DockingHelper.selectView(port, getContactPictureViewId(contact));
+		}
+		else
+		{
+			return false;
+		}
 	}
 }
