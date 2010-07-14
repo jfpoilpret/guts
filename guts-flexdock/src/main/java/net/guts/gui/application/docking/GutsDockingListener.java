@@ -18,7 +18,7 @@ import org.flexdock.docking.DockingPort;
 import org.flexdock.docking.event.DockingEvent;
 import org.flexdock.docking.event.DockingListener;
 
-// Workaround for flexdock bug
+// Fix for Flexdock bug if drop on forbidden port
 class GutsDockingListener extends DockingListener.Stub
 {
 	@Override public void dropStarted(DockingEvent evt)

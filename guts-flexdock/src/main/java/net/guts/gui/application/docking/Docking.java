@@ -26,6 +26,11 @@ public final class Docking
 	private Docking()
 	{
 	}
+
+	static public void bindViewFactory(Binder binder, Class<? extends ViewFactory> clazz)
+	{
+		binder.bind(ViewFactory.class).annotatedWith(BindCustomViewFactory.class).to(clazz);
+	}
 	
 	static public LinkedBindingBuilder<PerspectiveInitializer> bindPerspective(
 		Binder binder, String id)

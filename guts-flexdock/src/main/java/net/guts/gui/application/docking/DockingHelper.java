@@ -24,12 +24,9 @@ import org.flexdock.docking.event.hierarchy.DockingPortTracker;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
 import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 public final class DockingHelper
 {
-	static private final Logger _logger = LoggerFactory.getLogger(DockingHelper.class);
-
 	private DockingHelper()
 	{
 	}
@@ -87,25 +84,33 @@ public final class DockingHelper
 //		}
 	}
 
-	static public void trace(Component comp, String indent)
+	static public void trace(Logger logger, Component comp)
+	{
+		if (logger.isDebugEnabled())
+		{
+			trace(logger, comp, "");
+		}
+	}
+	
+	static private void trace(Logger logger, Component comp, String indent)
 	{
 		if (comp instanceof GutsViewport)
 		{
 			String debug = String.format("%sGutsViewport(emptyViewId=%s)", 
 				indent, ((GutsViewport) comp).getEmptyViewId());
-			_logger.debug(debug);
+			logger.debug(debug);
 		}
 		else if (comp instanceof View)
 		{
 			String debug = String.format("%sView(id=%s)", 
 				indent, ((View) comp).getPersistentId());
-			_logger.debug(debug);
+			logger.debug(debug);
 		}
 		if (comp instanceof Container)
 		{
 			for (Component child: ((Container) comp).getComponents())
 			{
-				trace(child, indent + "  ");
+				trace(logger, child, indent + "  ");
 			}
 		}
 	}

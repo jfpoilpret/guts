@@ -24,8 +24,13 @@ import org.flexdock.docking.DockingManager;
 import org.flexdock.docking.DockingPort;
 import org.flexdock.docking.defaults.DefaultDockingStrategy;
 import org.flexdock.docking.drag.DragOperation;
+import org.flexdock.docking.event.DockingEvent;
+import org.flexdock.docking.event.DockingListener;
+import org.flexdock.event.EventManager;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import net.guts.event.Channel;
 
@@ -34,7 +39,8 @@ import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
-class GutsViewportDockingStrategy extends DefaultDockingStrategy implements ViewportFactory
+class GutsViewportDockingStrategy extends DefaultDockingStrategy 
+implements ViewportFactory, ViewFactoryListener
 {
 	@Inject GutsViewportDockingStrategy(
 		Channel<View> selectedView, EmptyViewsRegistry emptyViewsRegistry,
@@ -52,17 +58,32 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 	
 	@Override public Viewport createViewport()
 	{
+		_logger.debug("createViewport()");
 		GutsViewport port = _portProvider.get();
 		ViewChangeListener listener = new ViewChangeListener();
 		port.setListener(listener);
 		listener.setViewport(port);
+		port.addDockingListener(_dockListener);
 		return port;
+	}
+	
+	@Override public void viewCreated(View view)
+	{
+		view.addDockingListener(_dockListener);
 	}
 	
 	@SuppressWarnings("unchecked") 
 	@Override public boolean dock(
 		Dockable dockable, DockingPort port, String region, DragOperation operation)
 	{
+		_logger.debug("dock(view(id={}), port(emptyId={}), {}) _disableListener = {}", 
+			new Object[]
+			{
+				dockable.getPersistentId(),
+				((GutsViewport) port).getEmptyViewId(),
+				region,
+				_disableListener
+			});
 		try
 		{
 			_disableListener++;
@@ -86,7 +107,7 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 			{
 				// Workaround to flexdock bug in showing the right tabText in some
 				// circumstances. Force change of tab text for all dockables in port
-				Set<View> views = viewport.getViewset();
+				Set<View> views = viewport.getViewset(0);
 				for (View view: views)
 				{
 					String tabText = view.getTabText();
@@ -104,6 +125,8 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 
 	@Override public boolean undock(Dockable dockable)
 	{
+		_logger.debug("undock(view(id={})) _disableListener = {}", 
+			new Object[]{dockable.getPersistentId(), _disableListener});
 		try
 		{
 			_disableListener++;
@@ -116,7 +139,7 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 			GutsViewport port = (GutsViewport) view.getDockingPort();
 			if (port != null && port.isEmptyablePort())
 			{
-				if (port.getViewset().size() == 1)
+				if (port.getViewset(0).size() == 1)
 				{
 					super.dock(_emptyViewsRegistry.getEmptyView(port), port, 
 						DockingManager.CENTER_REGION);
@@ -144,12 +167,12 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 		}
 	}
 	
-	protected void viewChanged(View view)
+	private void viewChanged(View view)
 	{
 		_selectedView.publish(view);
 	}
 	
-	protected class ViewChangeListener implements ChangeListener
+	private class ViewChangeListener implements ChangeListener
 	{
 		public void	setViewport(GutsViewport port)
 		{
@@ -168,8 +191,59 @@ class GutsViewportDockingStrategy extends DefaultDockingStrategy implements View
 		private GutsViewport _port;
 	}
 	
+	private void updateViewportsStates()
+	{
+		_logger.debug("updateViewportsStates() _disableListener = {}, _dropInProgress = {}",
+			new Object[]{_disableListener, _dropInProgress});
+		if (_disableListener == 0 && _dropInProgress == 0)
+		{
+			GutsViewport.updateAllPortsStates();
+		}
+	}
+
+	// This listener has some tricks to make it work correctly.
+	// On drag/drop gestures, the following sequence of call/events occur:
+	// - dropStarted
+	// - undock()
+	// - undockingComplete
+	// - dock()
+	// - dockingComplete
+	// Viewports state update should occur only in the end (otherwise flexdock internal
+	// data is stale)
+	// That's why we use the _dropInProgress flag.
+	//TODO need to listen to other events (canceled dock/undock to clear _dropInProcess)?
+	private class DockListener extends DockingListener.Stub
+	{
+		@Override public void dropStarted(DockingEvent evt)
+		{
+			_logger.debug("dropStated()");
+			_dropInProgress = 3;
+		}
+
+		@Override public void dockingComplete(DockingEvent evt)
+		{
+			_logger.debug("dockingComplete()");
+			if (_dropInProgress > 0)
+			{
+				_dropInProgress--;
+			}
+			updateViewportsStates();
+		}
+
+		@Override public void undockingComplete(DockingEvent evt)
+		{
+			_logger.debug("undockingComplete()");
+			updateViewportsStates();
+		}
+	}
+
+	static final private Logger _logger = 
+		LoggerFactory.getLogger(GutsViewportDockingStrategy.class);
+
+	private final DockListener _dockListener = new DockListener();
 	private final Channel<View> _selectedView;
 	private final Provider<GutsViewport> _portProvider;
 	private final EmptyViewsRegistry _emptyViewsRegistry;
-	protected int _disableListener = 0;
+	private int _disableListener = 0;
+	private int _dropInProgress = 0;
 }

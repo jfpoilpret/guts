@@ -22,13 +22,17 @@ import javax.swing.JTabbedPane;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeListener;
 
-import org.flexdock.docking.Dockable;
 import org.flexdock.docking.DockingManager;
 import org.flexdock.docking.activation.ActiveDockableListener;
 import org.flexdock.docking.event.TabbedDragListener;
 import org.flexdock.util.LookAndFeelSettings;
 import org.flexdock.view.View;
 import org.flexdock.view.Viewport;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.guts.common.ref.WeakRefSet;
+import net.guts.common.ref.WeakRefSet.Performer;
 
 import com.google.inject.Inject;
 
@@ -43,31 +47,88 @@ class GutsViewport extends Viewport
 	@Inject GutsViewport(EmptyableViewportPolicy viewportPolicy)
 	{
 		_viewportPolicy = viewportPolicy;
+		_ports.add(this);
 	}
-	
-	@SuppressWarnings("unchecked") 
-	static void completeInitialization()
+
+	//TODO LATER move this method somewhere else (GutsViewportDockingStrategy), not static
+	static void updateAllPortsStates()
 	{
-		Set<String> ids = DockingManager.getDockableIds();
-		for (String id: ids)
+		_logger.debug("updateAllPortsStates()");
+		final GutsViewport[] mainPort = {null};
+		_ports.perform(new Performer<GutsViewport>()
 		{
-			Dockable view = DockingManager.getDockable(id);
-			GutsViewport port = (GutsViewport) view.getDockingPort();
-			if (port != null)
+			@Override public boolean perform(GutsViewport port)
 			{
-				port.updateState(id);
+				if (port.getDockedComponent() != null)
+				{
+					port.updateState();
+					if (mainPort[0] == null && port.isRoot())
+					{
+						_logger.debug(
+							"updateAllPortsStates() mainPort = {}", port.getEmptyViewId());
+						mainPort[0] = port;
+					}
+				}
+				return true;
 			}
-		}
+		});
+		DockingHelper.trace(_logger, mainPort[0]);
 		_initDone = true;
 	}
 	
-	private void updateState(String idView)
+//	@SuppressWarnings("unchecked") 
+//	static void updateAllPortsStates()
+//	{
+//		// IMPORTANT! Don't replace the following code with
+//		// DockingPortTracker.getDockingPorts(): it doesn't work!
+//		GutsViewport mainPort = null;
+//		Set<String> ids = DockingManager.getDockableIds();
+//		for (String id: ids)
+//		{
+//			GutsViewport port = 
+//				(GutsViewport) DockingManager.getDockable(id).getDockingPort();
+//			if (port != null)
+//			{
+//				port.updateState();
+//				if (mainPort == null && port.isRoot())
+//				{
+//					mainPort = port;
+//				}
+//			}
+//		}
+//		DockingHelper.trace(mainPort, "");
+//		_initDone = true;
+//	}
+	
+	@SuppressWarnings("unchecked") 
+	private void updateState()
 	{
-		if (_viewportPolicy.isEmptyView(idView))
+		//FIXME throw NPE on drop, and then everything's getting out-of-sync!
+		// maybe due to even processing BEFORE docking/undocking fully complete????
+		Set<View> views = getViewset(0);
+		if (!views.isEmpty())
 		{
-			_emptyViewId = idView;
-			// By default, emptyable viewports always use a tab pane
-			setSingleTabAllowed(true);
+			_logger.debug("updateState() [!views.isEmpty()]");
+			View view = views.iterator().next();
+			String idView = view.getPersistentId();
+			if (_viewportPolicy.isEmptyView(idView))
+			{
+				_logger.debug("\tupdateState() [isEmptyView()]");
+				_emptyViewId = idView;
+				setSingleTabAllowed(false);
+			}
+			else
+			{
+				_logger.debug("\tupdateState() [!isEmptyView()]");
+				_emptyViewId = _viewportPolicy.getTargetViewportEmptyView(view);
+				setSingleTabAllowed(views.size() > 1);
+			}
+		}
+		else
+		{
+			_logger.debug("updateState() [views.isEmpty()]");
+			_emptyViewId = null;
+			setSingleTabAllowed(false);
 		}
 	}
 	
@@ -149,23 +210,35 @@ class GutsViewport extends Viewport
 		boolean allow = super.isDockingAllowed(comp, region);
 		if (allow && _initDone)
 		{
-			allow = isCenterTargetView((View) comp);
 			// Special check for emptyable viewports
 			if (isEmptyablePort())
 			{
 				// Docking in emptyable viewport: view must be special target and CENTER
-				allow = allow && CENTER_REGION.equals(region);
+				allow = (isCenterTargetView((View) comp) == CENTER_REGION.equals(region));
 			}
 		}
+		_logger.debug("isDockingAllowed(View(id={}), {}) on port(emptyId={}) => {}",
+			new Object[]{((View) comp).getPersistentId(), region, getEmptyViewId(), allow});
 		return allow;
+	}
+
+	// Fix of a flexdock bug: getViewset(0) actually goes 2 levels (instead of one)
+	@SuppressWarnings("unchecked") 
+	@Override public Set<View> getViewset(int depth)
+	{
+		return getDockableSet(depth, 1, View.class);
 	}
 
 	void setListener(ChangeListener listener)
 	{
 		_listener = listener;
 	}
+
+	static final private Logger _logger = LoggerFactory.getLogger(GutsViewport.class);
 	
 	static private boolean _initDone = false;
+	// TODO Move later on to GutsViewportDockingStrategy as non-static field...
+	static final private WeakRefSet<GutsViewport> _ports = WeakRefSet.create();
 	private final EmptyableViewportPolicy _viewportPolicy;
 	private String _emptyViewId = null;
 	private ChangeListener _listener;
