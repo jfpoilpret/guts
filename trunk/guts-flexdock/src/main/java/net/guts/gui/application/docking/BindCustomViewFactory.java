@@ -14,11 +14,16 @@
 
 package net.guts.gui.application.docking;
 
-import javax.swing.JComponent;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
-import org.flexdock.view.View;
+import com.google.inject.BindingAnnotation;
 
-public interface ViewFactory
+@Retention(RetentionPolicy.RUNTIME)
+@Target({ElementType.PARAMETER, ElementType.FIELD})
+@BindingAnnotation
+@interface BindCustomViewFactory
 {
-	public View	createView(String id, JComponent content);
 }

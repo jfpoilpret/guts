@@ -63,9 +63,14 @@ public final class DockingModule extends AbstractModule
 
 		// Defaults for ViewportFactory along with DockingStrategy
 		bind(GutsViewportDockingStrategy.class).in(Scopes.SINGLETON);
-		//TODO remove later on
+		//TODO check later on if all that can be simplified
 		bind(ViewportFactory.class).to(GutsViewportDockingStrategy.class);
+		bind(ViewFactoryListener.class).to(GutsViewportDockingStrategy.class);
 		bind(DockingStrategy.class).to(GutsViewportDockingStrategy.class);
+
+		// Bind the injectable (non overridable) ViewFactory, the one that manages
+		// hooks for View creation
+		bind(ViewFactory.class).to(ViewFactoryProvider.class);
 
 		// Make sure Map<String, PerspectiveInitializer> is injectable
 		Docking.perspectives(binder());

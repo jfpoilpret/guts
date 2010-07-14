@@ -55,7 +55,7 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		// Initialize flexdock
 		loadLayout();
 		// Finalize initialization of all created viewports once layout has been created
-		GutsViewport.completeInitialization();
+		GutsViewport.updateAllPortsStates();
 		// Fix for Flexdock bug if drop on forbidden port
 		EventManager.addListener(new GutsDockingListener());
 		mainFrame.add(mainPort);
@@ -77,8 +77,9 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 		DockingManager.setDockableFactory(dockableFactory);
 		// make sure the right DockingStrategy is used for GutsViewport
 		DockingManager.setDockingStrategy(GutsViewport.class, strategy);
-		// make sure the right DockingStrategy is used for any Dockable
-		DockingManager.setDockingStrategy(JComponent.class, strategy);
+		// make sure the right DockingStrategy is used for any View
+		DockingManager.setDockingStrategy(View.class, null);//#### useless?
+		DockingManager.setDockingStrategy(View.class, strategy);
 		DockingManager.setDragPreview(dragPreview);
 		//TODO: add support for floating and minimization
 		DockingManager.setFloatingEnabled(false);
@@ -119,10 +120,10 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 	{
 		//TODO remove once sure it works without a public method, but it doesn't work yet...
 		_logger.debug("shutdown() before viewports cleanup");
-		DockingHelper.trace(_mainPort, "");
+		DockingHelper.trace(_logger, _mainPort);
 		cleanUpViewports();
 		_logger.debug("shutdown() after viewports cleanup");
-		DockingHelper.trace(_mainPort, "");
+		DockingHelper.trace(_logger, _mainPort);
 		saveLayout();
 	}
 
@@ -137,7 +138,7 @@ abstract public class DockingLifecycle extends SingleFrameLifecycle
 				&&	_viewportPolicy.emptyViewportNeedsCleanup(emptyViewId))
 			{
 				// This viewport must be cleaned up before saving layout
-				Set<View> views = port.getViewset();
+				Set<View> views = port.getViewset(0);
 				for (View view: views)
 				{
 					// If viewport contains the empty view, then there's no view to undock
