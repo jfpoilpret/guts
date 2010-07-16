@@ -45,7 +45,7 @@ public class AddressBookLifecycleStarter extends DockingLifecycle
 	 */
 	@Override protected void initMainFrame(JFrame frame)
 	{
-		DockingHelper.trace(frame.getContentPane(), "");
+		DockingHelper.trace(_logger, frame.getContentPane());
 		frame.setJMenuBar(_menuBar);
 	}
 	
