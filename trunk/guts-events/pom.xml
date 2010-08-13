@@ -6,9 +6,8 @@
 
 	<parent>
 		<groupId>net.guts</groupId>
-		<artifactId>guts-parent</artifactId>
+		<artifactId>guts-parent</artifactId> 
 		<version>0.1-SNAPSHOT</version>
-		<relativePath>../guts-parent</relativePath>
 	</parent>
 	<artifactId>guts-events</artifactId>
 	<packaging>jar</packaging>
@@ -70,6 +69,7 @@
 		<dependency>
 			<groupId>net.guts</groupId>
 			<artifactId>guts-common</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -8,7 +8,6 @@
 		<groupId>net.guts</groupId>
 		<artifactId>guts-parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
-		<relativePath>../guts-parent</relativePath>
 	</parent>
 	<artifactId>guts-gui-ex-single-frame</artifactId>
 	<packaging>jar</packaging>
@@ -71,6 +70,7 @@
 		<dependency>
 			<groupId>net.guts</groupId>
 			<artifactId>guts-gui</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- swing-layout and DesignGridLayout -->

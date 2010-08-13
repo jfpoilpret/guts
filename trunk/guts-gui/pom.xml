@@ -7,8 +7,7 @@
 	<parent>
 		<groupId>net.guts</groupId>
 		<artifactId>guts-parent</artifactId>
-		<version>0.1-SNAPSHOT</version>
-		<relativePath>../guts-parent</relativePath>
+		<version>0.1-SNAPSHOT</version> 
 	</parent>
 	<artifactId>guts-gui</artifactId>
 	<packaging>jar</packaging>
@@ -26,6 +25,7 @@
 		<dependency>
 			<groupId>net.guts</groupId>
 			<artifactId>guts-events</artifactId>
+			<version>${project.version}</version>
 		</dependency>
 
 		<!-- swing-layout and DesignGridLayout -->
