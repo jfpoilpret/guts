@@ -8,7 +8,6 @@
 		<groupId>net.guts</groupId>
 		<artifactId>guts-parent</artifactId>
 		<version>0.1-SNAPSHOT</version>
-		<relativePath>../guts-parent</relativePath>
 	</parent>
 	<artifactId>guts-common</artifactId>
 	<packaging>jar</packaging>
