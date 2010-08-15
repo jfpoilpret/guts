@@ -123,10 +123,15 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 
 		// Initialize the main frame content
 		initFrame(mainFrame);
-		_windowController.show(
+		showMainFrame(mainFrame, _windowController);
+	}
+	
+	protected void showMainFrame(JFrame mainFrame, WindowController windowController)
+	{
+		windowController.show(
 			mainFrame, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	}
-
+	
 	private WindowController _windowController;
 	private ExitController _exitController;
 	private MenuFactory _menuFactory;
