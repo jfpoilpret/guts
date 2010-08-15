@@ -138,8 +138,8 @@
 					<artifactId>maven-compiler-plugin</artifactId>
 					<version>2.3.1</version>
 					<configuration>
-						<source>1.6</source>
-						<target>1.6</target>
+						<source>${javaVersion}</source>
+						<target>${javaVersion}</target>
 					</configuration>
 				</plugin>
 				<plugin>
@@ -211,7 +211,7 @@
 						<configuration>
 							<rules>
 								<requireJavaVersion>
-									<version>1.6</version>
+									<version>${javaVersion}</version>
 								</requireJavaVersion>
 								<requirePluginVersions />
 							</rules>
@@ -269,8 +269,7 @@
 					<quiet>true</quiet>
 					<verbose>false</verbose>
 					<links>
-						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/
-						</link>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
 						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
@@ -560,7 +559,7 @@
 			<name>Andrei Pozolotin</name>
 			<email>andrei.pozolotin@gmail.com</email>
 			<roles>
-				<role>content developer</role>
+				<role>developer</role>
 			</roles>
 			<timezone>-6</timezone>
 		</developer>
