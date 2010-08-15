@@ -25,13 +25,21 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+/**
+ * Default implementation of {@link StorageMedium} service, based on 
+ * {@link java.util.prefs.Preferences}.
+ * <p/>
+ * Due to limitations in {@link java.util.prefs.Preferences}, {@code PrefsStorageMedium}
+ * sometimes cuts payload into smaller chunks.
+ *
+ * @author Jean-Francois Poilpret
+ */
 @Singleton
-class PrefsStorageMedium implements StorageMedium
+public class PrefsStorageMedium implements StorageMedium
 {
 	static final private Logger _logger = LoggerFactory.getLogger(PrefsStorageMedium.class);
 
-	@Inject
-	PrefsStorageMedium(@BindSessionApplication Class<?> applicationNode)
+	@Inject void init(@BindSessionApplication Class<?> applicationNode)
 	{
 		_root = Preferences.userNodeForPackage(applicationNode);
 	}
@@ -57,7 +65,7 @@ class PrefsStorageMedium implements StorageMedium
 		}
 		return content;
 	}
-	
+
 	private byte[] restoreAndMergeIfNeeded(String name)
 	{
 		// First try to get content in one, whole, piece
@@ -142,5 +150,5 @@ class PrefsStorageMedium implements StorageMedium
 	static final private String KEY_LENGTH_ERROR = String.format(
 		"java.util.prefs package allows key names of max %d characters.",
 		Preferences.MAX_KEY_LENGTH);
-	final private Preferences _root;
+	private Preferences _root;
 }
