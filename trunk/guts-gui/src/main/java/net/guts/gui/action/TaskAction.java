@@ -62,9 +62,8 @@ abstract public class TaskAction extends TasksGroupAction
 	 * will be used as a key for resource injection.
 	 * 
 	 * @param name the name used as a key for resource injection
-	 * @param execution indicates whether {@link #submit(Task)} will create a 
-	 * cancelable {@code TasksGroup} for {@code Task} execution
-	 * be canceled by the end user
+     * @param execution indicates whether {@link #submit(Task)} will create a 
+     * {@code TasksGroup} for {@code Task} execution that is cancelable by the end user or not
 	 */
 	protected TaskAction(String name, Execution execution)
 	{
@@ -72,6 +71,20 @@ abstract public class TaskAction extends TasksGroupAction
 		_execution = execution;
 	}
 
+	
+    /**
+     * Create a new {@code TaskAction} without an explicit {@code name}.  If you
+     * use this constructor, you should be sure to have automatic action naming
+     * enabled.
+     * 
+     * @param execution indicates whether {@link #submit(Task)} will create a 
+     * {@code TasksGroup} for {@code Task} execution that is cancelable by the end user or not
+     */
+	protected TaskAction(Execution execution){
+	    super(null);
+	    _execution = execution;
+	}
+	
 	/**
 	 * Immediately start background execution of the given {@code task}, using the
 	 * default {@link ExecutorService} (as defined by 
