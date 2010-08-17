@@ -17,6 +17,10 @@ package net.guts.gui.examples.addressbook.action;
 import java.util.Locale;
 
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
+import net.guts.gui.dialog.DialogFactory;
+import net.guts.gui.examples.addressbook.dialog.PreferencesPanel;
 import net.guts.gui.resource.ResourceInjector;
 
 import com.google.inject.Inject;
@@ -45,6 +49,10 @@ public class GeneralActions
 		return _english;
 	}
 	
+	public GutsAction showPreferences(){
+	    return _showPreferences;
+	}
+	
 	// Only to demonstrate the exception handling
 	final private GutsAction _throwException = new GutsAction()
 	{
@@ -68,5 +76,14 @@ public class GeneralActions
 		}
 	};
 	
+	final private GutsAction _showPreferences = new GutsAction(){
+	    @Override protected void perform() {
+	        _dialogFactory.showDialog(PreferencesPanel.class, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
+	        
+	    }
+	};
+	
+	@Inject private DialogFactory _dialogFactory;
+
 	final private ResourceInjector _injector;
 }

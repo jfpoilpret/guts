@@ -37,6 +37,7 @@ public class AddressBookMenuBar extends JMenuBar
 	{
 		add(menuFactory.createMenu("fileMenu", 
 			genActions.throwException(), 
+			genActions.showPreferences(),
 			appActions.quit()));
 		add(menuFactory.createMenu("editMenu", 
 			appActions.cut(),
