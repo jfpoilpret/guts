@@ -20,7 +20,8 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.WindowController.BoundsPolicy;
 import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
-import net.guts.gui.dialogalt.DialogFactory2;
+import net.guts.gui.dialogalt.ModalDialogViewContainer;
+import net.guts.gui.dialogalt.ViewContainer;
 import net.guts.gui.examples.addressbook.dialog.PreferencesPanel;
 import net.guts.gui.resource.ResourceInjector;
 
@@ -32,7 +33,7 @@ public class GeneralActions
 {
 	@Inject public GeneralActions(ResourceInjector injector)
 	{
-		_injector = injector;
+		_resourceInjector = injector;
 	}
 	
 	public GutsAction throwException()
@@ -66,27 +67,24 @@ public class GeneralActions
 	{
 		@Override protected void perform()
 		{
-			_injector.setLocale(Locale.FRENCH);
+			_resourceInjector.setLocale(Locale.FRENCH);
 		}
 	};
 	final private GutsAction _english = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-			_injector.setLocale(Locale.ENGLISH);
+			_resourceInjector.setLocale(Locale.ENGLISH);
 		}
 	};
 	
 	final private GutsAction _showPreferences = new GutsAction(){
 	    @Override protected void perform() {
-	        
 	        _dialogFactory.showDialog(PreferencesPanel.class, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	        
 	    }
 	};
 	
-	//@Inject private DialogFactory _dialogFactory;
-	@Inject private DialogFactory2 _dialogFactory;
-
-	final private ResourceInjector _injector;
+	@Inject private DialogFactory _dialogFactory;
+	final private ResourceInjector _resourceInjector;
 }
