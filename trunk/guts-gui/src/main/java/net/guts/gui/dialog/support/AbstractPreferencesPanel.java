@@ -6,6 +6,8 @@
 package net.guts.gui.dialog.support;
 
 import java.awt.BorderLayout;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
@@ -24,9 +26,12 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import net.guts.gui.action.GutsAction;
+import net.guts.gui.resource.ResourceInjector;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.google.inject.Inject;
 
 /**
  * TODO need to release bindings when view is closed (this requires reliably close notifications from parent dialog)
@@ -35,6 +40,7 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
 
     static final private Logger log = LoggerFactory.getLogger(AbstractPreferencesPanel.class);
 
+    @Inject private ResourceInjector resourceInjector;
     
     private final JPanel viewContainer = new JPanel(new BorderLayout());
     private final JSplitPane split = new JSplitPane(JSplitPane.HORIZONTAL_SPLIT);
@@ -52,21 +58,34 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
         split.setRightComponent(viewContainer);
         add(split, BorderLayout.CENTER);
         
+        addHierarchyListener(new HierarchyListener()
+        {
+            public void hierarchyChanged(HierarchyEvent e)
+            {
+                if (    (e.getID() == HierarchyEvent.HIERARCHY_CHANGED)
+                    &&  ((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0)
+                    &&  AbstractPreferencesPanel.this.isShowing())
+                {
+                    if (optionsList.getSelectedIndex() == -1 && optionsList.getModel().getSize() > 0) // probably should have some sort of persistent state here to remember last selected preference pane
+                        optionsList.setSelectedIndex(0);
+                   
+                }
+            }
+        });
     }
 
     /**
      * Registers a preferences component to be displayed in the preferences list.  The name of the component
      * will be used as the list display (probably want to change this?? To what??).
+     * @param title the title for the preferences component
      * @param component the preferences component to register
      * @param applyAction the action that will be called when the OK button is clicked (the OK button enablement state is bound to the enablement state of all registered apply actions)
      * @param revertAction the action that will be called when the Cancel button is clicked (the Cancel button is always enabled as it can be used to close the dialog)
      */
-    protected void register(JComponent component, Action applyAction, Action revertAction){
-        ViewRegistration registration = new ViewRegistration(component.getName(), component, applyAction, revertAction, new ActionBinder(applyAction)); 
+    protected void register(String title, JComponent component, Action applyAction, Action revertAction){
+        ViewRegistration registration = new ViewRegistration(title, component, applyAction, revertAction, new ActionBinder(applyAction)); 
         registrations.add(registration);
         listModel.addElement(registration);
-        if (optionsList.getSelectedIndex() == -1) // probably should have some sort of persistent state here to remember last selected preference pane
-            setCurrent(registration);
     }
 
     /**
@@ -155,6 +174,7 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
                 if (viewContainer.getComponentCount() > 0)
                     viewContainer.remove(0);
                 
+                resourceInjector.injectComponent(selectedRegistration.view);
                 viewContainer.add(selectedRegistration.view, 0);
                 viewContainer.validate();
                 viewContainer.repaint();

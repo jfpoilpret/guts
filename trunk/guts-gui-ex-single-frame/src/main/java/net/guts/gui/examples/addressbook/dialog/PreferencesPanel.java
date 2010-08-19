@@ -34,19 +34,12 @@ public class PreferencesPanel extends AbstractPreferencesPanel {
     @Inject
     public PreferencesPanel() {
 
-        // TODO: figure out why resource injection isn't working on these
-        _check1.setName("_check1");
-        _check1.setText("check1 - apply enabled");
-        _check2.setName("_check2");
-        _check2.setText("check2 - apply enabled");
-        _check3.setName("_check3");
-        _check3.setText("check3 - apply enabled");
         
-        register(_check1, _check1.getApplyAction().action(), null);
-        register(_check2, _check2.getApplyAction().action(), null);
-        register(_check3, _check3.getApplyAction().action(), null);
-        register(namedComponent("test1"), null, null);
-        register(namedComponent("test2"), null, null);
+        register("Options 1", _check1, _check1.getApplyAction().action(), null);
+        register("Options 2", _check2, _check2.getApplyAction().action(), null);
+        register("Options 3", _check3, _check3.getApplyAction().action(), null);
+        register("Button option 1", namedComponent("test1"), null, null);
+        register("Button option 2", namedComponent("test2"), null, null);
     }
 
     private JComponent namedComponent(String name){
