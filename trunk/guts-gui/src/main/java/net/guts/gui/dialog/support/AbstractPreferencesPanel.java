@@ -9,17 +9,17 @@ import java.awt.BorderLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.Action;
 import javax.swing.DefaultListModel;
+import javax.swing.DefaultListSelectionModel;
 import javax.swing.JComponent;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.ListModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -43,6 +43,8 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
     private final JList optionsList = new JList(listModel);
     
     public AbstractPreferencesPanel() {
+        optionsList.setSelectionModel(new ExactlyOneListSelectionModel());
+        optionsList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
         setLayout(new BorderLayout());
         bindListSelectionToViewContainer();
         
@@ -63,6 +65,8 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
         ViewRegistration registration = new ViewRegistration(component.getName(), component, applyAction, revertAction, new ActionBinder(applyAction)); 
         registrations.add(registration);
         listModel.addElement(registration);
+        if (optionsList.getSelectedIndex() == -1) // probably should have some sort of persistent state here to remember last selected preference pane
+            setCurrent(registration);
     }
 
     /**
@@ -80,8 +84,15 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
                     action.actionPerformed(this.event());
                 }
             }
+            unbindActions();
         }  
     };
+    
+    private void unbindActions(){
+        for (ViewRegistration registration : registrations) {
+            registration.actionBinder.unbind();
+        }
+    }
     
     protected GutsAction getCancelAction() {
         return revert;
@@ -97,6 +108,7 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
             }
             
             getParentDialog().close(true);
+            unbindActions();
         }  
     };
    
@@ -110,13 +122,18 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
     }
     
     private boolean atLeastOneApplyActionsAreEnabled(){
+        boolean allNull = true;
+        
         for (ViewRegistration registration : registrations) {
             Action action = registration.applyAction;
-            if (action != null && action.isEnabled()){
-                return true;
+            if (action != null){
+                if (action.isEnabled())
+                    return true;
+                
+                allNull = false;
             }
         }
-        return false;
+        return allNull;
     }
 
     /**
@@ -141,11 +158,14 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
                 viewContainer.add(selectedRegistration.view, 0);
                 viewContainer.validate();
                 viewContainer.repaint();
-                
             }
             
         });
         
+    }
+    
+    private void setCurrent(ViewRegistration registration){
+        optionsList.setSelectedValue(registration, true);
     }
     
     /**
@@ -156,11 +176,11 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
         private final Action source;
         public ActionBinder(Action source){
             this.source = source;
-            if (source == null)
-                return;
-            
             sync();
-            source.addPropertyChangeListener(this);
+            
+            if (source != null)
+                source.addPropertyChangeListener(this);
+            
         }
         
         private void sync(){
@@ -204,4 +224,34 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
         }
 
     }
+    
+    /**
+     * A {@link ListSelectionModel} that forces the selection to always have one item
+     * selected 
+     */
+    // TODO probably should move this out to a utilities package
+    private static class ExactlyOneListSelectionModel extends DefaultListSelectionModel
+    {
+       private boolean clearing;
+       
+       public void removeSelectionInterval(int index0, int index1)
+       {
+          if (clearing)
+          {
+             super.removeSelectionInterval(index0, index1);
+          }
+          else
+          {
+             // do nothing -- we don't want the control deselect stuff
+          }
+       }
+       
+       public void clearSelection() 
+       {
+          clearing = true;
+          super.clearSelection();
+          clearing = false;
+       }
+    }
+
 }
