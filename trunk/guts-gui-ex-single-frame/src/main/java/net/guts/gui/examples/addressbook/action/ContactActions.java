@@ -58,10 +58,10 @@ public class ContactActions
 	
 	public void setContactSelected(boolean contactSelected)
 	{
-		_modifyContact.action().setEnabled(contactSelected);
-		_modifyContactWithTabs.action().setEnabled(contactSelected);
-		_modifyContactWithWizard.action().setEnabled(contactSelected);
-		_deleteContact.action().setEnabled(contactSelected);
+		_modifyContact.setEnabled(contactSelected);
+		_modifyContactWithTabs.setEnabled(contactSelected);
+		_modifyContactWithWizard.setEnabled(contactSelected);
+		_deleteContact.setEnabled(contactSelected);
 	}
 	
 	public GutsAction createContact()

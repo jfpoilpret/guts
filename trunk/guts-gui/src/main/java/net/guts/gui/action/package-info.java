@@ -28,6 +28,10 @@
  * instantiated (or injected) by Guice, and register them with 
  * {@code ActionRegistrationManager}.
  * <p/>
+ * <b>Important!</b> Please note that, although {@code GutsAction} derives from 
+ * {@link javax.swing.Action}, only fields declared to be of {@code GutsAction} type,
+ * (not simply {@code Action}) will be correctly injected.
+ * <p/>
  * The only thing to do to get those {@code GutsAction} fields registered is to create
  * Guice {@link com.google.inject.Injector} with {@link net.guts.gui.action.ActionModule},
  * which is done automatically by {@link net.guts.gui.application.AbstractApplication}
@@ -58,19 +62,21 @@
  *     ...
  * }
  * ...
- * // In a method intializing the menu bar...
+ * // In a method initializing the menu bar...
  * CustomerActions actions = getCustomerActions();
- * customerMenu.add(actions.createCustomer.action());
- * customerMenu.add(actions.deleteCustomer.action());
+ * customerMenu.add(actions.createCustomer);
+ * customerMenu.add(actions.deleteCustomer);
  * ...
  * </pre>
  * In the snippet above, you should note the following:
  * <ul>
- * <li>You must name every GutsAction: that name is used for internationalization 
+ * <li>Every GutsAction is given a name: that name is used for internationalization 
  * (injection of resources -text, icon, etc- into the {@code Action}.</li>
- * <li>GutsAction has an {@code action()} method that returns a {@link javax.swing.Action}
- * that can be passed to Swing components.</li>
+ * <li>{@code GutsAction}s are {@link javax.swing.Action}s themselves and can thus be
+ * used anywhere an {@code Action} is needed.</li>
  * </ul>
+ * Please note that Guts-GUI also offers automatic naming of {@code GutsAction} fields, 
+ * as described in {@link net.guts.gui.action.ActionNamePolicy}.
  * 
  * @see net.guts.gui.action.TaskAction
  */

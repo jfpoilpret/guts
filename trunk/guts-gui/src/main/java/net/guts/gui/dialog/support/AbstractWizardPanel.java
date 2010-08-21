@@ -286,17 +286,17 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	private final void setAcceptEnabled(boolean enabled)
 	{
-		getAcceptAction().action().setEnabled(enabled);
+		getAcceptAction().setEnabled(enabled);
 	}
 	
 	private final void setPreviousEnabled(boolean enabled)
     {
-		_previous.action().setEnabled(enabled);
+		_previous.setEnabled(enabled);
     }
 	
 	private final void setNextEnabled(boolean enabled)
     {
-		_next.action().setEnabled(enabled);
+		_next.setEnabled(enabled);
     }
 
 	private class WizardControllerImpl implements WizardController

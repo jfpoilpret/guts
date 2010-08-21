@@ -120,7 +120,7 @@ public class TasksGroupProgressPanel extends JPanel
 	
 	final private TasksTableModel _model;
 	final private JTable _tasks;
-	final private JButton _cancelBtn = new JButton(_cancel.action());
+	final private JButton _cancelBtn = new JButton(_cancel);
 	private TasksGroup _group;
 	private ParentDialog _parent;
 }

@@ -137,7 +137,7 @@ public class AbstractPreferencesPanel extends AbstractMultiPanel {
      * If one or more registered apply actions are enabled, then the global apply action is enabled
      */
     private void syncEnabled(){
-        accept.action().setEnabled(atLeastOneApplyActionsAreEnabled());
+        accept.setEnabled(atLeastOneApplyActionsAreEnabled());
     }
     
     private boolean atLeastOneApplyActionsAreEnabled(){

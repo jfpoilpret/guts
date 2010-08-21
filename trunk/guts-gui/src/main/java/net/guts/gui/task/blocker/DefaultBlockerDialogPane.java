@@ -68,7 +68,7 @@ class DefaultBlockerDialogPane extends JPanel
 		_tasks = tasks;
 		_note.setText("");
 		_progress.setValue(MIN_RATE);
-		_cancel.action().setEnabled(_tasks.isCancellable());
+		_cancel.setEnabled(_tasks.isCancellable());
 		_tasks.addGroupListener(new TasksGroupAdapter()
 		{
 			@Override public void feedback(TasksGroup group, TaskInfo source, String note)
@@ -166,7 +166,7 @@ class DefaultBlockerDialogPane extends JPanel
 	
 	final private JLabel _note = new JLabel("");
 	final private JProgressBar _progress = new JProgressBar();
-	final private JButton _cancelBtn = new JButton(_cancel.action());
+	final private JButton _cancelBtn = new JButton(_cancel);
 	private ParentDialog _parent;
 	private TasksGroup _tasks;
 }

@@ -28,7 +28,8 @@ import com.google.inject.ImplementedBy;
  * In general, you won't need to directly use {@code ActionRegistrationManager} if you
  * follow general conventions about {@code GutsAction} usage:
  * <ul>
- * <li>Declare {@code GutsAction} instances as fields in your classes</li>
+ * <li>Declare {@code GutsAction} instances as fields (of type {@code GutsAction} or a 
+ * subclass) in your classes</li>
  * <li>Make sure they are instantiated at construction time (best way is to declare
  * them {@code final} and initialize them where they are declared</li>
  * <li>Make your classes with {@code GutsAction} fields are injected by Guice</li>

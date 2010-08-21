@@ -22,6 +22,9 @@ import com.google.inject.ImplementedBy;
  * default implementation. Only {@code GustAction} fields which have not been named 
  * have their name automatically set.
  * <p/>
+ * <b>Important!</b> Please note that only fields declared to be of {@code GutsAction} 
+ * type (or any subclass) will be automatically named when needed.
+ * <p/>
  * {@link DefaultActionNamePolicy} is the default implementation of
  * {@code ActionNamePolicy} but can be overridden easily in one of your
  * Guice {@link com.google.inject.Module}s:

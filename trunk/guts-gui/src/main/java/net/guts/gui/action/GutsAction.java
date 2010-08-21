@@ -15,6 +15,7 @@
 package net.guts.gui.action;
 
 import java.awt.event.ActionEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -84,7 +85,7 @@ import com.google.inject.Inject;
  * @author Jean-Francois Poilpret
  */
 // CSOFF: AbstractClassNameCheck
-abstract public class GutsAction
+abstract public class GutsAction implements Action
 {
 	/**
 	 * Create a new {@code GutsAction} and assign it a {@code name} that will be used
@@ -107,12 +108,68 @@ abstract public class GutsAction
 		this(null);
 	}
 
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#addPropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	@Override final public void addPropertyChangeListener(PropertyChangeListener listener)
+	{
+		_action.addPropertyChangeListener(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#getValue(java.lang.String)
+	 */
+	@Override final public Object getValue(String key)
+	{
+		return _action.getValue(key);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#isEnabled()
+	 */
+	@Override final public boolean isEnabled()
+	{
+		return _action.isEnabled();
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#putValue(java.lang.String, java.lang.Object)
+	 */
+	@Override final public void putValue(String key, Object value)
+	{
+		_action.putValue(key, value);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#removePropertyChangeListener(java.beans.PropertyChangeListener)
+	 */
+	@Override final public void removePropertyChangeListener(PropertyChangeListener listener)
+	{
+		_action.removePropertyChangeListener(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see javax.swing.Action#setEnabled(boolean)
+	 */
+	@Override final public void setEnabled(boolean enabled)
+	{
+		_action.setEnabled(enabled);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
+	 */
+	@Override final public void actionPerformed(ActionEvent event)
+	{
+		_action.actionPerformed(event);
+	}
+
 	/**
 	 * Get the underlying {@link javax.swing.Action} so that you can bind it to a Swing 
 	 * component (such as a {@link javax.swing.JButton} or a {@link javax.swing.JMenuItem}),
 	 * or change its {@code enabled} state.
 	 */
-	final public Action action()
+	final Action action()
 	{
 		return _action;
 	}
