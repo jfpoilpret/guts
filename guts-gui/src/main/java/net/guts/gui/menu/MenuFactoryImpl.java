@@ -62,10 +62,9 @@ class MenuFactoryImpl implements MenuFactory
 			{
 				JMenuItem item = new JMenuItem();
 				item.setName(menu.getName() + "-" + action.name());
-				item.setAction(action.action());
+				item.setAction(action);
 				menu.add(item);
 			}
 		}
-		
 	}
 }

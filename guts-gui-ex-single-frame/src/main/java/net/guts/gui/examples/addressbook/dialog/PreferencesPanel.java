@@ -35,9 +35,9 @@ public class PreferencesPanel extends AbstractPreferencesPanel {
     public PreferencesPanel() {
 
         
-        register("Options 1", _check1, _check1.getApplyAction().action(), null);
-        register("Options 2", _check2, _check2.getApplyAction().action(), null);
-        register("Options 3", _check3, _check3.getApplyAction().action(), null);
+        register("Options 1", _check1, _check1.getApplyAction(), null);
+        register("Options 2", _check2, _check2.getApplyAction(), null);
+        register("Options 3", _check3, _check3.getApplyAction(), null);
         register("Button option 1", namedComponent("test1"), null, null);
         register("Button option 2", namedComponent("test2"), null, null);
     }
@@ -61,7 +61,7 @@ public class PreferencesPanel extends AbstractPreferencesPanel {
         }
         
         private void syncApplyActionEnabled(){
-            apply.action().setEnabled(isSelected());
+            apply.setEnabled(isSelected());
         }
         
         public GutsAction getApplyAction(){

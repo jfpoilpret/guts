@@ -159,17 +159,17 @@ public class GutsApplicationActions
 	{
 		if (_focus == null)
 		{
-			_cut.action().setEnabled(false);
-			_copy.action().setEnabled(false);
-			_paste.action().setEnabled(false);
+			_cut.setEnabled(false);
+			_copy.setEnabled(false);
+			_paste.setEnabled(false);
 		}
 		else
 		{
 			boolean enabled = _focus.isEnabled();
 			boolean editable = enabled && _focus.isEditable();
-			_cut.action().setEnabled(_hasSelection && editable);
-			_copy.action().setEnabled(_hasSelection && enabled);
-			_paste.action().setEnabled(_clipboardHasText && editable);
+			_cut.setEnabled(_hasSelection && editable);
+			_copy.setEnabled(_hasSelection && enabled);
+			_paste.setEnabled(_clipboardHasText && editable);
 		}
 	}
 	

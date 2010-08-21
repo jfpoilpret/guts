@@ -47,7 +47,7 @@ public final class InputBlockers
 	 */
 	static public InputBlocker actionBlocker(GutsAction action)
 	{
-		return new ActionInputBlocker(action.action());
+		return new ActionInputBlocker(action);
 	}
 
 	/**

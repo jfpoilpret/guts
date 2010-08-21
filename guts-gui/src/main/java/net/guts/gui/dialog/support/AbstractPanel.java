@@ -124,7 +124,7 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 			{
 				getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
 							KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
-				getActionMap().put("cancel", cancel.action());
+				getActionMap().put("cancel", cancel);
 				// Force action name to "cancel"
 				if (!CANCEL_ACTION.equals(cancel.name()))
 				{
@@ -191,7 +191,7 @@ public abstract class AbstractPanel extends JPanel implements ParentDialogAware
 	{
 		if (action != null)
 		{
-			JButton button = new JButton(action.action());
+			JButton button = new JButton(action);
 			button.setName(getName() + "-" + action.name());
 			return button;
 		}

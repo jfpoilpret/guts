@@ -51,13 +51,13 @@ public class GutsActionDecorator extends GutsAction
 		copyProperty(Action.SELECTED_KEY);
 		copyProperty(Action.SHORT_DESCRIPTION);
 		copyProperty(Action.SMALL_ICON);
-		action().setEnabled(_target.action().isEnabled());
+		setEnabled(_target.isEnabled());
 		// Bind properties (including enabling) of both actions
 		PropertyChangeListener listener = new PropertyChangeListener()
 		{
 			@Override public void propertyChange(PropertyChangeEvent evt)
 			{
-				Action action = (evt.getSource() == action() ? _target.action() : action());
+				Action action = (evt.getSource() == this ? _target.action() : action());
 				action.putValue(evt.getPropertyName(), evt.getNewValue());
 			}
 		};
