@@ -7,7 +7,6 @@ package net.guts.gui.examples.addressbook.dialog;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
