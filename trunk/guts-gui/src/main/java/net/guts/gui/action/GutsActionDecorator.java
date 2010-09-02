@@ -25,8 +25,8 @@ import javax.swing.Action;
  * or change its name, or both.
  * <p/>
  * Both {@code target} and {@code this} actions share the same {@link Action} 
- * properties at all times, so that you can manipulate either {@link #action()},
- * it will impact both {@code Action} instances.
+ * properties at all times, so that you can manipulate either, it will impact 
+ * both {@code Action} instances.
  *
  * @author Jean-Francois Poilpret
  */
@@ -36,7 +36,7 @@ public class GutsActionDecorator extends GutsAction
 	 * Create a new wrapper for the given {@code target}, while enforcing a new
 	 * {@code name} for it.
 	 */
-	public GutsActionDecorator(String name, GutsAction target)
+	public GutsActionDecorator(String name, Action target)
 	{
 		super(name);
 		_target = target;
@@ -57,12 +57,12 @@ public class GutsActionDecorator extends GutsAction
 		{
 			@Override public void propertyChange(PropertyChangeEvent evt)
 			{
-				Action action = (evt.getSource() == this ? _target.action() : action());
+				Action action = (evt.getSource() == this ? _target : GutsActionDecorator.this);
 				action.putValue(evt.getPropertyName(), evt.getNewValue());
 			}
 		};
-		action().addPropertyChangeListener(listener);
-		_target.action().addPropertyChangeListener(listener);
+		addPropertyChangeListener(listener);
+		_target.addPropertyChangeListener(listener);
 	}
 
 	/**
@@ -81,7 +81,7 @@ public class GutsActionDecorator extends GutsAction
 	
 	private void copyProperty(String name)
 	{
-		action().putValue(name, _target.action().getValue(name));
+		putValue(name, _target.getValue(name));
 	}
 
 	/**
@@ -99,7 +99,7 @@ public class GutsActionDecorator extends GutsAction
 	@Override final protected void perform()
 	{
 		beforeTargetPerform();
-		_target.action().actionPerformed(event());
+		_target.actionPerformed(event());
 		afterTargetPerform();
 	}
 
@@ -112,5 +112,5 @@ public class GutsActionDecorator extends GutsAction
 	{
 	}
 
-	final private GutsAction _target;
+	final private Action _target;
 }
