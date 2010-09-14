@@ -78,7 +78,6 @@
 		<module>guts-common</module>
 		<module>guts-events</module>
 		<module>guts-gui</module>
-		<module>guts-flexdock</module>
 		<module>guts-gui-ex-single-frame</module>
 	</modules>
 
