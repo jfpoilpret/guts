@@ -21,7 +21,7 @@
 	<description>Most innovative in the pack of SAF / JSR 296 descendants, GUTS is a collection of utilities based on Google Guice 2.0 dependency injection library with focus on SWING gui development.</description>
 
 	<ciManagement>
-		<system>hudson</system>
+		<system>hudson ci</system>
 	</ciManagement>
 	<inceptionYear>2009</inceptionYear>
 
