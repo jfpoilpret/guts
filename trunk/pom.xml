@@ -2,14 +2,24 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>net.guts</groupId>
-	<artifactId>guts-parent</artifactId>
-	<packaging>pom</packaging>
-	<version>0.1-SNAPSHOT</version>
+	<parent>
+		<groupId>org.sonatype.oss</groupId>
+		<artifactId>oss-parent</artifactId>
+		<version>5</version>
+	</parent>
 
-	<name>Parent pom for all GUTS projects</name>
+	<groupId>net.guts</groupId>
+	<artifactId>guts-archon</artifactId>
+	<packaging>pom</packaging>
+	<version>0.1.0-SNAPSHOT</version>
+
+	<name>Configuration Parent for all GUTS projects</name>
+
+	<description>Most innovative in the pack of SAF / JSR 296 descendants, GUTS is a collection of utilities based on Google Guice 2.0 dependency injection library with focus on SWING gui development.</description>
+
 	<inceptionYear>2009</inceptionYear>
 
 	<properties>
@@ -18,51 +28,50 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<pluginManagement>
-					<!-- Suggestion to configure so that to only attach resources _ and_ 
-						javadocs on a Release. This speeds up the maven build process a lot! -->
-					<plugins>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-javadoc-plugin</artifactId>
-							<inherited>true</inherited>
-							<executions>
-								<execution>
-									<id>attach-javadocs</id>
-									<goals>
-										<goal>jar</goal>
-									</goals>
-								</execution>
-							</executions>
-							<configuration>
-								<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
-								<link>http://java.sun.com/javase/1.6.0/docs/api</link>
-								<show>public</show>
-							</configuration>
-						</plugin>
-						<plugin>
-							<groupId>org.apache.maven.plugins</groupId>
-							<artifactId>maven-source-plugin</artifactId>
-							<inherited>true</inherited>
-							<executions>
-								<execution>
-									<id>attach-sources</id>
-									<goals>
-										<goal>jar</goal>
-										<goal>test-jar</goal>
-									</goals>
-								</execution>
-							</executions>
-						</plugin>
-					</plugins>
-				</pluginManagement>
-			</build>
-		</profile>
-	</profiles>
+	<!-- DECLARED BY SONATYPE PARENT -->
+	<!-- <profiles> -->
+	<!-- <profile> -->
+	<!-- <id>release</id> -->
+	<!-- <build> -->
+	<!-- <pluginManagement> -->
+	<!-- <plugins> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
+	<!-- <inherited>true</inherited> -->
+	<!-- <executions> -->
+	<!-- <execution> -->
+	<!-- <id>attach-javadocs</id> -->
+	<!-- <goals> -->
+	<!-- <goal>jar</goal> -->
+	<!-- </goals> -->
+	<!-- </execution> -->
+	<!-- </executions> -->
+	<!-- <configuration> -->
+	<!-- <link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link> -->
+	<!-- <link>http://java.sun.com/javase/1.6.0/docs/api</link> -->
+	<!-- <show>public</show> -->
+	<!-- </configuration> -->
+	<!-- </plugin> -->
+	<!-- <plugin> -->
+	<!-- <groupId>org.apache.maven.plugins</groupId> -->
+	<!-- <artifactId>maven-source-plugin</artifactId> -->
+	<!-- <inherited>true</inherited> -->
+	<!-- <executions> -->
+	<!-- <execution> -->
+	<!-- <id>attach-sources</id> -->
+	<!-- <goals> -->
+	<!-- <goal>jar</goal> -->
+	<!-- <goal>test-jar</goal> -->
+	<!-- </goals> -->
+	<!-- </execution> -->
+	<!-- </executions> -->
+	<!-- </plugin> -->
+	<!-- </plugins> -->
+	<!-- </pluginManagement> -->
+	<!-- </build> -->
+	<!-- </profile> -->
+	<!-- </profiles> -->
 
 	<modules>
 		<module>guts-config</module>
@@ -73,10 +82,24 @@
 		<module>guts-gui-ex-single-frame</module>
 	</modules>
 
-	<!-- TODO Add plugin management with versions for all plugins? -->
 	<build>
 		<pluginManagement>
+			<!-- note: this "plugin management" affects only the "build"; for "reporting",
+				you must provide separate declarations; ideally, build and reporting plugins
+				do not overlap -->
 			<plugins>
+				<plugin>
+					<!-- download source and javadoc from all dependencies and make them
+						available within eclipse. Requires explicit call to: mvn eclipse:eclipse -->
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-eclipse-plugin</artifactId>
+					<version>2.8</version>
+					<configuration>
+						<addVersionToProjectName>true</addVersionToProjectName>
+						<downloadSources>true</downloadSources>
+						<downloadJavadocs>true</downloadJavadocs>
+					</configuration>
+				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
@@ -85,12 +108,11 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-javadoc-plugin</artifactId>
-					<version>2.7</version>
+					<version>2.3.2</version>
+					<configuration>
+						<source>${javaVersion}</source>
+						<target>${javaVersion}</target>
+					</configuration>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -115,7 +137,7 @@
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
-					<version>2.1.1</version>
+					<version>2.3.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -132,33 +154,23 @@
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
-				<!-- Source Level per default 1.6 -->
+				<!-- DECLARED BY SONATYPE PARENT -->
+				<!-- <plugin> -->
+				<!-- <groupId>org.apache.maven.plugins</groupId> -->
+				<!-- <artifactId>maven-release-plugin</artifactId> -->
+				<!-- <version>2.0</version> -->
+				<!-- <configuration> -->
+				<!-- <releaseProfiles>release</releaseProfiles> -->
+				<!-- <resume>false</resume> -->
+				<!-- <autoVersionSubmodules>true</autoVersionSubmodules> -->
+				<!-- <preparationGoals>clean verify install</preparationGoals> -->
+				<!-- </configuration> -->
+				<!-- </plugin> -->
 				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-compiler-plugin</artifactId>
-					<version>2.3.1</version>
-					<configuration>
-						<source>${javaVersion}</source>
-						<target>${javaVersion}</target>
-					</configuration>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-release-plugin</artifactId>
-					<version>2.0</version>
-					<configuration>
-						<!-- The release profile to be used (see profiles top) -->
-						<releaseProfiles>release</releaseProfiles>
-						<resume>false</resume>
-						<autoVersionSubmodules>true</autoVersionSubmodules>
-						<preparationGoals>clean verify install</preparationGoals>
-					</configuration>
-				</plugin>
-				<plugin>
-					<!-- Surefire default configuration and plugin version -->
+					<!-- Surefire default configuration -->
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-surefire-plugin</artifactId>
-					<version>2.5</version>
+					<version>2.6</version>
 					<configuration>
 						<groups>utest,itest</groups>
 					</configuration>
@@ -171,19 +183,8 @@
 			</plugins>
 		</pluginManagement>
 		<plugins>
-			<!-- Download source and javadoc from all dependencies and make them available 
-				within eclipse. Requires explicit call to: mvn eclipse:eclipse -->
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.8</version>
-				<configuration>
-					<addVersionToProjectName>true</addVersionToProjectName>
-					<downloadSources>true</downloadSources>
-					<downloadJavadocs>true</downloadJavadocs>
-				</configuration>
-			</plugin>
-			<!-- Here to declare dependency to guts-config which contains checkstyle 
+			<!-- TODO merge to reporting -->
+			<!-- Here to declare dependency to guts-config which contains checkstyle
 				config for all guts modules -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -197,10 +198,10 @@
 				</dependencies>
 			</plugin>
 			<plugin>
+				<!-- DECLARED BY SONATYPE PARENT -->
 				<!-- Enforcing rules to keep the build deterministic -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-enforcer-plugin</artifactId>
-				<version>1.0-beta-1</version>
 				<inherited>true</inherited>
 				<executions>
 					<execution>
@@ -258,10 +259,12 @@
 				</configuration>
 			</plugin>
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jxr-plugin</artifactId>
+				<version>2.4.1</version>
 			</plugin>
-			<!-- Generate javadoc only for source, not for test -->
 			<plugin>
+				<!-- Generate javadoc only for source, not for test -->
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<version>2.7</version>
@@ -285,7 +288,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-report-plugin</artifactId>
-				<version>2.5</version>
+				<version>2.6</version>
 				<reportSets>
 					<reportSet>
 						<reports>
@@ -328,34 +331,39 @@
 	</reporting>
 
 	<repositories>
-		<repository>
-			<releases>
-				<enabled>true</enabled>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-			<id>guts-releases</id>
-			<name>GUTS Releases Repository</name>
-			<url>http://guts.kenai.com/maven/releases/</url>
-		</repository>
-		<repository>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-			</snapshots>
-			<id>guts-snapshots</id>
-			<name>GUTS Snapshots Repository</name>
-			<url>http://guts.kenai.com/maven/snapshots/</url>
-		</repository>
+
+		<!-- DECLARED BY SONATYPE PARENT -->
+		<!-- <repository> -->
+		<!-- <releases> -->
+		<!-- <enabled>true</enabled> -->
+		<!-- </releases> -->
+		<!-- <snapshots> -->
+		<!-- <enabled>false</enabled> -->
+		<!-- </snapshots> -->
+		<!-- <id>guts-releases</id> -->
+		<!-- <name>GUTS Releases Repository</name> -->
+		<!-- <url>http://guts.kenai.com/maven/releases/</url> -->
+		<!-- </repository> -->
+		<!-- <repository> -->
+		<!-- <releases> -->
+		<!-- <enabled>false</enabled> -->
+		<!-- </releases> -->
+		<!-- <snapshots> -->
+		<!-- <enabled>true</enabled> -->
+		<!-- </snapshots> -->
+		<!-- <id>guts-snapshots</id> -->
+		<!-- <name>GUTS Snapshots Repository</name> -->
+		<!-- <url>http://guts.kenai.com/maven/snapshots/</url> -->
+		<!-- </repository> -->
+
+		<!-- TODO publish to maven central -->
 		<!-- Used for designgridlayout optional dependency -->
-		<repository>
-			<id>java.net</id>
-			<name>Java.net repository</name>
-			<url>http://download.java.net/maven/2</url>
-		</repository>
+		<!-- <repository> -->
+		<!-- <id>java.net</id> -->
+		<!-- <name>Java.net repository</name> -->
+		<!-- <url>http://download.java.net/maven/2</url> -->
+		<!-- </repository> -->
+
 	</repositories>
 
 	<dependencyManagement>
@@ -442,25 +450,26 @@
 		</dependency>
 	</dependencies>
 
-	<distributionManagement>
-		<repository>
-			<id>guts-releases</id>
-			<name>GUTS Release Repository</name>
-			<uniqueVersion>false</uniqueVersion>
-			<url>dav:https://kenai.com/website/guts/maven/releases</url>
-		</repository>
-		<snapshotRepository>
-			<id>guts-snapshots</id>
-			<name>GUTS Snapshot Repository</name>
-			<uniqueVersion>true</uniqueVersion>
-			<url>dav:https://kenai.com/website/guts/maven/snapshots</url>
-		</snapshotRepository>
-		<site>
-			<id>guts-website</id>
-			<name>GUTS Website</name>
-			<url>dav:https://kenai.com/website/guts</url>
-		</site>
-	</distributionManagement>
+	<!-- DECLARED BY SONATYPE PARENT -->
+	<!-- <distributionManagement> -->
+	<!-- <repository> -->
+	<!-- <id>guts-releases</id> -->
+	<!-- <name>GUTS Release Repository</name> -->
+	<!-- <uniqueVersion>false</uniqueVersion> -->
+	<!-- <url>dav:https://kenai.com/website/guts/maven/releases</url> -->
+	<!-- </repository> -->
+	<!-- <snapshotRepository> -->
+	<!-- <id>guts-snapshots</id> -->
+	<!-- <name>GUTS Snapshot Repository</name> -->
+	<!-- <uniqueVersion>true</uniqueVersion> -->
+	<!-- <url>dav:https://kenai.com/website/guts/maven/snapshots</url> -->
+	<!-- </snapshotRepository> -->
+	<!-- <site> -->
+	<!-- <id>guts-website</id> -->
+	<!-- <name>GUTS Website</name> -->
+	<!-- <url>dav:https://kenai.com/website/guts</url> -->
+	<!-- </site> -->
+	<!-- </distributionManagement> -->
 
 	<licenses>
 		<license>
@@ -506,12 +515,11 @@
 		</mailingList>
 	</mailingLists>
 
+	<!-- TODO rename svn url -->
 	<scm>
-		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
-		</connection>
-		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
-		</developerConnection>
-		<tag>/trunk</tag>
+		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</connection>
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</developerConnection>
+		<!-- <tag>/trunk</tag> -->
 		<url>http://kenai.com/projects/guts/sources/guts-events/show</url>
 	</scm>
 
@@ -564,4 +572,6 @@
 			<timezone>-6</timezone>
 		</developer>
 	</developers>
+
 </project>
+
