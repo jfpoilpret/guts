@@ -18,10 +18,9 @@
 
 	<name>${project.artifactId}</name>
 
-	<description>build configuration parent for all GUTS projects;
-		Most innovative in the pack of SAF / JSR 296 descendants,
-		GUTS is a collection of utilities based on Google Guice 2.0
-		dependency injection library with focus on SWING gui development.</description>
+	<description>${project.artifactId} is a build configuration parent for all GUTS projects;
+GUTS is the most innovative in the pack of SAF / JSR 296 descendants;
+GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection library with focus on SWING gui development.</description>
 
 	<url>http://guts.kenai.com</url>
 

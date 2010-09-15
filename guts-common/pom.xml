@@ -15,8 +15,7 @@
 	<name>${project.artifactId}</name>
 
 	<description>
-		A set of basic utilities for Guice-based development, and particularly
-		other Guts modules (guts-events and guts-gui).
+		${project.artifactId} is a set of basic utilities for GUICE based development, and particularly other Guts modules (guts-events and guts-gui).
 	</description>
 
 	<dependencies>
