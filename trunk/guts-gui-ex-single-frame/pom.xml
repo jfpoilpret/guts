@@ -9,7 +9,7 @@
 	<artifactId>guts-gui-ex-single-frame</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Guts-GUI Address Book Example Application with a Single Frame layout</name>
+	<name>guts-gui-ex-single-frame: Address Book example application with a single frame layout</name>
 	<description>A simple Address Book example application using Guts-GUI framework</description>
 	<url>http://kenai.com/projects/guts</url>
 

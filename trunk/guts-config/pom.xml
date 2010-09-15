@@ -10,5 +10,5 @@
     <artifactId>guts-config</artifactId>
     <packaging>jar</packaging>
 
-    <name>Common build configuration for all Guts modules</name>
+    <name>guts-config: shared build configuration resource files for all GUTS modules</name>
 </project>

@@ -12,7 +12,7 @@
 	<artifactId>guts-flexdock</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Guts-GUI flexdock integration</name>
+	<name>guts-flexdock: guts-gui and flexdock integration</name>
 	<url>http://kenai.com/projects/guts</url>
 
 	<dependencies>

@@ -9,7 +9,7 @@
 	<artifactId>guts-common</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Simple utilities for Guice and all Guts modules</name>
+	<name>guts-common: simple utilities for GUICE and all GUTS modules</name>
 	<description>
 		A set of basic utilities for Guice-based development, and particularly
 		other Guts modules (guts-events and guts-gui).
