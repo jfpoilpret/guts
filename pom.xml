@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -446,26 +447,26 @@
 		</dependency>
 	</dependencies>
 
-	<!-- DECLARED BY SONATYPE PARENT -->
-	<!-- <distributionManagement> -->
-	<!-- <repository> -->
-	<!-- <id>guts-releases</id> -->
-	<!-- <name>GUTS Release Repository</name> -->
-	<!-- <uniqueVersion>false</uniqueVersion> -->
-	<!-- <url>dav:https://kenai.com/website/guts/maven/releases</url> -->
-	<!-- </repository> -->
-	<!-- <snapshotRepository> -->
-	<!-- <id>guts-snapshots</id> -->
-	<!-- <name>GUTS Snapshot Repository</name> -->
-	<!-- <uniqueVersion>true</uniqueVersion> -->
-	<!-- <url>dav:https://kenai.com/website/guts/maven/snapshots</url> -->
-	<!-- </snapshotRepository> -->
-	<!-- <site> -->
-	<!-- <id>guts-website</id> -->
-	<!-- <name>GUTS Website</name> -->
-	<!-- <url>dav:https://kenai.com/website/guts</url> -->
-	<!-- </site> -->
-	<!-- </distributionManagement> -->
+	<distributionManagement>
+		<!-- DECLARED BY SONATYPE PARENT -->
+		<!-- <repository> -->
+		<!-- <id>guts-releases</id> -->
+		<!-- <name>GUTS Release Repository</name> -->
+		<!-- <uniqueVersion>false</uniqueVersion> -->
+		<!-- <url>dav:https://kenai.com/website/guts/maven/releases</url> -->
+		<!-- </repository> -->
+		<!-- <snapshotRepository> -->
+		<!-- <id>guts-snapshots</id> -->
+		<!-- <name>GUTS Snapshot Repository</name> -->
+		<!-- <uniqueVersion>true</uniqueVersion> -->
+		<!-- <url>dav:https://kenai.com/website/guts/maven/snapshots</url> -->
+		<!-- </snapshotRepository> -->
+		<site>
+			<id>guts-website</id>
+			<name>GUTS Website</name>
+			<url>dav:https://kenai.com/website/guts</url>
+		</site>
+	</distributionManagement>
 
 	<licenses>
 		<license>
