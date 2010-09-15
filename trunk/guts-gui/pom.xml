@@ -15,8 +15,7 @@
 	<name>${project.artifactId}</name>
 
 	<description>
-		GUICE+SWING based framework for RCP development. Guts-GUI is a light Guice-based framework for rich GUI (Swing-based)
-		applications; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
+		${project.artifactId} is a GUICE+SWING based framework for RCP development; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
 	</description>
 
 	<dependencies>

@@ -13,7 +13,7 @@
 
 	<name>${project.artifactId}</name>
 
-	<description>A simple Address Book example application with a single frame layout</description>
+	<description>${project.artifactId} is a simple Address Book example application with a single frame layout</description>
 
 	<build>
 		<plugins>
