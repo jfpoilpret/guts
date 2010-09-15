@@ -16,13 +16,17 @@
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 
-	<name>guts-archon: build configuration parent for all GUTS projects</name>
+	<name>${project.artifactId}</name>
 
-	<description>Most innovative in the pack of SAF / JSR 296 descendants, GUTS is a collection of utilities based on Google Guice 2.0 dependency injection library with focus on SWING gui development.</description>
+	<description>build configuration parent for all GUTS projects;
+		Most innovative in the pack of SAF / JSR 296 descendants,
+		GUTS is a collection of utilities based on Google Guice 2.0
+		dependency injection library with focus on SWING gui development.</description>
 
 	<ciManagement>
 		<system>hudson ci</system>
 	</ciManagement>
+
 	<inceptionYear>2009</inceptionYear>
 
 	<properties>

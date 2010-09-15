@@ -1,22 +1,27 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>net.guts</groupId>
-		<artifactId>guts-archon</artifactId> 
+		<artifactId>guts-archon</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>guts-events</artifactId>
 	<packaging>jar</packaging>
 
-	<name>guts-events: event bus for Guice</name>
+	<name>${project.artifactId}</name>
+
 	<description>
 		Guts-Events is a light library, based on Guice Dependency Injection,
-		to handle "events" transmission from Suppliers to Consumers inside a 
+		to handle "events" transmission from Suppliers to Consumers inside a
 		same JVM.
 	</description>
+
 	<url>http://kenai.com/projects/guts</url>
-	
+
 	<build>
 		<plugins>
 			<!-- Also generate a javadoc jar to be installed into the repository -->
@@ -32,10 +37,10 @@
 						<show>public</show>
 					</links>
 				</configuration>
- 			</plugin>
+			</plugin>
 		</plugins>
 	</build>
-	
+
 	<reporting>
 		<plugins>
 			<plugin>
@@ -50,7 +55,7 @@
 						<show>public</show>
 					</links>
 				</configuration>
- 			</plugin>
+			</plugin>
 		</plugins>
 	</reporting>
 
@@ -78,4 +83,5 @@
 			<scope>test</scope>
 		</dependency>
 	</dependencies>
+
 </project>
