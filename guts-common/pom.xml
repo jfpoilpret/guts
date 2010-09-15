@@ -19,8 +19,6 @@
 		other Guts modules (guts-events and guts-gui).
 	</description>
 
-	<url>http://kenai.com/projects/guts</url>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>

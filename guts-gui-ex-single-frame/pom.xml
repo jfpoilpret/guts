@@ -15,8 +15,6 @@
 
 	<description>A simple Address Book example application with a single frame layout</description>
 
-	<url>http://kenai.com/projects/guts</url>
-
 	<build>
 		<plugins>
 			<!-- Make the Address Book sample a runnable jar -->
