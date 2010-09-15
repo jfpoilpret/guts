@@ -1,4 +1,5 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -6,11 +7,14 @@
 		<artifactId>guts-archon</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>guts-gui-ex-single-frame</artifactId>
 	<packaging>jar</packaging>
 
-	<name>guts-gui-ex-single-frame: Address Book example application with a single frame layout</name>
-	<description>A simple Address Book example application using Guts-GUI framework</description>
+	<name>${project.artifactId}</name>
+
+	<description>A simple Address Book example application with a single frame layout</description>
+
 	<url>http://kenai.com/projects/guts</url>
 
 	<build>
@@ -62,8 +66,9 @@
 			</plugin>
 		</plugins>
 	</build>
-		
+
 	<dependencies>
+
 		<dependency>
 			<groupId>net.guts</groupId>
 			<artifactId>guts-gui</artifactId>
@@ -83,9 +88,12 @@
 		</dependency>
 
 		<dependency>
-			<groupId>net.java.dev.glazedlists</groupId> 
-			<artifactId>glazedlists_java15</artifactId> 
+			<groupId>net.java.dev.glazedlists</groupId>
+			<artifactId>glazedlists_java15</artifactId>
 			<version>1.7.0</version>
 		</dependency>
+
 	</dependencies>
+
 </project>
+

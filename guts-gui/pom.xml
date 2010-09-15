@@ -1,23 +1,28 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
 		<groupId>net.guts</groupId>
 		<artifactId>guts-archon</artifactId>
-		<version>0.1.0-SNAPSHOT</version> 
+		<version>0.1.0-SNAPSHOT</version>
 	</parent>
+
 	<artifactId>guts-gui</artifactId>
 	<packaging>jar</packaging>
 
-	<name>guts-gui: GUICE+SWING based framework for RCP development</name>
+	<name>${project.artifactId}</name>
+
 	<description>
-		Guts-GUI is a light Guice-based framework for rich GUI (Swing-based) 
-		applications; many of its concepts are taken from the Swing Application Framework 
-		by Sun (JSR-296).
+		GUICE+SWING based framework for RCP development. Guts-GUI is a light Guice-based framework for rich GUI (Swing-based)
+		applications; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
 	</description>
+
 	<url>http://kenai.com/projects/guts</url>
 
 	<dependencies>
+
 		<!-- GUTS-Events -->
 		<dependency>
 			<groupId>net.guts</groupId>
@@ -59,5 +64,7 @@
 			<artifactId>fest-swing-testng</artifactId>
 			<scope>test</scope>
 		</dependency>
+
 	</dependencies>
+
 </project>
