@@ -13,7 +13,7 @@
 	<groupId>net.guts</groupId>
 	<artifactId>guts-archon</artifactId>
 	<packaging>pom</packaging>
-	<version>0.1.0</version>
+	<version>0.1.1-SNAPSHOT</version>
 
 	<name>Configuration Parent for all GUTS projects</name>
 
@@ -518,10 +518,10 @@
 
 	<!-- TODO rename svn url -->
 	<scm>
-		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/tags/guts-archon-0.1.0</connection>
-		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/tags/guts-archon-0.1.0</developerConnection>
+		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</connection>
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</developerConnection>
 		<!-- <tag>/trunk</tag> -->
-		<url>http://kenai.com/projects/guts/sources/guts-events/show/tags/guts-archon-0.1.0</url>
+		<url>http://kenai.com/projects/guts/sources/guts-events/show</url>
 	</scm>
 
 	<developers>
