@@ -9,7 +9,7 @@
 	<artifactId>guts-gui</artifactId>
 	<packaging>jar</packaging>
 
-	<name>Guts-GUI</name>
+	<name>guts-gui: GUICE+SWING based framework for RCP development</name>
 	<description>
 		Guts-GUI is a light Guice-based framework for rich GUI (Swing-based) 
 		applications; many of its concepts are taken from the Swing Application Framework 
