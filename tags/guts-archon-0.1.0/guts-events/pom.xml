@@ -1,0 +1,81 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.guts</groupId>
+		<artifactId>guts-archon</artifactId> 
+		<version>0.1.0</version>
+	</parent>
+	<artifactId>guts-events</artifactId>
+	<packaging>jar</packaging>
+
+	<name>Event Bus for Guice</name>
+	<description>
+		Guts-Events is a light library, based on Guice Dependency Injection,
+		to handle "events" transmission from Suppliers to Consumers inside a 
+		same JVM.
+	</description>
+	<url>http://kenai.com/projects/guts</url>
+	
+	<build>
+		<plugins>
+			<!-- Also generate a javadoc jar to be installed into the repository -->
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.event.internal</excludePackageNames>
+					<quiet>true</quiet>
+					<verbose>false</verbose>
+					<links>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
+						<show>public</show>
+					</links>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</build>
+	
+	<reporting>
+		<plugins>
+			<plugin>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<configuration>
+					<excludePackageNames>net.guts.event.internal</excludePackageNames>
+					<quiet>true</quiet>
+					<verbose>false</verbose>
+					<links>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
+						<show>public</show>
+					</links>
+				</configuration>
+ 			</plugin>
+		</plugins>
+	</reporting>
+
+	<dependencies>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-multibindings</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.google.inject.extensions</groupId>
+			<artifactId>guice-assisted-inject</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-common</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+</project>
