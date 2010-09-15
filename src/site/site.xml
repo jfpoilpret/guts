@@ -1,23 +1,29 @@
-<project name="GUTS GUI">
+<project name="GUTS">
+
 	<bannerLeft>
-		<name>GUTS GUI</name>
+		<name>GUTS</name>
 		<href>http://kenai.com/projects/guts/</href>
 	</bannerLeft>
-<!--	
+
+<!--
 	<bannerRight>
 		<name></name>
 		<src></src>
 	</bannerRight>
 -->
+
+<!--
 	<poweredBy>
 		<logo name="Built by Maven" href="http://maven.apache.org" img="http://maven.apache.org/images/logos/build-by-maven-black.png" />
 	</poweredBy>
-	
+-->
+
 	<body>
 		<links>
-			<item name="Guice" href="http://code.google.com/p/google-guice/" />
-			<item name="Swing AppFramework" href="http://appframework.dev.java.net/" />
+			<item name="GUICE" href="http://code.google.com/p/google-guice/" />
+			<item name="SAF" href="http://appframework.dev.java.net/" />
 		</links>
 		<menu ref="reports" />
 	</body>
+
 </project>
