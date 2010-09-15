@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE properties SYSTEM "http://java.sun.com/dtd/properties.dtd">
-<properties>
-	<entry key="XmlResourceInjectorTest-checkXmlAndPropertiesBundleAcrossLocales-label.text">FR-LABEL-FROM-XML</entry>
-</properties>
