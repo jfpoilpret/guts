@@ -20,8 +20,6 @@
 		same JVM.
 	</description>
 
-	<url>http://kenai.com/projects/guts</url>
-
 	<build>
 		<plugins>
 			<!-- Also generate a javadoc jar to be installed into the repository -->

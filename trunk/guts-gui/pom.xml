@@ -19,8 +19,6 @@
 		applications; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
 	</description>
 
-	<url>http://kenai.com/projects/guts</url>
-
 	<dependencies>
 
 		<!-- GUTS-Events -->
