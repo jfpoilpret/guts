@@ -1,4 +1,5 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +16,27 @@
 
 	<description>${project.artifactId} is a simple Address Book example application with a single frame layout</description>
 
+	<properties>
+
+		<!-- provides JApplet / main() -->
+		<mainJar>TODO</mainJar>
+		<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
+
+		<!-- jnlp applet/application jvm parameters -->
+		<javaHeapMinimum>128m</javaHeapMinimum>
+		<javaHeapMaximum>256m</javaHeapMaximum>
+		<javaArgsString>-Xincgc</javaArgsString>
+
+		<!-- velocity templates folder for jnlp files generation -->
+		<jnlpTemplates>${project.basedir}/src/main/jnlp/</jnlpTemplates>
+
+		<!-- location of final jnlp result before zip -->
+		<jnlpWorkDirectory>${project.build.directory}/jnlp</jnlpWorkDirectory>
+
+	</properties>
+
 	<build>
+
 		<plugins>
 			<!-- Make the Address Book sample a runnable jar -->
 			<plugin>
@@ -25,20 +46,25 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
+							<mainClass>${mainClass}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
 			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo.webstart</groupId>
 				<artifactId>webstart-maven-plugin</artifactId>
 				<version>1.0-alpha-2</version>
 				<configuration>
+					<pack200>false</pack200>
+					<verbose>false</verbose>
+					<unsignAlreadySignedJars>true</unsignAlreadySignedJars>
+					<workDirectory>${jnlpWorkDirectory}</workDirectory>
+					<resourcesDirectory>${jnlpTemplates}/resources</resourcesDirectory>
 					<jnlp>
-						<outputFile>guts-gui-ex-single-frame.jnlp</outputFile>
 						<j2seVersion>1.6+</j2seVersion>
-						<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
+						<mainClass>${mainClass}</mainClass>
 					</jnlp>
 					<sign>
 						<keystore>keystore</keystore>
@@ -50,7 +76,6 @@
 							<delete>true</delete>
 							<gen>true</gen>
 						</keystoreConfig>
-
 						<dnameCn>Guts-GUI</dnameCn>
 						<dnameOu>Guts GUI</dnameOu>
 						<dnameO>Guts</dnameO>
@@ -59,9 +84,26 @@
 						<dnameC>VN</dnameC>
 						<verify>true</verify>
 					</sign>
-					<verbose>false</verbose>
 				</configuration>
+				<executions>
+					<!-- -->
+					<execution>
+						<id>default-jnlp</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>jnlp</goal>
+						</goals>
+						<configuration>
+							<jnlp>
+								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
+								<inputTemplate>template.vm</inputTemplate>
+								<outputFile>${project.artifactId}.jnlp</outputFile>
+							</jnlp>
+						</configuration>
+					</execution>
+				</executions>
 			</plugin>
+
 		</plugins>
 	</build>
 
@@ -92,6 +134,7 @@
 		</dependency>
 
 	</dependencies>
+
 	<modules>
 	</modules>
 
