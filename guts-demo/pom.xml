@@ -25,7 +25,7 @@
 	<distributionManagement>
 		<site>
 			<id>guts-website</id>
-			<url>dav:https://kenai.com/website/guts/guts-base</url>
+			<url>dav:https://kenai.com/website/guts/guts-demo</url>
 		</site>
 	</distributionManagement>
 
