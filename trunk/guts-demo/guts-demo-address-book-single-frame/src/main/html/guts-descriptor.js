@@ -6,7 +6,8 @@
 function gutsDescriptor () {
 	//
 	this.mainJar	=	'${mainJar}';
-	this.mainClass	=	'${mainClass}';
+	this.appClass	=	'${appClass}';
+	this.appletClass=	'${appletClass}';
 	//
 	this.finalName	=	'${project.build.finalName}';
 	this.groupId	=	'${project.groupId}';
