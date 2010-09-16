@@ -67,28 +67,33 @@
 						<mainClass>${mainClass}</mainClass>
 					</jnlp>
 					<sign>
-						<keystore>keystore</keystore>
-						<keypass>password</keypass>
-						<storepass>password</storepass>
-						<alias>alias</alias>
-						<validity>3650</validity>
-						<keystoreConfig>
-							<delete>true</delete>
-							<gen>true</gen>
-						</keystoreConfig>
-						<dnameCn>Guts-GUI</dnameCn>
-						<dnameOu>Guts GUI</dnameOu>
-						<dnameO>Guts</dnameO>
-						<dnameL>Ho Chi Minh city</dnameL>
-						<dnameSt>NA</dnameSt>
-						<dnameC>VN</dnameC>
-						<verify>true</verify>
+						<keystore>${project.basedir}/src/main/cert/guts-demo.jks</keystore>
+						<alias>guts-demo</alias>
+						<storepass>changeit</storepass>
 					</sign>
+					<!-- <sign> -->
+					<!-- <keystore>keystore</keystore> -->
+					<!-- <keypass>password</keypass> -->
+					<!-- <storepass>password</storepass> -->
+					<!-- <alias>alias</alias> -->
+					<!-- <validity>3650</validity> -->
+					<!-- <keystoreConfig> -->
+					<!-- <delete>true</delete> -->
+					<!-- <gen>true</gen> -->
+					<!-- </keystoreConfig> -->
+					<!-- <dnameCn>Guts-GUI</dnameCn> -->
+					<!-- <dnameOu>Guts GUI</dnameOu> -->
+					<!-- <dnameO>Guts</dnameO> -->
+					<!-- <dnameL>Ho Chi Minh city</dnameL> -->
+					<!-- <dnameSt>NA</dnameSt> -->
+					<!-- <dnameC>VN</dnameC> -->
+					<!-- <verify>true</verify> -->
+					<!-- </sign> -->
 				</configuration>
 				<executions>
-					<!-- -->
+					<!-- production application -->
 					<execution>
-						<id>default-jnlp</id>
+						<id>app-production</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>jnlp</goal>
@@ -96,8 +101,23 @@
 						<configuration>
 							<jnlp>
 								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
-								<inputTemplate>template.vm</inputTemplate>
+								<inputTemplate>app-production.vm</inputTemplate>
 								<outputFile>${project.artifactId}.jnlp</outputFile>
+							</jnlp>
+						</configuration>
+					</execution>
+					<!-- local test application -->
+					<execution>
+						<id>app-test</id>
+						<phase>generate-resources</phase>
+						<goals>
+							<goal>jnlp</goal>
+						</goals>
+						<configuration>
+							<jnlp>
+								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
+								<inputTemplate>app-test.vm</inputTemplate>
+								<outputFile>${project.artifactId}-test.jnlp</outputFile>
 							</jnlp>
 						</configuration>
 					</execution>
