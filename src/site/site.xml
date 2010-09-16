@@ -1,5 +1,11 @@
 <project name="GUTS">
 
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-application-skin</artifactId>
+		<version>1.0-SNAPSHOT</version>
+    </skin>
+
 	<bannerLeft>
 		<name>guts home</name>
 		<src>images/logo-128x64.png</src>
@@ -11,12 +17,6 @@
 		<href>http://kenai.com/projects/guts/</href>
 	</bannerRight>
 
-	<skin>
-		<groupId>org.apache.maven.skins</groupId>
-		<artifactId>maven-application-skin</artifactId>
-		<version>1.0-SNAPSHOT</version>
-    </skin>
-
 	<body>
 
 		<links>
@@ -24,9 +24,15 @@
 			<item name="SAF" href="http://appframework.dev.java.net/" />
 		</links>
 
+
 		<menu ref="parent" inherit="top" />
 		<menu ref="reports" inherit="top" />
 		<menu ref="modules" inherit="top" />
+
+		<menu name="Language" inherit="top" >
+			<item name="English" href="/index.html" />
+			<item name="French" href="/fr/index.html" />
+		</menu>
 
 	</body>
 
