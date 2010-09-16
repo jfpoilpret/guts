@@ -2,15 +2,14 @@
 
 	<bannerLeft>
 		<name>guts home</name>
+		<src>images/logo-128x64.png</src>
 		<href>http://kenai.com/projects/guts/</href>
 	</bannerLeft>
 
-<!--
 	<bannerRight>
-		<name></name>
-		<src></src>
+		<name>-> guts home</name>
+		<href>http://kenai.com/projects/guts/</href>
 	</bannerRight>
--->
 
 <!--
 	<poweredBy>
@@ -18,12 +17,23 @@
 	</poweredBy>
 -->
 
+	<skin>
+		<groupId>org.apache.maven.skins</groupId>
+		<artifactId>maven-application-skin</artifactId>
+		<version>1.0-SNAPSHOT</version>
+    </skin>
+
 	<body>
+
 		<links>
 			<item name="GUICE" href="http://code.google.com/p/google-guice/" />
 			<item name="SAF" href="http://appframework.dev.java.net/" />
 		</links>
-		<menu ref="reports" />
+
+		<menu ref="parent" inherit="top" />
+		<menu ref="reports" inherit="top" />
+		<menu ref="modules" inherit="top" />
+
 	</body>
 
 </project>

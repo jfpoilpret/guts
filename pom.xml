@@ -18,9 +18,11 @@
 
 	<name>${project.artifactId}</name>
 
-	<description>${project.artifactId} is a build configuration parent for all GUTS projects;
-GUTS is the most innovative in the pack of SAF / JSR 296 descendants;
-GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection library with focus on SWING gui development.</description>
+	<description>${project.artifactId} is a build configuration parent for
+		all GUTS projects;
+		GUTS is the most innovative in the pack of SAF / JSR 296 descendants;
+		GUTS is a collection of utilities based on Google GUICE 2.0 dependency
+		injection library with focus on SWING gui development.</description>
 
 	<url>http://guts.kenai.com</url>
 
@@ -96,6 +98,14 @@ GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection
 				do not overlap -->
 			<plugins>
 				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-site-plugin</artifactId>
+					<version>2.1.1</version>
+					<configuration>
+						<locales>en,fr</locales>
+					</configuration>
+				</plugin>
+				<plugin>
 					<!-- download source and javadoc from all dependencies and make them
 						available within eclipse. Requires explicit call to: mvn eclipse:eclipse -->
 					<groupId>org.apache.maven.plugins</groupId>
@@ -135,11 +145,6 @@ GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
 					<version>2.3.1</version>
-				</plugin>
-				<plugin>
-					<groupId>org.apache.maven.plugins</groupId>
-					<artifactId>maven-site-plugin</artifactId>
-					<version>2.1.1</version>
 				</plugin>
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
@@ -236,6 +241,7 @@ GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection
 						<format>xml</format>
 						<format>html</format>
 					</formats>
+					<quiet>true</quiet>
 				</configuration>
 			</plugin>
 			<plugin>
@@ -274,7 +280,8 @@ GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection
 					<quiet>true</quiet>
 					<verbose>false</verbose>
 					<links>
-						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/
+						</link>
 						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
@@ -519,8 +526,10 @@ GUTS is a collection of utilities based on Google GUICE 2.0 dependency injection
 
 	<!-- TODO rename svn url -->
 	<scm>
-		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</connection>
-		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk</developerConnection>
+		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
+		</connection>
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
+		</developerConnection>
 		<!-- <tag>/trunk</tag> -->
 		<url>http://kenai.com/projects/guts/sources/guts-events/show</url>
 	</scm>
