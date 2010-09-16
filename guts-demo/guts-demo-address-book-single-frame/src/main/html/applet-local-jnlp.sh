@@ -11,6 +11,7 @@ javaws -uninstall
 
 sleep 1s
 
+###
 
 THIS_PATH=$(dirname $(readlink -f $0))
 
@@ -24,3 +25,4 @@ google-chrome $URL &
 
 sleep 1s
 
+###

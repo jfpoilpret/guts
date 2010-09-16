@@ -33,6 +33,12 @@
 		<!-- location of final jnlp result before zip -->
 		<jnlpWorkDirectory>${project.build.directory}/jnlp</jnlpWorkDirectory>
 
+		<!-- names of jnlp files -->
+		<jnlpApp>${project.artifactId}-app.jnlp</jnlpApp>
+		<jnlpAppTest>${project.artifactId}-app-test.jnlp</jnlpAppTest>
+		<jnlpApplet>${project.artifactId}-applet.jnlp</jnlpApplet>
+		<jnlpAppletTest>${project.artifactId}-applet-test.jnlp</jnlpAppletTest>
+
 	</properties>
 
 	<build>
@@ -118,7 +124,7 @@
 				<executions>
 					<!-- production application -->
 					<execution>
-						<id>app-production</id>
+						<id>jnlpApp</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>jnlp</goal>
@@ -126,14 +132,14 @@
 						<configuration>
 							<jnlp>
 								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
-								<inputTemplate>app-production.vm</inputTemplate>
-								<outputFile>${project.artifactId}.jnlp</outputFile>
+								<inputTemplate>app-prod.vm</inputTemplate>
+								<outputFile>${jnlpApp}</outputFile>
 							</jnlp>
 						</configuration>
 					</execution>
 					<!-- local test application -->
 					<execution>
-						<id>app-test</id>
+						<id>jnlpAppTest</id>
 						<phase>generate-resources</phase>
 						<goals>
 							<goal>jnlp</goal>
@@ -142,7 +148,7 @@
 							<jnlp>
 								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
 								<inputTemplate>app-test.vm</inputTemplate>
-								<outputFile>${project.artifactId}-test.jnlp</outputFile>
+								<outputFile>${jnlpAppTest}</outputFile>
 							</jnlp>
 						</configuration>
 					</execution>
