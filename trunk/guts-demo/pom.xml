@@ -17,7 +17,7 @@
 	<description>${project.artifactId} is build configuration parent foe GUTS demo projects</description>
 
 	<modules>
-		<module>guts-gui-ex-single-frame</module>
+		<module>guts-demo-address-book-single-frame</module>
 	</modules>
 
 </project>
