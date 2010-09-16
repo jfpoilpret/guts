@@ -8,7 +8,7 @@
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 
-	<artifactId>guts-gui-ex-single-frame</artifactId>
+	<artifactId>guts-demo-address-book-single-frame</artifactId>
 	<packaging>jar</packaging>
 
 	<name>${project.artifactId}</name>
