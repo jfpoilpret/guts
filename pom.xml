@@ -102,7 +102,7 @@
 					<artifactId>maven-site-plugin</artifactId>
 					<version>2.1.1</version>
 					<configuration>
-						<locales>en,fr</locales>
+<!--						<locales>en,fr</locales>-->
 <!--						<stagingDirectory>${project.build.directory}/staging</stagingDirectory>-->
 					</configuration>
 				</plugin>
