@@ -1,0 +1,15 @@
+<project name="launch local jnlp application" default="test" basedir=".">
+
+	<target name="clean">
+	  <exec executable="javaws">
+	    <arg value="-uninstall"/>
+	  </exec>
+	</target>
+
+	<target name="test" depends="clean">
+	  <exec executable="javaws">
+	    <arg value="jnlp/${jnlpAppTest}"/>
+	  </exec>
+	</target>
+
+</project>
