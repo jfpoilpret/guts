@@ -19,8 +19,10 @@
 	<properties>
 
 		<!-- provides JApplet / main() -->
+		<demoPackage>net.guts.gui.examples.addressbook</demoPackage>
 		<mainJar>TODO</mainJar>
-		<mainClass>net.guts.gui.examples.addressbook.AddressBookMain</mainClass>
+		<appClass>${demoPackage}.AddressBookApp</appClass>
+		<appletClass>${demoPackage}.AddressBookApplet</appletClass>
 
 		<!-- jnlp applet/application jvm parameters -->
 		<javaHeapMinimum>128m</javaHeapMinimum>
@@ -77,7 +79,7 @@
 					<archive>
 						<manifest>
 							<addClasspath>true</addClasspath>
-							<mainClass>${mainClass}</mainClass>
+							<mainClass>${appClass}</mainClass>
 						</manifest>
 					</archive>
 				</configuration>
@@ -95,7 +97,7 @@
 					<resourcesDirectory>${jnlpTemplates}/resources</resourcesDirectory>
 					<jnlp>
 						<j2seVersion>1.6+</j2seVersion>
-						<mainClass>${mainClass}</mainClass>
+						<mainClass>${appClass}</mainClass>
 					</jnlp>
 					<sign>
 						<keystore>${project.basedir}/src/main/cert/guts-demo.jks</keystore>
