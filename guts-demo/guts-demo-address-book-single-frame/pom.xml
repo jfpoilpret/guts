@@ -19,7 +19,7 @@
 	<properties>
 
 		<!-- provides JApplet / main() -->
-		<demoPackage>net.guts.gui.examples.addressbook</demoPackage>
+		<demoPackage>net.guts.demo.addressbook.singleframe</demoPackage>
 		<mainJar>TODO</mainJar>
 		<appClass>${demoPackage}.AddressBookApp</appClass>
 		<appletClass>${demoPackage}.AddressBookApplet</appletClass>
