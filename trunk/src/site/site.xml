@@ -11,12 +11,6 @@
 		<href>http://kenai.com/projects/guts/</href>
 	</bannerRight>
 
-<!--
-	<poweredBy>
-		<logo name="Built by Maven" href="http://maven.apache.org" img="http://maven.apache.org/images/logos/build-by-maven-black.png" />
-	</poweredBy>
--->
-
 	<skin>
 		<groupId>org.apache.maven.skins</groupId>
 		<artifactId>maven-application-skin</artifactId>
