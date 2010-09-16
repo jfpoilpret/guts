@@ -415,23 +415,9 @@
 	</dependencies>
 
 	<distributionManagement>
-		<!-- DECLARED BY SONATYPE PARENT -->
-		<!-- <repository> -->
-		<!-- <id>guts-releases</id> -->
-		<!-- <name>GUTS Release Repository</name> -->
-		<!-- <uniqueVersion>false</uniqueVersion> -->
-		<!-- <url>dav:https://kenai.com/website/guts/maven/releases</url> -->
-		<!-- </repository> -->
-		<!-- <snapshotRepository> -->
-		<!-- <id>guts-snapshots</id> -->
-		<!-- <name>GUTS Snapshot Repository</name> -->
-		<!-- <uniqueVersion>true</uniqueVersion> -->
-		<!-- <url>dav:https://kenai.com/website/guts/maven/snapshots</url> -->
-		<!-- </snapshotRepository> -->
 		<site>
 			<id>guts-website</id>
-			<name>GUTS Website</name>
-			<url>dav:https://kenai.com/website/guts</url>
+			<url>dav:https://kenai.com/website/guts/guts-base</url>
 		</site>
 	</distributionManagement>
 
