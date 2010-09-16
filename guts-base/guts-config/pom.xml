@@ -5,7 +5,7 @@
 
 	<parent>
 		<groupId>net.guts</groupId>
-		<artifactId>guts-archon</artifactId>
+		<artifactId>guts-base</artifactId>
 		<version>0.1.0-SNAPSHOT</version>
 	</parent>
 

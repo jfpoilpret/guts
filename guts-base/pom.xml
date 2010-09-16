@@ -12,7 +12,7 @@
 	</parent>
 
 	<groupId>net.guts</groupId>
-	<artifactId>guts-archon</artifactId>
+	<artifactId>guts-base</artifactId>
 	<packaging>pom</packaging>
 	<version>0.1.0-SNAPSHOT</version>
 
@@ -88,7 +88,6 @@
 		<module>guts-common</module>
 		<module>guts-events</module>
 		<module>guts-gui</module>
-		<module>guts-gui-ex-single-frame</module>
 	</modules>
 
 	<build>
@@ -527,12 +526,12 @@
 
 	<!-- TODO rename svn url -->
 	<scm>
-		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
+		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk/guts-base
 		</connection>
-		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk/guts-base
 		</developerConnection>
 		<!-- <tag>/trunk</tag> -->
-		<url>http://kenai.com/projects/guts/sources/guts-events/show</url>
+		<url>http://kenai.com/projects/guts/sources/guts-base/show</url>
 	</scm>
 
 	<developers>
