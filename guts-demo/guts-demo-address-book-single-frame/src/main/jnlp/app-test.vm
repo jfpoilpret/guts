@@ -2,31 +2,35 @@
 
 <jnlp
     spec="$jnlpspec"
-    codebase="http://guts.kenai.com/jnlp"
-    href="$outputFile">
+	codebase="file://${project.build.directory}/jnlp"
+	href="$outputFile"
+    >
 
   <information>
 
     <title>$project.Name</title>
     <vendor>Jean-Francois Poilpret (Owner of Guts project on Kenai)</vendor>
-    <homepage href="http://guts.kenai.com/jnlp"/>
+    <homepage href="http://kenai.com/projects/guts"/>
     <description>$project.Description</description>
 
-#if($offlineAllowed)
     <offline-allowed/>
-#end
 
   </information>
 
-#if($allPermissions)
   <security>
      <all-permissions/>
   </security>
-#end
 
   <resources>
-    <j2se version="$j2seVersion"/>
+
+    <j2se
+		version="$j2seVersion"
+		initial-heap-size="$javaHeapMinimum" max-heap-size="$javaHeapMaximum"
+		java-vm-args="$javaArgsString"
+    />
+
      $dependencies
+
   </resources>
 
   <application-desc main-class="$mainClass"/>
