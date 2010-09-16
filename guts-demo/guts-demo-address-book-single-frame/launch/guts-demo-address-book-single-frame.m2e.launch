@@ -11,5 +11,5 @@
 <booleanAttribute key="M2_UPDATE_SNAPSHOTS" value="true"/>
 <booleanAttribute key="M2_WORKSPACE_RESOLUTION" value="true"/>
 <stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="${env_var:MAVEN_OPTS}"/>
-<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/guts-gui-ex-single-frame}"/>
+<stringAttribute key="org.eclipse.jdt.launching.WORKING_DIRECTORY" value="${workspace_loc:/guts-demo-address-book-single-frame}"/>
 </launchConfiguration>
