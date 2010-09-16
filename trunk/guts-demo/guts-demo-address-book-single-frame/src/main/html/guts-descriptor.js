@@ -17,9 +17,9 @@ function gutsDescriptor () {
 };
 
 var gutsDemo01 = new gutsDescriptor();
-gutsDemo01.jnlpApplet = "${project.artifactId}-applet.jnlp";
-gutsDemo01.jnlpApplication = "${project.artifactId}-application.jnlp";
-gutsDemo01.jnlpAppletTest = "${project.artifactId}-applet-test.jnlp";
-gutsDemo01.jnlpApplicationTest = "${project.artifactId}-application-test.jnlp";
+gutsDemo01.jnlpApplet = "${jnlpApplet};
+gutsDemo01.jnlpAppletTest = "${jnlpAppletTest";
+gutsDemo01.jnlpApplication = "${jnlpApplication}";
+gutsDemo01.jnlpApplicationTest = "${jnlpApplicationTest}";
 
 
