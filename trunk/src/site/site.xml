@@ -29,10 +29,12 @@
 		<menu ref="reports" inherit="top" />
 		<menu ref="modules" inherit="top" />
 
+<!--
 		<menu name="Language" inherit="top" >
 			<item name="English" href="/index.html" />
 			<item name="French" href="/fr/index.html" />
 		</menu>
+-->
 
 	</body>
 
