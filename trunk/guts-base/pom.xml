@@ -38,51 +38,6 @@
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 	</properties>
 
-	<!-- DECLARED BY SONATYPE PARENT -->
-	<!-- <profiles> -->
-	<!-- <profile> -->
-	<!-- <id>release</id> -->
-	<!-- <build> -->
-	<!-- <pluginManagement> -->
-	<!-- <plugins> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-	<!-- <inherited>true</inherited> -->
-	<!-- <executions> -->
-	<!-- <execution> -->
-	<!-- <id>attach-javadocs</id> -->
-	<!-- <goals> -->
-	<!-- <goal>jar</goal> -->
-	<!-- </goals> -->
-	<!-- </execution> -->
-	<!-- </executions> -->
-	<!-- <configuration> -->
-	<!-- <link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link> -->
-	<!-- <link>http://java.sun.com/javase/1.6.0/docs/api</link> -->
-	<!-- <show>public</show> -->
-	<!-- </configuration> -->
-	<!-- </plugin> -->
-	<!-- <plugin> -->
-	<!-- <groupId>org.apache.maven.plugins</groupId> -->
-	<!-- <artifactId>maven-source-plugin</artifactId> -->
-	<!-- <inherited>true</inherited> -->
-	<!-- <executions> -->
-	<!-- <execution> -->
-	<!-- <id>attach-sources</id> -->
-	<!-- <goals> -->
-	<!-- <goal>jar</goal> -->
-	<!-- <goal>test-jar</goal> -->
-	<!-- </goals> -->
-	<!-- </execution> -->
-	<!-- </executions> -->
-	<!-- </plugin> -->
-	<!-- </plugins> -->
-	<!-- </pluginManagement> -->
-	<!-- </build> -->
-	<!-- </profile> -->
-	<!-- </profiles> -->
-
 	<modules>
 		<module>guts-config</module>
 		<module>guts-common</module>
