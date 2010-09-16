@@ -24,11 +24,11 @@ import net.guts.gui.naming.ComponentNamingModule;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
-public class AddressBookMain extends AbstractApplication
+public class AddressBookApp extends AbstractApplication
 {
 	public static void main(String[] args)
 	{
-		new AddressBookMain().launch(args);
+		new AddressBookApp().launch(args);
 	}
 	
 	@Override protected void initModules(String[] args, List<Module> modules)
