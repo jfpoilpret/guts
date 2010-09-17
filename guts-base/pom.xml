@@ -18,7 +18,7 @@
 
 	<name>${project.artifactId}</name>
 
-	<description>${project.artifactId} is a build configuration parent for
+	<description>${project.name} is a build configuration parent for
 		all GUTS projects;
 		GUTS is the most innovative in the pack of SAF / JSR 296 descendants;
 		GUTS is a collection of utilities based on Google GUICE 2.0 dependency
@@ -28,6 +28,7 @@
 
 	<ciManagement>
 		<system>hudson ci</system>
+		<url>private</url>
 	</ciManagement>
 
 	<inceptionYear>2009</inceptionYear>
@@ -45,6 +46,10 @@
 		<module>guts-gui</module>
 	</modules>
 
+	<organization>
+		<name>Project GUTS</name>
+		<url>http://kenai.com/projects/guts</url>
+	</organization>
 	<build>
 		<pluginManagement>
 			<!-- note: this "plugin management" affects only the "build"; for "reporting",
@@ -467,12 +472,12 @@
 
 	<!-- TODO rename svn url -->
 	<scm>
-		<connection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk/guts-base
+		<connection>scm:svn:https://kenai.com/svn/guts~code/trunk/guts-base
 		</connection>
-		<developerConnection>scm:svn:https://kenai.com/svn/guts~guts-events/trunk/guts-base
+		<developerConnection>scm:svn:https://kenai.com/svn/guts~code/trunk/guts-base
 		</developerConnection>
 		<!-- <tag>/trunk</tag> -->
-		<url>http://kenai.com/projects/guts/sources/guts-base/show</url>
+		<url>http://kenai.com/projects/guts/sources/code/show</url>
 	</scm>
 
 	<developers>

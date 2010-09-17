@@ -15,7 +15,7 @@
 	<name>${project.artifactId}</name>
 
 	<description>
-		${project.artifactId} is a GUICE+SWING based framework for RCP development; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
+		${project.name} is a GUICE+SWING based framework for RCP development; many of its concepts are taken from the Swing Application Framework by Sun (JSR-296).
 	</description>
 
 	<dependencies>

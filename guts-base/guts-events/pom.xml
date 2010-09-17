@@ -15,7 +15,7 @@
 	<name>${project.artifactId}</name>
 
 	<description>
-		${project.artifactId} is a light library, based on Guice Dependency Injection, to handle &quot;events&quot; transmission from Suppliers to Consumers inside a same JVM.
+		${project.name} is a light library, based on Guice Dependency Injection, to handle &quot;events&quot; transmission from Suppliers to Consumers inside a same JVM.
 	</description>
 
 	<build>
