@@ -18,43 +18,6 @@
 		${project.name} is a light library, based on Guice Dependency Injection, to handle &quot;events&quot; transmission from Suppliers to Consumers inside a same JVM.
 	</description>
 
-	<build>
-		<!-- <plugins> -->
-		<!-- Also generate a javadoc jar to be installed into the repository -->
-		<!-- <plugin> -->
-		<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-		<!-- <configuration> -->
-		<!-- <excludePackageNames>net.guts.event.internal</excludePackageNames> -->
-		<!-- <quiet>true</quiet> -->
-		<!-- <verbose>false</verbose> -->
-		<!-- <links> -->
-		<!-- <link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link> -->
-		<!-- <link>http://java.sun.com/javase/1.6.0/docs/api</link> -->
-		<!-- <show>public</show> -->
-		<!-- </links> -->
-		<!-- </configuration> -->
-		<!-- </plugin> -->
-		<!-- </plugins> -->
-	</build>
-
-	<reporting>
-		<!-- <plugins> -->
-		<!-- <plugin> -->
-		<!-- <artifactId>maven-javadoc-plugin</artifactId> -->
-		<!-- <configuration> -->
-		<!-- <excludePackageNames>net.guts.event.internal</excludePackageNames> -->
-		<!-- <quiet>true</quiet> -->
-		<!-- <verbose>false</verbose> -->
-		<!-- <links> -->
-		<!-- <link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link> -->
-		<!-- <link>http://java.sun.com/javase/1.6.0/docs/api</link> -->
-		<!-- <show>public</show> -->
-		<!-- </links> -->
-		<!-- </configuration> -->
-		<!-- </plugin> -->
-		<!-- </plugins> -->
-	</reporting>
-
 	<dependencies>
 		<dependency>
 			<groupId>com.google.inject.extensions</groupId>
