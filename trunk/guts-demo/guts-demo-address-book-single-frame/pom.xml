@@ -13,7 +13,6 @@
 	<packaging>jar</packaging>
 
 	<!-- TODO finish this wiki page -->
-	<url>http://kenai.com/projects/guts/pages/DemoAddressBook</url>
 
 	<name>${project.artifactId}</name>
 
@@ -50,6 +49,7 @@
 	<properties>
 
 		<projectWebsite>https://kenai.com/website/guts</projectWebsite>
+		<projectWikisite>http://kenai.com/projects/guts/pages/guts-demo-address-book</projectWikisite>
 
 		<!-- provides JApplet / main() -->
 		<demoPackage>net.guts.demo.addressbook.singleframe</demoPackage>
@@ -81,7 +81,7 @@
 		<!-- jnlp descriptor fields -->
 		<jnlpTitle>${project.artifactId}</jnlpTitle>
 		<jnlpVendor>Jean-Francois Poilpret / Project GUTS</jnlpVendor>
-		<jnlpHomepage>${project.url}</jnlpHomepage>
+		<jnlpHomepage>${projectWikisite}</jnlpHomepage>
 		<jnlpDescription>${project.description}</jnlpDescription>
 
 	</properties>
