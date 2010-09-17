@@ -186,8 +186,15 @@
 					<version>1.0-beta-1</version>
 				</plugin>
 
+				<plugin>
+					<groupId>org.codehaus.mojo</groupId>
+					<artifactId>wagon-maven-plugin</artifactId>
+					<version>1.0-beta-3</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
+
 		<plugins>
 			<!-- TODO merge to reporting -->
 			<!-- Here to declare dependency to guts-config which contains checkstyle
