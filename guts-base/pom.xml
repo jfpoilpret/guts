@@ -24,7 +24,7 @@
 		GUTS is a collection of utilities based on Google GUICE 2.0 dependency
 		injection library with focus on SWING gui development.</description>
 
-	<url>http://kenai.com/projects/guts</url>
+	<url>http://guts.kenai.com/</url>
 
 	<ciManagement>
 		<system>hudson ci</system>
