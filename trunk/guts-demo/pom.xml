@@ -21,6 +21,7 @@
 		<module>guts-demo-address-book-single-frame</module>
 	</modules>
 
+	<url>http://guts.kenai.com/guts-demo/</url>
 	<distributionManagement>
 		<site>
 			<id>guts-website</id>
