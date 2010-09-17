@@ -16,6 +16,34 @@
 
 	<description>${project.artifactId} is a simple Address Book example application with a single frame layout</description>
 
+	<dependencies>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-gui</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- swing-layout and DesignGridLayout -->
+		<dependency>
+			<groupId>net.java.dev.designgridlayout</groupId>
+			<artifactId>designgridlayout</artifactId>
+			<version>1.1p1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.glazedlists</groupId>
+			<artifactId>glazedlists_java15</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
+	</dependencies>
+
 	<properties>
 
 		<!-- provides JApplet / main() -->
@@ -32,8 +60,11 @@
 		<!-- velocity templates folder for jnlp files generation -->
 		<jnlpTemplates>${project.basedir}/src/main/jnlp/</jnlpTemplates>
 
-		<!-- location of final jnlp result before zip -->
-		<jnlpWorkDirectory>${project.build.directory}/jnlp</jnlpWorkDirectory>
+		<!-- local location of jnlp file set -->
+		<jnlpLocalDirectory>${project.build.directory}/jnlp</jnlpLocalDirectory>
+
+		<!-- remote location of jnlp file set (upload to) -->
+		<jnlpRemoteDirectory>https://kenai.com/website/guts/guts-demo-jnlp</jnlpRemoteDirectory>
 
 		<!-- names of jnlp files -->
 		<jnlpApp>${project.artifactId}-app.jnlp</jnlpApp>
@@ -44,6 +75,22 @@
 	</properties>
 
 	<build>
+
+		<extensions>
+
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+
+		</extensions>
 
 		<plugins>
 
@@ -93,7 +140,7 @@
 					<pack200>false</pack200>
 					<verbose>false</verbose>
 					<unsignAlreadySignedJars>true</unsignAlreadySignedJars>
-					<workDirectory>${jnlpWorkDirectory}</workDirectory>
+					<workDirectory>${jnlpLocalDirectory}</workDirectory>
 					<resourcesDirectory>${jnlpTemplates}/resources</resourcesDirectory>
 					<jnlp>
 						<j2seVersion>1.6+</j2seVersion>
@@ -157,39 +204,30 @@
 				</executions>
 			</plugin>
 
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<version>1.0-beta-3</version>
+				<executions>
+					<execution>
+						<id>upload-jnlp</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<serverId>guts-website</serverId>
+							<url>${jnlpRemoteDirectory}</url>
+							<fromDir>${jnlpLocalDirectory}</fromDir>
+							<toDir>.</toDir>
+							<includes>*</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
 		</plugins>
 	</build>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-gui</artifactId>
-			<version>${project.version}</version>
-		</dependency>
-
-		<!-- swing-layout and DesignGridLayout -->
-		<dependency>
-			<groupId>net.java.dev.designgridlayout</groupId>
-			<artifactId>designgridlayout</artifactId>
-			<version>1.1p1</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.slf4j</groupId>
-			<artifactId>slf4j-log4j12</artifactId>
-		</dependency>
-
-		<dependency>
-			<groupId>net.java.dev.glazedlists</groupId>
-			<artifactId>glazedlists_java15</artifactId>
-			<version>1.7.0</version>
-		</dependency>
-
-	</dependencies>
-
-	<modules>
-	</modules>
 
 </project>
 
