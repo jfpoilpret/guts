@@ -78,6 +78,20 @@
 						<!-- <locales>en,fr</locales> -->
 						<!-- <stagingDirectory>${project.build.directory}/staging</stagingDirectory> -->
 					</configuration>
+					<!-- Need to exclude commons-logging due to bug. See: http://jira.codehaus.org/browse/MSITE-459 -->
+					<dependencies>
+						<dependency>
+							<groupId>org.apache.maven.doxia</groupId>
+							<artifactId>doxia-module-xhtml</artifactId>
+							<version>1.1.3</version>
+							<exclusions>
+								<exclusion>
+									<groupId>commons-logging</groupId>
+									<artifactId>commons-logging</artifactId>
+								</exclusion>
+							</exclusions>
+						</dependency>
+					</dependencies>
 				</plugin>
 
 				<plugin>
@@ -185,6 +199,12 @@
 					<groupId>org.codehaus.mojo</groupId>
 					<artifactId>wagon-maven-plugin</artifactId>
 					<version>1.0-beta-3</version>
+				</plugin>
+
+				<plugin>
+					<groupId>org.apache.maven.wagon</groupId>
+					<artifactId>wagon</artifactId>
+					<version>1.0-beta-6</version>
 				</plugin>
 
 			</plugins>
