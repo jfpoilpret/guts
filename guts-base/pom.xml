@@ -50,21 +50,42 @@
 		<name>Project GUTS</name>
 		<url>http://kenai.com/projects/guts</url>
 	</organization>
+
 	<build>
+
+		<extensions>
+
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-ssh</artifactId>
+				<version>1.0-beta-6</version>
+			</extension>
+
+			<extension>
+				<groupId>org.apache.maven.wagon</groupId>
+				<artifactId>wagon-webdav</artifactId>
+				<version>1.0-beta-2</version>
+			</extension>
+
+		</extensions>
+
+
 		<pluginManagement>
 			<!-- note: this "plugin management" affects only the "build"; for "reporting",
 				you must provide separate declarations; ideally, build and reporting plugins
 				do not overlap -->
 			<plugins>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-site-plugin</artifactId>
 					<version>2.1.1</version>
 					<configuration>
-<!--						<locales>en,fr</locales>-->
-<!--						<stagingDirectory>${project.build.directory}/staging</stagingDirectory>-->
+						<!-- <locales>en,fr</locales> -->
+						<!-- <stagingDirectory>${project.build.directory}/staging</stagingDirectory> -->
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<!-- download source and javadoc from all dependencies and make them
 						available within eclipse. Requires explicit call to: mvn eclipse:eclipse -->
@@ -77,11 +98,13 @@
 						<downloadJavadocs>true</downloadJavadocs>
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-clean-plugin</artifactId>
 					<version>2.4.1</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-compiler-plugin</artifactId>
@@ -91,36 +114,43 @@
 						<target>${javaVersion}</target>
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-jar-plugin</artifactId>
 					<version>2.3.1</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-resources-plugin</artifactId>
 					<version>2.4.3</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-install-plugin</artifactId>
 					<version>2.3.1</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-deploy-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-source-plugin</artifactId>
 					<version>2.1.2</version>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
+
 				<!-- DECLARED BY SONATYPE PARENT -->
 				<!-- <plugin> -->
 				<!-- <groupId>org.apache.maven.plugins</groupId> -->
@@ -133,6 +163,7 @@
 				<!-- <preparationGoals>clean verify install</preparationGoals> -->
 				<!-- </configuration> -->
 				<!-- </plugin> -->
+
 				<plugin>
 					<!-- Surefire default configuration -->
 					<groupId>org.apache.maven.plugins</groupId>
@@ -142,11 +173,19 @@
 						<groups>utest,itest</groups>
 					</configuration>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.maven.plugins</groupId>
 					<artifactId>maven-checkstyle-plugin</artifactId>
 					<version>2.5</version>
 				</plugin>
+
+				<plugin>
+					<groupId>org.codehaus.mojo.webstart</groupId>
+					<artifactId>webstart-maven-plugin</artifactId>
+					<version>1.0-alpha-2</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 		<plugins>
