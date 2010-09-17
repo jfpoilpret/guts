@@ -88,22 +88,6 @@
 
 	<build>
 
-		<extensions>
-
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-ssh</artifactId>
-				<version>1.0-beta-6</version>
-			</extension>
-
-			<extension>
-				<groupId>org.apache.maven.wagon</groupId>
-				<artifactId>wagon-webdav</artifactId>
-				<version>1.0-beta-2</version>
-			</extension>
-
-		</extensions>
-
 		<plugins>
 
 			<!-- filter resources -->
@@ -147,7 +131,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo.webstart</groupId>
 				<artifactId>webstart-maven-plugin</artifactId>
-				<version>1.0-alpha-2</version>
 				<configuration>
 					<pack200>false</pack200>
 					<verbose>false</verbose>
