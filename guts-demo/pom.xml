@@ -16,7 +16,6 @@
 
 	<description>${project.artifactId} is a build configuration parent for GUTS demo projects</description>
 
-	<url>http://kenai.com/projects/guts</url>
 
 	<modules>
 		<module>guts-demo-address-book-single-frame</module>

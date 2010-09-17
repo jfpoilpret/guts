@@ -12,9 +12,12 @@
 	<artifactId>guts-demo-address-book-single-frame</artifactId>
 	<packaging>jar</packaging>
 
+	<!-- TODO finish this wiki page -->
+	<url>http://kenai.com/projects/guts/pages/DemoAddressBook</url>
+
 	<name>${project.artifactId}</name>
 
-	<description>${project.artifactId} is a simple Address Book example application with a single frame layout</description>
+	<description>${project.name} is a simple Address Book example application with a single frame layout</description>
 
 	<dependencies>
 
@@ -46,6 +49,8 @@
 
 	<properties>
 
+		<projectWebsite>https://kenai.com/website/guts</projectWebsite>
+
 		<!-- provides JApplet / main() -->
 		<demoPackage>net.guts.demo.addressbook.singleframe</demoPackage>
 		<mainJar>TODO</mainJar>
@@ -63,14 +68,21 @@
 		<!-- local location of jnlp file set -->
 		<jnlpLocalDirectory>${project.build.directory}/jnlp</jnlpLocalDirectory>
 
-		<!-- remote location of jnlp file set (upload to) -->
-		<jnlpRemoteDirectory>https://kenai.com/website/guts/guts-demo-jnlp</jnlpRemoteDirectory>
+		<!-- remote location of jnlp file set (upload to; code base;) -->
+		<jnlpRemoteDirectory>${projectWebsite}/guts-demo-jnlp/${project.artifactId}</jnlpRemoteDirectory>
 
 		<!-- names of jnlp files -->
 		<jnlpApp>${project.artifactId}-app.jnlp</jnlpApp>
 		<jnlpAppTest>${project.artifactId}-app-test.jnlp</jnlpAppTest>
 		<jnlpApplet>${project.artifactId}-applet.jnlp</jnlpApplet>
 		<jnlpAppletTest>${project.artifactId}-applet-test.jnlp</jnlpAppletTest>
+
+
+		<!-- jnlp descriptor fields -->
+		<jnlpTitle>${project.artifactId}</jnlpTitle>
+		<jnlpVendor>Jean-Francois Poilpret / Project GUTS</jnlpVendor>
+		<jnlpHomepage>${project.url}</jnlpHomepage>
+		<jnlpDescription>${project.description}</jnlpDescription>
 
 	</properties>
 
@@ -151,24 +163,6 @@
 						<alias>guts-demo</alias>
 						<storepass>changeit</storepass>
 					</sign>
-					<!-- <sign> -->
-					<!-- <keystore>keystore</keystore> -->
-					<!-- <keypass>password</keypass> -->
-					<!-- <storepass>password</storepass> -->
-					<!-- <alias>alias</alias> -->
-					<!-- <validity>3650</validity> -->
-					<!-- <keystoreConfig> -->
-					<!-- <delete>true</delete> -->
-					<!-- <gen>true</gen> -->
-					<!-- </keystoreConfig> -->
-					<!-- <dnameCn>Guts-GUI</dnameCn> -->
-					<!-- <dnameOu>Guts GUI</dnameOu> -->
-					<!-- <dnameO>Guts</dnameO> -->
-					<!-- <dnameL>Ho Chi Minh city</dnameL> -->
-					<!-- <dnameSt>NA</dnameSt> -->
-					<!-- <dnameC>VN</dnameC> -->
-					<!-- <verify>true</verify> -->
-					<!-- </sign> -->
 				</configuration>
 				<executions>
 					<!-- production application -->
@@ -205,6 +199,7 @@
 			</plugin>
 
 			<plugin>
+				<!-- upload jnlp file set -->
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>wagon-maven-plugin</artifactId>
 				<version>1.0-beta-3</version>
@@ -216,6 +211,7 @@
 							<goal>upload</goal>
 						</goals>
 						<configuration>
+							<!-- serverId must come from settings.xml -->
 							<serverId>guts-website</serverId>
 							<url>${jnlpRemoteDirectory}</url>
 							<fromDir>${jnlpLocalDirectory}</fromDir>
