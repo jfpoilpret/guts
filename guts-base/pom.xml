@@ -55,11 +55,19 @@
 
 		<extensions>
 
+			<!-- default webdav wagon with bug; see maven-site-plugin below -->
 			<extension>
 				<groupId>org.apache.maven.wagon</groupId>
 				<artifactId>wagon-webdav</artifactId>
 				<version>1.0-beta-2</version>
 			</extension>
+
+			<!-- alternative webdav wagon; TODO -->
+			<!-- <extension> -->
+			<!-- <groupId>org.apache.maven.wagon</groupId> -->
+			<!-- <artifactId>wagon-webdav-jackrabbit</artifactId> -->
+			<!-- <version>1.0-beta-6</version> -->
+			<!-- </extension> -->
 
 		</extensions>
 
@@ -75,10 +83,10 @@
 					<artifactId>maven-site-plugin</artifactId>
 					<version>2.1.1</version>
 					<configuration>
+						<!-- multipe language support increases build time; disable for now -->
 						<!-- <locales>en,fr</locales> -->
-						<!-- <stagingDirectory>${project.build.directory}/staging</stagingDirectory> -->
 					</configuration>
-					<!-- Need to exclude commons-logging due to bug. See: http://jira.codehaus.org/browse/MSITE-459 -->
+					<!-- Need to exclude commons-logging due to webdav wagon bug. See: http://jira.codehaus.org/browse/MSITE-459 -->
 					<dependencies>
 						<dependency>
 							<groupId>org.apache.maven.doxia</groupId>
