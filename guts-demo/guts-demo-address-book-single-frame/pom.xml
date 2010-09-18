@@ -12,8 +12,6 @@
 	<artifactId>guts-demo-address-book-single-frame</artifactId>
 	<packaging>jar</packaging>
 
-	<!-- TODO finish this wiki page -->
-
 	<name>${project.artifactId}</name>
 
 	<description>${project.name} is a simple Address Book example application with a single frame layout</description>
@@ -48,7 +46,10 @@
 
 	<properties>
 
+		<!-- parent for auto-build sites: maven sites, jnlp sites, etc -->
 		<projectWebsite>https://kenai.com/website/guts</projectWebsite>
+
+		<!-- wiki page that describes this demo -->
 		<projectWikisite>http://kenai.com/projects/guts/pages/guts-demo-address-book</projectWikisite>
 
 		<!-- provides JApplet / main() -->
@@ -151,7 +152,7 @@
 					<!-- production application -->
 					<execution>
 						<id>jnlpApp</id>
-						<phase>generate-resources</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>jnlp</goal>
 						</goals>
@@ -166,7 +167,7 @@
 					<!-- local test application -->
 					<execution>
 						<id>jnlpAppTest</id>
-						<phase>generate-resources</phase>
+						<phase>package</phase>
 						<goals>
 							<goal>jnlp</goal>
 						</goals>
