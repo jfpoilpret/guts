@@ -292,6 +292,7 @@
 						<show>public</show>
 					</links>
 					<linksource>true</linksource>
+					<doctitle>${project.name} ${project.version} API (${maven.build.timestamp})</doctitle>
 					<windowtitle>${project.name} ${project.version} API (${maven.build.timestamp})</windowtitle>
 				</configuration>
 				<reportSets>
