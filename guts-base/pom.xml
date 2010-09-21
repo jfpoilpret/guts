@@ -286,14 +286,24 @@
 					<quiet>true</quiet>
 					<verbose>false</verbose>
 					<links>
-						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/
-						</link>
-						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
+						<link>http://google-guice.googlecode.com/svn/trunk/latest-javadoc/</link>
+						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 					</links>
 					<linksource>true</linksource>
-					<doctitle>${project.name} ${project.version} API (${maven.build.timestamp})</doctitle>
-					<windowtitle>${project.name} ${project.version} API (${maven.build.timestamp})</windowtitle>
+					<detectLinks>true</detectLinks>
+					<windowtitle>${project.name} API ${project.version} /
+						${maven.build.timestamp}</windowtitle>
+					<doctitle>${project.name} API ${project.version} /
+						${maven.build.timestamp}</doctitle>
+					<header><![CDATA[<a href="${project.organization.url}" target="_blank">${project.organization.name}</a>]]></header>
+					<footer><![CDATA[<a href="${project.organization.url}" target="_blank">${project.organization.name}</a>]]></footer>
+					<bottom>
+						<!-- note: these "years" are internal javadoc plugin tags -->
+						Copyright &#169; {inceptionYear}-{currentYear}
+						<![CDATA[<a href="${project.organization.url}" target="_blank">${project.organization.name}</a>]]>.
+						All Rights Reserved.
+					</bottom>
 				</configuration>
 				<reportSets>
 					<reportSet>
@@ -561,7 +571,7 @@
 		</developer>
 		<developer>
 			<id>trygvelaugstol</id>
-			<name>Trygve Laugstøl</name>
+			<name>Trygve LaugstÃ¸l</name>
 			<email>trygvis@inamo.no</email>
 			<roles>
 				<role>content developer</role>
