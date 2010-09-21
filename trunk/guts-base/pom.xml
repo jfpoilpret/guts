@@ -37,6 +37,7 @@
 		<javaVersion>1.6</javaVersion>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm-ss</maven.build.timestamp.format>
 	</properties>
 
 	<modules>
@@ -290,6 +291,8 @@
 						<link>http://java.sun.com/javase/1.6.0/docs/api</link>
 						<show>public</show>
 					</links>
+					<linksource>true</linksource>
+					<windowtitle>${project.name} ${project.version} API (${maven.build.timestamp})</windowtitle>
 				</configuration>
 				<reportSets>
 					<reportSet>
