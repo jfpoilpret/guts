@@ -30,17 +30,25 @@ public class BeanBindRegistry {
 
 		dirMap.put(one, two);
 
-		// log.info("map.size : {}", mapDir.size());
-
-		// log.info("map.get() : {}", mapDir.get(one));
-
 	}
 
-	Object find(Object one) {
+	Object find(Object any) {
 
-		// log.info("map.size : {}", mapDir.size());
+		Object one = dirMap.get(any);
 
-		return dirMap.get(one);
+		if (one != null) {
+			return one;
+		}
+
+		Object two = invMap.get(any);
+
+		if (two != null) {
+			return two;
+		}
+
+		log.error("not bound : {}", any);
+
+		return null;
 
 	}
 

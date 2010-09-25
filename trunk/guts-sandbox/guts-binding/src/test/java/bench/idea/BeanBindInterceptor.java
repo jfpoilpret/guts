@@ -10,6 +10,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.inject.Inject;
+import com.google.inject.internal.asm.Type;
+import com.google.inject.internal.cglib.core.Signature;
+import com.google.inject.internal.cglib.proxy.MethodProxy;
 
 class BeanBindInterceptor implements MethodInterceptor {
 
@@ -21,7 +24,7 @@ class BeanBindInterceptor implements MethodInterceptor {
 
 	BeanBindInterceptor() {
 
-		log.info("init");
+		log.debug("init");
 
 	}
 
@@ -34,11 +37,11 @@ class BeanBindInterceptor implements MethodInterceptor {
 		final Class<? extends MethodInvocation> klaz = invocation.getClass();
 		final AccessibleObject part = invocation.getStaticPart();
 
-		log.info("intercepted instance : {}", instance);
-		log.info("intercepted method : {}", method);
-		log.info("intercepted args : {}", args);
-		log.info("intercepted klaz : {}", klaz);
-		log.info("intercepted part : {}", part);
+		log.debug("intercepted instance : {}", instance);
+		log.debug("intercepted method : {}", method);
+		log.debug("intercepted args : {}", args);
+		log.debug("intercepted klaz : {}", klaz);
+		log.debug("intercepted part : {}", part);
 
 		final Object peer = registry.find(instance);
 
@@ -50,43 +53,58 @@ class BeanBindInterceptor implements MethodInterceptor {
 
 		}
 
+		Object result = invocation.proceed();
+
 		log.info("intercepted peer : {}", peer);
 
 		Class<? extends Object> peerProxyKlaz = peer.getClass();
-		log.info("--- peerProxyKlaz : {}", peerProxyKlaz);
+		log.debug("--- peerProxyKlaz : {}", peerProxyKlaz);
 
-		for (final Method peerMethod : peerProxyKlaz.getDeclaredMethods()) {
-			log.info("--- proxy peerMethod : {}", peerMethod.getName());
-		}
+		// for (final Method peerMethod : peerProxyKlaz.getDeclaredMethods()) {
+		// log.debug("--- proxy peerMethod : {}", peerMethod.getName());
+		// }
 
 		Class<? extends Object> peerRealKlaz = peerProxyKlaz.getSuperclass();
-		log.info("+++ peerRealKlaz : {}", peerRealKlaz);
+		log.debug("+++ peerRealKlaz : {}", peerRealKlaz);
 
-		for (final Method peerMethod : peerRealKlaz.getDeclaredMethods()) {
-			log.info("+++ real peerMethod : {}", peerMethod.getName());
-		}
+		// for (final Method peerMethod : peerRealKlaz.getDeclaredMethods()) {
+		// log.debug("+++ real peerMethod : {}", peerMethod.getName());
+		// }
 
 		methodLoop: for (final Method peerMethod : peerRealKlaz
 				.getDeclaredMethods()) {
 
-			// log.info("peerMethod : {}", peerMethod.getName());
+			// log.debug("peerMethod : {}", peerMethod.getName());
 
 			Annotation[] peerAnnoArray = peerMethod.getDeclaredAnnotations();
-			// log.info("peerAnnoArray.length  : {}", peerAnnoArray.length);
+			// log.debug("peerAnnoArray.length  : {}", peerAnnoArray.length);
 
 			for (final Annotation peerAnno : peerAnnoArray) {
 
-				// log.info("peerAnno : {} ; {}", peerAnno,
+				// log.debug("peerAnno : {} ; {}", peerAnno,
 				// peerAnno.annotationType());
 
 				if (peerAnno.annotationType() == BeanBind.class) {
 
-					log.info("!!! peer anno match: {} ; {}", peerAnno,
+					log.debug("!!! peer anno match: {} ; {}", peerAnno,
 							peerMethod.getName());
 
 					peerMethod.setAccessible(true);
 
-					peerMethod.invoke(peer, args);
+					Class<?> type = peerProxyKlaz;
+
+					// Signature signature = TypeUtils
+					// .parseSignature("void setTwo(Integer)");
+
+					Signature signature = getSignature(peerMethod);
+
+					log.debug("!!! peer method signature: {}", signature);
+
+					MethodProxy methodProxy = MethodProxy.find(type, signature);
+
+					methodProxy.invokeSuper(peer, args);
+
+					// peerMethod.invoke(peer, args);
 
 					break methodLoop;
 
@@ -95,7 +113,29 @@ class BeanBindInterceptor implements MethodInterceptor {
 
 		}
 
-		return invocation.proceed();
+		return result;
+
+	}
+
+	Signature getSignature(Method method) {
+
+		String name = method.getName();
+
+		Type returnType = Type.getType(method.getReturnType());
+
+		Class<?>[] paramTypeArray = method.getParameterTypes();
+
+		int paramCount = paramTypeArray.length;
+
+		Type[] argumentTypes = new Type[paramCount];
+
+		for (int k = 0; k < paramCount; k++) {
+			argumentTypes[k] = Type.getType(paramTypeArray[k]);
+		}
+
+		Signature signature = new Signature(name, returnType, argumentTypes);
+
+		return signature;
 
 	}
 
