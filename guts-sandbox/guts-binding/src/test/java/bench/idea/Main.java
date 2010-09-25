@@ -26,7 +26,7 @@ public class Main {
 
 		b1.setOne(10);
 
-		// b2.setTwo(20);
+		b2.setTwo(20);
 
 		log.info("finished");
 
