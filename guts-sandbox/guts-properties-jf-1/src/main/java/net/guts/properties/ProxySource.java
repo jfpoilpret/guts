@@ -1,6 +1,7 @@
 package net.guts.properties;
 
-interface ProxySource
-{
+interface ProxySource {
+
 	public Object source();
+
 }

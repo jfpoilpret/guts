@@ -6,40 +6,45 @@ import java.lang.reflect.Method;
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
 
-class MockInterceptor implements MethodInterceptor
-{
-	public MockInterceptor(PropertyDescriptor[] properties)
-	{
+class MockInterceptor implements MethodInterceptor {
+
+	public MockInterceptor(PropertyDescriptor[] properties) {
 		_properties = properties;
 	}
-	
-	public PropertyDescriptor lastUsedProperty()
-	{
+
+	public PropertyDescriptor lastUsedProperty() {
+
 		PropertyDescriptor property = _lastUsedProperty;
 		_lastUsedProperty = null;
+
 		return property;
+
 	}
-	
-	public Object intercept(
-		Object target, Method method, Object[] args, MethodProxy proxy)
-		throws Throwable
-	{
+
+	@Override
+	public Object intercept(Object target, Method method, Object[] args,
+			MethodProxy proxy) throws Throwable {
+
 		_lastUsedProperty = null;
+
 		// Check this is a getter
-		for (PropertyDescriptor descriptor: _properties)
-		{
-			if (method.equals(descriptor.getReadMethod()))
-			{
+		for (PropertyDescriptor descriptor : _properties) {
+			if (method.equals(descriptor.getReadMethod())) {
 				_lastUsedProperty = descriptor;
 				break;
 			}
 		}
-		//TODO try to return something non-null when possible
-		//TODO should we call super method if not abstract of course)?
+
+		// TODO try to return something non-null when possible
+		// TODO should we call super method if not abstract of course)?
+
 		return null;
+
 	}
 
 	private final PropertyDescriptor[] _properties;
-	//FIXME should be in a ThreadLocal no?
+
+	// FIXME should be in a ThreadLocal no?
 	private PropertyDescriptor _lastUsedProperty = null;
+
 }

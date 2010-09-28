@@ -1,4 +1,4 @@
-package net.guts.properties;
+package net.guts.properties.el;
 
 import java.util.HashMap;
 import java.util.Map;
