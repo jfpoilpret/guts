@@ -1,5 +1,6 @@
 package net.guts.event.example.concurrent;
 
+import net.guts.common.injection.InjectionListeners;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
 
@@ -25,6 +26,8 @@ public class Main {
 						Events.bindChannel(binder(), Integer.class);
 					}
 				});
+
+		InjectionListeners.injectListeners(injector);
 
 		final Consumer consumer = injector.getInstance(Consumer.class);
 
