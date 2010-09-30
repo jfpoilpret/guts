@@ -19,6 +19,7 @@
 
 	<modules>
 		<module>guts-demo-address-book-single-frame</module>
+		<module>guts-demo-event-bus</module>
 	</modules>
 
 	<url>http://guts.kenai.com/guts-demo/</url>

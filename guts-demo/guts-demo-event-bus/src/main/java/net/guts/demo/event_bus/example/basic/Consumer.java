@@ -1,4 +1,4 @@
-package net.guts.event.example.concurrent;
+package net.guts.demo.event_bus.example.basic;
 
 import net.guts.event.Consumes;
 

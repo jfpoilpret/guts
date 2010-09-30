@@ -1,4 +1,4 @@
-package net.guts.event.example.concurrent;
+package net.guts.demo.event_bus.example.concurrent;
 
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
