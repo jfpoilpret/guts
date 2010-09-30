@@ -1,4 +1,4 @@
-package net.guts.event.example.basic;
+package net.guts.demo.event_bus.example.concurrent;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.event.EventModule;
@@ -19,7 +19,7 @@ public class Main {
 
 		log.info("started");
 
-		Injector injector = Guice.createInjector(new EventModule(),
+		final Injector injector = Guice.createInjector(new EventModule(),
 				new AbstractModule() {
 					@Override
 					protected void configure() {
@@ -29,15 +29,17 @@ public class Main {
 
 		InjectionListeners.injectListeners(injector);
 
-		Consumer conusmer = injector.getInstance(Consumer.class);
+		final Consumer consumer = injector.getInstance(Consumer.class);
 
-		Supplier supplier = injector.getInstance(Supplier.class);
+		final Supplier supplier = injector.getInstance(Supplier.class);
 
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(10 * 1000);
 		} catch (InterruptedException e) {
-			e.printStackTrace();
+			log.error("unexpected", e);
 		}
+
+		supplier.shutdown();
 
 		log.info("finished");
 
