@@ -10,8 +10,8 @@ import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.session.Sessions;
 
-import com.example.gui.state.StateApplet;
-import com.example.gui.state.StateWindow;
+import com.example.gui.session.StateApplet;
+import com.example.gui.session.StateWindow;
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
