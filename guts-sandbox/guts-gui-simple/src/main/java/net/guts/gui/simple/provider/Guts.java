@@ -53,6 +53,8 @@ public class Guts {
 			e.printStackTrace();
 		}
 
+		log.debug("done");
+
 	}
 
 }
