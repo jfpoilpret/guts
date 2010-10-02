@@ -10,6 +10,7 @@ import net.guts.gui.exit.ExitController;
 import net.guts.gui.simple.api.GutsRoot;
 import net.guts.gui.simple.provider.Guts;
 import net.guts.gui.simple.provider.application.AP_WindowController;
+import net.guts.gui.simple.provider.util.Helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -57,6 +58,8 @@ public class UserApp implements GutsRoot<JFrame> {
 		windowController.show(root);
 
 		log.info("ready");
+
+		Helper.logTree(root);
 
 	}
 

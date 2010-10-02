@@ -97,12 +97,13 @@ class AP_WindowControllerImpl implements AP_WindowController {
 		}
 		if (root instanceof Applet) {
 			Applet applet = (Applet) root;
-			// String name = applet.getName();
+			String name = applet.getName();
+			log.debug("name : {}", name);
 			Window window = SwingUtilities.getWindowAncestor(applet);
 			if (window == null) {
 				return null;
 			}
-			// window.setName(name);
+			window.setName(name);
 			return window;
 		}
 		log.error("TODO");
