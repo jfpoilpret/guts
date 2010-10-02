@@ -1,4 +1,4 @@
-package com.example.gui.state;
+package com.example.gui.session;
 
 import java.applet.Applet;
 
