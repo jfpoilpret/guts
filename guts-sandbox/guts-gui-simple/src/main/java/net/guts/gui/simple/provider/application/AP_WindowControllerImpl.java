@@ -101,6 +101,7 @@ class AP_WindowControllerImpl implements AP_WindowController {
 			log.debug("name : {}", name);
 			Window window = SwingUtilities.getWindowAncestor(applet);
 			if (window == null) {
+				log.error("SHOULD NOT HAPPEN");
 				return null;
 			}
 			window.setName(name);
