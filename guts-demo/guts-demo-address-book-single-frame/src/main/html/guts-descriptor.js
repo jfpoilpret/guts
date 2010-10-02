@@ -18,8 +18,8 @@ function gutsDescriptor () {
 };
 
 var gutsDemo01 = new gutsDescriptor();
-gutsDemo01.jnlpApplet = "${jnlpApplet};
-gutsDemo01.jnlpAppletTest = "${jnlpAppletTest";
+gutsDemo01.jnlpApplet = "${jnlpApplet}";
+gutsDemo01.jnlpAppletTest = "${jnlpAppletTest}";
 gutsDemo01.jnlpApplication = "${jnlpApplication}";
 gutsDemo01.jnlpApplicationTest = "${jnlpApplicationTest}";
 
