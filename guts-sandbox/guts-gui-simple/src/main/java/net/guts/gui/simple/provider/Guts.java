@@ -50,7 +50,7 @@ public class Guts {
 		try {
 			EventQueue.invokeAndWait(launchTask);
 		} catch (Exception e) {
-			e.printStackTrace();
+			log.error("", e);
 		}
 
 		log.debug("done");
