@@ -29,7 +29,7 @@ class XStreamSerializationManager implements SerializationManager {
 	 * 
 	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
 	 */
-	static private final Charset UTF_8 = Charset.forName("UTF-8");
+	private final Charset UTF_8 = Charset.forName("UTF-8");
 
 	@Override
 	public byte[] serialize(Object object) {
