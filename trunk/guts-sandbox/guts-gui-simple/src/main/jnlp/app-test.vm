@@ -25,15 +25,15 @@
 
     <j2se
 		version="$j2seVersion"
-		initial-heap-size="$javaHeapMinimum" max-heap-size="$javaHeapMaximum"
-		java-vm-args="$javaArgsString"
     />
 
      $dependencies
 
   </resources>
 
-  <application-desc main-class="$mainClass"/>
+  <application-desc
+	main-class="$mainClass"
+  />
 
 </jnlp>
 
