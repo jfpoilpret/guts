@@ -4,6 +4,9 @@ import java.awt.Window;
 
 import javax.swing.RootPaneContainer;
 
+import net.guts.gui.application.WindowController.BoundsPolicy;
+import net.guts.gui.application.WindowController.StatePolicy;
+
 import com.google.inject.ImplementedBy;
 
 @ImplementedBy(AP_WindowControllerImpl.class)
