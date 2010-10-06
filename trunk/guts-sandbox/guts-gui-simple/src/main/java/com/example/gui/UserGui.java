@@ -21,7 +21,7 @@ public class UserGui extends JPanel {
 	private JButton button_1;
 	private JButton button_2;
 
-	UserGui() {
+	public UserGui() {
 		initGUI();
 	}
 
