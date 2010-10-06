@@ -6,11 +6,14 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.LayoutStyle.ComponentPlacement;
 
+import net.guts.gui.exception.HandlesException;
+import net.guts.gui.message.MessageFactory;
 import net.guts.gui.simple.provider.Guts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -18,11 +21,30 @@ import com.google.inject.Singleton;
 public class UserGui extends JPanel {
 
 	static private final Logger log = LoggerFactory.getLogger(Guts.class);
+
 	private JButton button_1;
 	private JButton button_2;
 
-	public UserGui() {
+	final private MessageFactory messageFactory;
+
+	@Inject
+	public UserGui(MessageFactory messageFactory) {
+		this.messageFactory = messageFactory;
 		initGUI();
+	}
+
+	// Handle exceptions on the EDT
+	@HandlesException
+	public boolean handle(Throwable e) {
+
+		// Log the exception
+		log.info("oh-oh", e);
+
+		// Show Message to the end user
+		messageFactory.showMessage("bada-boom", e, e.getMessage());
+
+		return true;
+
 	}
 
 	private void initGUI() {
