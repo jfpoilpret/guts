@@ -8,14 +8,13 @@ public class UserResources {
 	static private final Logger log = LoggerFactory
 			.getLogger(UserResources.class);
 
-	static final String ROOT_NAME = "root-name";
+	public static final String ROOT_NAME = "root-name";
 
-	static final String FILE_NAME = "resources";
+	public static final String FILE_NAME = "resources";
 
 	static {
-		log.info("NOTE: " + FILE_NAME
-				+ ".properties should be located in {}", UserResources.class
-				.getPackage().getName());
+		log.info("NOTE: " + FILE_NAME + ".properties should be located in {}",
+				UserResources.class.getPackage().getName());
 	}
 
 }
