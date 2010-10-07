@@ -76,27 +76,21 @@
 		</dependency>
 
 		<dependency>
-			<groupId>javax.inject</groupId>
-			<artifactId>javax.inject</artifactId>
-			<version>1</version>
+			<groupId>org.sonatype.sisu</groupId>
+			<artifactId>sisu-guice</artifactId>
+			<version>2.1.8-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-guice</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<groupId>org.sonatype.sisu.inject</groupId>
+			<artifactId>guice-assistedinject</artifactId>
+			<version>2.1.8-SNAPSHOT</version>
 		</dependency>
 
 		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-guice-multibindings</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-guice-assistedinject</artifactId>
-			<version>3.0.0-SNAPSHOT</version>
+			<groupId>org.sonatype.sisu.inject</groupId>
+			<artifactId>guice-multibindings</artifactId>
+			<version>2.1.8-SNAPSHOT</version>
 		</dependency>
 
 		<!-- END: replace guice -->
@@ -160,6 +154,26 @@
 
 	<name>${project.artifactId}</name>
 	<description>${project.name} is sipmlified way to use guts-gui</description>
+
+	<repositories>
+
+		<repository>
+			<id>Stuart-McCulloch</id>
+			<url>https://repository.sonatype.org/content/groups/forge/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>warn</checksumPolicy>
+			</snapshots>
+		</repository>
+
+	</repositories>
+
 	<build>
 
 		<plugins>
