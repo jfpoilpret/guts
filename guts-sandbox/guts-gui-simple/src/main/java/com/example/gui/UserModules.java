@@ -6,7 +6,6 @@ import java.util.List;
 
 import net.guts.event.EventModule;
 import net.guts.gui.exit.ExitModule;
-import net.guts.gui.message.MessageFactory;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.session.Sessions;
@@ -31,7 +30,7 @@ public class UserModules {
 			@Override
 			protected void configure() {
 
-				binder().bind(MessageFactory.class);
+				// binder().bind(MessageFactory.class);
 
 				//
 
