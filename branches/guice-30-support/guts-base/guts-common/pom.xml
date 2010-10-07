@@ -19,10 +19,13 @@
 	</description>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-multibindings</artifactId>
-		</dependency>
+
+		<!-- declared in guts-base -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.google.inject.extensions</groupId> -->
+		<!-- <artifactId>guice-multibindings</artifactId> -->
+		<!-- </dependency> -->
+
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
