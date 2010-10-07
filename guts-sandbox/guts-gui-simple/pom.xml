@@ -13,89 +13,6 @@
 
 	<dependencies>
 
-		<!-- BEG: replace guice version -->
-
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-gui</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.inject</groupId>
-					<artifactId>guice</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-multibindings</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-assisted-inject</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-events</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.inject</groupId>
-					<artifactId>guice</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-multibindings</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-assisted-inject</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>net.guts</groupId>
-			<artifactId>guts-common</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
-			<exclusions>
-				<exclusion>
-					<groupId>com.google.inject</groupId>
-					<artifactId>guice</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-multibindings</artifactId>
-				</exclusion>
-				<exclusion>
-					<groupId>com.google.inject.extensions</groupId>
-					<artifactId>guice-assisted-inject</artifactId>
-				</exclusion>
-			</exclusions>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonatype.sisu</groupId>
-			<artifactId>sisu-guice</artifactId>
-			<version>2.1.8-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonatype.sisu.inject</groupId>
-			<artifactId>guice-assistedinject</artifactId>
-			<version>2.1.8-SNAPSHOT</version>
-		</dependency>
-
-		<dependency>
-			<groupId>org.sonatype.sisu.inject</groupId>
-			<artifactId>guice-multibindings</artifactId>
-			<version>2.1.8-SNAPSHOT</version>
-		</dependency>
-
-		<!-- END: replace guice -->
-
-
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-api</artifactId>
@@ -173,6 +90,141 @@
 		</repository>
 
 	</repositories>
+
+
+	<profiles>
+
+		<profile>
+
+			<activation>
+				<!-- use "-P !guice_2" to disable -->
+				<activeByDefault>true</activeByDefault>
+			</activation>
+
+			<!-- use guice TWO -->
+
+			<id>guice_2</id>
+
+			<dependencies>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-gui</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+				</dependency>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-events</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+				</dependency>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-common</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+				</dependency>
+
+			</dependencies>
+
+		</profile>
+
+		<profile>
+
+			<activation>
+				<!-- use "-P guice_3" to enable -->
+				<!-- <activeByDefault>true</activeByDefault> -->
+			</activation>
+
+			<!-- use guice THREE -->
+
+			<id>guice_3</id>
+
+			<dependencies>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-gui</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+					<exclusions>
+						<exclusion>
+							<groupId>com.google.inject</groupId>
+							<artifactId>guice</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-multibindings</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-assisted-inject</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-events</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+					<exclusions>
+						<exclusion>
+							<groupId>com.google.inject</groupId>
+							<artifactId>guice</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-multibindings</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-assisted-inject</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+
+				<dependency>
+					<groupId>net.guts</groupId>
+					<artifactId>guts-common</artifactId>
+					<version>0.1.0-SNAPSHOT</version>
+					<exclusions>
+						<exclusion>
+							<groupId>com.google.inject</groupId>
+							<artifactId>guice</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-multibindings</artifactId>
+						</exclusion>
+						<exclusion>
+							<groupId>com.google.inject.extensions</groupId>
+							<artifactId>guice-assisted-inject</artifactId>
+						</exclusion>
+					</exclusions>
+				</dependency>
+
+				<dependency>
+					<groupId>org.sonatype.sisu</groupId>
+					<artifactId>sisu-guice</artifactId>
+					<version>2.1.8-SNAPSHOT</version>
+				</dependency>
+
+				<dependency>
+					<groupId>org.sonatype.sisu.inject</groupId>
+					<artifactId>guice-assistedinject</artifactId>
+					<version>2.1.8-SNAPSHOT</version>
+				</dependency>
+
+				<dependency>
+					<groupId>org.sonatype.sisu.inject</groupId>
+					<artifactId>guice-multibindings</artifactId>
+					<version>2.1.8-SNAPSHOT</version>
+				</dependency>
+
+			</dependencies>
+
+		</profile>
+
+	</profiles>
 
 	<build>
 
