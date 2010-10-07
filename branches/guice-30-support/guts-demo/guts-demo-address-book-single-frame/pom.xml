@@ -1,0 +1,212 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>net.guts</groupId>
+		<artifactId>guts-demo</artifactId>
+		<version>0.1.0-SNAPSHOT</version>
+	</parent>
+
+	<artifactId>guts-demo-address-book-single-frame</artifactId>
+	<packaging>jar</packaging>
+
+	<name>${project.artifactId}</name>
+
+	<description>${project.name} is a simple Address Book example application with a single frame layout</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-gui</artifactId>
+			<version>${project.version}</version>
+		</dependency>
+
+		<!-- swing-layout and DesignGridLayout -->
+		<dependency>
+			<groupId>net.java.dev.designgridlayout</groupId>
+			<artifactId>designgridlayout</artifactId>
+			<version>1.1p1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.slf4j</groupId>
+			<artifactId>slf4j-log4j12</artifactId>
+		</dependency>
+
+		<dependency>
+			<groupId>net.java.dev.glazedlists</groupId>
+			<artifactId>glazedlists_java15</artifactId>
+			<version>1.7.0</version>
+		</dependency>
+
+	</dependencies>
+
+	<properties>
+
+		<!-- parent for auto-build sites: maven sites, jnlp sites, etc -->
+		<projectWebsite>https://kenai.com/website/guts</projectWebsite>
+
+		<!-- wiki page that describes this demo -->
+		<projectWikisite>http://kenai.com/projects/guts/pages/guts-demo-address-book</projectWikisite>
+
+		<!-- provides JApplet / main() -->
+		<demoPackage>net.guts.demo.addressbook.singleframe</demoPackage>
+		<mainJar>TODO</mainJar>
+		<appClass>${demoPackage}.AddressBookApp</appClass>
+		<appletClass>${demoPackage}.AddressBookApplet</appletClass>
+
+		<!-- jnlp applet/application jvm parameters -->
+		<javaHeapMinimum>128m</javaHeapMinimum>
+		<javaHeapMaximum>256m</javaHeapMaximum>
+		<javaArgsString>-Xincgc</javaArgsString>
+
+		<!-- velocity templates folder for jnlp files generation -->
+		<jnlpTemplates>${project.basedir}/src/main/jnlp/</jnlpTemplates>
+
+		<!-- local location of jnlp file set -->
+		<jnlpLocalDirectory>${project.build.directory}/jnlp</jnlpLocalDirectory>
+
+		<!-- remote location of jnlp file set (upload to; code base;) -->
+		<jnlpRemoteDirectory>${projectWebsite}/guts-demo-jnlp/${project.artifactId}</jnlpRemoteDirectory>
+
+		<!-- names of jnlp files -->
+		<jnlpApp>${project.artifactId}-app.jnlp</jnlpApp>
+		<jnlpAppTest>${project.artifactId}-app-test.jnlp</jnlpAppTest>
+		<jnlpApplet>${project.artifactId}-applet.jnlp</jnlpApplet>
+		<jnlpAppletTest>${project.artifactId}-applet-test.jnlp</jnlpAppletTest>
+
+
+		<!-- jnlp descriptor fields -->
+		<jnlpTitle>${project.artifactId}</jnlpTitle>
+		<jnlpVendor>Jean-Francois Poilpret / Project GUTS</jnlpVendor>
+		<jnlpHomepage>${projectWikisite}</jnlpHomepage>
+		<jnlpDescription>${project.description}</jnlpDescription>
+
+	</properties>
+
+	<build>
+
+		<plugins>
+
+			<!-- filter resources -->
+			<plugin>
+				<artifactId>maven-resources-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-resources</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>copy-resources</goal>
+						</goals>
+						<configuration>
+							<encoding>UTF-8</encoding>
+							<resources>
+								<resource>
+									<directory>src/main/html</directory>
+									<filtering>true</filtering>
+								</resource>
+							</resources>
+							<outputDirectory>${project.build.directory}</outputDirectory>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- Make the Address Book sample a runnable jar -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<configuration>
+					<archive>
+						<manifest>
+							<addClasspath>true</addClasspath>
+							<mainClass>${appClass}</mainClass>
+						</manifest>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo.webstart</groupId>
+				<artifactId>webstart-maven-plugin</artifactId>
+				<configuration>
+					<pack200>false</pack200>
+					<verbose>false</verbose>
+					<unsignAlreadySignedJars>true</unsignAlreadySignedJars>
+					<workDirectory>${jnlpLocalDirectory}</workDirectory>
+					<resourcesDirectory>${jnlpTemplates}/resources</resourcesDirectory>
+					<jnlp>
+						<j2seVersion>1.6+</j2seVersion>
+						<mainClass>${appClass}</mainClass>
+					</jnlp>
+					<sign>
+						<keystore>${project.basedir}/src/main/cert/guts-demo.jks</keystore>
+						<alias>guts-demo</alias>
+						<storepass>changeit</storepass>
+					</sign>
+				</configuration>
+				<executions>
+					<!-- production application -->
+					<execution>
+						<id>jnlpApp</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jnlp</goal>
+						</goals>
+						<configuration>
+							<jnlp>
+								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
+								<inputTemplate>app-prod.vm</inputTemplate>
+								<outputFile>${jnlpApp}</outputFile>
+							</jnlp>
+						</configuration>
+					</execution>
+					<!-- local test application -->
+					<execution>
+						<id>jnlpAppTest</id>
+						<phase>package</phase>
+						<goals>
+							<goal>jnlp</goal>
+						</goals>
+						<configuration>
+							<jnlp>
+								<inputTemplateResourcePath>${jnlpTemplates}</inputTemplateResourcePath>
+								<inputTemplate>app-test.vm</inputTemplate>
+								<outputFile>${jnlpAppTest}</outputFile>
+							</jnlp>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<!-- upload jnlp file set -->
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>wagon-maven-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>upload-jnlp</id>
+						<phase>deploy</phase>
+						<goals>
+							<goal>upload</goal>
+						</goals>
+						<configuration>
+							<!-- serverId must come from settings.xml -->
+							<serverId>guts-website</serverId>
+							<url>${jnlpRemoteDirectory}</url>
+							<fromDir>${jnlpLocalDirectory}</fromDir>
+							<toDir>.</toDir>
+							<includes>*</includes>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+
+		</plugins>
+	</build>
+
+</project>
+
