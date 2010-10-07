@@ -6,6 +6,7 @@ import java.util.List;
 
 import net.guts.event.EventModule;
 import net.guts.gui.exit.ExitModule;
+import net.guts.gui.message.MessageFactory;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.session.Sessions;
@@ -17,7 +18,7 @@ import com.google.inject.Module;
 
 public class UserModules {
 
-	static void initModules(List<Module> moduleList) {
+	public static void initModules(List<Module> moduleList) {
 
 		moduleList.add(new ResourceModule());
 
@@ -29,6 +30,8 @@ public class UserModules {
 
 			@Override
 			protected void configure() {
+
+				binder().bind(MessageFactory.class);
 
 				//
 
