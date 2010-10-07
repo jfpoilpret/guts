@@ -19,14 +19,17 @@
 	</description>
 
 	<dependencies>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-multibindings</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.google.inject.extensions</groupId>
-			<artifactId>guice-assisted-inject</artifactId>
-		</dependency>
+
+		<!-- declared in guts-base to ease gg3 transition -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.google.inject.extensions</groupId> -->
+		<!-- <artifactId>guice-multibindings</artifactId> -->
+		<!-- </dependency> -->
+		<!-- <dependency> -->
+		<!-- <groupId>com.google.inject.extensions</groupId> -->
+		<!-- <artifactId>guice-assisted-inject</artifactId> -->
+		<!-- </dependency> -->
+
 		<dependency>
 			<groupId>net.guts</groupId>
 			<artifactId>guts-common</artifactId>
