@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
+//@BindSessionApplication
 @Singleton
 @SuppressWarnings("serial")
 public class UserGui extends JPanel {
@@ -31,6 +32,9 @@ public class UserGui extends JPanel {
 	public UserGui(MessageFactory messageFactory) {
 		this.messageFactory = messageFactory;
 		initGUI();
+
+		// messageFactory.showMessage("hello");
+
 	}
 
 	// Handle exceptions on the EDT
