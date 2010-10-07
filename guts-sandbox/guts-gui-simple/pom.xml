@@ -13,6 +13,68 @@
 
 	<dependencies>
 
+		<!-- BEG: replace guice version -->
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-gui</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.inject</groupId>
+					<artifactId>guice</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-multibindings</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-assisted-inject</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-events</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.inject</groupId>
+					<artifactId>guice</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-multibindings</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-assisted-inject</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-common</artifactId>
+			<version>0.1.0-SNAPSHOT</version>
+			<exclusions>
+				<exclusion>
+					<groupId>com.google.inject</groupId>
+					<artifactId>guice</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-multibindings</artifactId>
+				</exclusion>
+				<exclusion>
+					<groupId>com.google.inject.extensions</groupId>
+					<artifactId>guice-assisted-inject</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+
 		<dependency>
 			<groupId>javax.inject</groupId>
 			<artifactId>javax.inject</artifactId>
@@ -21,9 +83,24 @@
 
 		<dependency>
 			<groupId>net.guts</groupId>
-			<artifactId>guts-gui</artifactId>
-			<version>0.1.0-SNAPSHOT</version>
+			<artifactId>guts-guice</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
 		</dependency>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-guice-multibindings</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<dependency>
+			<groupId>net.guts</groupId>
+			<artifactId>guts-guice-assistedinject</artifactId>
+			<version>3.0.0-SNAPSHOT</version>
+		</dependency>
+
+		<!-- END: replace guice -->
+
 
 		<dependency>
 			<groupId>org.slf4j</groupId>

@@ -39,7 +39,7 @@ public class UserApp implements GutsRoot<JFrame> {
 	}
 
 	@Inject
-	void initGUI(final UserGui gui, //
+	public void initGUI(final UserGui gui, //
 			final AP_WindowController windowController, //
 			final ExitController exitController) {
 
