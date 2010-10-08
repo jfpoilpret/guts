@@ -1,4 +1,4 @@
-package net.guts.gui.simple.provider;
+package net.guts.gui.simple;
 
 import java.awt.EventQueue;
 import java.util.ArrayList;
@@ -7,7 +7,7 @@ import java.util.List;
 import javax.swing.RootPaneContainer;
 
 import net.guts.common.injection.InjectionListeners;
-import net.guts.gui.simple.api.GutsRoot;
+import net.guts.gui.simple.util.Helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,6 +35,10 @@ public class Guts {
 
 				List<Module> moduleList = new ArrayList<Module>();
 
+				// hacks
+				Helper.initModules(moduleList);
+
+				// users
 				prog.initModules(moduleList);
 
 				Injector injector = Guice.createInjector(moduleList);

@@ -5,10 +5,10 @@ import java.util.List;
 import javax.swing.JApplet;
 
 import net.guts.gui.exit.ExitController;
-import net.guts.gui.simple.api.GutsRoot;
-import net.guts.gui.simple.provider.Guts;
-import net.guts.gui.simple.provider.application.AP_WindowController;
-import net.guts.gui.simple.provider.util.Helper;
+import net.guts.gui.simple.Guts;
+import net.guts.gui.simple.GutsRoot;
+import net.guts.gui.simple.application.AP_WindowController;
+import net.guts.gui.simple.util.Helper;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

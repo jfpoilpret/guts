@@ -8,7 +8,7 @@ import javax.swing.LayoutStyle.ComponentPlacement;
 
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.message.MessageFactory;
-import net.guts.gui.simple.provider.Guts;
+import net.guts.gui.simple.Guts;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
