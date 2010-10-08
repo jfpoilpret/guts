@@ -46,6 +46,8 @@
 		<maven.build.timestamp.format>yyyy-MM-dd_HH-mm-ss</maven.build.timestamp.format>
 		<timeStamp>${maven.build.timestamp}</timeStamp>
 
+		<!-- define this property to print all class paths : <printClassPath/> -->
+
 	</properties>
 
 	<modules>
@@ -64,9 +66,9 @@
 
 		<profile>
 
-			<id>guice_release</id>
+			<id>guice-release</id>
 
-			<!-- use "-P !guice_release" to de-activate -->
+			<!-- will be de-activated if any other profile is activated -->
 			<activation>
 				<activeByDefault>true</activeByDefault>
 			</activation>
@@ -89,35 +91,40 @@
 				</dependency>
 			</dependencies>
 
+			<properties>
+				<activeProfile>guice-release</activeProfile>
+			</properties>
+
 		</profile>
 
 		<profile>
 
-			<id>guice_snapshot</id>
+			<!-- use "-Dguice-snapshot" to activate -->
+			<id>guice-snapshot</id>
 
-			<!-- use "-P guice_snapshot" to activate -->
 			<activation>
-				<!-- <activeByDefault>false</activeByDefault> -->
+				<property>
+					<name>guice-snapshot</name>
+				</property>
 			</activation>
 
 			<!-- TODO replace with guice official snapshot repo when available -->
-			<!-- <repositories> -->
-			<!-- <repository> -->
-			<!-- <id>Stuart-McCulloch</id> -->
-			<!-- <url>https://repository.sonatype.org/content/groups/forge/</url> -->
-			<!-- <releases> -->
-			<!-- <enabled>true</enabled> -->
-			<!-- <updatePolicy>always</updatePolicy> -->
-			<!-- <checksumPolicy>warn</checksumPolicy> -->
-			<!-- </releases> -->
-			<!-- <snapshots> -->
-			<!-- <enabled>true</enabled> -->
-			<!-- <updatePolicy>always</updatePolicy> -->
-			<!-- <checksumPolicy>warn</checksumPolicy> -->
-			<!-- </snapshots> -->
-			<!-- </repository> -->
-			<!-- </repositories> -->
-
+			<repositories>
+				<repository>
+					<id>Stuart-McCulloch</id>
+					<url>https://repository.sonatype.org/content/groups/forge/</url>
+					<releases>
+						<enabled>true</enabled>
+						<updatePolicy>always</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</releases>
+					<snapshots>
+						<enabled>true</enabled>
+						<updatePolicy>always</updatePolicy>
+						<checksumPolicy>warn</checksumPolicy>
+					</snapshots>
+				</repository>
+			</repositories>
 
 			<!-- TODO replace with guice official artifact names when ready -->
 			<dependencies>
@@ -137,6 +144,10 @@
 					<version>${guiceSnapshotVersion}</version>
 				</dependency>
 			</dependencies>
+
+			<properties>
+				<activeProfile>guice-snapshot</activeProfile>
+			</properties>
 
 		</profile>
 
@@ -281,10 +292,58 @@
 					<version>2.1.1</version>
 				</plugin>
 
+				<plugin>
+					<groupId>org.apache.maven.plugins</groupId>
+					<artifactId>maven-antrun-plugin</artifactId>
+					<version>1.5</version>
+				</plugin>
+
 			</plugins>
 		</pluginManagement>
 
 		<plugins>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>echo-class-path</id>
+						<phase>validate</phase>
+						<configuration>
+							<!-- define this property to print all class paths : <printClassPath/> -->
+							<target if="printClassPath">
+								<property name="compile_classpath" refid="maven.compile.classpath" />
+								<property name="runtime_classpath" refid="maven.runtime.classpath" />
+								<property name="test_classpath" refid="maven.test.classpath" />
+								<property name="plugin_classpath" refid="maven.plugin.classpath" />
+								<echo message="compile classpath: ${compile_classpath}" />
+								<echo message="runtime classpath: ${runtime_classpath}" />
+								<echo message="test classpath:    ${test_classpath}" />
+								<echo message="plugin classpath:  ${plugin_classpath}" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>echo-active-profile</id>
+						<phase>validate</phase>
+						<configuration>
+							<target>
+								<echo message="#####################################" />
+								<echo message="active profile : ${activeProfile}" />
+								<echo message="#####################################" />
+							</target>
+						</configuration>
+						<goals>
+							<goal>run</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<!-- TODO merge to reporting -->
 			<!-- Here to declare dependency to guts-config which contains checkstyle
 				config for all guts modules -->
