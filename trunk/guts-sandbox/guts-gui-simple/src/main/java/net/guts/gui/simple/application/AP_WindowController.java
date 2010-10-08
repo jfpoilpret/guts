@@ -1,4 +1,4 @@
-package net.guts.gui.simple.provider.application;
+package net.guts.gui.simple.application;
 
 import java.awt.Window;
 

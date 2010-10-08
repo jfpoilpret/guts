@@ -1,4 +1,4 @@
-package net.guts.gui.simple.provider.session;
+package net.guts.gui.simple.session;
 
 import java.awt.Component;
 import java.awt.Rectangle;

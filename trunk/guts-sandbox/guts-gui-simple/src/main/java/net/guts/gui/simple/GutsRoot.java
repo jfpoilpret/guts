@@ -1,4 +1,4 @@
-package net.guts.gui.simple.api;
+package net.guts.gui.simple;
 
 import java.util.List;
 
