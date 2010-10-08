@@ -3,11 +3,11 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<artifactId>guts-base</artifactId>
-		<groupId>net.guts</groupId>
-		<version>0.1.0-SNAPSHOT</version>
-	</parent>
+	<!-- <parent> -->
+	<!-- <artifactId>guts-base</artifactId> -->
+	<!-- <groupId>net.guts</groupId> -->
+	<!-- <version>0.1.0-SNAPSHOT</version> -->
+	<!-- </parent> -->
 
 	<groupId>net.guts</groupId>
 	<artifactId>guts-gui-simple-demo</artifactId>
@@ -96,6 +96,16 @@
 						</configuration>
 					</execution>
 				</executions>
+			</plugin>
+
+			<!-- -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
 			</plugin>
 
 			<!-- -->
