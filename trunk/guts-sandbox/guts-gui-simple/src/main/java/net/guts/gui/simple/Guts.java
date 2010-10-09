@@ -36,7 +36,7 @@ public class Guts {
 				List<Module> moduleList = new ArrayList<Module>();
 
 				// hacks
-				Helper.initModules(moduleList);
+				Helper.initMods(moduleList);
 
 				// users
 				prog.initModules(moduleList);

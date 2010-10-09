@@ -6,7 +6,7 @@ import java.util.List;
 
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.simple.Guts;
-import net.guts.gui.simple.message.MessageFactoryImpl;
+import net.guts.gui.simple.message.AP_MessageFactoryImpl;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,13 +31,13 @@ public class Helper {
 
 	}
 
-	public static void initModules(List<Module> moduleList) {
+	public static void initMods(List<Module> moduleList) {
 
 		Module hackModule = new AbstractModule() {
 			@Override
 			protected void configure() {
 
-				bind(MessageFactory.class).to(MessageFactoryImpl.class);
+				bind(MessageFactory.class).to(AP_MessageFactoryImpl.class);
 
 			}
 		};

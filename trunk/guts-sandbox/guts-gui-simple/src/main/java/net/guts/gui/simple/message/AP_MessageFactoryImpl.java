@@ -31,9 +31,9 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class MessageFactoryImpl implements MessageFactory {
+public class AP_MessageFactoryImpl implements MessageFactory {
 	@Inject
-	MessageFactoryImpl(AP_WindowController windowController,
+	AP_MessageFactoryImpl(AP_WindowController windowController,
 			ResourceInjector injector) {
 		_windowController = windowController;
 		_injector = injector;
