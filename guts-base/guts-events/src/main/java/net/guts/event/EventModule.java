@@ -34,7 +34,10 @@ import com.google.inject.assistedinject.FactoryProvider;
  * to the list of modules passed to {@link com.google.inject.Guice#createInjector}:
  * <pre>
  * Injector injector = Guice.createInjector(new EventModule(), ...);
+ * InjectionListeners.injectListeners(injector);
  * </pre>
+ * Please note the second line which must absolutely be called once {@code Injector}
+ * has been created, otherwise event dispatching will not work.
  * <p/>
  * GUTS-Events has some default bindings that can be overridden in your own modules
  * if required:

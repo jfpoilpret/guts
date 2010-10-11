@@ -80,6 +80,8 @@
  *         Events.bindChannel(binder(), Integer.class);
  *     }
  * });
+ * // Don't forget this line of code, otherwise Event dispatching won't work at all!
+ * InjectionListeners.injectListeners(injector);
  * </pre>
  * The example above creates a binding to a {@code Channel<Integer>}, with no 
  * name (no topic), that can be then injected into any instance (supplier) that 
@@ -135,6 +137,8 @@
  *         Events.bindChannel(binder(), Integer.class, "TOPIC2");
  *     }
  * });
+ * // Don't forget this line of code, otherwise Event dispatching won't work at all!
+ * InjectionListeners.injectListeners(injector);
  * </pre>
  * Injection of the matching {@code Channel} is done by using {@link net.guts.event.Event}
  * annotation:
@@ -171,6 +175,8 @@
  *         Events.bindChannel(binder(), new TypeLiteral&lt;List&lt;Integer&gt;&gt;(){});
  *     }
  * });
+ * // Don't forget this line of code, otherwise Event dispatching won't work at all!
+ * InjectionListeners.injectListeners(injector);
  * </pre>
  * And it is directly injected as simply as before:
  * <pre>
@@ -203,6 +209,8 @@
  *         Events.bindChannel(binder(), int.class);
  *     }
  * });
+ * // Don't forget this line of code, otherwise Event dispatching won't work at all!
+ * InjectionListeners.injectListeners(injector);
  * </pre>
  * In order to differentiate {@code Channel<Integer>} for {@code Integer} and
  * {@code int}, you can once again use {@link net.guts.event.Event} annotation:
@@ -307,7 +315,8 @@
  * <pre>
  * public class MyClass
  * {
- *     &#64;Consumes(type = Set&lt;Integer&gt;.class) public void push(SortedSet&lt;Integer&gt; event)
+ *     &#64;Consumes(type = Set&lt;Integer&gt;.class) 
+ *     public void push(SortedSet&lt;Integer&gt; event)
  *     {
  *         ...
  *     }
@@ -476,6 +485,8 @@
  *         bind(ConsumerExceptionHandler.class).to(LoggingConsumerExceptionHandler.class);
  *     }
  * });
+ * // Don't forget this line of code, otherwise Event dispatching won't work at all!
+ * InjectionListeners.injectListeners(injector);
  * </pre>
  * The example above simply logs all exceptions thrown by consumer methods.
  * 
