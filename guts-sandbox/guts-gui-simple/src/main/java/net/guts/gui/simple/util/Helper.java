@@ -31,16 +31,20 @@ public class Helper {
 
 	}
 
-	public static void initMods(List<Module> moduleList) {
+	public static void initMods(List<Module> list) {
 
 		Module hackModule = new AbstractModule() {
 			@Override
 			protected void configure() {
 
+				log.info("### using hack ###");
+
 				bind(MessageFactory.class).to(AP_MessageFactoryImpl.class);
 
 			}
 		};
+
+		list.add(hackModule);
 
 	}
 
