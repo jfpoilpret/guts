@@ -20,8 +20,8 @@ import com.google.inject.Singleton;
 import com.thoughtworks.xstream.XStream;
 
 @Singleton
-class XStreamSerializationManager implements SerializationManager {
-
+class XStreamSerializationManager implements SerializationManager
+{
 	/*
 	 * http://kenai.com/jira/browse/GUTS-44
 	 * 
@@ -29,24 +29,25 @@ class XStreamSerializationManager implements SerializationManager {
 	 * 
 	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
 	 */
-	private final Charset UTF_8 = Charset.forName("UTF-8");
+	static private final Charset UTF_8 = Charset.forName("UTF-8");
 
 	@Override
-	public byte[] serialize(Object object) {
+	public byte[] serialize(Object object)
+	{
 		// Serialize content into XML
 		String xml = _xstream.toXML(object);
 		return xml.getBytes(UTF_8);
 	}
 
 	@Override
-	public void deserialize(byte[] content, Object object) {
-		if (content != null) {
+	public void deserialize(byte[] content, Object object)
+	{
+		if (content != null)
+		{
 			String xml = new String(content, UTF_8);
 			_xstream.fromXML(xml, object);
 		}
-
 	}
 
 	final private XStream _xstream = new XStream();
-
 }
