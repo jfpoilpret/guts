@@ -126,6 +126,7 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		return null;
 	}
 
+	//CSOFF: IllegalCatch
 	static private Field findField(Class<?> bean, String name)
 	{
 		while (bean != null)
@@ -141,6 +142,7 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 		}
 		return null;
 	}
+	//CSON: IllegalCatch
 	
 	//CSOFF: IllegalCatchCheck
 	//CSOFF: ParameterAssignmentCheck

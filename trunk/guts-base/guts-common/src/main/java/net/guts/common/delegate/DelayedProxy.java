@@ -35,7 +35,7 @@ import com.google.inject.internal.cglib.proxy.MethodProxy;
  *
  * @author Jean-Francois Poilpret
  */
-public class DelayedProxy
+final public class DelayedProxy
 {
 	static final private Logger _logger = LoggerFactory.getLogger(DelayedProxy.class);
 	
@@ -111,6 +111,7 @@ public class DelayedProxy
 			}
 		}
 
+		//CSOFF: IllegalThrows
 		@Override public Object intercept(
 			Object source, Method method, Object[] args, MethodProxy proxy)
 			throws Throwable
@@ -129,6 +130,7 @@ public class DelayedProxy
 				return null;
 			}
 		}
+		//CSON: IllegalThrows
 		
 		private Object _target = null;
 		private List<Call> _calls;
@@ -142,6 +144,7 @@ public class DelayedProxy
 			_args = args;
 		}
 		
+		//CSOFF: IllegalCatch
 		public void invoke(Object target)
 		{
 			try
@@ -155,6 +158,7 @@ public class DelayedProxy
 				_logger.warn(msg, e);
 			}
 		}
+		//CSON: IllegalCatch
 		
 		final private Method _method;
 		final private Object[] _args;

@@ -17,11 +17,6 @@ package net.guts.common.injection;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public abstract class AbstractInjectionListener<T> implements InjectableInjectionListener<T>
 {
 	/*
