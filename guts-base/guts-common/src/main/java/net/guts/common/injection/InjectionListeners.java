@@ -23,8 +23,49 @@ import com.google.inject.TypeLiteral;
 import com.google.inject.multibindings.Multibinder;
 
 /**
+ * Utility class that allows better injection of 
+ * {@link com.google.inject.spi.InjectionListener} implementations, ensuring 
+ * they are operational <b>during</b> {@link Injector} creation. Since Guice 
+ * guarantees no specific order of instances construction during {@link Injector} 
+ * creation, it is possible that a bound {@link com.google.inject.spi.InjectionListener} 
+ * instance is called after injection of a given object but <b>after</b> its own 
+ * injection, which generally leads to a {@code NullPointerException}.
+ * <p/>
+ * The following snippet shows an example of an injectable {@code InjectionListener}:
+ * <pre>
+ * public class ConsumerInjectionListener extends AbstractInjectionListener&lt;Object&gt;
+ * {
+ *     &#64;Inject public void setEventService(EventService service)
+ *     {
+ *         _service = service;
+ *     }
+ *     
+ *     &#64;Override protected void registerInjectee(Object injectee)
+ *     {
+ *         _service.registerConsumers(injectee);
+ *     }
  * 
+ *     private EventService _service = null;
+ * }
+ * </pre>
+ * And here is an excerpt of how to declare this listener in a {@code Module}:
+ * <pre>
+ * ConsumerInjectionListener injectionListener =
+ *     InjectionListeners.requestInjection(binder(), new ConsumerInjectionListener());
+ * OneTypeListener&lt;Object&gt; typeListener =
+ *     new OneTypeListener&lt;Object&gt;(Object.class, injectionListener);
+ * bindListener(Matchers.hasMethodAnnotatedWith(Consumes.class), typeListener);
+ * </pre>
+ * And don't forget to call {@link #injectListeners(Injector)} immediately after
+ * creating Guice {@code Injector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(modules);
+ * InjectionListeners.injectListeners(injector);
+ * </pre>
  *
+ * @see OneTypeListener
+ * @see InjectableInjectionListener
+ * @see AbstractInjectionListener
  * @author Jean-Francois Poilpret
  */
 public final class InjectionListeners

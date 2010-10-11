@@ -21,10 +21,14 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class ReflectHelper
+final public class ReflectHelper
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ReflectHelper.class);
 
+	private ReflectHelper()
+	{
+	}
+	
 	static public interface FieldValueProcessor<T>
 	{
 		public boolean process(Field field, T value);

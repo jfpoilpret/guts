@@ -62,6 +62,7 @@ abstract public class UntypedProperty
 	abstract void setValue(Object bean, Object value) throws Exception;
 	abstract Object getValue(Object bean) throws Exception;
 
+	//CSOFF: IllegalCatch
 	public void set(Object bean, Object value)
 	{
 		// Check that there is a setter!
@@ -106,7 +107,9 @@ abstract public class UntypedProperty
 			
 		}
 	}
+	//CSON: IllegalCatch
 
+	//CSOFF: IllegalCatch
 	public Object get(Object bean)
 	{
 		// Check that there is a getter!
@@ -140,7 +143,7 @@ abstract public class UntypedProperty
 			}
 		}
 	}
-	//CSON: IllegalCatchCheck
+	//CSON: IllegalCatch
 
 	private final String _name;
 	private final TypeLiteral<?> _type;

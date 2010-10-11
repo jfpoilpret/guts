@@ -21,11 +21,6 @@ import com.google.inject.spi.InjectionListener;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
 public class OneTypeListener<T> implements TypeListener
 {
 	public OneTypeListener(Class<T> type, InjectionListener<T> listener)
