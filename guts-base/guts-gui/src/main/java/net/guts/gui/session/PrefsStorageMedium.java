@@ -146,7 +146,9 @@ public class PrefsStorageMedium implements StorageMedium
 	}
 
 	// Maximum value length is 3/4 of actual prefs limit, due to Base64 encoding
+	//CSOFF: MagicNumber
 	static final private int MAX_LENGTH = Preferences.MAX_VALUE_LENGTH * 3 / 4;
+	//CSON: MagicNumber
 	static final private String KEY_LENGTH_ERROR = String.format(
 		"java.util.prefs package allows key names of max %d characters.",
 		Preferences.MAX_KEY_LENGTH);

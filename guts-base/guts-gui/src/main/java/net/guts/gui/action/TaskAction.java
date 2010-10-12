@@ -80,7 +80,8 @@ abstract public class TaskAction extends TasksGroupAction
      * @param execution indicates whether {@link #submit(Task)} will create a 
      * {@code TasksGroup} for {@code Task} execution that is cancelable by the end user or not
      */
-	protected TaskAction(Execution execution){
+	protected TaskAction(Execution execution)
+	{
 	    super(null);
 	    _execution = execution;
 	}
