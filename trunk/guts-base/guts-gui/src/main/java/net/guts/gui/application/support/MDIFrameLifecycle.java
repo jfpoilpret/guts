@@ -18,7 +18,7 @@ import javax.swing.JFrame;
 
 import com.google.inject.Inject;
 
-// TODO need a new Service MDIFrameController or something (something WindowController/DialogFactory)?
+//CSOFF: AbstractClassName
 abstract public class MDIFrameLifecycle extends SingleFrameLifecycle
 {
 	@Inject void init(MDIFrameController controller)
@@ -39,3 +39,4 @@ abstract public class MDIFrameLifecycle extends SingleFrameLifecycle
 
 	private MDIFrameController _controller = null;
 }
+//CSON: AbstractClassName
