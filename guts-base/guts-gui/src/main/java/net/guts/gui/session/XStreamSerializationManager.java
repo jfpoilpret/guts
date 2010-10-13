@@ -18,23 +18,23 @@ import java.nio.charset.Charset;
 
 import com.google.inject.Singleton;
 import com.thoughtworks.xstream.XStream;
+import com.thoughtworks.xstream.mapper.CannotResolveClassException;
+import com.thoughtworks.xstream.mapper.MapperWrapper;
 
 @Singleton
 class XStreamSerializationManager implements SerializationManager
 {
-	/*
-	 * http://kenai.com/jira/browse/GUTS-44
-	 * 
-	 * UTF-8 is always present:
-	 * 
-	 * http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
-	 */
+	// http://kenai.com/jira/browse/GUTS-44
+	// UTF-8 is always present:
+	// http://download.oracle.com/javase/6/docs/api/java/nio/charset/Charset.html
 	static private final Charset UTF_8 = Charset.forName("UTF-8");
 
 	@Override
 	public byte[] serialize(Object object)
 	{
 		// Serialize content into XML
+		// http://kenai.com/jira/browse/GUTS-50
+		_xstream.processAnnotations(object.getClass());
 		String xml = _xstream.toXML(object);
 		return xml.getBytes(UTF_8);
 	}
@@ -49,5 +49,26 @@ class XStreamSerializationManager implements SerializationManager
 		}
 	}
 
-	final private XStream _xstream = new XStream();
+	final private XStream _xstream = new XStream()
+	{
+		// http://kenai.com/jira/browse/GUTS-49
+		@Override protected MapperWrapper wrapMapper(MapperWrapper next)
+		{
+			return new MapperWrapper(next)
+			{
+				@SuppressWarnings("unchecked") @Override 
+				public boolean shouldSerializeMember(Class definedIn, String fieldName)
+				{
+					try
+					{
+						return definedIn != Object.class || realClass(fieldName) != null;
+					}
+					catch (CannotResolveClassException e)
+					{
+						return false;
+					}
+				}
+			};
+		}
+	};
 }
