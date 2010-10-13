@@ -17,6 +17,7 @@ package net.guts.common.injection;
 import java.util.Set;
 
 import com.google.inject.Binder;
+import com.google.inject.ConfigurationException;
 import com.google.inject.Injector;
 import com.google.inject.Key;
 import com.google.inject.TypeLiteral;
@@ -81,14 +82,26 @@ public final class InjectionListeners
 		return listener;
 	}
 	
+	//CSOFF: EmptyBlock
 	static public void injectListeners(Injector injector)
 	{
-		Set<InjectableInjectionListener<?>> listeners = injector.getInstance(LISTENER_SET_KEY);
-		for (InjectableInjectionListener<?> listener: listeners)
+		try
 		{
-			listener.flush();
+			Set<InjectableInjectionListener<?>> listeners = 
+				injector.getInstance(LISTENER_SET_KEY);
+			for (InjectableInjectionListener<?> listener: listeners)
+			{
+				listener.flush();
+			}
+		}
+		catch (ConfigurationException e)
+		{
+			// Getting this exception means that requestInjection() was never called
+			// before, hence there's no registered listener to flush.
+			// Do nothing at all
 		}
 	}
+	//CSON: EmptyBlock
 
 	static final private TypeLiteral<InjectableInjectionListener<?>> LISTENER_TYPE =
 		new TypeLiteral<InjectableInjectionListener<?>>() {};
