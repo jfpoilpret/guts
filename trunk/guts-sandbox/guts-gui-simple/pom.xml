@@ -52,7 +52,7 @@
 
 		<gutsVersionSnapshot>0.1.0-SNAPSHOT</gutsVersionSnapshot>
 
-		<guiceVersionSnapshot>2.1.8-SNAPSHOT</guiceVersionSnapshot>
+		<guiceVersionSnapshot>3.0-SNAPSHOT</guiceVersionSnapshot>
 
 	</properties>
 
