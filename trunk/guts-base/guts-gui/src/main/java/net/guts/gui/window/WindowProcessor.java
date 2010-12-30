@@ -12,20 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.support;
+package net.guts.gui.window;
 
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.RootPaneContainer;
 
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
-
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(MDIFrameControllerImpl.class)
-public interface MDIFrameController
+public interface WindowProcessor
 {
-	public void initFrame(JFrame frame);
-	public void show(JInternalFrame frame, BoundsPolicy bounds, StatePolicy state);
-	public JInternalFrame getActiveFrame();
+	//TODO do these constant belong here?
+	static final public int RESOURCE_INJECTION = 1000;
+	static final public int BOUNDS_INIT = 2000;
+	static final public int SESSION_STORAGE = 3000;
+	static final public int DISPLAY = 10000;
+
+	public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config);
 }

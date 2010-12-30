@@ -18,10 +18,10 @@ import java.util.Locale;
 
 import net.guts.demo.addressbook.singleframe.dialog.PreferencesPanel;
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.resource.ResourceInjector;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;

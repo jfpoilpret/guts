@@ -24,7 +24,7 @@ import com.google.inject.ImplementedBy;
  * generally, into instances of any class.
  * <p/>
  * For GUI components injection, you normally won't need to directly use 
- * {@code ResourceInjector}, since {@link net.guts.gui.application.WindowController}
+ * {@code ResourceInjector}, since {@link net.guts.gui.window.WindowController}
  * performs the necessary calls for you.
  * <p/>
  * Guts-GUI current implementation of {@code ResourceInjector} is looking for 
@@ -149,7 +149,7 @@ public interface ResourceInjector
 	 * }
 	 * </pre>
 	 * <p/>
-	 * Note that {@link net.guts.gui.application.WindowController} already listens 
+	 * Note that {@link net.guts.gui.window.WindowController} already listens 
 	 * to {@code Locale} changes and forces a new resource injection to all currently
 	 * visible Windows.
 	 * 

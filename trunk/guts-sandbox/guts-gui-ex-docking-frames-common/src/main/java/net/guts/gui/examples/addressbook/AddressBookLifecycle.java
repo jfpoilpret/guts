@@ -19,12 +19,12 @@ import javax.swing.JFrame;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import net.guts.gui.application.WindowController;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.docking.DockingLifecycle;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.message.MessageFactory;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.WindowController;
+import net.guts.gui.window.BoundsPolicy;
 
 import com.google.inject.Inject;
 
@@ -52,8 +52,8 @@ public class AddressBookLifecycle extends DockingLifecycle
 	
 	@Override protected void showMainFrame(JFrame mainFrame, WindowController windowController)
 	{
-		windowController.show(
-			mainFrame, BoundsPolicy.CENTER_ONLY, StatePolicy.RESTORE_IF_EXISTS);
+		windowController.show(mainFrame, 
+			RootPaneConfig.forFrame().bounds(BoundsPolicy.CENTER_ONLY).config());
 	}
 
 	// CSOFF: GenericIllegalRegexp

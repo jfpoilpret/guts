@@ -19,10 +19,10 @@ import java.awt.event.ActionListener;
 
 import javax.swing.Timer;
 
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.task.TasksGroup;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 

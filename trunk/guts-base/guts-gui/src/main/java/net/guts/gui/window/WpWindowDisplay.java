@@ -12,20 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.support;
+package net.guts.gui.window;
 
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import java.awt.Window;
 
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
+import javax.swing.RootPaneContainer;
 
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(MDIFrameControllerImpl.class)
-public interface MDIFrameController
+class WpWindowDisplay<V extends RootPaneContainer>
+extends AbstractWindowProcessor<Window, V>
 {
-	public void initFrame(JFrame frame);
-	public void show(JInternalFrame frame, BoundsPolicy bounds, StatePolicy state);
-	public JInternalFrame getActiveFrame();
+	WpWindowDisplay()
+	{
+		super(Window.class);
+	}
+
+	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
+	{
+		//TODO special case for dialog?
+		root.setVisible(true);
+	}
 }

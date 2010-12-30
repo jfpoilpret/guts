@@ -36,7 +36,8 @@ public interface AppLifecycleStarter
 	 * initialize and display its first window (or dialog).
 	 * At this time, Guice has been initialized already, so this {@code AppLifecycleStarter}
 	 * implementing class can be injected with any service, and in particular, 
-	 * {@link WindowController} that it should use to display its first window.
+	 * {@link net.guts.gui.window.WindowController} that it should use to display its 
+	 * first window.
 	 * <p/>
 	 * This method is called from within the Event Dispatch Thread.
 	 * 

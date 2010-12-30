@@ -32,7 +32,7 @@
  * <p/>
  * For your UI components, if you use Guts-GUI as the whole framework for your application,
  * then you won't have to explicitly call {@code SessionManager}: 
- * {@link net.guts.gui.application.WindowController} automatically calls it for you when
+ * {@link net.guts.gui.window.WindowController} automatically calls it for you when
  * you display or close a window.
  * <p/>
  * If you don't use Guts-GUI framework for your application but still want to use
