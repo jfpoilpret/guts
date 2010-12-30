@@ -49,7 +49,8 @@ public class GeneralActions
 		return _english;
 	}
 	
-	public GutsAction showPreferences(){
+	public GutsAction showPreferences()
+	{
 	    return _showPreferences;
 	}
 	
@@ -76,10 +77,12 @@ public class GeneralActions
 		}
 	};
 	
-	final private GutsAction _showPreferences = new GutsAction(){
-	    @Override protected void perform() {
-	        _dialogFactory.showDialog(PreferencesPanel.class, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
-	        
+	final private GutsAction _showPreferences = new GutsAction()
+	{
+	    @Override protected void perform()
+	    {
+	        _dialogFactory.showDialog(PreferencesPanel.class, 
+	        	BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	    }
 	};
 	
