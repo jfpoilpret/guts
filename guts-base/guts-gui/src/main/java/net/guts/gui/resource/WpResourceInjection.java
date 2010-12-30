@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.window;
+package net.guts.gui.resource;
 
 import java.awt.Window;
 import java.util.Locale;
@@ -20,7 +20,8 @@ import java.util.Locale;
 import javax.swing.RootPaneContainer;
 
 import net.guts.event.Consumes;
-import net.guts.gui.resource.ResourceInjector;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.WindowProcessor;
 
 import com.google.inject.Inject;
 

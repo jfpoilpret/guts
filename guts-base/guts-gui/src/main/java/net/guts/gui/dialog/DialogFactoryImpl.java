@@ -22,7 +22,7 @@ import javax.swing.JFrame;
 
 import net.guts.gui.window.ActiveWindow;
 import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.JDialogConfig;
 import net.guts.gui.window.StatePolicy;
 import net.guts.gui.window.WindowController;
 
@@ -106,7 +106,7 @@ class DialogFactoryImpl implements DialogFactory
 		}
 		dialog.init();
 		_windowController.show(
-			dialog, RootPaneConfig.forDialog().bounds(bounds).state(state).config());
+			dialog, JDialogConfig.create().bounds(bounds).state(state).config());
 		return !dialog.wasCancelled();
 	}
 

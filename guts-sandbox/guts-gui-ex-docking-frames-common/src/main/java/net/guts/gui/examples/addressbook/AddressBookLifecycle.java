@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 import net.guts.gui.docking.DockingLifecycle;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.message.MessageFactory;
-import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.JFrameConfig;
 import net.guts.gui.window.WindowController;
 import net.guts.gui.window.BoundsPolicy;
 
@@ -53,7 +53,7 @@ public class AddressBookLifecycle extends DockingLifecycle
 	@Override protected void showMainFrame(JFrame mainFrame, WindowController windowController)
 	{
 		windowController.show(mainFrame, 
-			RootPaneConfig.forFrame().bounds(BoundsPolicy.CENTER_ONLY).config());
+			JFrameConfig.create().bounds(BoundsPolicy.CENTER_ONLY).config());
 	}
 
 	// CSOFF: GenericIllegalRegexp

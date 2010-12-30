@@ -26,7 +26,7 @@ import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;
-import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.JFrameConfig;
 import net.guts.gui.window.WindowController;
 
 import com.google.inject.Inject;
@@ -82,7 +82,7 @@ abstract public class MultiFrameLifecycle implements AppLifecycleStarter
 		_allFrames.add(frame);
 		frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
 		frame.addWindowListener(_closeListener);
-		_windowController.show(frame, RootPaneConfig.forFrame().config());
+		_windowController.show(frame, JFrameConfig.create().config());
 	}
 	
 	final protected GutsApplicationActions appActions()

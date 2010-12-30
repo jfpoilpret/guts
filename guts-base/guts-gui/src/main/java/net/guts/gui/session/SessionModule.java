@@ -23,6 +23,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import net.guts.gui.window.WindowProcessor;
+import net.guts.gui.window.Windows;
+
 import com.google.inject.AbstractModule;
 
 /**
@@ -60,6 +63,12 @@ public final class SessionModule extends AbstractModule
 		bindConverter(JSplitPane.class, SplitPaneState.class);
 		bindConverter(JTable.class, TableState.class);
 		bindConverter(JTabbedPane.class, TabbedPaneState.class);
+
+		// Add WindowProcessor for WindowController
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
+			.to(WpWindowSessionStorage.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
+			.to(WpAppletSessionStorage.class);
 	}
 	
 	private <T extends Component> void bindConverter(

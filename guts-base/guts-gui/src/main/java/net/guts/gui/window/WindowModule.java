@@ -43,24 +43,21 @@ public final class WindowModule extends AbstractModule
 	@Override protected void configure()
 	{
 		bind(ActiveWindow.class).asEagerSingleton();
-		//TODO Create Map<Integer, WindowProcessor>
-		//TODO make sure we don't need different TypeLiteral for generic WP!!!!
+		// Create Map<Integer, WindowProcessor>
+		Windows.windowProcessors(binder());
 		//TODO remove special cases that belong to more specific modules
-		// (eg WpResourceInjection -> ResourceModule,...)
-		Windows.bindWindowProcessor(binder(), WindowProcessor.RESOURCE_INJECTION)
-			.to(WpResourceInjection.class);
+//		Windows.bindWindowProcessor(binder(), WindowProcessor.RESOURCE_INJECTION)
+//			.to(WpResourceInjection.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT)
 			.to(WpWindowBoundsInit.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 1)
 			.to(WpAppletBoundsInit.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
-			.to(WpWindowSessionStorage.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
-			.to(WpAppletSessionStorage.class);
+//		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
+//			.to(WpWindowSessionStorage.class);
+//		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
+//			.to(WpAppletSessionStorage.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpWindowDisplay.class);
-		
-		//TODO add missing WP for applets... then internal frames
 	}
 	
 	@Override public boolean equals(Object other)

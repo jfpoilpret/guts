@@ -14,26 +14,22 @@
 
 package net.guts.gui.window;
 
-import javax.swing.RootPaneContainer;
+import javax.swing.JApplet;
 
-import net.guts.gui.util.TypeSafeMap;
-
-public class RootPaneConfig<T extends RootPaneContainer>
+final public class JAppletConfig extends AbstractConfig<JApplet, JAppletConfig>
 {
-	RootPaneConfig(TypeSafeMap properties)
+	private JAppletConfig()
 	{
-		_properties = properties;
+		set(StatePolicy.class, StatePolicy.RESTORE_IF_EXISTS);
 	}
 	
-	public <V> V get(Class<V> type)
+	static public JAppletConfig create()
 	{
-		return _properties.get(type);
-	}
-
-	public <V> V get(String key, Class<V> type)
-	{
-		return _properties.get(key, type);
+		return new JAppletConfig();
 	}
 	
-	final private TypeSafeMap _properties;
+	public JAppletConfig state(StatePolicy state)
+	{
+		return set(StatePolicy.class, state);
+	}
 }

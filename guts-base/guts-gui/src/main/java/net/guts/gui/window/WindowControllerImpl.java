@@ -15,8 +15,9 @@
 package net.guts.gui.window;
 
 import java.awt.EventQueue;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
-import java.util.SortedMap;
 import java.util.TreeMap;
 
 import javax.swing.RootPaneContainer;
@@ -29,7 +30,11 @@ class WindowControllerImpl implements WindowController
 {
 	@Inject WindowControllerImpl(Map<Integer, WindowProcessor> processors)
 	{
-		_processors = new TreeMap<Integer, WindowProcessor>(processors);
+		// Sort all processors according to order index key
+		TreeMap<Integer, WindowProcessor> sortedProcessors = 
+			new TreeMap<Integer, WindowProcessor>(processors);
+		// Then copy to a sorted list of WPs (no need to store index)
+		_processors = new ArrayList<WindowProcessor>(sortedProcessors.values());
 	}
 
 	@Override public <T extends RootPaneContainer> void show(T root, RootPaneConfig<T> config)
@@ -39,11 +44,12 @@ class WindowControllerImpl implements WindowController
 			throw new IllegalStateException(
 				"WindowController.show() must be called from the EDT!");
 		}
-		for (WindowProcessor processor: _processors.values())
+		// Delegate all work to all registered WindowProcessors
+		for (WindowProcessor processor: _processors)
 		{
 			processor.process(root, config);
 		}
 	}
 
-	final private SortedMap<Integer, WindowProcessor> _processors;
+	final private List<WindowProcessor> _processors;
 }

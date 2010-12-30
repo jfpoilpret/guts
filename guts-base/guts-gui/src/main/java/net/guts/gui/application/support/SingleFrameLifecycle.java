@@ -23,7 +23,7 @@ import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.menu.MenuFactory;
-import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.JFrameConfig;
 import net.guts.gui.window.WindowController;
 
 import com.google.inject.Inject;
@@ -127,7 +127,7 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	
 	protected void showMainFrame(JFrame mainFrame, WindowController windowController)
 	{
-		windowController.show(mainFrame, RootPaneConfig.forFrame().config());
+		windowController.show(mainFrame, JFrameConfig.create().config());
 	}
 	
 	private WindowController _windowController;
