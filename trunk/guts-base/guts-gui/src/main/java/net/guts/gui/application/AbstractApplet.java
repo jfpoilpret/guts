@@ -20,7 +20,7 @@ import javax.swing.JApplet;
 
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.exit.ExitPerformer;
-import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.JAppletConfig;
 import net.guts.gui.window.StatePolicy;
 import net.guts.gui.window.WindowController;
 
@@ -117,7 +117,7 @@ public abstract class AbstractApplet extends JApplet
 			@Override void afterStartup()
 			{
 				_windowController.show(AbstractApplet.this, 
-					RootPaneConfig.forApplet().state(StatePolicy.RESTORE_IF_EXISTS).config());
+					JAppletConfig.create().state(StatePolicy.RESTORE_IF_EXISTS).config());
 			}
 		});
 	}

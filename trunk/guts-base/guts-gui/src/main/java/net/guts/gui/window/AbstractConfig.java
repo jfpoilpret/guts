@@ -14,34 +14,35 @@
 
 package net.guts.gui.window;
 
-import java.awt.Window;
-
 import javax.swing.RootPaneContainer;
 
-import com.google.inject.Inject;
+import net.guts.gui.util.TypeSafeMap;
 
-class WpWindowBoundsInit<V extends RootPaneContainer> 
-extends AbstractWindowProcessor<Window, V>
+abstract 
+public class AbstractConfig<T extends RootPaneContainer, U extends AbstractConfig<T, U>>
 {
-	@Inject WpWindowBoundsInit(ActiveWindow activeWindow)
+	protected AbstractConfig()
 	{
-		super(Window.class);
-		_activeWindow = activeWindow;
-	}
-
-	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
-	{
-		BoundsPolicy bounds = config.get(BoundsPolicy.class);
-		// Initialize location and size according to policy
-		if (bounds.mustPack())
-		{
-			root.pack();
-		}
-		if (bounds.mustCenter())
-		{
-			root.setLocationRelativeTo(_activeWindow.get());
-		}
 	}
 	
-	final private ActiveWindow _activeWindow;
+	public RootPaneConfig<T> config()
+	{
+		return new RootPaneConfig<T>(_properties);
+	}
+	
+	@SuppressWarnings("unchecked") 
+	final protected <V> U set(Class<V> type, V value)
+	{
+		_properties.put(type, value);
+		return (U) this;
+	}
+
+	@SuppressWarnings("unchecked") 
+	final protected <V> U set(String key, Class<V> type, V value)
+	{
+		_properties.put(key, type, value);
+		return (U) this;
+	}
+	
+	final private TypeSafeMap _properties = new TypeSafeMap();
 }

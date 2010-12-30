@@ -32,6 +32,8 @@ import javax.swing.KeyStroke;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
 import net.guts.gui.util.CursorInfo;
+import net.guts.gui.window.WindowProcessor;
+import net.guts.gui.window.Windows;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
@@ -202,6 +204,11 @@ public final class ResourceModule extends AbstractModule
 		Resources.classBundlesMap(binder());
 		// Initialize MapBinder<String, List<String>> for bundles per package
 		Resources.packageBundlesMap(binder());
+		
+		// Add WindowProcessor for WindowController
+		Windows.bindWindowProcessor(binder(), WindowProcessor.RESOURCE_INJECTION)
+			.to(WpResourceInjection.class);
+
 	}
 	
 	private <T> void bindConverter(

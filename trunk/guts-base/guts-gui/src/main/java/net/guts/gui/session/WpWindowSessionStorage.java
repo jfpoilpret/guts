@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.window;
+package net.guts.gui.session;
 
 import java.awt.Component;
 import java.awt.Window;
@@ -28,7 +28,9 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
-import net.guts.gui.session.SessionManager;
+import net.guts.gui.window.AbstractWindowProcessor;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 
@@ -50,7 +52,7 @@ extends AbstractWindowProcessor<Window, V>
 
 	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
 	{
-		StatePolicy state = config._properties.get(StatePolicy.class);
+		StatePolicy state = config.get(StatePolicy.class);
 		if (state == StatePolicy.RESTORE_IF_EXISTS)
 		{
 			// Restore size from session storage if any

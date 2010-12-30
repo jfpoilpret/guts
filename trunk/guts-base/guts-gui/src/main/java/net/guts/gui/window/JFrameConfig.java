@@ -14,26 +14,28 @@
 
 package net.guts.gui.window;
 
-import javax.swing.RootPaneContainer;
+import javax.swing.JFrame;
 
-import net.guts.gui.util.TypeSafeMap;
-
-public class RootPaneConfig<T extends RootPaneContainer>
+final public class JFrameConfig extends AbstractConfig<JFrame, JFrameConfig>
 {
-	RootPaneConfig(TypeSafeMap properties)
+	private JFrameConfig()
 	{
-		_properties = properties;
+		set(BoundsPolicy.class, BoundsPolicy.PACK_AND_CENTER);
+		set(StatePolicy.class, StatePolicy.RESTORE_IF_EXISTS);
 	}
 	
-	public <V> V get(Class<V> type)
+	static public JFrameConfig create()
 	{
-		return _properties.get(type);
-	}
-
-	public <V> V get(String key, Class<V> type)
-	{
-		return _properties.get(key, type);
+		return new JFrameConfig();
 	}
 	
-	final private TypeSafeMap _properties;
+	public JFrameConfig bounds(BoundsPolicy bounds)
+	{
+		return set(BoundsPolicy.class, bounds);
+	}
+	
+	public JFrameConfig state(StatePolicy state)
+	{
+		return set(StatePolicy.class, state);
+	}
 }

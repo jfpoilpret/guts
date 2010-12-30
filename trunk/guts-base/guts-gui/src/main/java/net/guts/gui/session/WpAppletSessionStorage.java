@@ -12,13 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.window;
+package net.guts.gui.session;
 
 import javax.swing.JApplet;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
-import net.guts.gui.session.SessionManager;
+import net.guts.gui.window.AbstractWindowProcessor;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 
@@ -32,7 +34,7 @@ class WpAppletSessionStorage extends AbstractWindowProcessor<JApplet, JApplet>
 
 	@Override protected void processRoot(JApplet root, RootPaneConfig<JApplet> config)
 	{
-		StatePolicy state = config._properties.get(StatePolicy.class);
+		StatePolicy state = config.get(StatePolicy.class);
 		if (state == StatePolicy.RESTORE_IF_EXISTS)
 		{
 			// Restore size from session storage if any
