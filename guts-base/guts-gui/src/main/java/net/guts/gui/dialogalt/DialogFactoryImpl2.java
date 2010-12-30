@@ -22,9 +22,11 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.application.WindowController;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
+import net.guts.gui.window.ActiveWindow;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.WindowController;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -33,10 +35,12 @@ import com.google.inject.Singleton;
 @Singleton
 class DialogFactoryImpl2 implements DialogFactory2
 {
-	@Inject DialogFactoryImpl2(Injector injector, WindowController windowController)
+	@Inject DialogFactoryImpl2(Injector injector, WindowController windowController,
+		ActiveWindow activeWindow)
 	{
 		_injector = injector;
 		_windowController = windowController;
+		_activeWindow = activeWindow;
 	}
 	
 	/*
@@ -64,7 +68,7 @@ class DialogFactoryImpl2 implements DialogFactory2
 	{
 	    
 		// Find right parent first
-		Window active = _windowController.getActiveWindow();
+		Window active = _activeWindow.get();
 		JDialog dialog;
 		if (active instanceof JDialog)
 		{
@@ -90,7 +94,8 @@ class DialogFactoryImpl2 implements DialogFactory2
 		
 		dialog.setContentPane(template);
 		
-		_windowController.show(dialog, bounds, state);
+		_windowController.show(dialog, 
+			RootPaneConfig.forDialog().bounds(bounds).state(state).config());
 		
 		return !template.wasCancelled();
 	}
@@ -126,4 +131,5 @@ class DialogFactoryImpl2 implements DialogFactory2
 	
 	final private Injector _injector;
 	final private WindowController _windowController;
+	final private ActiveWindow _activeWindow;
 }

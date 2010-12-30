@@ -18,9 +18,11 @@ import java.util.List;
 
 import javax.swing.JApplet;
 
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.exit.ExitPerformer;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.WindowController;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Inject;
@@ -114,7 +116,8 @@ public abstract class AbstractApplet extends JApplet
 			
 			@Override void afterStartup()
 			{
-				_windowController.showApplet(StatePolicy.RESTORE_IF_EXISTS);
+				_windowController.show(AbstractApplet.this, 
+					RootPaneConfig.forApplet().state(StatePolicy.RESTORE_IF_EXISTS).config());
 			}
 		});
 	}
@@ -157,7 +160,7 @@ public abstract class AbstractApplet extends JApplet
 	{
 		@Override protected void configure()
 		{
-			// Ensure this is injectable as JApplet
+			// Ensure this is injected!
 			bind(JApplet.class).toInstance(AbstractApplet.this);
 			// Don't allow System.exit() for an applet!
 			bind(ExitPerformer.class).toInstance(new ExitPerformer()

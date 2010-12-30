@@ -20,9 +20,11 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 
-import net.guts.gui.application.WindowController;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
+import net.guts.gui.window.ActiveWindow;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.WindowController;
 
 import com.google.inject.Inject;
 import com.google.inject.Injector;
@@ -31,10 +33,12 @@ import com.google.inject.Singleton;
 @Singleton
 class DialogFactoryImpl implements DialogFactory
 {
-	@Inject DialogFactoryImpl(Injector injector, WindowController windowController)
+	@Inject DialogFactoryImpl(Injector injector, WindowController windowController, 
+		ActiveWindow activeWindow)
 	{
 		_injector = injector;
 		_windowController = windowController;
+		_activeWindow = activeWindow;
 	}
 	
 	/*
@@ -85,7 +89,7 @@ class DialogFactoryImpl implements DialogFactory
 	private boolean show(JComponent panel, BoundsPolicy bounds, StatePolicy state)
 	{
 		// Find right parent first
-		Window active = _windowController.getActiveWindow();
+		Window active = _activeWindow.get();
 		GDialog dialog;
 		if (active instanceof JDialog)
 		{
@@ -101,10 +105,12 @@ class DialogFactoryImpl implements DialogFactory
 			dialog = new GDialog((JFrame) null, panel);
 		}
 		dialog.init();
-		_windowController.show(dialog, bounds, state);
+		_windowController.show(
+			dialog, RootPaneConfig.forDialog().bounds(bounds).state(state).config());
 		return !dialog.wasCancelled();
 	}
 
 	final private Injector _injector;
 	final private WindowController _windowController;
+	final private ActiveWindow _activeWindow;
 }

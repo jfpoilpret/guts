@@ -20,8 +20,8 @@ import java.awt.Window;
 import javax.swing.JDialog;
 import javax.swing.JOptionPane;
 
-import net.guts.gui.application.WindowController;
 import net.guts.gui.resource.ResourceInjector;
+import net.guts.gui.window.ActiveWindow;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -29,16 +29,15 @@ import com.google.inject.Singleton;
 @Singleton
 class MessageFactoryImpl implements MessageFactory
 {
-	@Inject MessageFactoryImpl(
-		WindowController windowController, ResourceInjector injector)
+	@Inject MessageFactoryImpl(ActiveWindow activeWindow, ResourceInjector injector)
 	{
-		_windowController = windowController;
+		_activeWindow = activeWindow;
 		_injector = injector;
 	}
 	
 	public UserChoice showMessage(String id, Object... args)
 	{
-		Window parent = _windowController.getActiveWindow();
+		Window parent = _activeWindow.get();
 		return showMessage(parent, id, args);
 	}
 	
@@ -117,6 +116,6 @@ class MessageFactoryImpl implements MessageFactory
 		private String _message;
 	}
 
-	final private WindowController _windowController;
+	final private ActiveWindow _activeWindow;
 	final private ResourceInjector _injector;
 }

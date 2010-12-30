@@ -22,7 +22,7 @@ import com.google.inject.ImplementedBy;
  * Interface defining the API to save and restore GUI session state.
  * <p/>
  * You normally won't need to use this API directly as it is automatically
- * called by {@link net.guts.gui.application.WindowController}.
+ * called by {@link net.guts.gui.window.WindowController}.
  * <p/>
  * Behind the scenes, this service relies on {@link SerializationManager} to
  * convert objects to/from binary content, and {@link StorageMedium} to perform

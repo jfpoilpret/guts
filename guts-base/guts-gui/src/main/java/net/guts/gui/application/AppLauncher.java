@@ -35,6 +35,7 @@ import net.guts.gui.resource.Resources;
 import net.guts.gui.session.SessionModule;
 import net.guts.gui.session.Sessions;
 import net.guts.gui.task.TasksModule;
+import net.guts.gui.window.WindowModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Guice;
@@ -77,6 +78,7 @@ final class AppLauncher
 		{
 			// Make sure we get all modules to initialize Guice injector
 			final List<Module> modules = new ArrayList<Module>();
+			modules.add(new WindowModule());
 			modules.add(new ResourceModule());
 			modules.add(new SessionModule());
 			modules.add(new ActionModule());

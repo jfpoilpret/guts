@@ -150,12 +150,13 @@ public abstract class AbstractApplication
 		});
 	}
 
+	//FIXME remove after making sure it is really useless
 	// Special module to allow injection of this applet itself
 	static private class AppModule extends AbstractModule
 	{
 		@Override protected void configure()
 		{
-			bind(JApplet.class).toProvider(Providers.of((JApplet) null));
+//			bind(JApplet.class).toProvider(Providers.of((JApplet) null));
 		}
 	}
 }

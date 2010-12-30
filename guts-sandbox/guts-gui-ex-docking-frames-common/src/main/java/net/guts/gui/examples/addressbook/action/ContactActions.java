@@ -22,8 +22,6 @@ import javax.swing.JComponent;
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.dialog.PanelInitializer;
 import net.guts.gui.docking.ViewFactory;
@@ -45,6 +43,8 @@ import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.StatePolicy;
 
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.CLocation;

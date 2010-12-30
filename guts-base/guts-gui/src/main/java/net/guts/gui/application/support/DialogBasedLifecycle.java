@@ -17,10 +17,10 @@ package net.guts.gui.application.support;
 import javax.swing.JComponent;
 
 import net.guts.gui.application.AppLifecycleStarter;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.exit.ExitController;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 

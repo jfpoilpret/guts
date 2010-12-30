@@ -139,7 +139,7 @@
  * <p/>
  * For your UI components, if you use Guts-GUI as the whole framework for your application,
  * then you won't have to explicitly call {@code ResourceInjector}: 
- * {@link net.guts.gui.application.WindowController} automatically calls it for you when
+ * {@link net.guts.gui.window.WindowController} automatically calls it for you when
  * you display a window.
  * <p/>
  * Injection of every single resource into an object's property is normally done through

@@ -12,20 +12,25 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.support;
+package net.guts.gui.window;
 
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
-
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
-
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(MDIFrameControllerImpl.class)
-public interface MDIFrameController
+/**
+ * Policy, passed to {@link WindowController#show} methods, to determine if session
+ * state (bounds) should be restored or not.
+ *
+ * @author Jean-Francois Poilpret
+ */
+public enum StatePolicy
 {
-	public void initFrame(JFrame frame);
-	public void show(JInternalFrame frame, BoundsPolicy bounds, StatePolicy state);
-	public JInternalFrame getActiveFrame();
+	/**
+	 * Session state won't be restored, only {@link BoundsPolicy} will be used when
+	 * showing a window.
+	 */
+	DONT_RESTORE,
+	
+	/**
+	 * Session state will be restored if it was saved previously; if state was never
+	 * saved before, then {@link BoundsPolicy} will be used instead.
+	 */
+	RESTORE_IF_EXISTS
 }

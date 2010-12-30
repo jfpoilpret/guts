@@ -12,20 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.application.support;
+package net.guts.gui.window;
 
-import javax.swing.JFrame;
-import javax.swing.JInternalFrame;
+import javax.swing.JApplet;
 
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
-
-import com.google.inject.ImplementedBy;
-
-@ImplementedBy(MDIFrameControllerImpl.class)
-public interface MDIFrameController
+class WpAppletBoundsInit extends AbstractWindowProcessor<JApplet, JApplet>
 {
-	public void initFrame(JFrame frame);
-	public void show(JInternalFrame frame, BoundsPolicy bounds, StatePolicy state);
-	public JInternalFrame getActiveFrame();
+	WpAppletBoundsInit()
+	{
+		super(JApplet.class);
+	}
+
+	@Override protected void processRoot(JApplet root, RootPaneConfig<JApplet> config)
+	{
+		root.setSize(root.getLayout().preferredLayoutSize(root));
+	}
 }
