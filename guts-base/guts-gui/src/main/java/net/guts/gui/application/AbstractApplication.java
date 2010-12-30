@@ -16,11 +16,7 @@ package net.guts.gui.application;
 
 import java.util.List;
 
-import javax.swing.JApplet;
-
-import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import com.google.inject.util.Providers;
 
 /**
  * This is the starting class to create a Guts-GUI based application.
@@ -144,19 +140,8 @@ public abstract class AbstractApplication
 		{
 			@Override void initModules(String[] passedArgs, List<Module> modules)
 			{
-				modules.add(new AppModule());
 				AbstractApplication.this.initModules(passedArgs, modules);
 			}
 		});
-	}
-
-	//FIXME remove after making sure it is really useless
-	// Special module to allow injection of this applet itself
-	static private class AppModule extends AbstractModule
-	{
-		@Override protected void configure()
-		{
-//			bind(JApplet.class).toProvider(Providers.of((JApplet) null));
-		}
 	}
 }

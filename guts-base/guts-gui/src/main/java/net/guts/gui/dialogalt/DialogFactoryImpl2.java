@@ -32,8 +32,7 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 
-@Singleton
-class DialogFactoryImpl2 implements DialogFactory2
+@Singleton class DialogFactoryImpl2 implements DialogFactory2
 {
 	@Inject DialogFactoryImpl2(Injector injector, WindowController windowController,
 		ActiveWindow activeWindow)
@@ -42,23 +41,27 @@ class DialogFactoryImpl2 implements DialogFactory2
 		_windowController = windowController;
 		_activeWindow = activeWindow;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
+	 * 
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent,
+	 * net.guts.gui.application.WindowController.BoundsPolicy, boolean)
 	 */
-	public boolean showDialog(
-		JComponent panel, BoundsPolicy bounds, StatePolicy state)
+	public boolean showDialog(JComponent panel, BoundsPolicy bounds, StatePolicy state)
 	{
 		return show(panel, bounds, state);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.dialog.ComponentInitializer, net.guts.gui.application.WindowController.BoundsPolicy)
+	 * 
+	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class,
+	 * net.guts.gui.dialog.ComponentInitializer,
+	 * net.guts.gui.application.WindowController.BoundsPolicy)
 	 */
-	public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy bounds, StatePolicy state)
+	public <T extends JComponent> boolean showDialog(Class<T> clazz, BoundsPolicy bounds,
+		StatePolicy state)
 	{
 		T panel = _injector.getInstance(clazz);
 		return show(panel, bounds, state);
@@ -66,7 +69,6 @@ class DialogFactoryImpl2 implements DialogFactory2
 
 	private boolean show(JComponent panel, BoundsPolicy bounds, StatePolicy state)
 	{
-	    
 		// Find right parent first
 		Window active = _activeWindow.get();
 		JDialog dialog;
@@ -84,51 +86,53 @@ class DialogFactoryImpl2 implements DialogFactory2
 			dialog = new JDialog((JFrame) null);
 		}
 		dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-        SimpleDialogViewCloser viewCloser = new SimpleDialogViewCloser(dialog);
+		SimpleDialogViewCloser viewCloser = new SimpleDialogViewCloser(dialog);
 		dialog.addWindowListener(new CloseListener(viewCloser));
-		
-        DialogTemplate template = _injector.getInstance(DialogTemplate.class);
-        template.setView(panel);
-        template.setViewCloser(viewCloser);
-		
-		
+
+		DialogTemplate template = _injector.getInstance(DialogTemplate.class);
+		template.setView(panel);
+		template.setViewCloser(viewCloser);
+
 		dialog.setContentPane(template);
-		
+
 		_windowController.show(dialog, 
 			RootPaneConfig.forDialog().bounds(bounds).state(state).config());
-		
+
 		return !template.wasCancelled();
 	}
 
-   static private class CloseListener extends WindowAdapter
-    {
-       private final ViewCloser viewCloser;
-       
-       public CloseListener(ViewCloser viewCloser) {
-           this.viewCloser = viewCloser;
-       }
-        @Override public void windowClosing(WindowEvent event)
-        {
-            viewCloser.doClose();
-        }
-    }
+	static private class CloseListener extends WindowAdapter
+	{
+		private final ViewCloser _viewCloser;
 
-    private static class SimpleDialogViewCloser implements ViewCloser{
+		public CloseListener(ViewCloser viewCloser)
+		{
+			_viewCloser = viewCloser;
+		}
 
-        private final JDialog dialog;
-        
-        public SimpleDialogViewCloser(JDialog dialog) {
-            this.dialog = dialog;
-        }
-        
-        public boolean doClose() {
-            dialog.setVisible(false);
-            dialog.dispose();
-            return true;
-        }
-        
-    }
-	
+		@Override public void windowClosing(WindowEvent event)
+		{
+			_viewCloser.doClose();
+		}
+	}
+
+	private static class SimpleDialogViewCloser implements ViewCloser
+	{
+		private final JDialog _dialog;
+
+		public SimpleDialogViewCloser(JDialog dialog)
+		{
+			_dialog = dialog;
+		}
+
+		public boolean doClose()
+		{
+			_dialog.setVisible(false);
+			_dialog.dispose();
+			return true;
+		}
+	}
+
 	final private Injector _injector;
 	final private WindowController _windowController;
 	final private ActiveWindow _activeWindow;
