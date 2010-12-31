@@ -18,6 +18,51 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.util.TypeSafeMap;
 
+/**
+ * Parent class of all {@link RootPaneConfig} builders, {@code AbstractConfig} is the
+ * only class that can instantiate {@code RootPaneConfig} with properties set by its
+ * subclasses.
+ * <p/>
+ * If you need to change one of the default builders (among {@link JAppletConfig},
+ * {@link JDialogConfig}, {@link JFrameConfig} and {@link JInternalFrameConfig}),
+ * then you should subclass {@code AbstractConfig}.
+ * <p/>
+ * Here is an excerpt of {@link JAppletConfig} that shows how to use {@code AbstractConfig}:
+ * <pre>
+ * public class JAppletConfig extends AbstractConfig&lt;JApplet, JAppletConfig&gt;
+ * {
+ *     private JAppletConfig()
+ *     {
+ *         set(StatePolicy.class, StatePolicy.RESTORE_IF_EXISTS);
+ *     }
+ *     
+ *     static public JAppletConfig create()
+ *     {
+ *         return new JAppletConfig();
+ *     }
+ *     
+ *     public JAppletConfig state(StatePolicy state)
+ *     {
+ *         return set(StatePolicy.class, state);
+ *     }
+ * }
+ * </pre>
+ * By convention, all {@link RootPaneConfig} builders:
+ * <ul>
+ * <li>must have a {@code private} constructor where reasonable defaults are set
+ * for every property that the matching {@code RootPaneConfig<T>} must support</li>
+ * <li>must have a {@code static create()} method that returns a new instance of 
+ * themselves</li>
+ * <li>use fluent API to set properties that will eventually be added to the 
+ * {@code RootPaneConfig} produced by {@link #config()}</li>
+ * </ul>
+ * 
+ * @param <T> the type of {@link RootPaneContainer} supported by the built
+ * {@link RootPaneConfig}
+ * @param <U> the type of {@code AbstractConfig} subclass
+ *
+ * @author Jean-Francois Poilpret
+ */
 abstract 
 public class AbstractConfig<T extends RootPaneContainer, U extends AbstractConfig<T, U>>
 {

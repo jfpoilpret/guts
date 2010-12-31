@@ -20,7 +20,7 @@ class WpAppletBoundsInit extends AbstractWindowProcessor<JApplet, JApplet>
 {
 	WpAppletBoundsInit()
 	{
-		super(JApplet.class);
+		super(JApplet.class, JApplet.class);
 	}
 
 	@Override protected void processRoot(JApplet root, RootPaneConfig<JApplet> config)

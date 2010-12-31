@@ -16,6 +16,17 @@ package net.guts.gui.window;
 
 import javax.swing.JFrame;
 
+/**
+ * Builder class for {@code RootPaneConfig<JFrame>}. You must use this builder
+ * when you want to show an {@link javax.swing.JFrame} with {@link WindowController#show}.
+ * The following snippet shows typical usage:
+ * <pre>
+ * windowController.show(myFrame, 
+ *     JFrameConfig.create().bounds(BoundsPolicy.PACK_ONLY).config());
+ * </pre>
+ * 
+ * @author Jean-Francois Poilpret
+ */
 final public class JFrameConfig extends AbstractConfig<JFrame, JFrameConfig>
 {
 	private JFrameConfig()
@@ -24,16 +35,44 @@ final public class JFrameConfig extends AbstractConfig<JFrame, JFrameConfig>
 		set(StatePolicy.class, StatePolicy.RESTORE_IF_EXISTS);
 	}
 	
+	/**
+	 * Create a new builder of {@code RootPaneConfig<JFrame>}. By default, the 
+	 * resulting {@code RootPaneConfig<JFrame>} will use 
+	 * {@link StatePolicy#RESTORE_IF_EXISTS} and {@link BoundsPolicy#PACK_AND_CENTER}, 
+	 * but this can be changed through {@link #state} and {@link #bounds} methods.
+	 * 
+	 * @return a new {@code JFrameConfig} that can be used to build a 
+	 * {@code RootPaneConfig<JFrame>}
+	 */
 	static public JFrameConfig create()
 	{
 		return new JFrameConfig();
 	}
 	
+	/**
+	 * Change the bounds policy to be used when creating the new 
+	 * {@code RootPaneConfig<JFrame>}. This policy may be used by one of 
+	 * {@link WindowController#show}'s {@link WindowProcessor}s, in order to know 
+	 * how to initialize the size and location of the {@link javax.swing.JFrame}
+	 * to display.
+	 * 
+	 * @param bounds the bounds policy to set on {@code RootPaneConfig<JFrame>}
+	 * @return {@code this} builder so that calls can be chained until {@link #config()}
+	 */
 	public JFrameConfig bounds(BoundsPolicy bounds)
 	{
 		return set(BoundsPolicy.class, bounds);
 	}
 	
+	/**
+	 * Change the state to be used when creating the new {@code RootPaneConfig<JFrame>}.
+	 * This state may be used by one of {@link WindowController#show}'s 
+	 * {@link WindowProcessor}s, in order to know whether Session state must be 
+	 * restored (by {@link net.guts.gui.session.SessionManager}). 
+	 * 
+	 * @param state the state policy to set on {@code RootPaneConfig<JFrame>}
+	 * @return {@code this} builder so that calls can be chained until {@link #config()}
+	 */
 	public JFrameConfig state(StatePolicy state)
 	{
 		return set(StatePolicy.class, state);

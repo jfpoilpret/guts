@@ -23,9 +23,17 @@ import com.google.inject.ImplementedBy;
  * should be made visible through this service (rather than directly calling 
  * {@code setVisible(true)} on these.
  * <p/>
- * TODO working details ("WP plugins").
+ * Default implementation relies on a chain of {@link WindowProcessor}s, each being
+ * registered with Guice through {@link Windows#bindWindowProcessor}.
  * <p/>
- * Guts-GUI implementation of {@code WindowController} manages:
+ * Thus, every single aspect of preparing and showing a {@code RootPaneContainer} is 
+ * handled by a specific {@code WindowProcessor} implementation.
+ * <p/>
+ * You can add your own {@link WindowProcessor}s if you need, but you can't change
+ * any pre-registered one.
+ * <p/>
+ * Based on various GUTS {@link com.google.inject.Module}s that are used to create the
+ * Guice {@code Injector}, {@code WindowController} default implementation will manage:
  * <ul>
  * <li>Automatic resource injection through 
  * {@link net.guts.gui.resource.ResourceInjector}</li>
@@ -45,18 +53,23 @@ import com.google.inject.ImplementedBy;
 public interface WindowController
 {
 	/**
-	 * TODO rework this javadoc.
-	 * Show the given {@code root} after setting its location and size according
-	 * to {@code policy}. {@code root} will have its resources automatically 
-	 * injected (according to {@link net.guts.gui.resource.ResourceInjector} 
-	 * principles). Depending on {@code restoreState} value, {@code frame} GUI 
-	 * session state will be restored if it was previously persisted; in this case, 
-	 * {@code policy} has no effect.
+	 * Show the given {@code root} after preparation work according to {@code config},
+	 * eg setting its location and size, injecting resources...
 	 * <p/>
-	 * TODO sample code with building config correctly.
+	 * The following snippet shows how to show a frame:
+	 * <pre>
+	 * JFrame myFrame = new JFrane();
+	 * ...
+	 * windowController.show(myFrame, 
+	 *     JFrameConfig.create().bounds(BoundsPolicy.PACK_ONLY).config());
+	 * </pre>
 	 * 
-	 * @param root the {@code RootPaneContainer} to be displayed
-	 * @param config the configuration for displaying {@code root}
+	 * @param root the {@code RootPaneContainer} to be displayed; this can be a
+	 * {@link javax.swing.JFrame}, {@link javax.swing.JDialog}, {@link javax.swing.JApplet},
+	 * {@link javax.swing.JInternalFrame} or {@link javax.swing.JWindow}.
+	 * @param config the configuration for displaying {@code root}; this must be created
+	 * with one of {@link JFrameConfig}, {@link JDialogConfig}, {@link JAppletConfig}
+	 * or {@link JInternalFrameConfig} builder classes.
 	 */
 	public <T extends RootPaneContainer> void show(T root, RootPaneConfig<T> config);
 }

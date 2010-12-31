@@ -30,8 +30,6 @@ import com.google.inject.AbstractModule;
  * Hence you would care about {@code WindowModule} only if you intend to use 
  * Guts-GUI {@link WindowController} system but don't want to use the whole 
  * Guts-GUI framework.
- * <p/>
- * TODO list "plugins" for window showing and how to add them...
  *
  * @author Jean-Francois Poilpret
  */
@@ -45,17 +43,12 @@ public final class WindowModule extends AbstractModule
 		bind(ActiveWindow.class).asEagerSingleton();
 		// Create Map<Integer, WindowProcessor>
 		Windows.windowProcessors(binder());
-		//TODO remove special cases that belong to more specific modules
-//		Windows.bindWindowProcessor(binder(), WindowProcessor.RESOURCE_INJECTION)
-//			.to(WpResourceInjection.class);
+		// Add WP for various aspects
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT)
 			.to(WpWindowBoundsInit.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 1)
 			.to(WpAppletBoundsInit.class);
-//		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
-//			.to(WpWindowSessionStorage.class);
-//		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
-//			.to(WpAppletSessionStorage.class);
+		// Add WP that eventually displays the window
 		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpWindowDisplay.class);
 	}

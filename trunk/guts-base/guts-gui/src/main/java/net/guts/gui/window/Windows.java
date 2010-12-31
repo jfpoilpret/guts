@@ -31,7 +31,18 @@ public final class Windows
 	{
 	}
 
-	//TODO javadoc
+	/**
+	 * Initializes a binding for a {@link WindowProcessor} with a given calling 
+	 * order. This will be used by {@link WindowController#show} in order to call
+	 * all registered {@code WindowProcessor}s in order.
+	 * 
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param callingOrder the index that is used to sort all bound 
+	 * {@code WindowProcessor}s so that execution is made in the correct order
+	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
+	 * a {@link WindowProcessor} in the order defined by {@code callingOrder}
+	 */
 	@SuppressWarnings("unchecked") 
 	static public LinkedBindingBuilder<WindowProcessor> bindWindowProcessor(
 		Binder binder, int callingOrder)
