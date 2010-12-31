@@ -20,6 +20,14 @@ import java.awt.Window;
 import java.awt.event.AWTEventListener;
 import java.awt.event.WindowEvent;
 
+/**
+ * This service tracks the current active {@link java.awt.Window}, ie the window
+ * which is on front of any other of the application.
+ * <p/>
+ * You can inject this service wherever you need.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public class ActiveWindow
 {
 	ActiveWindow()
@@ -36,6 +44,12 @@ public class ActiveWindow
 		}, AWTEvent.WINDOW_EVENT_MASK);
 	}
 	
+	/**
+	 * Get the currently active window.
+	 * 
+	 * @return the front-most {@code Window} in the application, or {@code null} if there
+	 * is no window currently displayed
+	 */
 	public Window get()
 	{
 		return _current;

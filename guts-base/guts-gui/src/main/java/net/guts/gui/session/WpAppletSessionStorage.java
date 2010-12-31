@@ -28,7 +28,7 @@ class WpAppletSessionStorage extends AbstractWindowProcessor<JApplet, JApplet>
 {
 	@Inject WpAppletSessionStorage(SessionManager sessions)
 	{
-		super(JApplet.class);
+		super(JApplet.class, JApplet.class);
 		_sessions = sessions;
 	}
 

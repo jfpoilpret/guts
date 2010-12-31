@@ -16,6 +16,17 @@ package net.guts.gui.window;
 
 import javax.swing.RootPaneContainer;
 
+/**
+ * This interface is used by {@link WindowController#show}, which calls all
+ * registered implementations in the order defined by {@link Windows#bindWindowProcessor}.
+ * Based on the order in which they are called, implementations can operate on
+ * {@code root} before or after it is displayed.
+ * <p/>
+ * For implementations that don't support all {@link javax.swing.RootPaneContainer}s,
+ * it may be easier to subclass {@link AbstractWindowProcessor}.
+ *
+ * @author Jean-Francois Poilpret
+ */
 public interface WindowProcessor
 {
 	//TODO do these constant belong here?
@@ -24,5 +35,13 @@ public interface WindowProcessor
 	static final public int SESSION_STORAGE = 3000;
 	static final public int DISPLAY = 10000;
 
+	/**
+	 * Called to process {@code root} according to {@code config} which actual type is
+	 * guaranteed to hold the necessary information for the type {@code T} of {@code root}.
+	 * 
+	 * @param <T> actual {@code RootPaneContainer} implementation class of {@code root}
+	 * @param root the window to process
+	 * @param config the configuration for {@code root} according to its type {@code T}
+	 */
 	public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config);
 }
