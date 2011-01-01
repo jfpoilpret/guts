@@ -16,12 +16,13 @@ package net.guts.gui.session;
 
 import java.awt.Component;
 import java.awt.Window;
-import java.awt.event.ComponentEvent;
-import java.awt.event.ComponentListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
-import javax.swing.RootPaneContainer;
+import javax.swing.JDesktopPane;
+import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
+import javax.swing.event.InternalFrameAdapter;
+import javax.swing.event.InternalFrameEvent;
+import javax.swing.event.InternalFrameListener;
 
 import net.guts.event.Consumes;
 import net.guts.gui.exit.ExitController;
@@ -31,18 +32,17 @@ import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
 
-// Processor of session restoration and storage for real Window instances
-// only (JFrame, JDialog, JWindow)
-class WpWindowSessionStorage<V extends RootPaneContainer> 
-extends AbstractWindowProcessor<Window, V>
+class WpInternalFrameSessionStorage 
+extends AbstractWindowProcessor<JInternalFrame, JInternalFrame>
 {
-	@Inject WpWindowSessionStorage(SessionManager sessions)
+	@Inject WpInternalFrameSessionStorage(SessionManager sessions)
 	{
-		super(Window.class);
+		super(JInternalFrame.class, JInternalFrame.class);
 		_sessions = sessions;
 	}
 
-	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
+	@Override protected void processRoot(
+		JInternalFrame root, RootPaneConfig<JInternalFrame> config)
 	{
 		StatePolicy state = config.get(StatePolicy.class);
 		if (state == StatePolicy.RESTORE_IF_EXISTS)
@@ -50,19 +50,27 @@ extends AbstractWindowProcessor<Window, V>
 			// Restore size from session storage if any
 			_sessions.restore(root);
 		}
-		root.addWindowListener(_listener);
-		root.addComponentListener(_listener);
+		root.addInternalFrameListener(_listener);
 	}
 	
-	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE + 1)
+	@Consumes(topic = ExitController.SHUTDOWN_EVENT, priority = Integer.MIN_VALUE)
 	public void shutdown(Void nothing)
 	{
 		// Find all visible windows and save session for each
 		for (Window window: Window.getWindows())
 		{
-			if (window.isVisible() && _processedClass.isInstance(window))
+			if (window.isVisible() && window instanceof JFrame)
 			{
-				saveState(window);
+				JFrame frame = (JFrame) window;
+				if (frame.getContentPane() instanceof JDesktopPane)
+				{
+					JDesktopPane desktop =  (JDesktopPane) frame.getContentPane();
+					// Find all visible internal frames and save session for each
+					for (JInternalFrame child: desktop.getAllFrames())
+					{
+						saveState(child);
+					}
+				}
 			}
 		}
 	}
@@ -72,24 +80,12 @@ extends AbstractWindowProcessor<Window, V>
 		_sessions.save(container);
 	}
 	
-	private class WindowSessionListener extends WindowAdapter
-		implements ComponentListener
+	final private InternalFrameListener _listener = new InternalFrameAdapter()
 	{
-		@Override public void windowClosed(WindowEvent event)
+		@Override public void internalFrameClosed(InternalFrameEvent e)
 		{
-			saveState(event.getWindow());
+			saveState(e.getInternalFrame());
 		}
-
-		@Override public void componentHidden(ComponentEvent event)
-		{
-			saveState(event.getComponent());
-		}
-
-		@Override public void componentMoved(ComponentEvent event) {}
-		@Override public void componentResized(ComponentEvent event) {}
-		@Override public void componentShown(ComponentEvent event) {}
-	}
-	
+	};
 	final private SessionManager _sessions;
-	final private WindowSessionListener _listener = new WindowSessionListener();
 }

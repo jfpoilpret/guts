@@ -48,9 +48,13 @@ public final class WindowModule extends AbstractModule
 			.to(WpWindowBoundsInit.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 1)
 			.to(WpAppletBoundsInit.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 2)
+			.to(WpInternalFrameBoundsInit.class);
 		// Add WP that eventually displays the window
 		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpWindowDisplay.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY + 1)
+			.to(WpInternalFrameDisplay.class);
 	}
 	
 	@Override public boolean equals(Object other)
