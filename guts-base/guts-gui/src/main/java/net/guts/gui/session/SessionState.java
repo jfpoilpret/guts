@@ -20,10 +20,12 @@ import java.awt.Window;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.beans.PropertyVetoException;
 import java.util.Arrays;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -239,6 +241,44 @@ class FrameState implements SessionState<JFrame>
 		FrameState.class.getCanonicalName() + ".SavedBounds";
 	private ScreenEstate _estate = null;
 	private int _state = JFrame.NORMAL;
+}
+
+//TODO
+class InternalFrameState implements SessionState<JInternalFrame>
+{
+	@Override public void reset()
+	{
+		_normalBounds = null;
+		_isMaximized = false;
+		_isMinimized = false;
+	}
+	
+	@Override public void extractState(JInternalFrame component)
+	{
+		_normalBounds = component.getNormalBounds();
+		_isMinimized = component.isIcon();
+		_isMaximized = component.isMaximum();
+	}
+
+	//CSOFF: EmptyBlock
+	@Override public void injectState(JInternalFrame component)
+	{
+		component.setNormalBounds(_normalBounds);
+		try
+		{
+			component.setIcon(_isMinimized);
+			component.setMaximum(_isMaximized);
+		}
+		catch (PropertyVetoException e)
+		{
+			// Nothing to do even if that happens
+		}
+	}
+	//CSON: EmptyBlock
+	
+	private Rectangle _normalBounds;
+	private boolean _isMinimized;
+	private boolean _isMaximized;
 }
 
 class SplitPaneState implements SessionState<JSplitPane>

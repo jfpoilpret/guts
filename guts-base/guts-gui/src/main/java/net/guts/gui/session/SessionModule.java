@@ -19,6 +19,7 @@ import java.awt.Window;
 
 import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.JInternalFrame;
 import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -60,6 +61,7 @@ public final class SessionModule extends AbstractModule
 		bindConverter(Window.class, WindowState.class);
 		bindConverter(JApplet.class, AppletState.class);
 		bindConverter(JFrame.class, FrameState.class);
+		bindConverter(JInternalFrame.class, InternalFrameState.class);
 		bindConverter(JSplitPane.class, SplitPaneState.class);
 		bindConverter(JTable.class, TableState.class);
 		bindConverter(JTabbedPane.class, TabbedPaneState.class);
@@ -69,6 +71,8 @@ public final class SessionModule extends AbstractModule
 			.to(WpWindowSessionStorage.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
 			.to(WpAppletSessionStorage.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 2)
+			.to(WpInternalFrameSessionStorage.class);
 	}
 	
 	private <T extends Component> void bindConverter(
