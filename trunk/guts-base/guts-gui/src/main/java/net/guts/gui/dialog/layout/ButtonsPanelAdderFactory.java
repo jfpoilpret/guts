@@ -22,7 +22,7 @@ import java.util.Map;
 
 import javax.swing.JComponent;
 
-import net.java.dev.designgridlayout.DesignGridLayout;
+import net.java.dev.designgridlayout.DesignGridLayoutManager;
 
 /**
  * Factory of {@link ButtonsPanelAdder}s. Holds different implementations
@@ -50,7 +50,7 @@ final public class ButtonsPanelAdderFactory
 		_adders = new HashMap<Class<? extends LayoutManager>, ButtonsPanelAdder>();
 		registerAdder(BorderLayout.class, new BorderButtonsPanelAdder());
 		registerAdder(GridBagLayout.class, new GridBagButtonsPanelAdder());
-		registerAdder(DesignGridLayout.class, new DesignGridButtonsPanelAdder());
+		registerAdder(DesignGridLayoutManager.class, new DesignGridButtonsPanelAdder());
 	}
 	
 	/**

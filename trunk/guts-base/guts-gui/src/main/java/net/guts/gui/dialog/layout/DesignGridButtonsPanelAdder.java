@@ -21,6 +21,7 @@ import javax.swing.JComponent;
 
 
 import net.java.dev.designgridlayout.DesignGridLayout;
+import net.java.dev.designgridlayout.DesignGridLayoutManager;
 import net.java.dev.designgridlayout.INonGridRow;
 
 /**
@@ -33,7 +34,9 @@ final class DesignGridButtonsPanelAdder implements ButtonsPanelAdder
 {
 	public void addButtons(JComponent container, List<JButton> buttons)
 	{
-		DesignGridLayout layout = (DesignGridLayout) container.getLayout();
+		DesignGridLayoutManager actualLayout = 
+			(DesignGridLayoutManager) container.getLayout();
+		DesignGridLayout layout = actualLayout.designGridLayout();
 		layout.emptyRow();
 		INonGridRow row = layout.row().right();
 		for (JButton button: buttons)
