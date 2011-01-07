@@ -17,18 +17,23 @@ package net.guts.gui.util;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Special {@code Map} class that can store any type of {@code Object}s but still
+ * ensures type-safety of all {@code get} methods, and without need for casting.
+ *
+ * @author Jean-Francois Poilpret
+ */
 //TODO Put into guts-common instead
-//TODO maybe make clean interfaces and split implementation?
 public class TypeSafeMap
 {
-	public <T> void put(Class<T> type, T value)
-	{
-		put(type.getName(), type, value);
-	}
-	
 	public <T> void put(String key, Class<T> type, T value)
 	{
 		_map.put(key, new Value(type, value));
+	}
+	
+	public <T> void put(Class<T> type, T value)
+	{
+		put(type.getName(), type, value);
 	}
 	
 	public <T> T get(Class<T> type)
