@@ -53,6 +53,7 @@ import net.guts.gui.util.ScreenTools;
  * <ul>
  * <li>{@link java.awt.Window}</li>
  * <li>{@link javax.swing.JFrame}</li>
+ * <li>{@link javax.swing.JInternalFrame}</li>
  * <li>{@link javax.swing.JTabbedPane}</li>
  * <li>{@link javax.swing.JTable}</li>
  * <li>{@link javax.swing.JSplitPane}</li>
@@ -243,7 +244,6 @@ class FrameState implements SessionState<JFrame>
 	private int _state = JFrame.NORMAL;
 }
 
-//TODO
 class InternalFrameState implements SessionState<JInternalFrame>
 {
 	@Override public void reset()
