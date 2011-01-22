@@ -18,6 +18,8 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.util.TypeSafeMap;
 
+import com.google.inject.TypeLiteral;
+
 /**
  * This class acts as a placeholder for properties that are used by
  * {@link WindowController#show} and {@link WindowProcessor}s in order to
@@ -69,6 +71,20 @@ public class RootPaneConfig<T extends RootPaneContainer>
 	}
 	
 	/**
+	 * Get the value of property named {@code key} and of type {@code type}.
+	 * You can't have two properties named {@code key} for two different types.
+	 * 
+	 * @param <V> type of the value for property {@code key}
+	 * @param key the name of the property which we want to get the value
+	 * @param type type of the value for property {@code key}
+	 * @return value for property {@code key}
+	 */
+	public <V> V get(String key, TypeLiteral<V> type)
+	{
+		return _properties.get(key, type);
+	}
+	
+	/**
 	 * Get the value of property named {@code type.getName()} and of type {@code type}.
 	 * This is a shortcut for {@code get(MyType.class.getName(), MyType.class)}.
 	 * 
@@ -77,6 +93,19 @@ public class RootPaneConfig<T extends RootPaneContainer>
 	 * @return value for property of type {@code type} and name {@code type.getName()}
 	 */
 	public <V> V get(Class<V> type)
+	{
+		return _properties.get(type);
+	}
+
+	/**
+	 * Get the value of property named {@code type.getName()} and of type {@code type}.
+	 * This is a shortcut for {@code get(type.toString(), type)}.
+	 * 
+	 * @param <V> type of the value for property named {@code type.toString()}
+	 * @param type type of the value for property {@code type.toString()}
+	 * @return value for property of type {@code type} and name {@code type.toString()}
+	 */
+	public <V> V get(TypeLiteral<V> type)
 	{
 		return _properties.get(type);
 	}
