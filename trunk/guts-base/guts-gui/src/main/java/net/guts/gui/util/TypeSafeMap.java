@@ -17,6 +17,8 @@ package net.guts.gui.util;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.google.inject.TypeLiteral;
+
 /**
  * Special {@code Map} class that can store any type of {@code Object}s but still
  * ensures type-safety of all {@code get} methods, and without need for casting.
@@ -26,9 +28,37 @@ import java.util.Map;
 //TODO Put into guts-common instead
 public class TypeSafeMap
 {
-	public <T> void put(String key, Class<T> type, T value)
+	public void putAll(TypeSafeMap map, boolean replaceWhenKeyExists)
+	{
+		if (replaceWhenKeyExists)
+		{
+			_map.putAll(map._map);
+		}
+		else
+		{
+			for (Map.Entry<String, Value> entry: map._map.entrySet())
+			{
+				if (!_map.containsKey(entry.getKey()))
+				{
+					_map.put(entry.getKey(), entry.getValue());
+				}
+			}
+		}
+	}
+	
+	public <T> void put(String key, TypeLiteral<T> type, T value)
 	{
 		_map.put(key, new Value(type, value));
+	}
+	
+	public <T> void put(TypeLiteral<T> type, T value)
+	{
+		put(type.toString(), type, value);
+	}
+	
+	public <T> void put(String key, Class<T> type, T value)
+	{
+		put(key, TypeLiteral.get(type), value);
 	}
 	
 	public <T> void put(Class<T> type, T value)
@@ -36,16 +66,16 @@ public class TypeSafeMap
 		put(type.getName(), type, value);
 	}
 	
-	public <T> T get(Class<T> type)
+	public <T> T get(TypeLiteral<T> type)
 	{
-		return get(type.getName(), type);
+		return get(type.toString(), type);
 	}
 
 	@SuppressWarnings("unchecked") 
-	public <T> T get(String key, Class<T> type)
+	public <T> T get(String key, TypeLiteral<T> type)
 	{
 		Value value = _map.get(key);
-		if (value != null && type == value._type)
+		if (value != null && type.equals(value._type))
 		{
 			return (T) value._value;
 		}
@@ -54,16 +84,26 @@ public class TypeSafeMap
 			return null;
 		}
 	}
+
+	public <T> T get(Class<T> type)
+	{
+		return get(type.getName(), type);
+	}
+
+	public <T> T get(String key, Class<T> type)
+	{
+		return get(key, TypeLiteral.get(type));
+	}
 	
 	static private class Value
 	{
-		Value(Class<?> type, Object value)
+		Value(TypeLiteral<?> type, Object value)
 		{
 			_type = type;
 			_value = value;
 		}
 		
-		final private Class<?> _type;
+		final private TypeLiteral<?> _type;
 		final private Object _value;
 	}
 	

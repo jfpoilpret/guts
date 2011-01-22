@@ -18,6 +18,8 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.util.TypeSafeMap;
 
+import com.google.inject.TypeLiteral;
+
 /**
  * Parent class of all {@link RootPaneConfig} builders, {@code AbstractConfig} is the
  * only class that can instantiate {@code RootPaneConfig} with properties set by its
@@ -66,6 +68,7 @@ import net.guts.gui.util.TypeSafeMap;
 abstract 
 public class AbstractConfig<T extends RootPaneContainer, U extends AbstractConfig<T, U>>
 {
+	//TODO javadoc for all public/protected methods
 	protected AbstractConfig()
 	{
 	}
@@ -75,19 +78,42 @@ public class AbstractConfig<T extends RootPaneContainer, U extends AbstractConfi
 		return new RootPaneConfig<T>(_properties);
 	}
 	
-	@SuppressWarnings("unchecked") 
+	//TODO check generics are OK, in particular the second ?
+	final public U merge(AbstractConfig<? super T, ?> config)
+	{
+		_properties.putAll(config._properties, false);
+		return realThis();
+	}
+	
 	final protected <V> U set(Class<V> type, V value)
 	{
 		_properties.put(type, value);
-		return (U) this;
+		return realThis();
 	}
 
-	@SuppressWarnings("unchecked") 
+	final protected <V> U set(TypeLiteral<V> type, V value)
+	{
+		_properties.put(type, value);
+		return realThis();
+	}
+
 	final protected <V> U set(String key, Class<V> type, V value)
 	{
 		_properties.put(key, type, value);
-		return (U) this;
+		return realThis();
 	}
 	
+	final protected <V> U set(String key, TypeLiteral<V> type, V value)
+	{
+		_properties.put(key, type, value);
+		return realThis();
+	}
+	
+	@SuppressWarnings("unchecked") 
+	final protected U realThis()
+	{
+		return (U) this;
+	}
+
 	final private TypeSafeMap _properties = new TypeSafeMap();
 }
