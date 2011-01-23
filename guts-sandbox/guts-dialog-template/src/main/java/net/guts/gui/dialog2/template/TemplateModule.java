@@ -14,11 +14,29 @@
 
 package net.guts.gui.dialog2.template;
 
-import java.awt.Container;
+import net.guts.gui.window.WindowProcessor;
+import net.guts.gui.window.Windows;
 
-import javax.swing.JButton;
+import com.google.inject.AbstractModule;
 
-public interface OkCancelLayoutAdder
+public final class TemplateModule extends AbstractModule
 {
-	public Container layout(Container view, JButton ok, JButton cancel, JButton apply);
+	/* (non-Javadoc)
+	 * @see com.google.inject.AbstractModule#configure()
+	 */
+	@Override protected void configure()
+	{
+		Windows.bindWindowProcessor(binder(), WindowProcessor.TEMPLATE_DECORATION)
+			.to(WpTemplateDecoration.class);
+	}
+	
+	@Override public boolean equals(Object other)
+	{
+		return other instanceof TemplateModule;
+	}
+
+	@Override public int hashCode()
+	{
+		return TemplateModule.class.hashCode();
+	}
 }

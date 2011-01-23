@@ -14,6 +14,7 @@
 
 package net.guts.gui.dialog2.template;
 
+import java.awt.Container;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Insets;
@@ -21,14 +22,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.swing.JButton;
-import javax.swing.JComponent;
 import javax.swing.JPanel;
 
 //TODO better computation of gaps...
 class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 {
-	@Override public JComponent layout(
-		JComponent view, JButton ok, JButton cancel, JButton apply)
+	@Override public Container layout(
+		Container view, JButton ok, JButton cancel, JButton apply)
 	{
 		// Create a new view that will embed the given view and all added buttons
 		JPanel fullView = new JPanel();
@@ -75,7 +75,7 @@ class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 		constraints.gridheight = 1;
 		constraints.weighty = 0.0;
 		constraints.anchor = GridBagConstraints.CENTER;
-		constraints.insets = new Insets(20, 20, 20, 20);
+		constraints.insets = new Insets(INSET, INSET, INSET, INSET);
 
 		// Add the empty cell on the left (buttons will be right-aligned)
 		constraints.gridx = 0;
@@ -92,4 +92,6 @@ class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 			pane.add(button, constraints);
 		}
 	}
+	
+	static final private int INSET = 10;
 }

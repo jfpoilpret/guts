@@ -14,8 +14,9 @@
 
 package net.guts.gui.dialog2.template;
 
+import java.awt.Container;
+
 import javax.swing.JButton;
-import javax.swing.JComponent;
 
 import net.java.dev.designgridlayout.DesignGridLayout;
 import net.java.dev.designgridlayout.DesignGridLayoutManager;
@@ -24,8 +25,8 @@ import net.java.dev.designgridlayout.Tag;
 
 class OkCancelDesignGridLayoutAdder implements OkCancelLayoutAdder
 {
-	@Override public JComponent layout(
-		JComponent view, JButton ok, JButton cancel, JButton apply)
+	@Override public Container layout(
+		Container view, JButton ok, JButton cancel, JButton apply)
 	{
 		DesignGridLayoutManager manager = (DesignGridLayoutManager) view.getLayout();
 		DesignGridLayout layout = manager.designGridLayout();

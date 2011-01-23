@@ -35,8 +35,8 @@ public class DemoView2 extends JPanel
 		add(_lblBirth);
 		add(_txfBirth, "span, wrap unrel");
 
-		add(_header_name, "");
-		add(_header_ruler, "span");
+		add(_headerName, "");
+		add(_headerRuler, "span");
 		add(_lblStreet1, "gap indent");
 		add(_txfStreet1, "span");
 		add(_lblStreet2, "gap indent");
@@ -55,8 +55,8 @@ public class DemoView2 extends JPanel
 	final private JTextField _txfLastName = new JTextField(20);
 	final private JLabel _lblBirth = new JLabel();
 	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private JLabel _header_name = new JLabel();
-	final private JSeparator _header_ruler = new JSeparator();
+	final private JLabel _headerName = new JLabel();
+	final private JSeparator _headerRuler = new JSeparator();
 	final private JLabel _lblStreet1 = new JLabel();
 	final private JTextField _txfStreet1 = new JTextField(32);
 	final private JLabel _lblStreet2 = new JLabel();

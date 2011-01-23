@@ -14,21 +14,17 @@
 
 package net.guts.gui.dialog2.template;
 
+import java.awt.Container;
 import java.awt.LayoutManager;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
+import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
-import net.guts.gui.dialog2.CloseChecker;
-import net.guts.gui.dialog2.TemplateDecorator;
 import net.guts.gui.window.AbstractConfig;
 import net.guts.gui.window.RootPaneConfig;
 
@@ -37,7 +33,7 @@ import com.google.inject.Singleton;
 
 //TODO???? define AbstractTemplateConfig<T> extends AbstractConfig<JDialog, T>
 // TODO replace JDialog with RootPaneContainer
-public final class OkCancel extends AbstractConfig<JDialog, OkCancel>
+public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 {
 	private OkCancel()
 	{
@@ -50,12 +46,6 @@ public final class OkCancel extends AbstractConfig<JDialog, OkCancel>
 		return new OkCancel();
 	}
 	
-	public OkCancel withCloseChecker(CloseChecker closeChecker)
-	{
-		_config._closeChecker = closeChecker;
-		return this;
-	}
-
 	public OkCancel withOK(Action apply)
 	{
 		_config._apply = apply;
@@ -100,7 +90,6 @@ public final class OkCancel extends AbstractConfig<JDialog, OkCancel>
 	//CSOFF: VisibilityModifier
 	static class Config
 	{
-		CloseChecker _closeChecker = null;
 		Action _apply = null;
 		Action _cancel = null;
 		boolean _hasApply = false;
@@ -123,24 +112,21 @@ class OkCancelDecorator implements TemplateDecorator
 		_layouts = layouts;
 	}
 
-	@Override public void decorate(
-		JDialog container, JComponent view, RootPaneConfig<JDialog> configuration)
+	@Override public <T extends RootPaneContainer> void decorate(
+		T container, Container view, RootPaneConfig<T> configuration)
 	{
 		// Get config passed by the initial caller
 		OkCancel.Config config = configuration.get(OkCancel.Config.class);
 
-		// Handle listeners on container close
-		setupCloseChecker(container, config);
-		
 		// Create necessary Actions, lay them out
-		JComponent fullView = installActions(container, view, config);
+		Container fullView = installActions(container, view, config);
 		
 		// Add view to container
 		container.setContentPane(fullView);
 	}
 	
-	private JComponent installActions(
-		JDialog container, JComponent view, OkCancel.Config config)
+	private Container installActions(
+		RootPaneContainer container, Container view, OkCancel.Config config)
 	{
 		// Create the right actions when needed
 		GutsAction ok = setupAction(createOkAction(container, config));
@@ -170,7 +156,7 @@ class OkCancelDecorator implements TemplateDecorator
 	}
 
 	static private GutsAction createOkAction(
-		final JDialog container, final OkCancel.Config config)
+		final RootPaneContainer container, final OkCancel.Config config)
 	{
 		if (config._hasOK)
 		{
@@ -179,7 +165,8 @@ class OkCancelDecorator implements TemplateDecorator
 				@Override protected void afterTargetPerform()
 				{
 					config._result = OkCancel.Result.OK;
-					container.setVisible(false);
+					//FIXME shouldn't it be dispose()?
+					container.getRootPane().getParent().setVisible(false);
 				}
 			};
 		}
@@ -202,7 +189,7 @@ class OkCancelDecorator implements TemplateDecorator
 	}
 	
 	static private GutsAction createCancelAction(
-		final JDialog container, final OkCancel.Config config)
+		final RootPaneContainer container, final OkCancel.Config config)
 	{
 		GutsAction cancel = null;
 		if (config._hasCancel)
@@ -214,7 +201,8 @@ class OkCancelDecorator implements TemplateDecorator
 					@Override protected void afterTargetPerform()
 					{
 						config._result = OkCancel.Result.CANCEL;
-						container.setVisible(false);
+						//FIXME shouldn't it be dispose()?
+						container.getRootPane().getParent().setVisible(false);
 					}
 				};
 			}
@@ -225,7 +213,8 @@ class OkCancelDecorator implements TemplateDecorator
 					@Override protected void perform()
 					{
 						config._result = OkCancel.Result.CANCEL;
-						container.setVisible(false);
+						//FIXME shouldn't it be dispose()?
+						container.getRootPane().getParent().setVisible(false);
 					}
 				};
 			}
@@ -242,7 +231,7 @@ class OkCancelDecorator implements TemplateDecorator
 		return action;
 	}
 	
-	static private JButton createButton(GutsAction action, JComponent view)
+	static private JButton createButton(GutsAction action, Container view)
 	{
 		if (action != null)
 		{
@@ -253,28 +242,6 @@ class OkCancelDecorator implements TemplateDecorator
 		else
 		{
 			return null;
-		}
-	}
-	
-	private void setupCloseChecker(final JDialog container, final OkCancel.Config config)
-	{
-		if (config._closeChecker != null)
-		{
-			container.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-			container.addWindowListener(new WindowAdapter()
-			{
-				@Override public void windowClosing(WindowEvent e)
-				{
-					if (config._closeChecker.canClose())
-					{
-						container.dispose();
-					}
-				}
-			});
-		}
-		else
-		{
-			container.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
 		}
 	}
 	
