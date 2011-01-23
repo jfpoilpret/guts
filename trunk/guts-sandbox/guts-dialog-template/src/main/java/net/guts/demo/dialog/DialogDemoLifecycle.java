@@ -25,6 +25,7 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.dialog2.DialogFactory;
 import net.guts.gui.dialog2.template.OkCancel;
+import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.window.BoundsPolicy;
 import net.guts.gui.window.JDialogConfig;
@@ -45,19 +46,26 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 		mainFrame.setJMenuBar(createMenuBar());
 		mainFrame.getContentPane().setPreferredSize(new Dimension(800, 600));
 	}
+	
+	@HandlesException public boolean handle(Throwable e)
+	{
+		e.printStackTrace();
+		return true;
+	}
 
 	private JMenuBar createMenuBar()
 	{
 		JMenuBar menuBar = new JMenuBar();
 		JMenu file = menuFactory().createMenu("file",
-			_openDialog,
+			_openDialog1,
+			_openDialog2,
 			MenuFactory.ACTION_SEPARATOR,
 			appActions().quit());
 		menuBar.add(file);
 		return menuBar;
 	}
 	
-	final private GutsAction _openDialog = new GutsAction()
+	final private GutsAction _openDialog1 = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -66,7 +74,22 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 				.bounds(BoundsPolicy.PACK_AND_CENTER)
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1).config();
-			_dialogFactory.showDialog(DemoView.class, config2);
+			_dialogFactory.showDialog(DemoView1.class, config2);
+			System.out.println("Result = " + config1.result());
+		}
+	}; 
+	
+	final private GutsAction _openDialog2 = new GutsAction()
+	{
+		@Override protected void perform()
+		{
+			OkCancel config1 = OkCancel.create().withCancel();
+			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
+				.bounds(BoundsPolicy.PACK_AND_CENTER)
+				.state(StatePolicy.RESTORE_IF_EXISTS)
+				.merge(config1)
+				.config();
+			_dialogFactory.showDialog(DemoView2.class, config2);
 			System.out.println("Result = " + config1.result());
 		}
 	}; 

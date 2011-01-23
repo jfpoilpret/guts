@@ -49,6 +49,14 @@
 			<version>1.7</version>
 		</dependency>
 
+		<!-- MigLayout -->
+		<dependency>
+			<groupId>com.miglayout</groupId>
+			<artifactId>miglayout</artifactId>
+			<classifier>swing</classifier>
+			<version>3.7.3.1</version>
+		</dependency>
+
 		<dependency>
 			<groupId>org.slf4j</groupId>
 			<artifactId>slf4j-log4j12</artifactId>

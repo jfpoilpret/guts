@@ -17,24 +17,36 @@ package net.guts.demo.dialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JSeparator;
 import javax.swing.JTextField;
 
-import net.guts.gui.dialog.layout.GroupHeader;
-import net.java.dev.designgridlayout.DesignGridLayout;
+import net.miginfocom.swing.MigLayout;
 
-public class DemoView extends JPanel
+public class DemoView2 extends JPanel
 {
-	public DemoView()
+	public DemoView2()
 	{
-		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().grid(_lblFirstName).add(_txfFirstName);
-		layout.row().grid(_lblLastName).add(_txfLastName);
-		layout.row().grid(_lblBirth).add(_txfBirth);
-		_header.layout(layout);
-		layout.row().grid(_lblStreet1).add(_txfStreet1);
-		layout.row().grid(_lblStreet2).add(_txfStreet2);
-		layout.row().grid(_lblZip).add(_txfZip).grid(_lblCity).add(_txfCity);
-		layout.row().grid(_lblPhone).add(_txfPhone);
+		MigLayout layout = new MigLayout("wrap 4", "[][grow,fill]unrel[][grow,fill]");
+		setLayout(layout);
+		add(_lblFirstName, "");
+		add(_txfFirstName, "span");
+		add(_lblLastName);
+		add(_txfLastName, "span");
+		add(_lblBirth);
+		add(_txfBirth, "span, wrap unrel");
+
+		add(_header_name, "");
+		add(_header_ruler, "span");
+		add(_lblStreet1, "gap indent");
+		add(_txfStreet1, "span");
+		add(_lblStreet2, "gap indent");
+		add(_txfStreet2, "span");
+		add(_lblZip, "gap indent");
+		add(_txfZip);
+		add(_lblCity);
+		add(_txfCity);
+		add(_lblPhone, "gap indent");
+		add(_txfPhone, "span");
 	}
 	
 	final private JLabel _lblFirstName = new JLabel();
@@ -43,7 +55,8 @@ public class DemoView extends JPanel
 	final private JTextField _txfLastName = new JTextField(20);
 	final private JLabel _lblBirth = new JLabel();
 	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private GroupHeader _header = GroupHeader.create();
+	final private JLabel _header_name = new JLabel();
+	final private JSeparator _header_ruler = new JSeparator();
 	final private JLabel _lblStreet1 = new JLabel();
 	final private JTextField _txfStreet1 = new JTextField(32);
 	final private JLabel _lblStreet2 = new JLabel();
