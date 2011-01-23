@@ -14,6 +14,8 @@
 
 package net.guts.gui.dialog2.template;
 
+import java.awt.LayoutManager;
+
 import net.java.dev.designgridlayout.DesignGridLayoutManager;
 
 import com.google.inject.AbstractModule;
@@ -25,12 +27,11 @@ public final class OkCancelModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
-//		Dialogs.bindTemplate(binder(), OkCancelConfiguration.class).to(OkCancelTemplate.class);
 		OkCancelLayouts.layouts(binder());
 		OkCancelLayouts.bindLayout(binder(), DesignGridLayoutManager.class)
 			.to(OkCancelDesignGridLayoutAdder.class);
-//		bind(OkCancelButtonsPanelFactory.class).toProvider(FactoryProvider.newFactory(
-//			OkCancelButtonsPanelFactory.class, OkCancelButtonsPanel.class));
+		OkCancelLayouts.bindLayout(binder(), LayoutManager.class)
+			.to(OkCancelDefaultLayoutAdder.class);
 //		String pack = "/" + TypeHelper.getPackagePath(AbstractApplication.class);
 		// Provide default resource values for OK/Cancel/Apply actions
 //		Resources.bindPackageBundles(binder(), OkCancelButtonsPanel.class, pack + "/guts-gui");
