@@ -68,9 +68,16 @@ class DialogFactoryImpl implements DialogFactory
 
 	private TemplateDecorator getTemplate(RootPaneConfig<JDialog> config)
 	{
-		Class<? extends TemplateDecorator> clazz = config.get(
-			TemplateDecorator.TEMPLATE_TYPE_KEY).asSubclass(TemplateDecorator.class);
-		return _injector.getInstance(clazz);
+		Class<? extends TemplateDecorator> clazz = 
+			config.get(TemplateDecorator.TEMPLATE_TYPE_KEY);
+		if (clazz != null)
+		{
+			return _injector.getInstance(clazz);
+		}
+		else
+		{
+			return null;
+		}
 	}
 	
 	private JDialog createDialog()
