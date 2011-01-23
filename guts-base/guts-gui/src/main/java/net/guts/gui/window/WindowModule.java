@@ -50,6 +50,11 @@ public final class WindowModule extends AbstractModule
 			.to(WpAppletBoundsInit.class);
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 2)
 			.to(WpInternalFrameBoundsInit.class);
+		// Add WP that adds close listeners to windows
+		Windows.bindWindowProcessor(binder(), WindowProcessor.CLOSE_CHECKER_SETUP)
+			.to(WpWindowCloseChecking.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.CLOSE_CHECKER_SETUP + 1)
+			.to(WpInternalFrameCloseChecking.class);
 		// Add WP that eventually displays the window
 		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpWindowDisplay.class);
