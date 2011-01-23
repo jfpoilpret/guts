@@ -21,6 +21,9 @@ import javax.swing.JFrame;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.dialog2.DialogFactory;
@@ -36,6 +39,8 @@ import com.google.inject.Inject;
 
 public class DialogDemoLifecycle extends SingleFrameLifecycle
 {
+	static final private Logger _logger = LoggerFactory.getLogger(DialogDemoLifecycle.class);
+	
 	@Inject public DialogDemoLifecycle(DialogFactory dialogFactory)
 	{
 		_dialogFactory = dialogFactory;
@@ -49,7 +54,7 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	
 	@HandlesException public boolean handle(Throwable e)
 	{
-		e.printStackTrace();
+		_logger.error("handle", e);
 		return true;
 	}
 
@@ -75,7 +80,7 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1).config();
 			_dialogFactory.showDialog(DemoView1.class, config2);
-			System.out.println("Result = " + config1.result());
+			_logger.info("Result = {}", config1.result());
 		}
 	}; 
 	
@@ -90,7 +95,7 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 				.merge(config1)
 				.config();
 			_dialogFactory.showDialog(DemoView2.class, config2);
-			System.out.println("Result = " + config1.result());
+			_logger.info("Result = {}", config1.result());
 		}
 	}; 
 	

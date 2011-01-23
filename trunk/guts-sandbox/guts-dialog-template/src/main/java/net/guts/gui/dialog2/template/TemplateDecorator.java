@@ -12,9 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog2;
+package net.guts.gui.dialog2.template;
 
-public interface CloseChecker
+import java.awt.Container;
+
+import javax.swing.RootPaneContainer;
+
+import net.guts.gui.window.RootPaneConfig;
+
+import com.google.inject.TypeLiteral;
+
+//TODO rename into Decorator? or ViewDecorator?
+public interface TemplateDecorator
 {
-	public boolean canClose();
+	static final public TypeLiteral<Class<? extends TemplateDecorator>> TEMPLATE_TYPE_KEY =
+		new TypeLiteral<Class<? extends TemplateDecorator>>() {};
+
+	public <T extends RootPaneContainer> void decorate(
+		T container, Container view, RootPaneConfig<T> config);
 }

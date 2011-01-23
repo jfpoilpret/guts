@@ -44,16 +44,7 @@ class DialogFactoryImpl implements DialogFactory
 		// Create dialog
 		JDialog dialog = createDialog();
 		dialog.setName(view.getName() + "-dialog");
-		// Decorate it
-		TemplateDecorator template = getTemplate(config);
-		if (template != null)
-		{
-			template.decorate(dialog, view, config);
-		}
-		else
-		{
-			dialog.setContentPane(view);
-		}
+		dialog.setContentPane(view);
 		// Show the dialog
 		_windowController.show(dialog, config);
 	}
@@ -66,20 +57,6 @@ class DialogFactoryImpl implements DialogFactory
 		showDialog(view, config);
 	}
 
-	private TemplateDecorator getTemplate(RootPaneConfig<JDialog> config)
-	{
-		Class<? extends TemplateDecorator> clazz = 
-			config.get(TemplateDecorator.TEMPLATE_TYPE_KEY);
-		if (clazz != null)
-		{
-			return _injector.getInstance(clazz);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
 	private JDialog createDialog()
 	{
 		// Find right parent first
@@ -105,5 +82,4 @@ class DialogFactoryImpl implements DialogFactory
 	final private Injector _injector;
 	final private ActiveWindow _activeWindow;
 	final private WindowController _windowController;
-//	final private Map<Class<?>, DialogTemplate<?, ?>> _templates;
 }
