@@ -96,7 +96,8 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 			}
 		}
 	}
-	
+
+	//FIXME this currently doesn't work with private methods...
 	// CSOFF: IllegalCatchCheck
 	private boolean handle(Object instance, Method method, Throwable e)
 	{
