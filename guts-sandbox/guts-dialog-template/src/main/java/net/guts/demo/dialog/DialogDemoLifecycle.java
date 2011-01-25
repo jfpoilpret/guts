@@ -64,6 +64,7 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 		JMenu file = menuFactory().createMenu("file",
 			_openDialog1,
 			_openDialog2,
+			_openDialog3,
 			MenuFactory.ACTION_SEPARATOR,
 			appActions().quit());
 		menuBar.add(file);
@@ -89,6 +90,21 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 		@Override protected void perform()
 		{
 			OkCancel config1 = OkCancel.create().withCancel();
+			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
+				.bounds(BoundsPolicy.PACK_AND_CENTER)
+				.state(StatePolicy.RESTORE_IF_EXISTS)
+				.merge(config1)
+				.config();
+			_dialogFactory.showDialog(DemoView2.class, config2);
+			_logger.info("Result = {}", config1.result());
+		}
+	}; 
+	
+	final private GutsAction _openDialog3 = new GutsAction()
+	{
+		@Override protected void perform()
+		{
+			OkCancel config1 = OkCancel.create().withCancel().withOK().withApply();
 			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
 				.bounds(BoundsPolicy.PACK_AND_CENTER)
 				.state(StatePolicy.RESTORE_IF_EXISTS)
