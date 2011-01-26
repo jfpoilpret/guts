@@ -56,7 +56,7 @@ class XStreamSerializationManager implements SerializationManager
 		{
 			return new MapperWrapper(next)
 			{
-				@SuppressWarnings("unchecked") @Override 
+				@SuppressWarnings("rawtypes") @Override 
 				public boolean shouldSerializeMember(Class definedIn, String fieldName)
 				{
 					try

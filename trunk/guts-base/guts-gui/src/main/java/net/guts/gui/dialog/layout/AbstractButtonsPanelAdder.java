@@ -29,7 +29,11 @@ import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import static net.guts.gui.util.LayoutHelper.*;
+import static net.guts.gui.util.LayoutHelper.bottomGap;
+import static net.guts.gui.util.LayoutHelper.leftGap;
+import static net.guts.gui.util.LayoutHelper.relatedHorizontalGap;
+import static net.guts.gui.util.LayoutHelper.rightGap;
+import static net.guts.gui.util.LayoutHelper.topGap;
 
 /**
  * An abstract implementation of {@link ButtonsPanelAdder} that creates a 
@@ -44,7 +48,7 @@ public abstract class AbstractButtonsPanelAdder implements ButtonsPanelAdder
 	 * (non-Javadoc)
 	 * @see net.sf.guice.gui.dialog.support.ButtonsPanelAdder#addButtons(javax.swing.JComponent, java.util.List)
 	 */
-	final public void addButtons(JComponent container, List<JButton> buttons)
+	@Override final public void addButtons(JComponent container, List<JButton> buttons)
 	{
 		List<JButton> actualButtons = new ArrayList<JButton>();
 		for (JButton button: buttons)

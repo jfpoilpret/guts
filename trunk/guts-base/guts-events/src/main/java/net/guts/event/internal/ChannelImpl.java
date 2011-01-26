@@ -77,7 +77,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		}
 	}
 	
-	public void publish(final T event)
+	@Override public void publish(final T event)
 	{
 		//  Find all interested consumers (based on filters)
 		Map<Executor, EventPublisher> consumers = new HashMap<Executor, EventPublisher>();
@@ -153,7 +153,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 		}
 	}
 	
-	public void cleanup()
+	@Override public void cleanup()
 	{
 		if (!needCleanup())
 		{
@@ -216,7 +216,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 	}
 	
 	//CSOFF: IllegalCatchCheck
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	private void notify(Consumer consumer, T event)
 	{
 		Object instance = consumer._instance.get();
@@ -285,7 +285,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 			_priority = priority;
 		}
 
-		public int compareTo(Consumer that)
+		@Override public int compareTo(Consumer that)
 		{
 			int diff = this._priority - that._priority;
 			return (diff != 0 ? diff : this._order - that._order);
@@ -333,7 +333,7 @@ public class ChannelImpl<T> implements Channel<T>, Cleanable
 			_event = event;
 		}
 		
-		public void run()
+		@Override public void run()
 		{
 			for (Consumer consumer: _consumers)
 			{

@@ -138,7 +138,7 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 			_info = info;
 		}
 		
-		public int compareTo(Handler that)
+		@Override public int compareTo(Handler that)
 		{
 			int diff = this._info.getPriority() - that._info.getPriority();
 			return (diff != 0 ? diff : this._order - that._order);

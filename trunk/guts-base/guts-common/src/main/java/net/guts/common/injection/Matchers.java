@@ -78,7 +78,7 @@ public final class Matchers
 	{
 		return new AbstractMatcher<TypeLiteral<?>>()
 		{
-			public boolean matches(TypeLiteral<?> type)
+			@Override public boolean matches(TypeLiteral<?> type)
 			{
 				for (Method m: type.getRawType().getMethods())
 				{

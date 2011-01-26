@@ -31,7 +31,7 @@ import com.google.inject.TypeLiteral;
 	/* (non-Javadoc)
 	 * @see net.guts.gui.resource.ResourceConverterFinder#getConverter(com.google.inject.TypeLiteral)
 	 */
-	@SuppressWarnings("unchecked") 
+	@Override @SuppressWarnings("unchecked") 
 	public <T> ResourceConverter<T> getConverter(TypeLiteral<T> type)
 	{
 		ResourceConverter<T> converter = (ResourceConverter<T>) _converters.get(type);

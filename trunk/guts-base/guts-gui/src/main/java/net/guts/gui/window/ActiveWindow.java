@@ -34,7 +34,7 @@ public class ActiveWindow
 	{
 		Toolkit.getDefaultToolkit().addAWTEventListener(new AWTEventListener()
 		{
-			public void eventDispatched(AWTEvent event)
+			@Override public void eventDispatched(AWTEvent event)
 			{
 				if (event instanceof WindowEvent)
 				{

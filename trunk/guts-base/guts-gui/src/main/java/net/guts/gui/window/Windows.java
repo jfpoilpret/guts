@@ -43,7 +43,7 @@ public final class Windows
 	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
 	 * a {@link WindowProcessor} in the order defined by {@code callingOrder}
 	 */
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({"unchecked", "rawtypes"}) 
 	static public LinkedBindingBuilder<WindowProcessor> bindWindowProcessor(
 		Binder binder, int callingOrder)
 	{

@@ -137,7 +137,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
     {
 	    addHierarchyListener(new HierarchyListener()
 	    {
-			public void hierarchyChanged(HierarchyEvent e)
+			@Override public void hierarchyChanged(HierarchyEvent e)
             {
 				if (	(e.getID() == HierarchyEvent.HIERARCHY_CHANGED)
 					&&	((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0)
@@ -182,7 +182,8 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 		}
 	};
 	
-	@SuppressWarnings("unchecked") private Task<?> next()
+	@SuppressWarnings({"unchecked", "rawtypes"}) 
+	private Task<?> next()
 	{
 		// First accept current pane
 		JComponent current = _panes.get(_sequence.get(_current));
@@ -301,7 +302,7 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 
 	private class WizardControllerImpl implements WizardController
 	{
-		public void addWizardPane(JComponent pane, boolean appendToSequence)
+		@Override public void addWizardPane(JComponent pane, boolean appendToSequence)
         {
 			_mainPane.addStep(pane);
 			_panes.put(pane.getName(), pane);
@@ -311,17 +312,17 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			}
         }
 
-		public void setAcceptEnabled(boolean enabled)
+		@Override public void setAcceptEnabled(boolean enabled)
         {
 			AbstractWizardPanel.this.setAcceptEnabled(enabled);
         }
 
-		public void setNextEnabled(boolean enabled)
+		@Override public void setNextEnabled(boolean enabled)
         {
 			AbstractWizardPanel.this.setNextEnabled(enabled);
         }
 
-		public void setNextStepsSequence(String... steps)
+		@Override public void setNextStepsSequence(String... steps)
         {
 			// First check that all steps match added components
 			List<String> stepsList = Arrays.asList(steps);
@@ -339,12 +340,12 @@ abstract public class AbstractWizardPanel extends AbstractMultiPanel
 			_sequence.addAll(stepsList);
         }
 
-		public <U> U getContext(Class<U> clazz)
+		@Override public <U> U getContext(Class<U> clazz)
         {
 	        return clazz.cast(_context.get(clazz));
         }
 
-		public <U> void setContext(U context)
+		@Override public <U> void setContext(U context)
         {
 			_context.put(context.getClass(), context);
         }

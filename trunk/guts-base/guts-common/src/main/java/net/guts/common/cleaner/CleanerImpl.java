@@ -68,7 +68,7 @@ public class CleanerImpl implements Cleaner
 		}
 	}
 	
-	public void addCleanable(Cleanable cleanable)
+	@Override public void addCleanable(Cleanable cleanable)
 	{
 		synchronized(_allCleanables)
 		{
@@ -76,12 +76,12 @@ public class CleanerImpl implements Cleaner
 		}
 	}
 
-	public void enqueueCleanable(Cleanable cleanable)
+	@Override public void enqueueCleanable(Cleanable cleanable)
 	{
 		_waitingCleanables.offer(cleanable);
 	}
 
-	public void removeCleanable(Cleanable cleanable)
+	@Override public void removeCleanable(Cleanable cleanable)
 	{
 		synchronized(_allCleanables)
 		{

@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
 
 public final class InDeferredThreadExecutor implements Executor
 {
-	public void execute(Runnable command)
+	@Override public void execute(Runnable command)
 	{
 		new Thread(command).start();
 	}
