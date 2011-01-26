@@ -211,7 +211,7 @@ public final class Events
 	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind the 
 	 * {@code returnType} of consumer methods to an {@link ConsumerReturnHandler}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	static public <T> LinkedBindingBuilder<ConsumerReturnHandler<? extends T>> bindHandler(
 		Binder binder, TypeLiteral<T> returnType)
 	{

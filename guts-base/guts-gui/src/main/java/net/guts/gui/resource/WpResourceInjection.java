@@ -32,6 +32,7 @@ class WpResourceInjection implements WindowProcessor
 		_injector = injector;
 	}
 	
+	@Override 
 	public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config)
 	{
 		_injector.injectHierarchy(root.getRootPane().getParent());

@@ -34,7 +34,12 @@ import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.TasksGroupAdapter;
-import static net.guts.gui.util.LayoutHelper.*;
+import static net.guts.gui.util.LayoutHelper.bottomGap;
+import static net.guts.gui.util.LayoutHelper.maxLeftGap;
+import static net.guts.gui.util.LayoutHelper.maxRightGap;
+import static net.guts.gui.util.LayoutHelper.relatedVerticalGap;
+import static net.guts.gui.util.LayoutHelper.topGap;
+import static net.guts.gui.util.LayoutHelper.unrelatedVerticalGap;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -58,12 +63,12 @@ class DefaultBlockerDialogPane extends JPanel
 		initLayout();
 	}
 	
-	public JComponent getPane()
+	@Override public JComponent getPane()
 	{
 		return this;
 	}
 	
-	public void setTasksGroup(TasksGroup tasks)
+	@Override public void setTasksGroup(TasksGroup tasks)
 	{
 		_tasks = tasks;
 		_note.setText("");
@@ -130,7 +135,7 @@ class DefaultBlockerDialogPane extends JPanel
 		_parent = parent;
 	}
 	
-	public void close()
+	@Override public void close()
 	{
 		if (_parent != null)
 		{

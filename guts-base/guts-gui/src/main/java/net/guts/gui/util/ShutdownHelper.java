@@ -47,7 +47,7 @@ final public class ShutdownHelper
 			{
 				EventQueue.invokeAndWait(new Runnable()
 				{
-					public void	run()
+					@Override public void run()
 					{
 						disposeFrames();
 					}

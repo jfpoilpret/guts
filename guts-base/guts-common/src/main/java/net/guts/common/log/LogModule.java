@@ -40,7 +40,7 @@ public final class LogModule extends AbstractModule
 
 class SLF4JTypeListener implements TypeListener
 {
-	public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter)
+	@Override public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter)
 	{
 		for (Field field: typeLiteral.getRawType().getDeclaredFields())
 		{
@@ -62,7 +62,7 @@ class SLF4JMembersInjector<T> implements MembersInjector<T>
 		_field.setAccessible(true);
 	}
 
-	public void injectMembers(T t)
+	@Override public void injectMembers(T t)
 	{
 		try
 		{

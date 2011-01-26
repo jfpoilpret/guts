@@ -20,7 +20,7 @@ import javax.swing.SwingUtilities;
 
 public final class InEDTExecutor implements Executor
 {
-	public void execute(Runnable command)
+	@Override public void execute(Runnable command)
 	{
 		if (!SwingUtilities.isEventDispatchThread())
 		{

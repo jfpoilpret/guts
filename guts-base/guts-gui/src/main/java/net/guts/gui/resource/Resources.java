@@ -188,7 +188,7 @@ public final class Resources
 	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
 	 * property {@code type} to an {@link ResourceConverter}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	static public <T> LinkedBindingBuilder<ResourceConverter<T>> bindConverter(
 		Binder binder, TypeLiteral<T> type)
 	{
@@ -363,7 +363,7 @@ public final class Resources
 	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
 	 * class {@code type} to an {@link InstanceInjector}
 	 */
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	static public <T> LinkedBindingBuilder<InstanceInjector<T>> bindInstanceInjector(
 		Binder binder, Class<T> type)
 	{

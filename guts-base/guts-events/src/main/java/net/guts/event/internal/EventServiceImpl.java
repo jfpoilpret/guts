@@ -41,7 +41,7 @@ public class EventServiceImpl implements EventService
 		_factory = channelFactory;
 	}
 	
-	public <T> void registerChannel(TypeLiteral<T> type, String topic)
+	@Override public <T> void registerChannel(TypeLiteral<T> type, String topic)
 	{
 		ChannelKey key = new ChannelKey(type.getType(), topic);
 		Lock write = _lock.writeLock();
@@ -59,7 +59,7 @@ public class EventServiceImpl implements EventService
 		}
 	}
 
-	@SuppressWarnings("unchecked")
+	@Override @SuppressWarnings("unchecked")
 	public <T> Channel<T> getChannel(TypeLiteral<T> type, String topic)
 		throws IllegalArgumentException
 	{
@@ -99,7 +99,7 @@ public class EventServiceImpl implements EventService
 		}
 	}
 
-	public void registerConsumers(Object instance)
+	@Override public void registerConsumers(Object instance)
 	{
 		Class<?> clazz = instance.getClass();
 		Lock read = _lock.readLock();

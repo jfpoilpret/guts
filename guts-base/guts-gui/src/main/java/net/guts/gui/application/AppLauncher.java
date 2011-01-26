@@ -64,7 +64,7 @@ final class AppLauncher
 		// Now startup the GUI in the EDT
 		EventQueue.invokeLater(new Runnable()
 		{
-			public void run()
+			@Override public void run()
 			{
 				launchInEDT();
 			}

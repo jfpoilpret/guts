@@ -25,7 +25,7 @@ import com.google.inject.Singleton;
 public class DefaultConsumerExceptionHandler implements ConsumerExceptionHandler
 {
 	// CSOFF: RegexpSinglelineJavaCheck
-	public void handleException(
+	@Override public void handleException(
 		Throwable e, Method method, Object instance, Type eventType, String topic)
 	{
 		System.err.printf(LOG, 

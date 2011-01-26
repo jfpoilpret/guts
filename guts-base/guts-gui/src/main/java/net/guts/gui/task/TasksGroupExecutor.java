@@ -31,7 +31,7 @@ import net.guts.gui.task.blocker.InputBlocker;
 
 final class TasksGroupExecutor
 {
-	@SuppressWarnings("unchecked")
+	@SuppressWarnings("rawtypes") 
 	TasksGroupExecutor(TasksGroup group, InputBlocker blocker, ExecutorService executor,
 		TasksGroupListener groupListener)
 	{
@@ -111,7 +111,7 @@ final class TasksGroupExecutor
 		// Start a Thread to wait until all tasks are finished???
 		Runnable handleFeedback = new Runnable()
 		{
-			public void run()
+			@Override public void run()
 			{
 				handleTasksFeedback();
 			}
@@ -137,7 +137,7 @@ final class TasksGroupExecutor
 		// Make sure, at the end, to unblock input (must be in EDT)!
 		SwingUtilities.invokeLater(new Runnable()
 		{
-			public void run()
+			@Override public void run()
 			{
 				_blocker.unblock(_group);
 			}
@@ -175,5 +175,5 @@ final class TasksGroupExecutor
 	final private AtomicReference<State> _state = new AtomicReference<State>(State.PENDING);
 	final private InputBlocker _blocker;
 	final private TasksGroupListener _groupListener;
-	@SuppressWarnings("unchecked") final private CompletionService _groupExecutor;
+	@SuppressWarnings("rawtypes") final private CompletionService _groupExecutor;
 }

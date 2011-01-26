@@ -38,7 +38,7 @@ public class ChannelProvider<T> implements Provider<Channel<T>>
 	// All provider instances should be bound as singleton, hence get() should
 	// be called only once, hence no need for any cache of the event channel
 	// returned by the EventService
-	public Channel<T> get()
+	@Override public Channel<T> get()
 	{
 		return _service.getChannel(_eventType, _topic);
 	}

@@ -71,7 +71,7 @@ public final class Sessions
 	 * @return a {@link com.google.inject.binder.LinkedBindingBuilder} to bind 
 	 * component {@code type} to an {@link SessionState}
 	 */
-	@SuppressWarnings("unchecked") 
+	@SuppressWarnings({"unchecked", "rawtypes"})
 	static public <T extends Component> LinkedBindingBuilder<SessionState<T>> 
 		bindSessionConverter(Binder binder, Class<T> type)
 	{

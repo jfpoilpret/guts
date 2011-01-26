@@ -32,7 +32,7 @@ import net.java.dev.designgridlayout.INonGridRow;
  */
 final class DesignGridButtonsPanelAdder implements ButtonsPanelAdder
 {
-	public void addButtons(JComponent container, List<JButton> buttons)
+	@Override public void addButtons(JComponent container, List<JButton> buttons)
 	{
 		DesignGridLayoutManager actualLayout = 
 			(DesignGridLayoutManager) container.getLayout();

@@ -42,7 +42,7 @@ class MenuFactoryImpl implements MenuFactory
 	 * (non-Javadoc)
 	 * @see net.sf.guice.gui.menu.MenuFactory#createPopupMenu(java.lang.String, java.lang.String[])
 	 */
-	public JPopupMenu createPopupMenu(String name, GutsAction... actions)
+	@Override public JPopupMenu createPopupMenu(String name, GutsAction... actions)
 	{
 		JPopupMenu popup = new JPopupMenu();
 		initMenu(popup, name, actions);

@@ -18,7 +18,7 @@ import java.util.concurrent.Executor;
 
 public final class InCurrentThreadExecutor implements Executor
 {
-	public void execute(Runnable command)
+	@Override public void execute(Runnable command)
 	{
 		command.run();
 	}

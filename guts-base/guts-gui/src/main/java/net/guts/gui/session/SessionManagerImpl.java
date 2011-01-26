@@ -76,7 +76,7 @@ class SessionManagerImpl implements SessionManager
 		}
 	}
 
-	public void save(String id, Object content)
+	@Override public void save(String id, Object content)
 	{
 		// Serialize object
 		byte[] data = _serializer.serialize(content);
@@ -84,7 +84,7 @@ class SessionManagerImpl implements SessionManager
 		_medium.save(id, data);
 	}
 	
-	public void restore(String id, Object content)
+	@Override public void restore(String id, Object content)
 	{
 		// Restore saved content
 		byte[] data = _medium.load(id);

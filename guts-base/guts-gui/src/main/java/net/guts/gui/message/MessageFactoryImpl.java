@@ -35,13 +35,13 @@ class MessageFactoryImpl implements MessageFactory
 		_injector = injector;
 	}
 	
-	public UserChoice showMessage(String id, Object... args)
+	@Override public UserChoice showMessage(String id, Object... args)
 	{
 		Window parent = _activeWindow.get();
 		return showMessage(parent, id, args);
 	}
 	
-	public UserChoice showMessage(Component parent, String id, Object... args)
+	@Override public UserChoice showMessage(Component parent, String id, Object... args)
 	{
 		// Inject specific information into private object
 		MessageInfo info = new MessageInfo();

@@ -29,6 +29,7 @@ class WpTemplateDecoration implements WindowProcessor
 		_injector = injector;
 	}
 	
+	@Override 
 	public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config)
 	{
 		// Decorate the container

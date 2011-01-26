@@ -26,17 +26,17 @@ public class EventImpl implements Event
 		_primitive = primitive;
 	}
 	
-	public String topic()
+	@Override public String topic()
 	{
 		return _topic;
 	}
 	
-	public boolean primitive()
+	@Override public boolean primitive()
 	{
 		return _primitive;
 	}
 
-	public Class<? extends Annotation> annotationType()
+	@Override public Class<? extends Annotation> annotationType()
 	{
 		return Event.class;
 	}
