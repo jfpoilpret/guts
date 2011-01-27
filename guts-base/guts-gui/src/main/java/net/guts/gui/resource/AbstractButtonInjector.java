@@ -21,7 +21,8 @@ import net.guts.gui.resource.ResourceMap.Key;
 /**
  * Features of this injector are documented in {@link ResourceModule}.
  */
-abstract class AbstractButtonInjector extends BeanPropertiesInjector<AbstractButton>
+//CSOFF: AbstractClassName
+class AbstractButtonInjector extends BeanPropertiesInjector<AbstractButton>
 {
 	@Override protected boolean handleSpecialProperty(
 		AbstractButton button, Key key, ResourceMap resources)
@@ -40,3 +41,4 @@ abstract class AbstractButtonInjector extends BeanPropertiesInjector<AbstractBut
 		return false;
 	}
 }
+//CSON: AbstractClassName
