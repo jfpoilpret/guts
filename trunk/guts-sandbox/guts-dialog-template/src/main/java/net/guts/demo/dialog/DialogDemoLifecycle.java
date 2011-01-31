@@ -31,7 +31,10 @@ import net.guts.gui.dialog2.template.OkCancel;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
+import net.guts.gui.message.UserChoice;
 import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.CloseChecker;
+import net.guts.gui.window.CloseCheckerConfig;
 import net.guts.gui.window.JDialogConfig;
 import net.guts.gui.window.RootPaneConfig;
 import net.guts.gui.window.StatePolicy;
@@ -107,11 +110,15 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	{
 		@Override protected void perform()
 		{
-			OkCancel config1 = OkCancel.create().withCancel().withOK(_apply).withApply();
+			OkCancel config1 = OkCancel.create()
+				.withCancel(_cancel)
+				.withOK(_apply)
+				.withApply();
 			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
 				.bounds(BoundsPolicy.PACK_AND_CENTER)
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1)
+				.merge(CloseCheckerConfig.create(_closer))
 				.config();
 			_dialogFactory.showDialog(DemoView1.class, config2);
 			_logger.info("Result = {}", config1.result());
@@ -123,6 +130,23 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 		@Override protected void perform()
 		{
 			_messageFactory.showMessage("sample-message");
+		}
+	};
+	
+	final private GutsAction _cancel = new GutsAction()
+	{
+		@Override protected void perform()
+		{
+			_messageFactory.showMessage("sample2-message");
+		}
+	};
+	
+	final private CloseChecker _closer = new CloseChecker()
+	{
+		@Override public boolean canClose()
+		{
+			UserChoice result = _messageFactory.showMessage("close-message");
+			return result == UserChoice.YES;
 		}
 	};
 	
