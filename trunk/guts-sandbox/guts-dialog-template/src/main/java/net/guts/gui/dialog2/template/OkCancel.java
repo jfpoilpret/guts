@@ -14,12 +14,14 @@
 
 package net.guts.gui.dialog2.template;
 
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.LayoutManager;
 import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.ActionRegistrationManager;
@@ -31,8 +33,8 @@ import net.guts.gui.window.RootPaneConfig;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
-//TODO???? define AbstractTemplateConfig<T> extends AbstractConfig<JDialog, T>
-// TODO replace JDialog with RootPaneContainer
+//TODO?
+// define AbstractTemplateConfig<T, V> extends AbstractConfig<V extends RootPaneContainer, T>
 public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 {
 	private OkCancel()
@@ -53,11 +55,6 @@ public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 		return this;
 	}
 	
-	public OkCancel withOK()
-	{
-		return withOK(null);
-	}
-
 	public OkCancel withCancel(Action cancel)
 	{
 		_config._cancel =  cancel;
@@ -73,6 +70,12 @@ public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 	public OkCancel withApply()
 	{
 		_config._hasApply = true;
+		return this;
+	}
+	
+	public OkCancel dontChangeView()
+	{
+		_config._dontChangeView = true;
 		return this;
 	}
 
@@ -95,6 +98,7 @@ public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 		boolean _hasApply = false;
 		boolean _hasCancel = false;
 		boolean _hasOK = false;
+		boolean _dontChangeView = false;
 		Result _result = null;
 	}
 	//CSON: VisibilityModifier
@@ -133,7 +137,14 @@ class OkCancelDecorator implements TemplateDecorator
 		GutsAction apply = setupAction(createApplyAction(config));
 		GutsAction cancel = setupAction(createCancelAction(container, config));
 
-		// Create buttons for each action
+		// Check that if container was already injected, it has the exact same buttons
+		// otherwise throw an exception immediately
+		if (checkCompatibleView(view, ok, apply, cancel))
+		{
+			return view;
+		}
+
+		// We need to modify the view and add the right buttons to it
 		JButton okBtn = createButton(ok, view);
 		JButton applyBtn = createButton(apply, view);
 		JButton cancelBtn = createButton(cancel, view);
@@ -143,11 +154,16 @@ class OkCancelDecorator implements TemplateDecorator
 			// Add them to the view with the right layout-optimized adder
 			Class<? extends LayoutManager> layout = view.getLayout().getClass();
 			OkCancelLayoutAdder adder = _layouts.get(layout);
-			if (adder == null)
+			if (config._dontChangeView || adder == null)
 			{
 				adder = _layouts.get(LayoutManager.class);
 			}
-			return adder.layout(view, okBtn, cancelBtn, applyBtn);
+			Container fullView = adder.layout(view, okBtn, cancelBtn, applyBtn);
+			if (fullView == view)
+			{
+				setViewModified(fullView);
+			}
+			return fullView;
 		}
 		else
 		{
@@ -155,10 +171,111 @@ class OkCancelDecorator implements TemplateDecorator
 		}
 	}
 
+	// returns true if view was compatible and has been directly modified
+	// returns false if view was compatible and needs to be modified from scratch
+	// throws exception is view was incompatible
+	private boolean checkCompatibleView(
+		Container view, GutsAction ok, GutsAction apply, GutsAction cancel)
+	{
+		if (isViewModified(view))
+		{
+			JButton okButton = null;
+			JButton applyButton = null;
+			JButton cancelButton = null;
+			// Search for buttons
+			for (Component child: view.getComponents())
+			{
+				if (child instanceof JButton)
+				{
+					JButton button = (JButton) child;
+					if (isActionButton(button, "ok"))
+					{
+						okButton = button;
+					}
+					else if (isActionButton(button, "apply"))
+					{
+						applyButton = button;
+					}
+					else if (isActionButton(button, "cancel"))
+					{
+						cancelButton = button;
+					}
+				}
+			}
+			checkCompatibleActionButton(view, okButton, ok);
+			checkCompatibleActionButton(view, applyButton, apply);
+			checkCompatibleActionButton(view, cancelButton, cancel);
+			
+			// OK, all buttons are compatible, now replace actions where needed
+			replaceAction(okButton, ok);
+			replaceAction(applyButton, apply);
+			replaceAction(cancelButton, cancel);
+			return true;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	static private void replaceAction(JButton button, GutsAction action)
+	{
+		if (button != null)
+		{
+			button.setAction(action);
+		}
+	}
+	
+	static private void checkCompatibleActionButton(
+		Container view, JButton button, GutsAction action)
+	{
+		if ((button == null) != (action == null))
+		{
+			String msg = String.format("Button %s isn't compatible with action %s in view %s",
+				button, action, view);
+			throw new IllegalArgumentException(msg);
+		}
+	}
+	
+	static private boolean isActionButton(JButton button, String name)
+	{
+		Action action = button.getAction();
+		if (action instanceof GutsAction)
+		{
+			return name.equals(((GutsAction) action).name());
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	static private boolean isViewModified(Container view)
+	{
+		if (view instanceof JComponent)
+		{
+			JComponent jview = (JComponent) view;
+			return jview.getClientProperty(MODIFIED_VIEW_MARKER) == Boolean.TRUE;
+		}
+		else
+		{
+			return false;
+		}
+	}
+	
+	static private void setViewModified(Container view)
+	{
+		if (view instanceof JComponent)
+		{
+			// Mark the view as already modified
+			((JComponent) view).putClientProperty(MODIFIED_VIEW_MARKER, Boolean.TRUE);
+		}
+	}
+	
 	static private GutsAction createOkAction(
 		final RootPaneContainer container, final OkCancel.Config config)
 	{
-		if (config._hasOK)
+		if (config._hasOK && config._apply != null)
 		{
 			return new GutsActionDecorator("ok", config._apply)
 			{
@@ -178,7 +295,7 @@ class OkCancelDecorator implements TemplateDecorator
 	
 	static private GutsAction createApplyAction(OkCancel.Config config)
 	{
-		if (config._hasApply)
+		if (config._hasApply && config._apply != null)
 		{
 			return new GutsActionDecorator("apply", config._apply);
 		}
@@ -244,6 +361,8 @@ class OkCancelDecorator implements TemplateDecorator
 			return null;
 		}
 	}
+	
+	static final private String MODIFIED_VIEW_MARKER = OkCancel.class.getName();
 	
 	final private ActionRegistrationManager _actionRegistry;
 	final private Map<Class<? extends LayoutManager>, OkCancelLayoutAdder> _layouts;

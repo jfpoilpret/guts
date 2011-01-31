@@ -22,6 +22,9 @@ import javax.swing.JTextField;
 import net.guts.gui.dialog.layout.GroupHeader;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
+import com.google.inject.Singleton;
+
+@Singleton
 public class DemoView1 extends JPanel
 {
 	public DemoView1()

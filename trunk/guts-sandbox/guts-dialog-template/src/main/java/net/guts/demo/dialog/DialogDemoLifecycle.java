@@ -30,6 +30,7 @@ import net.guts.gui.dialog2.DialogFactory;
 import net.guts.gui.dialog2.template.OkCancel;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
+import net.guts.gui.message.MessageFactory;
 import net.guts.gui.window.BoundsPolicy;
 import net.guts.gui.window.JDialogConfig;
 import net.guts.gui.window.RootPaneConfig;
@@ -41,9 +42,11 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 {
 	static final private Logger _logger = LoggerFactory.getLogger(DialogDemoLifecycle.class);
 	
-	@Inject public DialogDemoLifecycle(DialogFactory dialogFactory)
+	@Inject 
+	public DialogDemoLifecycle(DialogFactory dialogFactory, MessageFactory messageFactory)
 	{
 		_dialogFactory = dialogFactory;
+		_messageFactory = messageFactory;
 	}
 	
 	@Override protected void initFrame(JFrame mainFrame)
@@ -104,16 +107,25 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	{
 		@Override protected void perform()
 		{
-			OkCancel config1 = OkCancel.create().withCancel().withOK().withApply();
+			OkCancel config1 = OkCancel.create().withCancel().withOK(_apply).withApply();
 			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
 				.bounds(BoundsPolicy.PACK_AND_CENTER)
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1)
 				.config();
-			_dialogFactory.showDialog(DemoView2.class, config2);
+			_dialogFactory.showDialog(DemoView1.class, config2);
 			_logger.info("Result = {}", config1.result());
 		}
 	}; 
 	
+	final private GutsAction _apply = new GutsAction()
+	{
+		@Override protected void perform()
+		{
+			_messageFactory.showMessage("sample-message");
+		}
+	};
+	
 	final private DialogFactory _dialogFactory;
+	final private MessageFactory _messageFactory;
 }
