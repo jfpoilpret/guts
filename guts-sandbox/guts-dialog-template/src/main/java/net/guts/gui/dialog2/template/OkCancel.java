@@ -17,11 +17,13 @@ package net.guts.gui.dialog2.template;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.LayoutManager;
+import java.awt.Window;
 import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JInternalFrame;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.ActionRegistrationManager;
@@ -282,8 +284,7 @@ class OkCancelDecorator implements TemplateDecorator
 				@Override protected void afterTargetPerform()
 				{
 					config._result = OkCancel.Result.OK;
-					//FIXME shouldn't it be dispose()?
-					container.getRootPane().getParent().setVisible(false);
+					close(container);
 				}
 			};
 		}
@@ -318,8 +319,7 @@ class OkCancelDecorator implements TemplateDecorator
 					@Override protected void afterTargetPerform()
 					{
 						config._result = OkCancel.Result.CANCEL;
-						//FIXME shouldn't it be dispose()?
-						container.getRootPane().getParent().setVisible(false);
+						close(container);
 					}
 				};
 			}
@@ -330,13 +330,29 @@ class OkCancelDecorator implements TemplateDecorator
 					@Override protected void perform()
 					{
 						config._result = OkCancel.Result.CANCEL;
-						//FIXME shouldn't it be dispose()?
-						container.getRootPane().getParent().setVisible(false);
+						close(container);
 					}
 				};
 			}
 		}
 		return cancel;
+	}
+	
+	static private void close(RootPaneContainer container)
+	{
+		if (container instanceof Window)
+		{
+			((Window) container).dispose();
+		}
+		else if (container instanceof JInternalFrame)
+		{
+			((JInternalFrame) container).dispose();
+		}
+		else
+		{
+			// For applets, what can we possibly do, besides hide it?
+			container.getRootPane().getParent().setVisible(false);
+		}
 	}
 	
 	private GutsAction setupAction(GutsAction action)
