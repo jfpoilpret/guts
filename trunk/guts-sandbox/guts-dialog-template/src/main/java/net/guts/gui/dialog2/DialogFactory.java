@@ -26,6 +26,5 @@ public interface DialogFactory
 {
 	public void showDialog(JComponent view, RootPaneConfig<JDialog> config);
 
-	public <T extends JComponent> void showDialog(
-		Class<T> view, RootPaneConfig<JDialog> config);
+	public void showDialog(Class<? extends JComponent> view, RootPaneConfig<JDialog> config);
 }
