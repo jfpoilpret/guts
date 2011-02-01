@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog2.template;
+package net.guts.gui.dialog2.template.okcancel;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -29,6 +29,7 @@ import javax.swing.RootPaneContainer;
 import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
+import net.guts.gui.dialog2.template.TemplateDecorator;
 import net.guts.gui.window.AbstractConfig;
 import net.guts.gui.window.RootPaneConfig;
 
