@@ -49,11 +49,10 @@ class DialogFactoryImpl implements DialogFactory
 		_windowController.show(dialog, config);
 	}
 
-	//TODO no need real generics here just Class<? extends JComponent>
-	@Override public <T extends JComponent> void showDialog(
-		Class<T> viewClass, RootPaneConfig<JDialog> config)
+	@Override public void showDialog(
+		Class<? extends JComponent> viewClass, RootPaneConfig<JDialog> config)
 	{
-		T view = _injector.getInstance(viewClass);
+		JComponent view = _injector.getInstance(viewClass);
 		showDialog(view, config);
 	}
 
