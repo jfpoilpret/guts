@@ -118,9 +118,9 @@ class OkCancelDecorator implements TemplateDecorator
 	
 	static private GutsAction createApplyAction(OkCancelConfig config)
 	{
-		if (config._hasApply && config._apply != null)
+		if (config._hasApply)
 		{
-			return new GutsActionDecorator("apply", config._apply);
+			return TemplateHelper.createAction("apply", config._apply);
 		}
 		else
 		{
