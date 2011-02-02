@@ -30,6 +30,9 @@ import javax.swing.JComponent;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuBar;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -276,6 +279,23 @@ public class ResourceInjectorTest
 		Assertions.assertThat(label1.getText()).as("label1.text").isEqualTo("LABEL1");
 		Assertions.assertThat(label2.getText()).as("label2.text").isEqualTo("LABEL2");
 		Assertions.assertThat(label3.getText()).as("label3.text").isEqualTo("LABEL3");
+	}
+
+	public void checkMenuHierarchyInjection()
+	{
+		ResourceInjector injector = createInjector();
+		JMenuBar bar = new JMenuBar();
+		bar.setName(NAME + "-menu-bar");
+		JMenu menu = new JMenu();
+		menu.setName(NAME + "-menu");
+		bar.add(menu);
+		JMenuItem item = new JMenuItem();
+		item.setName(NAME + "-menu-item");
+		menu.add(item);
+		injector.injectHierarchy(bar);
+		// Check injection has worked on every item of the menu bar
+		Assertions.assertThat(menu.getText()).as("menu.text").isEqualTo("MENU");
+		Assertions.assertThat(item.getText()).as("item.text").isEqualTo("ITEM");
 	}
 	
 	static private JLabel createLabel(String name)
