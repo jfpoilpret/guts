@@ -19,6 +19,9 @@ import java.awt.Container;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -120,6 +123,15 @@ class ResourceInjectorImpl implements ResourceInjector
 			for (Component child: ((Container) component).getComponents())
 			{
 				injectComponent(child, true);
+			}
+		}
+		// Fix for GUTS-58 issue (with JMenu children which are NOT in getComponents())
+		if (recursive && component instanceof JMenu)
+		{
+			JMenu menu = (JMenu) component;
+			for (int i = 0; i < menu.getItemCount(); i++)
+			{
+				injectComponent(menu.getItem(i), true);
 			}
 		}
 	}
