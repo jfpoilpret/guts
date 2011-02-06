@@ -131,7 +131,11 @@ class ResourceInjectorImpl implements ResourceInjector
 			JMenu menu = (JMenu) component;
 			for (int i = 0; i < menu.getItemCount(); i++)
 			{
-				injectComponent(menu.getItem(i), true);
+				JMenuItem item = menu.getItem(i);
+				if (item != null)
+				{
+					injectComponent(item, true);
+				}
 			}
 		}
 	}
