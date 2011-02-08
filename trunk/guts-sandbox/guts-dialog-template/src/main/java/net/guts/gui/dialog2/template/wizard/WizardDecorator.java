@@ -68,38 +68,26 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		// Create necessary Actions
 		installActions(container, config);
 		
-		// Setup initial step
-		_model = config._model;
-		goToStep(_model.getInitialStep());
-		
 		// Add view to container
 		container.setContentPane(this);
-	}
-	
-	private void goToStep(String step)
-	{
-		_stepDescription.setText(_model.getStepDescription(step));
-		_model.setCurrentStep(step);
-		_previous.setEnabled(_model.getPreviousStep() != null);
-		_next.setEnabled(_model.getNextStep() != null);
-		_ok.setEnabled(_model.getNextStep() == null);
 	}
 	
 	private void installActions(RootPaneContainer container, WizardConfig config)
 	{
 		// Create the right actions when needed
-//		_previous.setAction(setupAction(createPreviousAction()));
-//		_next.setAction(setupAction(createNextAction()));
-		_ok.setAction(setupAction(
-			createClosingAction("ok", config._apply, config, Result.OK)));
-		_cancel.setAction(setupAction(
-			createClosingAction("cancel", config._cancel, config, Result.CANCEL)));
+		_previous.setAction(
+			setupAction(TemplateHelper.createAction("previous", config._previous)));
+		_next.setAction(
+			setupAction(TemplateHelper.createAction("next", config._next)));
+		_ok.setAction(
+			setupAction(createClosingAction("ok", config._apply, config, Result.OK)));
+		_cancel.setAction(
+			setupAction(createClosingAction("cancel", config._cancel, config, Result.CANCEL)));
 	}
 
 	private GutsAction createClosingAction(String name, Action action,
 		final WizardConfig config, final Wizard.Result result)
 	{
-		final RootPaneContainer container = (RootPaneContainer) getRootPane().getParent();
 		if (action != null)
 		{
 			return new GutsActionDecorator(name, action)
@@ -107,7 +95,7 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 				@Override protected void afterTargetPerform()
 				{
 					config._result = result;
-					TemplateHelper.close(container);
+					TemplateHelper.close((RootPaneContainer) getRootPane().getParent());
 				}
 			};
 		}
@@ -118,7 +106,7 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 				@Override protected void perform()
 				{
 					config._result = result;
-					TemplateHelper.close(container);
+					TemplateHelper.close((RootPaneContainer) getRootPane().getParent());
 				}
 			};
 		}
@@ -126,18 +114,21 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 	
 	private GutsAction setupAction(GutsAction action)
 	{
-		_actionRegistry.registerAction(action);
+		if (action != null)
+		{
+			_actionRegistry.registerAction(action);
+		}
 		return action;
 	}
 	
 	Action previousAction()
 	{
-		return _previousAction;
+		return _previous.getAction();
 	}
 	
 	Action nextAction()
 	{
-		return _previousAction;
+		return _next.getAction();
 	}
 	
 	Action cancelAction()
@@ -150,29 +141,13 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		return _ok.getAction();
 	}
 	
+	//FIXME this should be an injected resource no?
 	static final private Font _font = Font.decode("dialog-BOLD-18");
 
-	final private GutsAction _previousAction = new GutsAction("previous")
-	{
-		@Override protected void perform()
-		{
-			goToStep(_model.getPreviousStep());
-		}
-	};
-	
-	final private GutsAction _nextAction = new GutsAction("next")
-	{
-		@Override protected void perform()
-		{
-			goToStep(_model.getNextStep());
-		}
-	};
-	
 	final private ActionRegistrationManager _actionRegistry;
 	private final JLabel _stepDescription = new JLabel();
 	private final JButton _ok = new JButton();
 	private final JButton _cancel = new JButton();
-	private final JButton _previous = new JButton(_previousAction);
-	private final JButton _next = new JButton(_nextAction);
-	private WizardModel _model = null;
+	private final JButton _previous = new JButton();
+	private final JButton _next = new JButton();
 }
