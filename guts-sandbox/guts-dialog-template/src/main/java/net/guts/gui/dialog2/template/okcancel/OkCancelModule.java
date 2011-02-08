@@ -28,6 +28,7 @@ public final class OkCancelModule extends AbstractModule
 	@Override protected void configure()
 	{
 		OkCancelLayouts.layouts(binder());
+		//FIXME register DGL only if available in classpath!
 		OkCancelLayouts.bindLayout(binder(), DesignGridLayoutManager.class)
 			.to(OkCancelDesignGridLayoutAdder.class);
 		OkCancelLayouts.bindLayout(binder(), LayoutManager.class)
