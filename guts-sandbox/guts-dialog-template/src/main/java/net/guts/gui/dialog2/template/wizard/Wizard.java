@@ -22,16 +22,15 @@ import net.guts.gui.window.AbstractConfig;
 
 public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 {
-	private Wizard(WizardModel model)
+	private Wizard()
 	{
 		set(TemplateDecorator.TEMPLATE_TYPE_KEY, WizardDecorator.class);
 		set(WizardConfig.class, _config);
-		_config._model = model;
 	}
 	
-	static public Wizard forModel(WizardModel model)
+	static public Wizard create()
 	{
-		return new Wizard(model);
+		return new Wizard();
 	}
 	
 	public Wizard withOK(Action apply)
@@ -49,6 +48,18 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 	public Wizard withCancel()
 	{
 		return withCancel(null);
+	}
+
+	public Wizard withPrevious(Action previous)
+	{
+		_config._previous =  previous;
+		return this;
+	}
+
+	public Wizard withNext(Action next)
+	{
+		_config._next =  next;
+		return this;
 	}
 
 	static public enum Result

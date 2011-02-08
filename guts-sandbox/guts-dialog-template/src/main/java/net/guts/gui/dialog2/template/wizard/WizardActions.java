@@ -24,16 +24,17 @@ import javax.swing.SwingUtilities;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-final public class WizardController
+//TODO is this class useful really? normally all actions should be mandatory in WizardConfig!
+final public class WizardActions
 {
-	static final private Logger _logger = LoggerFactory.getLogger(WizardController.class);
+	static final private Logger _logger = LoggerFactory.getLogger(WizardActions.class);
 	
-	static public WizardController forRootPane(JRootPane root)
+	static public WizardActions forRootPane(JRootPane root)
 	{
 		Container content = root.getContentPane();
 		if (content instanceof WizardDecorator)
 		{
-			return new WizardController(((WizardDecorator) content));
+			return new WizardActions(((WizardDecorator) content));
 		}
 		else
 		{
@@ -43,17 +44,17 @@ final public class WizardController
 		}
 	}
 	
-	static public WizardController forRootPaneContainer(RootPaneContainer container)
+	static public WizardActions forRootPaneContainer(RootPaneContainer container)
 	{
 		return forRootPane(container.getRootPane());
 	}
 	
-	static public WizardController forView(Container view)
+	static public WizardActions forView(Container view)
 	{
 		return forRootPane(SwingUtilities.getRootPane(view));
 	}
 
-	private WizardController(WizardDecorator wizardPane)
+	private WizardActions(WizardDecorator wizardPane)
 	{
 		_wizardPane = wizardPane;
 	}

@@ -28,6 +28,7 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.dialog2.DialogFactory;
 import net.guts.gui.dialog2.template.okcancel.OkCancel;
+import net.guts.gui.dialog2.template.wizard.Wizard;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
@@ -71,6 +72,8 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 			_openDialog1,
 			_openDialog2,
 			_openDialog3,
+			MenuFactory.ACTION_SEPARATOR,
+			_openWizard1,
 			MenuFactory.ACTION_SEPARATOR,
 			appActions().quit());
 		menuBar.add(file);
@@ -124,6 +127,24 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 			_logger.info("Result = {}", config1.result());
 		}
 	}; 
+	
+	final private GutsAction _openWizard1 = new GutsAction()
+	{
+		@Override protected void perform()
+		{
+			Wizard config1 = Wizard.create()
+				.withCancel(_cancel)
+				.withOK(_apply);
+			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
+				.bounds(BoundsPolicy.PACK_AND_CENTER)
+				.state(StatePolicy.RESTORE_IF_EXISTS)
+				.merge(config1)
+				.config();
+			//TODO Create view with all steps
+			_dialogFactory.showDialog(DemoWizard1.class, config2);
+			_logger.info("Result = {}", config1.result());
+		}
+	};
 	
 	final private GutsAction _apply = new GutsAction()
 	{
