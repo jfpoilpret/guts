@@ -16,6 +16,7 @@ package net.guts.gui.dialog2.template.okcancel;
 
 import java.awt.LayoutManager;
 
+import net.guts.gui.dialog2.template.TemplateModule;
 import net.java.dev.designgridlayout.DesignGridLayoutManager;
 
 import com.google.inject.AbstractModule;
@@ -27,6 +28,7 @@ public final class OkCancelModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		install(new TemplateModule());
 		OkCancelLayouts.layouts(binder());
 		//FIXME register DGL only if available in classpath!
 		OkCancelLayouts.bindLayout(binder(), DesignGridLayoutManager.class)
