@@ -28,6 +28,7 @@ import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
 import net.guts.gui.dialog2.template.TemplateDecorator;
 
+//TODO move to template package
 final public class TemplateHelper
 {
 	private TemplateHelper()
