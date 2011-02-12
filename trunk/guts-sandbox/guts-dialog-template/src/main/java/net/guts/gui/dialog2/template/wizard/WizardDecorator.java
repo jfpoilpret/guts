@@ -29,7 +29,7 @@ import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
 import net.guts.gui.dialog2.template.TemplateDecorator;
-import net.guts.gui.dialog2.template.util.TemplateHelper;
+import net.guts.gui.dialog2.template.TemplateHelper;
 import net.guts.gui.dialog2.template.wizard.Wizard.Result;
 import net.guts.gui.window.RootPaneConfig;
 import net.java.dev.designgridlayout.DesignGridLayout;
