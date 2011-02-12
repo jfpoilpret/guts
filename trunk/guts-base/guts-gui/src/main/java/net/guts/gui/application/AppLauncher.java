@@ -139,12 +139,11 @@ final class AppLauncher
 			// Bind the generic Application actions
 			bind(GutsApplicationActions.class).asEagerSingleton();
 			// Provide default resource values for common stuff: GutsApplicationActions
-			String pack = "/" + TypeHelper.getPackagePath(AppLauncher.class);
 			Resources.bindPackageBundles(
-				binder(), GutsApplicationActions.class, pack + "/guts-gui");
+				binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
 			// Provide default resource values for common stuff: AbstractPanel...
 			Resources.bindPackageBundles(
-				binder(), AbstractPanel.class, pack + "/guts-gui");
+				binder(), AbstractPanel.class, GutsGuiResource.PATH);
 		}
 	}
 
