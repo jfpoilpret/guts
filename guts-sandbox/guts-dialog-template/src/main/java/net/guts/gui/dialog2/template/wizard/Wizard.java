@@ -15,10 +15,15 @@
 package net.guts.gui.dialog2.template.wizard;
 
 import javax.swing.Action;
+import javax.swing.JComponent;
+import javax.swing.JPanel;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.dialog2.template.TemplateDecorator;
 import net.guts.gui.window.AbstractConfig;
+
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 
 public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 {
@@ -26,6 +31,7 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 	{
 		set(TemplateDecorator.TEMPLATE_TYPE_KEY, WizardDecorator.class);
 		set(WizardConfig.class, _config);
+		_config._controller = _controller;
 	}
 	
 	static public Wizard create()
@@ -33,7 +39,29 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 		return new Wizard();
 	}
 	
-	public Wizard withOK(Action apply)
+	public Wizard mapNextStep(JComponent view)
+	{
+		_controller.addStep(view.getName(), view, true);
+		return this;
+	}
+	
+	public Wizard mapOneStep(JComponent view)
+	{
+		_controller.addStep(view.getName(), view, false);
+		return this;
+	}
+	
+	public Wizard mapNextStep(Class<? extends JComponent> view)
+	{
+		return mapNextStep(_injector.getInstance(view));
+	}
+	
+	public Wizard mapOneStep(Class<? extends JComponent> view)
+	{
+		return mapOneStep(_injector.getInstance(view));
+	}
+	
+	public Wizard withFinish(Action apply)
 	{
 		_config._apply = apply;
 		return this;
@@ -50,18 +78,16 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 		return withCancel(null);
 	}
 
-	public Wizard withPrevious(Action previous)
+	public JComponent mainView()
 	{
-		_config._previous =  previous;
-		return this;
+		return _mainView;
 	}
-
-	public Wizard withNext(Action next)
+	
+	public WizardController controller()
 	{
-		_config._next =  next;
-		return this;
+		return _controller;
 	}
-
+	
 	static public enum Result
 	{
 		OK,
@@ -72,6 +98,15 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 	{
 		return _config._result;
 	}
+
+	@Inject static void setInjector(Injector injector)
+	{
+		_injector = injector;
+	}
+	
+	static private Injector _injector;
 	
 	final private WizardConfig _config = new WizardConfig();
+	final private JComponent _mainView = new JPanel();
+	final private WizardController _controller = new WizardController(_mainView);
 }

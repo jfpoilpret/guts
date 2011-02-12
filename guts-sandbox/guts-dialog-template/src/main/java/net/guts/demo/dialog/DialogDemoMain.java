@@ -22,6 +22,7 @@ import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.dialog2.template.TemplateModule;
 import net.guts.gui.dialog2.template.okcancel.OkCancelModule;
+import net.guts.gui.dialog2.template.wizard.WizardModule;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.ComponentNamingModule;
@@ -44,6 +45,7 @@ public class DialogDemoMain extends AbstractApplication
 		modules.add(new ComponentNamingModule());
 		modules.add(new TemplateModule());
 		modules.add(new OkCancelModule());
+		modules.add(new WizardModule());
 		modules.add(new MessageModule());
 		modules.add(new AbstractModule()
 		{

@@ -23,8 +23,7 @@ class WizardConfig
 {
 	Action _apply = null;
 	Action _cancel = null;
-	Action _previous = null;
-	Action _next = null;
+	WizardController _controller = null;
 	Result _result = null;
 }
 //CSON: VisibilityModifier
