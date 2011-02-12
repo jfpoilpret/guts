@@ -29,7 +29,7 @@ import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.dialog2.DialogFactory;
 import net.guts.gui.dialog2.template.okcancel.OkCancel;
 import net.guts.gui.dialog2.template.wizard.Wizard;
-import net.guts.gui.dialog2.wizard.WizardFactory;
+import net.guts.gui.dialog2.template.wizard.WizardFactory;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
