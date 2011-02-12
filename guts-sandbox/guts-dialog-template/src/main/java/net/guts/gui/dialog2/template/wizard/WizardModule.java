@@ -14,9 +14,11 @@
 
 package net.guts.gui.dialog2.template.wizard;
 
+import net.guts.gui.application.GutsGuiResource;
+import net.guts.gui.resource.Resources;
+
 import com.google.inject.AbstractModule;
 
-//TODO remove if useless...
 public final class WizardModule extends AbstractModule
 {
 	/* (non-Javadoc)
@@ -25,9 +27,9 @@ public final class WizardModule extends AbstractModule
 	@Override protected void configure()
 	{
 		requestStaticInjection(Wizard.class);
-//		String pack = "/" + TypeHelper.getPackagePath(AbstractApplication.class);
-		// Provide default resource values for OK/Cancel/Apply actions
-//		Resources.bindPackageBundles(binder(), OkCancelButtonsPanel.class, pack + "/guts-gui");
+		// Provide default resource values for OK/Cancel/Next/Previous actions
+		Resources.bindPackageBundles(
+			binder(), WizardDecorator.class, GutsGuiResource.PATH);
 	}
 	
 	@Override public boolean equals(Object other)
