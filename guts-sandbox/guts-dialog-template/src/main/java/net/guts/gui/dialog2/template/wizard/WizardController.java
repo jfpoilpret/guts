@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.swing.JComponent;
 
@@ -32,6 +33,16 @@ public class WizardController
 		_mainView = mainView;
 		_mainView.setLayout(_layout);
 	}
+
+	public void addWizardListener(WizardListener listener)
+	{
+		_listeners.add(listener);
+	}
+	
+	public void removeWizardListener(WizardListener listener)
+	{
+		_listeners.remove(listener);
+	}
 	
 	void addStep(String name, JComponent view, boolean appendToSequence)
 	{
@@ -40,6 +51,10 @@ public class WizardController
 		if (appendToSequence)
 		{
 			_sequence.add(name);
+		}
+		if (view instanceof WizardListener)
+		{
+			addWizardListener((WizardListener) view);
 		}
 	}
 	
@@ -61,6 +76,11 @@ public class WizardController
 		_sequence.addAll(stepsList);
 	}
 
+	public JComponent getStep(String step)
+	{
+		return _steps.get(step);
+	}
+	
 	GutsAction nextAction()
 	{
 		return _next;
@@ -86,6 +106,16 @@ public class WizardController
 		_previous.setEnabled(index > 0);
 		_layout.show(_mainView, step);
 	}
+
+	private void fireStepChanged(int oldIndex, int newIndex)
+	{
+		String oldStep = _sequence.get(oldIndex);
+		String newStep = _sequence.get(newIndex);
+		for (WizardListener listener: _listeners)
+		{
+			listener.stepChanged(this, oldStep, newStep);
+		}
+	}
 	
 	final private GutsAction _previous = new GutsAction("previous")
 	{
@@ -94,7 +124,9 @@ public class WizardController
 			if (_current > 0)
 			{
 				// Return to previous pane
-				goToStep(--_current);
+				goToStep(_current - 1);
+				fireStepChanged(_current, _current - 1);
+				_current--;
 			}
 		}
 	};
@@ -105,13 +137,16 @@ public class WizardController
 		{
 			if (_current < _sequence.size() - 1)
 			{
-				goToStep(++_current);
+				goToStep(_current + 1);
+				fireStepChanged(_current, _current + 1);
+				_current++;
 			}
 		}
 	};
 	
 	static final private CardLayout _layout = new CardLayout();
 	
+	final private List<WizardListener> _listeners = new CopyOnWriteArrayList<WizardListener>();
 	final private Map<String, JComponent> _steps = new HashMap<String, JComponent>();
 	final private JComponent _mainView;
 	final private List<String> _sequence = new ArrayList<String>();
