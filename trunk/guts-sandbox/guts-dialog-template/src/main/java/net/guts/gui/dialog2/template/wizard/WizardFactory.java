@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog2.wizard;
+package net.guts.gui.dialog2.template.wizard;
 
 import javax.swing.JComponent;
 import javax.swing.JPanel;

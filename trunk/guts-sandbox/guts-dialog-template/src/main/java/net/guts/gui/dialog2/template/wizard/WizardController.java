@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog2.wizard;
+package net.guts.gui.dialog2.template.wizard;
 
 import java.awt.CardLayout;
 import java.util.ArrayList;
@@ -23,11 +23,12 @@ import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.JRootPane;
 import javax.swing.SwingUtilities;
 
 import net.guts.gui.action.GutsAction;
 
+//TODO refactor to have direct communication between Decorator and Controller,
+// thus avoiding extra calla to Wizard.withNext(), withPrevious()...
 public class WizardController
 {
 	WizardController(JComponent mainView)
@@ -79,16 +80,19 @@ public class WizardController
 		String step = _sequence.get(index);
 		boolean acceptEnabled = (index == _sequence.size() - 1);
 		_next.setEnabled(!acceptEnabled);
-		//FIXME How to get Accept action or button?
-//		_controller.setAcceptEnabled(acceptEnabled);
+		setAcceptEnabled(acceptEnabled);
 		_previous.setEnabled(index > 0);
 		_layout.show(_mainView, step);
 	}
 	
 	private void setAcceptEnabled(boolean enabled)
 	{
-//		SwingUtilities.getAncestorOfClass(WizardD, comp)
-		_mainView.getRootPane();
+		WizardDecorator decorator = (WizardDecorator) SwingUtilities.getAncestorOfClass(
+			WizardDecorator.class, _mainView);
+		if (decorator != null)
+		{
+			decorator.applyAction().setEnabled(enabled);
+		}
 	}
 
 	final private GutsAction _previous = new GutsAction("previous")
