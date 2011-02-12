@@ -14,71 +14,110 @@
 
 package net.guts.gui.dialog2.wizard;
 
+import java.awt.CardLayout;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JRootPane;
+import javax.swing.SwingUtilities;
 
-/**
- * Main controller to be used when developing a 
- * {@linkplain AbstractWizardPanel wizard dialog}. It is available from:
- * <ul>
- * <li>the {@linkplain AbstractWizardPanel main wizard panel} through 
- * {@link AbstractWizardPanel#getController()}</li>
- * <li>any {@linkplain WizardStepPanel wizard pane} through 
- * {@link WizardStepPanel#enter(WizardController)}</li>
- * </ul>
- * This is used to:
- * <ul>
- * <li>set up the list of wizard panes that will be used during use of the wizard 
- * dialog</li>
- * <li>dynamically define the sequence of wizard panes until the end of the 
- * wizard dialog</li>
- * <li>change the enabled state of "next" and "finish" buttons</li>
- * <li>pass context information across wizard panes</li>
- * </ul>
- * All methods can be used at any time during the lifecycle of the wizard dialog,
- * with the possibility to dynamically define wizard paths, based on user 
- * selections.
- *
- * @author Jean-Francois Poilpret
- */
-public interface WizardController
+import net.guts.gui.action.GutsAction;
+
+public class WizardController
 {
-	/**
-	 * Add a wizard {@code pane} to the current wizard dialog. Such panes must 
-	 * be added early if you want to have correct calculation of wizard dialog 
-	 * dimensions; however, you can call it later, in a more dynamic way, if you
-	 * need.
-	 * <p/>
-	 * This method must be called for any wizard pane before it is used in a 
-	 * wizard sequence.
-	 * <p/>
-	 * If {@code appendToSequence} is {@code true}, then a default sequence is
-	 * built from the added {@code pane} in the adding order.
-	 * <p/>
-	 * If {@code pane} implements {@link WizardStepPanel}, then it will be notified
-	 * when it becomes the current wizard pane.
-	 */
-	public void addWizardPane(JComponent pane, boolean appendToSequence);
+	WizardController(JComponent mainView)
+	{
+		_mainView = mainView;
+		_mainView.setLayout(_layout);
+	}
+	
+	void addStep(String name, JComponent view, boolean appendToSequence)
+	{
+		_mainView.add(view, view.getName());
+		_steps.put(name, view);
+		if (appendToSequence)
+		{
+			_sequence.add(name);
+		}
+	}
+	
+	public void setNextStepsSequence(String... steps)
+	{
+		// First check that all steps match added components
+		List<String> stepsList = Arrays.asList(steps);
+		if (!_steps.keySet().containsAll(stepsList))
+		{
+			throw new IllegalArgumentException(
+				"Some steps have no matching JComponent registered " +
+				"(through addWizardPane)");
+		}
+		// Remove all steps following current step
+		if (!_sequence.isEmpty())
+		{
+			_sequence.retainAll(_sequence.subList(0, _current));
+		}
+		_sequence.addAll(stepsList);
+	}
 
-	public void addWizardPane(Class<? extends JComponent> pane, boolean appendToSequence);
+	public Action getNextAction()
+	{
+		return _next;
+	}
+	
+	public Action getPreviousAction()
+	{
+		return _previous;
+	}
 
-	/**
-	 * Set the next steps (wizard pane names) in the current wizard panel
-	 * sequence. You would use this method when user's options in the current
-	 * wizard pane dynamically define the path for next wizard panes.
-	 * <p/>
-	 * If your wizard dialog defines a static and linear path of steps, then
-	 * you won't need this method.
-	 * <p/>
-	 * You must make sure all {@code steps} have been first added by calling
-	 * {@link #addWizardPane(JComponent, boolean)}.
-	 * 
-	 * @throws IllegalArgumentException if any step in {@code steps} doesn't
-	 * match to the name of a wizard pane previously added with 
-	 * {@link #addWizardPane(JComponent, boolean)}
-	 */
-	public void setNextStepsSequence(String... steps);
+	private void goToStep(int index)
+	{
+		String step = _sequence.get(index);
+		boolean acceptEnabled = (index == _sequence.size() - 1);
+		_next.setEnabled(!acceptEnabled);
+		//FIXME How to get Accept action or button?
+//		_controller.setAcceptEnabled(acceptEnabled);
+		_previous.setEnabled(index > 0);
+		_layout.show(_mainView, step);
+	}
+	
+	private void setAcceptEnabled(boolean enabled)
+	{
+//		SwingUtilities.getAncestorOfClass(WizardD, comp)
+		_mainView.getRootPane();
+	}
 
-	public Action getNextAction();
-	public Action getPreviousAction();
+	final private GutsAction _previous = new GutsAction("previous")
+	{
+		@Override protected void perform()
+		{
+			if (_current > 0)
+			{
+				// Return to previous pane
+				goToStep(--_current);
+			}
+		}
+	};
+
+	final private GutsAction _next = new GutsAction("next")
+	{
+		@Override protected void perform()
+		{
+			if (_current < _sequence.size() - 1)
+			{
+				goToStep(++_current);
+			}
+		}
+	};
+	
+	static final private CardLayout _layout = new CardLayout();
+	
+	final private Map<String, JComponent> _steps = new HashMap<String, JComponent>();
+	final private JComponent _mainView;
+	final private List<String> _sequence = new ArrayList<String>();
+	private int _current = 0;
 }

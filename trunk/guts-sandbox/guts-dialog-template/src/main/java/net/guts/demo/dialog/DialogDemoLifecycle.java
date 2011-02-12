@@ -29,6 +29,7 @@ import net.guts.gui.application.support.SingleFrameLifecycle;
 import net.guts.gui.dialog2.DialogFactory;
 import net.guts.gui.dialog2.template.okcancel.OkCancel;
 import net.guts.gui.dialog2.template.wizard.Wizard;
+import net.guts.gui.dialog2.wizard.WizardFactory;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;
@@ -47,10 +48,12 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	static final private Logger _logger = LoggerFactory.getLogger(DialogDemoLifecycle.class);
 	
 	@Inject 
-	public DialogDemoLifecycle(DialogFactory dialogFactory, MessageFactory messageFactory)
+	public DialogDemoLifecycle(DialogFactory dialogFactory, MessageFactory messageFactory,
+		WizardFactory wizardFactory)
 	{
 		_dialogFactory = dialogFactory;
 		_messageFactory = messageFactory;
+		_wizardFactory = wizardFactory;
 	}
 	
 	@Override protected void initFrame(JFrame mainFrame)
@@ -132,16 +135,22 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	{
 		@Override protected void perform()
 		{
+			WizardFactory.Builder builder = _wizardFactory.builder()
+				.mapNextStep(DemoView1.class)
+				.mapNextStep(DemoView2.class)
+				.mapNextStep(DemoWizardStep3.class);
 			Wizard config1 = Wizard.create()
 				.withCancel(_cancel)
-				.withOK(_apply);
+				.withOK(_apply)
+				.withPrevious(builder.controller().getPreviousAction())
+				.withNext(builder.controller().getNextAction());
 			RootPaneConfig<JDialog> config2 = JDialogConfig.create()
 				.bounds(BoundsPolicy.PACK_AND_CENTER)
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1)
 				.config();
 			//TODO Create view with all steps
-			_dialogFactory.showDialog(DemoWizard1.class, config2);
+			_dialogFactory.showDialog(builder.mainView(), config2);
 			_logger.info("Result = {}", config1.result());
 		}
 	};
@@ -173,4 +182,5 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 	
 	final private DialogFactory _dialogFactory;
 	final private MessageFactory _messageFactory;
+	final private WizardFactory _wizardFactory;
 }
