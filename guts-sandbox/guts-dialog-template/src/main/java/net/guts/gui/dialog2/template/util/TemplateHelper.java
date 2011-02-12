@@ -184,7 +184,11 @@ final public class TemplateHelper
 	
 	static public GutsAction createAction(String name, Action action)
 	{
-		if (action != null)
+		if (action instanceof GutsAction)
+		{
+			return (GutsAction) action;
+		}
+		else if (action != null)
 		{
 			return new GutsActionDecorator(name, action);
 		}
