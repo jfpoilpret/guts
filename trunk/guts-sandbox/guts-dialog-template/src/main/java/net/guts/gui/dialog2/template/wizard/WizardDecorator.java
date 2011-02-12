@@ -74,15 +74,16 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 	
 	private void installActions(RootPaneContainer container, WizardConfig config)
 	{
+		WizardController controller = config._controller;
 		// Create the right actions when needed
-		_previous.setAction(
-			setupAction(TemplateHelper.createAction("previous", config._previous)));
-		_next.setAction(
-			setupAction(TemplateHelper.createAction("next", config._next)));
-		_ok.setAction(
-			setupAction(createClosingAction("ok", config._apply, config, Result.OK)));
+		_previous.setAction(setupAction(controller.previousAction()));
+		_next.setAction(setupAction(controller.nextAction()));
 		_cancel.setAction(
 			setupAction(createClosingAction("cancel", config._cancel, config, Result.CANCEL)));
+		GutsAction apply = 
+			setupAction(createClosingAction("ok", config._apply, config, Result.OK));
+		_ok.setAction(apply);
+		controller.setApplyAction(apply);
 	}
 
 	private GutsAction createClosingAction(String name, Action action,

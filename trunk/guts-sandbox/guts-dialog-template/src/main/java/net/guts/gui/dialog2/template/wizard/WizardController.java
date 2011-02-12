@@ -21,14 +21,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.Action;
 import javax.swing.JComponent;
-import javax.swing.SwingUtilities;
 
 import net.guts.gui.action.GutsAction;
 
-//TODO refactor to have direct communication between Decorator and Controller,
-// thus avoiding extra calla to Wizard.withNext(), withPrevious()...
 public class WizardController
 {
 	WizardController(JComponent mainView)
@@ -65,14 +61,20 @@ public class WizardController
 		_sequence.addAll(stepsList);
 	}
 
-	public Action getNextAction()
+	GutsAction nextAction()
 	{
 		return _next;
 	}
 	
-	public Action getPreviousAction()
+	GutsAction previousAction()
 	{
 		return _previous;
+	}
+	
+	void setApplyAction(GutsAction apply)
+	{
+		_apply = apply;
+		_apply.setEnabled(_current == _sequence.size() - 1);
 	}
 
 	private void goToStep(int index)
@@ -80,21 +82,11 @@ public class WizardController
 		String step = _sequence.get(index);
 		boolean acceptEnabled = (index == _sequence.size() - 1);
 		_next.setEnabled(!acceptEnabled);
-		setAcceptEnabled(acceptEnabled);
+		_apply.setEnabled(acceptEnabled);
 		_previous.setEnabled(index > 0);
 		_layout.show(_mainView, step);
 	}
 	
-	private void setAcceptEnabled(boolean enabled)
-	{
-		WizardDecorator decorator = (WizardDecorator) SwingUtilities.getAncestorOfClass(
-			WizardDecorator.class, _mainView);
-		if (decorator != null)
-		{
-			decorator.applyAction().setEnabled(enabled);
-		}
-	}
-
 	final private GutsAction _previous = new GutsAction("previous")
 	{
 		@Override protected void perform()
@@ -124,4 +116,5 @@ public class WizardController
 	final private JComponent _mainView;
 	final private List<String> _sequence = new ArrayList<String>();
 	private int _current = 0;
+	private GutsAction _apply = null;
 }

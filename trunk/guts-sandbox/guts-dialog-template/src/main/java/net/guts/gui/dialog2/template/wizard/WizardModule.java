@@ -24,6 +24,7 @@ public final class WizardModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		requestStaticInjection(Wizard.class);
 //		String pack = "/" + TypeHelper.getPackagePath(AbstractApplication.class);
 		// Provide default resource values for OK/Cancel/Apply actions
 //		Resources.bindPackageBundles(binder(), OkCancelButtonsPanel.class, pack + "/guts-gui");
