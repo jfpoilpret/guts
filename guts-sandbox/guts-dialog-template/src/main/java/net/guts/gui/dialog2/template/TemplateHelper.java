@@ -27,7 +27,6 @@ import javax.swing.RootPaneContainer;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
 
-//TODO move to template package
 final public class TemplateHelper
 {
 	private TemplateHelper()
