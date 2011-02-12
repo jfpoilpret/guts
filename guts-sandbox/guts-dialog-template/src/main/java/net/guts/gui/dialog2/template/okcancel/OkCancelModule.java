@@ -17,7 +17,9 @@ package net.guts.gui.dialog2.template.okcancel;
 import java.awt.LayoutManager;
 
 import net.guts.gui.action.ActionModule;
+import net.guts.gui.application.GutsGuiResource;
 import net.guts.gui.dialog2.template.TemplateModule;
+import net.guts.gui.resource.Resources;
 import net.java.dev.designgridlayout.DesignGridLayoutManager;
 
 import com.google.inject.AbstractModule;
@@ -32,15 +34,30 @@ public final class OkCancelModule extends AbstractModule
 		install(new TemplateModule());
 		install(new ActionModule());
 		OkCancelLayouts.layouts(binder());
-		//FIXME register DGL only if available in classpath!
-		OkCancelLayouts.bindLayout(binder(), DesignGridLayoutManager.class)
-			.to(OkCancelDesignGridLayoutAdder.class);
+		if (isDesignGridLayoutInClasspath())
+		{
+			OkCancelLayouts.bindLayout(binder(), DesignGridLayoutManager.class)
+				.to(OkCancelDesignGridLayoutAdder.class);
+		}
 		OkCancelLayouts.bindLayout(binder(), LayoutManager.class)
 			.to(OkCancelDefaultLayoutAdder.class);
 		//TODO bind resources for OkCancel to Guts-provided resource bundle
-//		String pack = "/" + TypeHelper.getPackagePath(AbstractApplication.class);
-		// Provide default resource values for OK/Cancel/Apply actions
-//		Resources.bindPackageBundles(binder(), OkCancelButtonsPanel.class, pack + "/guts-gui");
+		// This requires to have all actions in a class (currently they are built on the fly)
+//		Resources.bindPackageBundles(
+//			binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
+	}
+	
+	static boolean isDesignGridLayoutInClasspath()
+	{
+		try
+		{
+			Class.forName("net.java.dev.designgridlayout.DesignGridLayoutManager");
+			return true;
+		}
+		catch (ClassNotFoundException e)
+		{
+			return false;
+		}
 	}
 	
 	@Override public boolean equals(Object other)
