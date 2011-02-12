@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog2.template.util;
+package net.guts.gui.dialog2.template;
 
 import java.awt.Component;
 import java.awt.Container;
@@ -26,7 +26,6 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsActionDecorator;
-import net.guts.gui.dialog2.template.TemplateDecorator;
 
 //TODO move to template package
 final public class TemplateHelper
