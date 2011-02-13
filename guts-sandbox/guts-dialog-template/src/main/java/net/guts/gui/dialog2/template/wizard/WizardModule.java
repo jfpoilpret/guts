@@ -14,10 +14,15 @@
 
 package net.guts.gui.dialog2.template.wizard;
 
+import java.util.List;
+import java.util.Map;
+
 import net.guts.gui.application.GutsGuiResource;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.TypeLiteral;
+import com.google.inject.util.Types;
 
 public final class WizardModule extends AbstractModule
 {
@@ -30,6 +35,12 @@ public final class WizardModule extends AbstractModule
 		// Provide default resource values for OK/Cancel/Next/Previous actions
 		Resources.bindPackageBundles(
 			binder(), WizardDecorator.class, GutsGuiResource.PATH);
+		//TODO move to guts-gui resources later on
+		TypeLiteral<Map<String, String>> map = (TypeLiteral<Map<String, String>>)
+			TypeLiteral.get(Types.mapOf(String.class, String.class));
+		TypeLiteral<String> stringType = TypeLiteral.get(String.class); 
+		Resources.bindConverter(binder(), map)
+			.toInstance(new MapConverter<String, String>(stringType, stringType));
 	}
 	
 	@Override public boolean equals(Object other)
