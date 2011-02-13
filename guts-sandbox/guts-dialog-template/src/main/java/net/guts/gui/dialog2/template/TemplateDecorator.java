@@ -22,7 +22,6 @@ import net.guts.gui.window.RootPaneConfig;
 
 import com.google.inject.TypeLiteral;
 
-//TODO rename into Decorator? or ViewDecorator?
 public interface TemplateDecorator
 {
 	static final public TypeLiteral<Class<? extends TemplateDecorator>> TEMPLATE_TYPE_KEY =
