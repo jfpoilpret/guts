@@ -22,9 +22,6 @@ import javax.swing.JTextField;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.google.inject.Singleton;
-
-@Singleton
 public class DemoView2 extends JPanel
 {
 	public DemoView2()

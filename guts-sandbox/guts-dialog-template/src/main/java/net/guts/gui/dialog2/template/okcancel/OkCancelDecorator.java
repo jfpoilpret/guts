@@ -22,8 +22,6 @@ import javax.swing.JButton;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.ActionRegistrationManager;
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.GutsActionDecorator;
 import net.guts.gui.dialog2.template.TemplateDecorator;
 import net.guts.gui.dialog2.template.TemplateHelper;
 import net.guts.gui.window.RootPaneConfig;
@@ -58,21 +56,21 @@ class OkCancelDecorator implements TemplateDecorator
 		RootPaneContainer container, Container view, OkCancelConfig config)
 	{
 		// Create the right actions when needed
-		GutsAction ok = setupAction(createOkAction(container, config));
-		GutsAction apply = setupAction(createApplyAction(config));
-		GutsAction cancel = setupAction(createCancelAction(container, config));
+		OkCancelActions actions = new OkCancelActions(container, config);
+		_actionRegistry.registerActions(actions);
 
 		// Check that if container was already injected, it has the exact same buttons
 		// otherwise throw an exception immediately
-		if (TemplateHelper.checkCompatibleView(view, getClass(), ok, apply, cancel))
+		if (TemplateHelper.checkCompatibleView(
+			view, getClass(), actions._ok, actions._apply, actions._cancel))
 		{
 			return view;
 		}
 
 		// We need to modify the view and add the right buttons to it
-		JButton okBtn = TemplateHelper.createButton(ok, view);
-		JButton applyBtn = TemplateHelper.createButton(apply, view);
-		JButton cancelBtn = TemplateHelper.createButton(cancel, view);
+		JButton okBtn = TemplateHelper.createButton(actions._ok, view);
+		JButton applyBtn = TemplateHelper.createButton(actions._apply, view);
+		JButton cancelBtn = TemplateHelper.createButton(actions._cancel, view);
 
 		if (okBtn != null || applyBtn != null || cancelBtn != null)
 		{
@@ -96,79 +94,6 @@ class OkCancelDecorator implements TemplateDecorator
 		}
 	}
 
-	static private GutsAction createOkAction(
-		final RootPaneContainer container, final OkCancelConfig config)
-	{
-		if (config._hasOK && config._apply != null)
-		{
-			return new GutsActionDecorator("ok", config._apply)
-			{
-				@Override protected void afterTargetPerform()
-				{
-					config._result = OkCancel.Result.OK;
-					TemplateHelper.close(container);
-				}
-			};
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
-	static private GutsAction createApplyAction(OkCancelConfig config)
-	{
-		if (config._hasApply)
-		{
-			return TemplateHelper.createAction("apply", config._apply);
-		}
-		else
-		{
-			return null;
-		}
-	}
-	
-	static private GutsAction createCancelAction(
-		final RootPaneContainer container, final OkCancelConfig config)
-	{
-		GutsAction cancel = null;
-		if (config._hasCancel)
-		{
-			if (config._cancel != null)
-			{
-				cancel = new GutsActionDecorator("cancel", config._cancel)
-				{
-					@Override protected void afterTargetPerform()
-					{
-						config._result = OkCancel.Result.CANCEL;
-						TemplateHelper.close(container);
-					}
-				};
-			}
-			else
-			{
-				cancel = new GutsAction("cancel")
-				{
-					@Override protected void perform()
-					{
-						config._result = OkCancel.Result.CANCEL;
-						TemplateHelper.close(container);
-					}
-				};
-			}
-		}
-		return cancel;
-	}
-	
-	private GutsAction setupAction(GutsAction action)
-	{
-		if (action != null)
-		{
-			_actionRegistry.registerAction(action);
-		}
-		return action;
-	}
-	
 	final private ActionRegistrationManager _actionRegistry;
 	final private Map<Class<? extends LayoutManager>, OkCancelLayoutAdder> _layouts;
 }

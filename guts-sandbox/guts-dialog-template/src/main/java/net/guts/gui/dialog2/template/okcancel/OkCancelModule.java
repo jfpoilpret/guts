@@ -41,10 +41,8 @@ public final class OkCancelModule extends AbstractModule
 		}
 		OkCancelLayouts.bindLayout(binder(), LayoutManager.class)
 			.to(OkCancelDefaultLayoutAdder.class);
-		//TODO bind resources for OkCancel to Guts-provided resource bundle
-		// This requires to have all actions in a class (currently they are built on the fly)
-//		Resources.bindPackageBundles(
-//			binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
+		// Bind resources for OkCancel to Guts-provided resource bundle
+		Resources.bindPackageBundles(binder(), OkCancelActions.class, GutsGuiResource.PATH);
 	}
 	
 	static boolean isDesignGridLayoutInClasspath()
