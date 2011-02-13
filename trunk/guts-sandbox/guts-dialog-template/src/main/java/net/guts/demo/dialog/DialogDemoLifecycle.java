@@ -16,6 +16,7 @@ package net.guts.demo.dialog;
 
 import java.awt.Dimension;
 
+import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JMenu;
@@ -143,7 +144,8 @@ public class DialogDemoLifecycle extends SingleFrameLifecycle
 				.state(StatePolicy.RESTORE_IF_EXISTS)
 				.merge(config1)
 				.config();
-			//TODO check if we could pass null instead of mainView?
+			JComponent mainView = config1.mainView();
+			mainView.setName("DemoWizard");
 			_dialogFactory.showDialog(config1.mainView(), config2);
 			_logger.info("Result = {}", config1.result());
 		}

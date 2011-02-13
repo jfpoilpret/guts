@@ -46,7 +46,7 @@ public class WizardController
 	
 	void addStep(String name, JComponent view, boolean appendToSequence)
 	{
-		_mainView.add(view, view.getName());
+		_mainView.add(view, name);
 		_steps.put(name, view);
 		if (appendToSequence)
 		{

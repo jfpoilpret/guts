@@ -16,6 +16,7 @@ package net.guts.gui.dialog2.template.wizard;
 
 import java.awt.Container;
 import java.awt.Font;
+import java.util.Map;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -84,6 +85,15 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 			setupAction(createClosingAction("finish", config._apply, config, Result.OK));
 		_ok.setAction(apply);
 		controller.setApplyAction(apply);
+		
+		controller.addWizardListener(new WizardListener()
+		{
+			@Override public void stepChanged(
+				WizardController controller, String oldStep, String newStep)
+			{
+				_stepDescription.setText(_stepDescriptions.get(newStep));
+			}
+		});
 	}
 
 	private GutsAction createClosingAction(String name, Action action,
@@ -151,4 +161,5 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 	private final JButton _cancel = new JButton();
 	private final JButton _previous = new JButton();
 	private final JButton _next = new JButton();
+	private Map<String, String> _stepDescriptions;
 }
