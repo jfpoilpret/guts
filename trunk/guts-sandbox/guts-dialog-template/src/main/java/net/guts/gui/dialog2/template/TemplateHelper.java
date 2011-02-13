@@ -25,7 +25,6 @@ import javax.swing.JInternalFrame;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.GutsActionDecorator;
 
 final public class TemplateHelper
 {
@@ -177,22 +176,6 @@ final public class TemplateHelper
 		{
 			// For applets, what can we possibly do, besides hide it?
 			container.getRootPane().getParent().setVisible(false);
-		}
-	}
-	
-	static public GutsAction createAction(String name, Action action)
-	{
-		if (action instanceof GutsAction)
-		{
-			return (GutsAction) action;
-		}
-		else if (action != null)
-		{
-			return new GutsActionDecorator(name, action);
-		}
-		else
-		{
-			return null;
 		}
 	}
 	
