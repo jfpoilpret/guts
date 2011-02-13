@@ -14,16 +14,12 @@
 
 package net.guts.gui.dialog2.template.okcancel;
 
-
 import javax.swing.Action;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.dialog2.template.TemplateDecorator;
 import net.guts.gui.window.AbstractConfig;
 
-
-//TODO?
-// define AbstractTemplateConfig<T, V> extends AbstractConfig<V extends RootPaneContainer, T>
 public final class OkCancel extends AbstractConfig<RootPaneContainer, OkCancel>
 {
 	private OkCancel()
