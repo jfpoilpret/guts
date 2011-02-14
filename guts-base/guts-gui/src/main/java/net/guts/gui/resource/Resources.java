@@ -16,6 +16,7 @@ package net.guts.gui.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import net.guts.common.type.TypeHelper;
 
@@ -345,6 +346,52 @@ public final class Resources
 		bindConverter(binder, list).toInstance(new ListConverter<T>(type, delimiters));
 	}
 
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given 
+	 * {@code Map<K, V>} type.
+	 * 
+	 * @param <K> type of the keys in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param <V> type of the values in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param key type of the keys in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param value type of the values in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 */
+	static public <K, V> void bindMapConverter(
+		Binder binder, Class<K> key, Class<V> value)
+	{
+		bindMapConverter(binder, TypeLiteral.get(key), TypeLiteral.get(value));
+	}
+	
+	/**
+	 * Creates and binds a special {@link ResourceConverter} for a given 
+	 * {@code Map<K, V>} type.
+	 * 
+	 * @param <K> type of the keys in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param <V> type of the values in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param binder the Guice binder passed to 
+	 * {@link com.google.inject.Module#configure(Binder)}
+	 * @param key type of the keys in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 * @param value type of the values in the {@link Map} for which to create and 
+	 * bind a {@code ResourceConverter}
+	 */
+	@SuppressWarnings("unchecked") 
+	static public <K, V> void bindMapConverter(
+		Binder binder, TypeLiteral<K> key, TypeLiteral<V> value)
+	{
+		TypeLiteral<Map<K, V>> map = (TypeLiteral<Map<K, V>>)
+			TypeLiteral.get(Types.mapOf(key.getType(), value.getType()));
+		Resources.bindConverter(binder, map)
+			.toInstance(new MapConverter<K, V>(key, value));
+	}
+	
 	/**
 	 * Initializes a binding between a given type of objects and a matching 
 	 * {@link InstanceInjector}.
