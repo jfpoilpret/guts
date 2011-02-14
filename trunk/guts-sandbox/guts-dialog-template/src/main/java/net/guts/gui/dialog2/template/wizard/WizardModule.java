@@ -14,10 +14,10 @@
 
 package net.guts.gui.dialog2.template.wizard;
 
-import java.util.List;
 import java.util.Map;
 
 import net.guts.gui.application.GutsGuiResource;
+import net.guts.gui.dialog2.template.TemplateModule;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
@@ -31,6 +31,7 @@ public final class WizardModule extends AbstractModule
 	 */
 	@Override protected void configure()
 	{
+		install(new TemplateModule());
 		requestStaticInjection(Wizard.class);
 		// Provide default resource values for OK/Cancel/Next/Previous actions
 		Resources.bindPackageBundles(
