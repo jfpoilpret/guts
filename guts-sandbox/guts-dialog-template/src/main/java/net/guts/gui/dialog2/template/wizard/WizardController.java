@@ -15,6 +15,8 @@
 package net.guts.gui.dialog2.template.wizard;
 
 import java.awt.CardLayout;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -32,6 +34,22 @@ public class WizardController
 	{
 		_mainView = mainView;
 		_mainView.setLayout(_layout);
+		_mainView.addHierarchyListener(new HierarchyListener()
+	    {
+			@Override public void hierarchyChanged(HierarchyEvent e)
+            {
+				if (	(e.getID() == HierarchyEvent.HIERARCHY_CHANGED)
+					&&	((e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0)
+					&&	_mainView.isShowing())
+				{
+					// We must wait until the GUI is visible to show first step
+					// of wizard sequence, so that we are sure its enter() method
+					// has been called already
+					fireStepChanged(-1, 0);
+					goToStep(0);
+				}
+            }
+	    });
 	}
 
 	public void addWizardListener(WizardListener listener)
@@ -109,7 +127,7 @@ public class WizardController
 
 	private void fireStepChanged(int oldIndex, int newIndex)
 	{
-		String oldStep = _sequence.get(oldIndex);
+		String oldStep = (oldIndex > -1 ? _sequence.get(oldIndex) : null);
 		String newStep = _sequence.get(newIndex);
 		for (WizardListener listener: _listeners)
 		{

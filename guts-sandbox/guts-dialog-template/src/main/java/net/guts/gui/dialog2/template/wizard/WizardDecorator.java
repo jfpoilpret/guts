@@ -53,6 +53,8 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		setName(view.getName() + "-wizard");
 		_stepDescription.setName(view.getName() + "-label");
 		_stepDescription.setFont(_font);
+		// The following is required  in order to force the correct height for this label
+		_stepDescription.setText(" ");
 
 		// Get config passed by the initial caller
 		WizardConfig config = configuration.get(WizardConfig.class);
