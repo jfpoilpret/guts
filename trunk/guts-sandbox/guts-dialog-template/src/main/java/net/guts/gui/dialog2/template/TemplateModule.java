@@ -14,11 +14,27 @@
 
 package net.guts.gui.dialog2.template;
 
+import net.guts.gui.action.ActionRegistrationManager;
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI templating system. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new TemplateModule(), ...);
+ * </pre>
+ * <p/>
+ * {@code TemplateModule} makes sure that {@link TemplateDecorator} implementations
+ * will be used by {@code net.guts.gui.window.WindowController#show} when needed.
+ * 
+ * @author jfpoilpret
+ */
 public final class TemplateModule extends AbstractModule
 {
 	/* (non-Javadoc)

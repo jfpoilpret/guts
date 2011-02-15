@@ -26,6 +26,16 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.GutsAction;
 
+/**
+ * Utility class for {@link TemplateDecorator} implementations. Several methods may 
+ * prove useful in various occasions, when developing your own {@code TemplateDecorator}.
+ * <p/>
+ * In particular, {@link #isViewModified} and {@link #setViewModified} can be used when
+ * your {@link TemplateDecorator} implementation needs to modify the passed view, but 
+ * should never modify the same view twice. 
+ * 
+ * @author jfpoilpret
+ */
 final public class TemplateHelper
 {
 	private TemplateHelper()
