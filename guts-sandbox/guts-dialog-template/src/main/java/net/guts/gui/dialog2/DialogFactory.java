@@ -43,8 +43,8 @@ public interface DialogFactory
 	 * {@link net.guts.gui.window.JDialogConfig#merge merged} with other configuration
 	 * parameters provided by more specialized configuration builders, such as:
 	 * <ul>
-	 * <li>{@link net.guts.gui.dialog2.template.okcancel.OkCancel}</li>
-	 * <li>{@link net.guts.gui.dialog2.template.wizard.Wizard}</li>
+	 * <li>{@link net.guts.gui.template.okcancel.OkCancel}</li>
+	 * <li>{@link net.guts.gui.template.wizard.Wizard}</li>
 	 * </ul>
 	 * This additional configuration sets up decoration of {@code view} before adding
 	 * it to a new {@link JDialog}.
