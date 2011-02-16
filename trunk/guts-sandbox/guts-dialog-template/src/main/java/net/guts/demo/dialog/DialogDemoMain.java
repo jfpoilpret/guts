@@ -20,14 +20,14 @@ import net.guts.gui.action.ActionNamePolicy;
 import net.guts.gui.action.DefaultActionNamePolicy;
 import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
-import net.guts.gui.dialog2.template.TemplateModule;
-import net.guts.gui.dialog2.template.okcancel.OkCancelModule;
-import net.guts.gui.dialog2.template.wizard.WizardModule;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.ComponentNamingModule;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
+import net.guts.gui.template.TemplateModule;
+import net.guts.gui.template.okcancel.OkCancelModule;
+import net.guts.gui.template.wizard.WizardModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
