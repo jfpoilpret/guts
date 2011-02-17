@@ -14,9 +14,6 @@
 
 package net.guts.gui.template;
 
-import net.guts.gui.action.ActionRegistrationManager;
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
 
