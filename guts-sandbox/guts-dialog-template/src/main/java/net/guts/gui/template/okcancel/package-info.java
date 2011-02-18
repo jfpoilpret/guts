@@ -65,5 +65,7 @@
  * by implementing {@link net.guts.gui.template.okcancel.OkCancelLayoutAdder}
  * interface and bind your implementation in one of your {@link com.google.inject.Module}s,
  * by using {@link net.guts.gui.template.okcancel.OkCancelLayouts#bindLayout}.
+ * <p/>
+ * TODO explain why it is important to add buttons directly to the view
  */
 package net.guts.gui.template.okcancel;

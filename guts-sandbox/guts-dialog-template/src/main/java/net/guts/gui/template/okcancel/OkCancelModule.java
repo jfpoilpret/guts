@@ -24,6 +24,29 @@ import net.java.dev.designgridlayout.DesignGridLayoutManager;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI "OKCancel" templating 
+ * subsystem. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new OkCancelModule(), ...);
+ * </pre>
+ * <p/>
+ * {@code OkCancelModule} makes sure that you can use {@link OkCancel} configuration 
+ * object to {@link net.guts.gui.window.WindowController#show show} a view that you
+ * want decorated with "OK", "Cancel" or "Apply" buttons.
+ * <p/>
+ * If {@code DesignGridLayout} is present in the classpath, then a specific
+ * {@link OkCancelLayoutAdder} will be bound for it.
+ * <p/>
+ * Note that {@code OkCancelModule} automatically ensures that {@link TemplateModule},
+ * on which it depends, is also installed, hence you don't need to explicitly add
+ * {@code TemplateModule} to the list of {@code Module}s used to create a Guice
+ * {@code Injector}.
+ * 
+ * @author jfpoilpret
+ */
 public final class OkCancelModule extends AbstractModule
 {
 	/* (non-Javadoc)
