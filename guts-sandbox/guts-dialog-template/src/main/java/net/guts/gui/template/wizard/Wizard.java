@@ -25,6 +25,24 @@ import net.guts.gui.window.AbstractConfig;
 import com.google.inject.Inject;
 import com.google.inject.Injector;
 
+/**
+ * Configuration object to create a wizard view ({@link javax.swing.JComponent}), 
+ * made of several steps views, and decorated with "Previous", "Next", "Finish"
+ * and "Cancel" buttons. This object must then be 
+ * {@link AbstractConfig#merge(AbstractConfig) merged} to one of
+ * {@link net.guts.gui.window.JDialogConfig}, {@link net.guts.gui.window.JFrameConfig},
+ * {@link net.guts.gui.window.JInternalFrameConfig} or 
+ * {@link net.guts.gui.window.JAppletConfig} before passing the latter to
+ * {@link net.guts.gui.window.WindowController#show}.
+ * <p/>
+ * {@code Wizard} uses a fluent API to set configuration on how exactly to decorate
+ * the wizard.
+ * <p/>
+ * Check <a href="net/guts/gui/template/okcancel/package-summary.html">package
+ * documentation</a> for a code example.
+ * 
+ * @author jfpoilpret
+ */
 public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 {
 	private Wizard()
@@ -34,6 +52,11 @@ public final class Wizard extends AbstractConfig<RootPaneContainer, Wizard>
 		_config._controller = _controller;
 	}
 	
+	/**
+	 * Create a new {@code OkCancel} default configuration object.
+	 * 
+	 * @return a new {@code OkCancel} configuration object
+	 */
 	static public Wizard create()
 	{
 		return new Wizard();
