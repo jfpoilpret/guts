@@ -17,11 +17,13 @@ package net.guts.gui.template;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Window;
+import java.awt.event.KeyEvent;
 
 import javax.swing.Action;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JInternalFrame;
+import javax.swing.KeyStroke;
 import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.GutsAction;
@@ -203,5 +205,15 @@ final public class TemplateHelper
 		}
 	}
 	
+	static public void mapEscapeToCancel(RootPaneContainer container, Action cancel)
+	{
+		if (cancel != null)
+		{
+			container.getRootPane().getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT)
+				.put(KeyStroke.getKeyStroke(KeyEvent.VK_ESCAPE, 0), "cancel");
+			container.getRootPane().getActionMap().put("cancel", cancel);
+		}
+	}
+
 	static final private String MODIFIED_VIEW_MARKER = TemplateDecorator.class.getName();
 }
