@@ -24,7 +24,6 @@ import java.util.List;
 import javax.swing.JButton;
 import javax.swing.JPanel;
 
-//TODO better computation of gaps...
 class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 {
 	@Override public Container layout(
