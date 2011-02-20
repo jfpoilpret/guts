@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.support.SingleFrameLifecycle;
-import net.guts.gui.dialog2.DialogFactory;
+import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.menu.MenuFactory;
 import net.guts.gui.message.MessageFactory;

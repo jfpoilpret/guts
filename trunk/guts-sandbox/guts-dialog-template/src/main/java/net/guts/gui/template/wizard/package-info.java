@@ -53,7 +53,7 @@
  * <p/>
  * Then we create {@code config} that is needed to display a {@link javax.swing.JDialog}
  * and we merge {@code decorationConfig} into it; finally we can open a dialog with
- * our wizard thanks to {@link net.guts.gui.dialog2.DialogFactory#showDialog}.
+ * our wizard thanks to {@link net.guts.gui.dialog.DialogFactory#showDialog}.
  * <p/>
  * Once the container of our view has been closed, it is possible, if needed, to find 
  * out which button has closed it ("Finish" or "Cancel") by calling 
@@ -62,7 +62,7 @@
  * In the last part of the above snippet, the main wizard view is created by the
  * {@link net.guts.gui.template.wizard.Wizard decorationConfig} object itself.
  * We set its name so that resource injection can work throughout the wizard dialog
- * before showing it with {@link net.guts.gui.dialog2.DialogFactory}.
+ * before showing it with {@link net.guts.gui.dialog.DialogFactory}.
  * <p/>
  * If {@link net.guts.gui.resource.ResourceModule} is used in the application, then
  * wizards created by {@link net.guts.gui.template.wizard.Wizard} configuration
