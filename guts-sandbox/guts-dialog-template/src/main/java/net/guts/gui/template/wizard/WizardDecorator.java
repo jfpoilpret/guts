@@ -42,9 +42,11 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 {
 	private static final long serialVersionUID = -3076781500914299784L;
 
-	@Inject WizardDecorator(ActionRegistrationManager actionRegistry)
+	@Inject 
+	WizardDecorator(ActionRegistrationManager actionRegistry, WizardStepDescriptionFont font)
 	{
 		_actionRegistry = actionRegistry;
+		_font = font.getFont();
 	}
 
 	@Override public <T extends RootPaneContainer> void decorate(
@@ -157,9 +159,7 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		return _ok.getAction();
 	}
 	
-	//FIXME this should be an injected resource no?
-	static final private Font _font = Font.decode("dialog-BOLD-18");
-
+	final private Font _font;
 	final private ActionRegistrationManager _actionRegistry;
 	private final JLabel _stepDescription = new JLabel();
 	private final JButton _ok = new JButton();
