@@ -84,7 +84,7 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		_cancel.setAction(
 			setupAction(createClosingAction("cancel", config._cancel, config, Result.CANCEL)));
 		GutsAction apply = 
-			setupAction(createClosingAction("finish", config._apply, config, Result.OK));
+			setupAction(createClosingAction("finish", config._apply, config, Result.FINISH));
 		_ok.setAction(apply);
 		controller.setApplyAction(apply);
 		

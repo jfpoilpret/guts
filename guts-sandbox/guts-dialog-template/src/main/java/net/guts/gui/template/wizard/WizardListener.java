@@ -14,7 +14,22 @@
 
 package net.guts.gui.template.wizard;
 
+/**
+ * Listener for step changes in a {@link Wizard}-created container.
+ * <p/>
+ * {@code WizardListener}s can be added to any {@link WizardController}.
+ * 
+ * @author jfpoilpret
+ */
 public interface WizardListener
 {	
+	/**
+	 * Called when the wizard managed by {@code controller} has changed from
+	 * {@code oldStep} to {@code newStep}.
+	 * 
+	 * @param controller
+	 * @param oldStep
+	 * @param newStep
+	 */
 	public void stepChanged(WizardController controller, String oldStep, String newStep);
 }

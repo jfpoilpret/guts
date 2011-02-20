@@ -20,6 +20,26 @@ import net.guts.gui.template.TemplateModule;
 
 import com.google.inject.AbstractModule;
 
+/**
+ * Guice {@link com.google.inject.Module} for Guts-GUI "Wizard" templating 
+ * subsystem. 
+ * This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new WizardModule(), ...);
+ * </pre>
+ * <p/>
+ * {@code WizardModule} makes sure that you can use {@link Wizard} configuration 
+ * object to {@link net.guts.gui.window.WindowController#show show} a wizard
+ * dialog with a standard look throughout the whole application.
+ * <p/>
+ * Note that {@code WizardModule} automatically ensures that {@link TemplateModule},
+ * on which it depends, is also installed, hence you don't need to explicitly add
+ * {@code TemplateModule} to the list of {@code Module}s used to create a Guice
+ * {@code Injector}.
+ * 
+ * @author jfpoilpret
+ */
 public final class WizardModule extends AbstractModule
 {
 	/* (non-Javadoc)
