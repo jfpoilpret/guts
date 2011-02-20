@@ -66,6 +66,16 @@
  * interface and bind your implementation in one of your {@link com.google.inject.Module}s,
  * by using {@link net.guts.gui.template.okcancel.OkCancelLayouts#bindLayout}.
  * <p/>
- * TODO explain why it is important to add buttons directly to the view
+ * The reason why the "OkCancel" mechanism allows for direct addition of buttons
+ * to a view based on the {@link java.awt.LayoutManager} used by this view, is:
+ * <ul>
+ * <li>It allows better integration of the buttons bar into the view; in particular
+ * some {@link java.awt.LayoutManager}s automatically calculate the right gaps
+ * between successive rows of components, or ensure gaps consistency across the whole
+ * layout.</li>
+ * <li>Some {@link java.awt.LayoutManager}s know where to place "standard" buttons
+ * (such as "OK", "Cancel"...) based on the current platform, so we can use this
+ * capability to ensure added buttons are correctly located.</li>
+ * </ul>
  */
 package net.guts.gui.template.okcancel;
