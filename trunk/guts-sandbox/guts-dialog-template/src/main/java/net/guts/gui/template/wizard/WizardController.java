@@ -28,6 +28,18 @@ import javax.swing.JComponent;
 
 import net.guts.gui.action.GutsAction;
 
+/**
+ * Controller, associated with one wizard instance, enabling dynamic control of the 
+ * wizard during user interaction.
+ * <p/>
+ * A {@code WizardController} is exclusively obtained through {@link Wizard#controller()}
+ * method.
+ * <p/>
+ * {@code WizardController} also allows registering {@link WizardListener}s to act after
+ * changes of wizard steps.
+ * 
+ * @author jfpoilpret
+ */
 public class WizardController
 {
 	WizardController(JComponent mainView)
@@ -52,11 +64,23 @@ public class WizardController
 	    });
 	}
 
+	/**
+	 * Add {@code listener} to be notified of step changes in the wizard controlled
+	 * by {@code this}.
+	 * 
+	 * @param listener
+	 */
 	public void addWizardListener(WizardListener listener)
 	{
 		_listeners.add(listener);
 	}
 	
+	/**
+	 * Remove {@code listener} from listeners notified of step changes in the wizard 
+	 * controlled by {@code this}.
+	 * 
+	 * @param listener
+	 */
 	public void removeWizardListener(WizardListener listener)
 	{
 		_listeners.remove(listener);
@@ -75,8 +99,24 @@ public class WizardController
 			addWizardListener((WizardListener) view);
 		}
 	}
-	
-	public void setNextStepsSequence(String... steps)
+
+	/**
+	 * Set the steps views following the current wizard step.
+	 * <p/>
+	 * Each given {@code step} must map to an existing step view, already
+	 * mapped through {@link Wizard#mapOneStep(Class)} or 
+	 * {@link Wizard#mapNextStep(Class)}, otherwise an exception is thrown.
+	 * <p/>
+	 * Note that {@code steps} replace any existing list of following steps.
+	 * <p/>
+	 * You can use this method when your wizard has different steps paths based 
+	 * on user input.
+	 * 
+	 * @param steps next steps to follow the current steps
+	 * @throws IllegalArgumentException if one of {@code steps} hasn't been
+	 * registered first as a step view
+	 */
+	public void setNextStepsSequence(String... steps) throws IllegalArgumentException
 	{
 		// First check that all steps match added components
 		List<String> stepsList = Arrays.asList(steps);
@@ -94,6 +134,13 @@ public class WizardController
 		_sequence.addAll(stepsList);
 	}
 
+	/**
+	 * Get the view {@link JComponent} for a given {@code step} name.
+	 * 
+	 * @param step name of the step for which we want the {@link JComponent} view
+	 * @return the view for {@code step}, or {@code null} if {@code step} isn't a 
+	 * registered step with this {@code WizardController}
+	 */
 	public JComponent getStep(String step)
 	{
 		return _steps.get(step);

@@ -64,6 +64,32 @@
  * We set its name so that resource injection can work throughout the wizard dialog
  * before showing it with {@link net.guts.gui.dialog2.DialogFactory}.
  * <p/>
+ * If {@link net.guts.gui.resource.ResourceModule} is used in the application, then
+ * wizards created by {@link net.guts.gui.template.wizard.Wizard} configuration
+ * object will have some specific resources injected:
+ * <ul>
+ * <li>Each step view will have its own resources injected based on its 
+ * {@link javax.swing.JComponent#getName() name}, as usual</li>
+ * <li>In the main view, there is a {@link javax.swing.JLabel} to display a 
+ * description for each step, its content must be injected as a {@code Map}
+ * where keys are names of each step view, and values are the description text
+ * for the mapped step view:
+ * <pre>
+ * DemoWizard-wizard._stepDescriptions=[DemoView1:Step #1] [DemoView2:Second step]
+ * </pre>
+ * where {@code DemoWizard} is the name given to the main wizard view, {@code DemoView1}
+ * the name of the first step view...
+ * </li>
+ * <li>Wizard buttons resources are already defined by Guts-GUI but can be overridden:
+ * <pre>
+ * cancel.text=Ca&ncel
+ * finish.text=&Finish
+ * previous.text=< &Back
+ * next.text=&Next >
+ * </pre>
+ * </li>
+ * </ul>
+ * <p/>
  * Note that you must have added {@link net.guts.gui.template.wizard.WizardModule}
  * to the list of {@link com.google.inject.Module}s used when creating Guice
  * {@link com.google.inject.Injector}.
