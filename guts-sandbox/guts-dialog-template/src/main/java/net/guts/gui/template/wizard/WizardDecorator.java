@@ -96,6 +96,9 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 				_stepDescription.setText(_stepDescriptions.get(newStep));
 			}
 		});
+		
+		container.getRootPane().setDefaultButton(_ok);
+		TemplateHelper.mapEscapeToCancel(container, _cancel.getAction());
 	}
 
 	private GutsAction createClosingAction(String name, Action action,

@@ -47,17 +47,19 @@ class OkCancelDecorator implements TemplateDecorator
 
 		// Create necessary Actions, lay them out
 		Container fullView = installActions(container, view, config);
-		
+
 		// Add view to container
 		container.setContentPane(fullView);
 	}
-	
+
 	private Container installActions(
 		RootPaneContainer container, Container view, OkCancelConfig config)
 	{
 		// Create the right actions when needed
 		OkCancelActions actions = new OkCancelActions(container, config);
 		_actionRegistry.registerActions(actions);
+
+		TemplateHelper.mapEscapeToCancel(container, actions._cancel);
 
 		// Check that if container was already injected, it has the exact same buttons
 		// otherwise throw an exception immediately
@@ -72,6 +74,10 @@ class OkCancelDecorator implements TemplateDecorator
 		JButton applyBtn = TemplateHelper.createButton(actions._apply, view);
 		JButton cancelBtn = TemplateHelper.createButton(actions._cancel, view);
 
+		if (okBtn != null)
+		{
+			container.getRootPane().setDefaultButton(okBtn);
+		}
 		if (okBtn != null || applyBtn != null || cancelBtn != null)
 		{
 			// Add them to the view with the right layout-optimized adder
