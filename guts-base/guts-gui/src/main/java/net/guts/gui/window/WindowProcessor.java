@@ -30,6 +30,7 @@ import javax.swing.RootPaneContainer;
 public interface WindowProcessor
 {
 	//TODO do these constant belong here?
+	static final public int VIEW_PREPROCESSING = 0;
 	static final public int TEMPLATE_DECORATION = 1000;
 	static final public int RESOURCE_INJECTION = 2000;
 	static final public int BOUNDS_INIT = 3000;

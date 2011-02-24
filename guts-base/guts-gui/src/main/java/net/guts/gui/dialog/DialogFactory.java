@@ -15,9 +15,9 @@
 package net.guts.gui.dialog;
 
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.RootPaneConfig;
 
 import com.google.inject.ImplementedBy;
 
@@ -35,76 +35,36 @@ public interface DialogFactory
 	/**
 	 * Shows a modal dialog.
 	 * <p/>
-	 * The passed {@code panel} must have a unique name (set by 
+	 * The passed {@code view} must have a unique name (set by 
 	 * {@link javax.swing.JComponent#setName(String)}.
 	 * <p/>
-	 * Optionally,  {@code panel} may implement one or more of:
+	 * The passed {@code config} must be obtained by 
+	 * {@link net.guts.gui.window.JDialogConfig} and can possibly be 
+	 * {@link net.guts.gui.window.JDialogConfig#merge merged} with other configuration
+	 * parameters provided by more specialized configuration builders, such as:
 	 * <ul>
-	 * <li>{@link Closable}</li>
-	 * <li>{@link ParentDialogAware}</li>
-	 * <li>{@link Resettable}</li>
+	 * <li>{@link net.guts.gui.template.okcancel.OkCancel}</li>
+	 * <li>{@link net.guts.gui.template.wizard.Wizard}</li>
 	 * </ul>
-	 * A better -and easier- solution is to have {@code panel} class derive
-	 * from {@link net.guts.gui.dialog.support.AbstractPanel}.
+	 * This additional configuration sets up decoration of {@code view} before adding
+	 * it to a new {@link JDialog}.
 	 * 
-	 * @param panel panel to be contained in the shown dialog
-	 * @param bounds the policy to use for determining the size and location of
-	 * the new dialog
-	 * @param state the policy to use for determining how state (bounds) should
-	 * be restored from previously saved state
-	 * @return {@code true} if user has validated the dialog (i.e. clicked
-	 * the "OK" button), {@code false} if the user has cancelled the dialog
-	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
+	 * @param view panel to be contained in the shown dialog
+	 * @param config the configuration for displaying {@code view} in a new {@link JDialog};
+	 * this must be created with {@link net.guts.gui.window.JDialogConfig} builder class.
 	 */
-	public boolean showDialog(JComponent panel, BoundsPolicy bounds, StatePolicy state);
+	public void showDialog(JComponent view, RootPaneConfig<JDialog> config);
 
 	/**
 	 * Shows a modal dialog. The contained panel is directly instantiated by the
 	 * method through Guice (automatically injected), based on the passed Class.
 	 * <p/>
 	 * The rules and comments for instances of {@code clazz} are the same as for
-	 * {@link #showDialog(JComponent, WindowController.BoundsPolicy, WindowController.StatePolicy)}.
+	 * {@link #showDialog(JComponent, RootPaneConfig)}.
 	 * 
-	 * @param clazz class of the panel to be contained in the shown dialog
-	 * @param bounds the policy to use for determining the size and location of
-	 * the new dialog
-	 * @param state the policy to use for determining how state (bounds) should
-	 * be restored from previously saved state
-	 * @return {@code true} if user has validated the dialog (i.e. clicked
-	 * the "OK" button), {@code false} if the user has cancelled the dialog
-	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
+	 * @param view class of the panel to be contained in the shown dialog
+	 * @param config the configuration for displaying {@code view} in a new {@link JDialog};
+	 * this must be created with {@link net.guts.gui.window.JDialogConfig} builder class.
 	 */
-	public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, BoundsPolicy bounds, StatePolicy state);
-
-	/**
-	 * Shows a modal dialog. The contained panel is directly instantiated by the
-	 * method through Guice (automatically injected), based on the passed Class.
-	 * <p/>
-	 * The Guice rules for instantiation apply: if the given class is annotated
-	 * (or defined through a Module) as Singleton, then it will be reused once
-	 * created, even on several consecutive calls.
-	 * <p/>
-	 * After creation of the contained panel through Guice, the instance is
-	 * passed to the supplied {@code initializer} for further processing
-	 * before the dialog is shown. This is useful for instance to pass data
-	 * that is displayed by the panel but can change for every display of the
-	 * dialog. The call to {@link PanelInitializer#init(JComponent)} is
-	 * always performed, even if the contained panel was already created before.
-	 * <p/>
-	 * The rules and comments for instances of {@code clazz} are the same as for
-	 * {@link #showDialog(JComponent, WindowController.BoundsPolicy, WindowController.StatePolicy)}.
-	 * 
-	 * @param clazz class of the panel to be contained in the shown dialog
-	 * @param bounds the policy to use for determining the size and location of
-	 * the new dialog
-	 * @param state the policy to use for determining how state (bounds) should
-	 * be restored from previously saved state
-	 * @param initializer an initializer object
-	 * @return {@code true} if user has validated the dialog (i.e. clicked
-	 * the "OK" button), {@code false} if the user has cancelled the dialog
-	 * (i.e. clicked the "Cancel" button or the close box on the title bar)
-	 */
-	public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy bounds, StatePolicy state, PanelInitializer<T> initializer);
+	public void showDialog(Class<? extends JComponent> view, RootPaneConfig<JDialog> config);
 }

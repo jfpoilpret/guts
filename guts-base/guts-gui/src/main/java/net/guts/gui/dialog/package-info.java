@@ -20,12 +20,8 @@
  * service which is in charge of constructing and displaying modal dialogs.
  * <p/>
  * Each dialog is only defined by its embedded panel, any 
- * {@link javax.swing.JComponent} is suitable, but deriving your dialog panels 
- * from {@link net.guts.gui.dialog.support.AbstractPanel} is the preferred 
- * -and easiest- way to take advantage of all 
- * {@link net.guts.gui.dialog.DialogFactory} features.
- * <p/>
- * Package {@link net.guts.gui.dialog.support} defines several classes and 
- * interfaces to ease actual dialog creation.
+ * {@link javax.swing.JComponent} is suitable, and a 
+ * {@link net.guts.gui.window.RootPaneConfig RootPaneConfig<JDialog>}, the latter
+ * is described in {@link net.guts.gui.window.WindowController}.
  */
 package net.guts.gui.dialog;

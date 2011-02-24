@@ -12,21 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-/*
- * Created on Aug 17, 2010
- * (c) 2010 Trumpet, Inc.
- *
- */
-package net.guts.gui.dialogalt;
+package net.guts.demo.addressbook.singleframe.dialog;
 
-/**
- * @author kevin
- */
-public interface ViewCloser
+import net.guts.demo.addressbook.singleframe.domain.Address;
+import net.guts.demo.addressbook.singleframe.domain.Contact;
+
+public class OfficeAddressStep extends AbstractAddressStep
 {
-    /**
-     * 
-     * @return true if the view closed, false otherwise
-     */
-    public boolean doClose();
+	static final private long serialVersionUID = -7544475684452085579L;
+
+	@Override protected Address getAddress(Contact contact)
+    {
+	    return contact.getOffice();
+    }
 }

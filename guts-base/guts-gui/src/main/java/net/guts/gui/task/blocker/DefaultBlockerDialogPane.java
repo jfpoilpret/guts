@@ -20,15 +20,14 @@ import java.awt.Insets;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
+import javax.swing.SwingUtilities;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.Closable;
-import net.guts.gui.dialog.ParentDialog;
-import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
@@ -42,12 +41,9 @@ import static net.guts.gui.util.LayoutHelper.topGap;
 import static net.guts.gui.util.LayoutHelper.unrelatedVerticalGap;
 
 import com.google.inject.Inject;
-import com.google.inject.Singleton;
 
 @SuppressWarnings("serial") 
-@Singleton
-class DefaultBlockerDialogPane extends JPanel 
-	implements Closable, ParentDialogAware, BlockerDialogPane
+class DefaultBlockerDialogPane extends JPanel implements BlockerDialogPane
 {
 	static final private String NAME = "BlockerDialog";
 	
@@ -124,30 +120,11 @@ class DefaultBlockerDialogPane extends JPanel
 		add(_cancelBtn, constraints);
 	}
 	
-	@Override public boolean canClose()
-	{
-		// It is not allowed to close the dialog through the close box
-		return false;
-	}
-
-	@Override public void init(ParentDialog parent)
-	{
-		_parent = parent;
-	}
-	
-	@Override public void close()
-	{
-		if (_parent != null)
-		{
-			_parent.close(true);
-			_parent = null;
-		}
-	}
-
 	// Used for resource injection
 	void setTitle(String title)
 	{
-		_parent.setDialogTitle(title);
+		JDialog dialog = (JDialog) SwingUtilities.getAncestorOfClass(JDialog.class, this);
+		dialog.setTitle(title);
 	}
 
 	final private GutsAction _cancel = new TaskAction(NAME + "-action-cancel")
@@ -172,6 +149,5 @@ class DefaultBlockerDialogPane extends JPanel
 	final private JLabel _note = new JLabel("");
 	final private JProgressBar _progress = new JProgressBar();
 	final private JButton _cancelBtn = new JButton(_cancel);
-	private ParentDialog _parent;
 	private TasksGroup _tasks;
 }

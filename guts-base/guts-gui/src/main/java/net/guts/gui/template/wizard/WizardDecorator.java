@@ -95,7 +95,11 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 			@Override public void stepChanged(
 				WizardController controller, String oldStep, String newStep)
 			{
-				_stepDescription.setText(_stepDescriptions.get(newStep));
+				// _stepDescriptions may be null (ie not injected due to lacking property)
+				if (_stepDescriptions != null)
+				{
+					_stepDescription.setText(_stepDescriptions.get(newStep));
+				}
 			}
 		});
 		

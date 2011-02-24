@@ -20,6 +20,8 @@ import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
+import net.guts.gui.template.okcancel.OkCancelModule;
+import net.guts.gui.template.wizard.WizardModule;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
@@ -43,6 +45,8 @@ public class AddressBookApp extends AbstractApplication
 		// Finally, add modules we use from guts-gui
 		modules.add(new MessageModule());
 		modules.add(new ComponentNamingModule());
+		modules.add(new OkCancelModule());
+		modules.add(new WizardModule());
 		// Finally, add our specific module
 		modules.add(new AddressBookModule());
 		// And the module to start the UI as a JFrame (not an JApplet)

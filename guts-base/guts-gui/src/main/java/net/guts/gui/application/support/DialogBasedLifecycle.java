@@ -19,8 +19,7 @@ import javax.swing.JComponent;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.exit.ExitController;
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.JDialogConfig;
 
 import com.google.inject.Inject;
 
@@ -70,8 +69,7 @@ abstract public class DialogBasedLifecycle implements AppLifecycleStarter
 	@Override final public void startup(String[] args)
 	{
 		Class<? extends JComponent> dialog = getDialogClass();
-		_dialogFactory.showDialog(
-			dialog, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
+		_dialogFactory.showDialog(dialog, JDialogConfig.create().config());
 		// Shutdown when dialog has closed
 		_exitController.shutdown();
 	}

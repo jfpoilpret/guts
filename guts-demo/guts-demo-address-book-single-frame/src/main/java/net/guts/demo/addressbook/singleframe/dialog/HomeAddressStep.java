@@ -12,24 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.layout;
+package net.guts.demo.addressbook.singleframe.dialog;
 
-import java.awt.BorderLayout;
+import net.guts.demo.addressbook.singleframe.domain.Address;
+import net.guts.demo.addressbook.singleframe.domain.Contact;
 
-import javax.swing.JComponent;
-import javax.swing.JPanel;
-
-
-/**
- * Implementation of {@link net.guts.gui.dialog.layout.ButtonsPanelAdder} 
- * specialized for {@link BorderLayout}.
- * 
- * @author Jean-Francois Poilpret
- */
-final class BorderButtonsPanelAdder extends AbstractButtonsPanelAdder
+public class HomeAddressStep extends AbstractAddressStep
 {
-	@Override protected void addButtonsPanel(JComponent container, JPanel commands)
-	{
-		container.add(commands, BorderLayout.SOUTH);
-	}
+	static final private long serialVersionUID = -5631169946204437002L;
+
+	@Override protected Address getAddress(Contact contact)
+    {
+	    return contact.getHome();
+    }
 }

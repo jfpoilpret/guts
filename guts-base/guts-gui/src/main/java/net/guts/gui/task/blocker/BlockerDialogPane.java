@@ -41,5 +41,4 @@ public interface BlockerDialogPane
 {
 	public JComponent getPane();
 	public void setTasksGroup(TasksGroup tasks);
-	public void close();
 }

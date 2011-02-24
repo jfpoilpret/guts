@@ -27,7 +27,6 @@ import org.slf4j.LoggerFactory;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.type.TypeHelper;
 import net.guts.gui.action.ActionModule;
-import net.guts.gui.dialog.support.AbstractPanel;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitModule;
 import net.guts.gui.resource.ResourceModule;
@@ -142,8 +141,9 @@ final class AppLauncher
 			Resources.bindPackageBundles(
 				binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
 			// Provide default resource values for common stuff: AbstractPanel...
-			Resources.bindPackageBundles(
-				binder(), AbstractPanel.class, GutsGuiResource.PATH);
+			//TODO remove later...
+//			Resources.bindPackageBundles(
+//				binder(), AbstractPanel.class, GutsGuiResource.PATH);
 		}
 	}
 
