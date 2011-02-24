@@ -17,11 +17,15 @@ package net.guts.gui.task.blocker;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
+import javax.swing.JDialog;
+import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.task.TasksGroup;
-import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.CloseChecker;
+import net.guts.gui.window.CloseCheckerConfig;
+import net.guts.gui.window.JDialogConfig;
 import net.guts.gui.window.StatePolicy;
 
 import com.google.inject.Inject;
@@ -102,7 +106,9 @@ public class ModalDialogInputBlocker implements InputBlocker
 		{
 			@Override public void actionPerformed(ActionEvent arg0)
 			{
-				_pane.close();
+				JDialog dialog = (JDialog) SwingUtilities.getAncestorOfClass(
+					JDialog.class, _pane.getPane());
+				dialog.dispose();
 			}
 		});
 		_closeDelay.setRepeats(false);
@@ -118,8 +124,16 @@ public class ModalDialogInputBlocker implements InputBlocker
 	private void showDialog()
 	{
 		_openDialog = true;
-		_dialogFactory.showDialog(
-			_pane.getPane(), BoundsPolicy.PACK_AND_CENTER, StatePolicy.DONT_RESTORE);
+		JDialogConfig config = JDialogConfig.create().state(StatePolicy.DONT_RESTORE);
+		config.merge(CloseCheckerConfig.create(new CloseChecker()
+		{
+			@Override public boolean canClose()
+			{
+				// It is not allowed to close the dialog through the close box
+				return false;
+			}
+		}));
+		_dialogFactory.showDialog(_pane.getPane(), config.config());
 	}
 
 	@Override public void block(TasksGroup tasks)

@@ -43,28 +43,28 @@ public class AddressBookServiceImpl implements AddressBookService
 		_contacts.add(create("Mary", "Doe", "04.05.1964", "New York"));
 	}
 
-	public void createContact(Contact contact)
+	@Override public void createContact(Contact contact)
 	{
 		contact.setId(++_next);
 		_contacts.add(contact);
 	}
 
-	public List<Contact> getAllContacts()
+	@Override public List<Contact> getAllContacts()
 	{
 		return _contacts;
 	}
 
-	public void modifyContact(Contact contact)
+	@Override public void modifyContact(Contact contact)
 	{
 		_contacts.set(findById(contact.getId()), contact);
 	}
 
-	public void removeContact(Contact contact)
+	@Override public void removeContact(Contact contact)
 	{
 		_contacts.remove(findById(contact.getId()));
 	}
 
-	public Icon getContactPicture(int id)
+	@Override public Icon getContactPicture(int id)
     {
 		String path = "/contacts/" + id + ".jpg";
 		URL url = getClass().getResource(path);
@@ -76,7 +76,7 @@ public class AddressBookServiceImpl implements AddressBookService
 		return icon;
     }
 
-	public List<Contact> searchContacts(Contact criteria)
+	@Override public List<Contact> searchContacts(Contact criteria)
 	{
 		List<Contact> results = new ArrayList<Contact>();
 		for (Contact contact: _contacts)

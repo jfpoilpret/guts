@@ -16,7 +16,6 @@ package net.guts.gui.window;
 
 import javax.swing.RootPaneContainer;
 
-
 public final class CloseCheckerConfig
 extends AbstractConfig<RootPaneContainer, CloseCheckerConfig>
 {

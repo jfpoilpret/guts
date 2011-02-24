@@ -19,15 +19,14 @@ import java.awt.Dimension;
 
 import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.SwingUtilities;
 
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.Closable;
-import net.guts.gui.dialog.ParentDialog;
-import net.guts.gui.dialog.ParentDialogAware;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo.State;
@@ -40,8 +39,7 @@ import com.google.inject.Inject;
 import com.google.inject.Singleton;
 
 @Singleton
-public class TasksGroupProgressPanel extends JPanel 
-	implements Closable, BlockerDialogPane, ParentDialogAware
+public class TasksGroupProgressPanel extends JPanel implements BlockerDialogPane
 {
 	static final private long serialVersionUID = 1L;
 
@@ -67,31 +65,16 @@ public class TasksGroupProgressPanel extends JPanel
 		_model.setTasksGroup(group);
 	}
 	
-	@Override public boolean canClose()
-	{
-		// It is not allowed to close the dialog through the close box
-		return false;
-	}
-	
-	@Override public void close()
-	{
-		_parent.close(false);
-	}
-
 	@Override public JComponent getPane()
 	{
 		return this;
 	}
 
-	@Override public void init(ParentDialog parent)
-	{
-		_parent = parent;
-	}
-
 	// Used for resource injection
 	void setTitle(String title)
 	{
-		_parent.setDialogTitle(title);
+		JDialog dialog = (JDialog) SwingUtilities.getAncestorOfClass(JDialog.class, this);
+		dialog.setTitle(title);
 	}
 	
 	// Used for resource injection
@@ -122,5 +105,4 @@ public class TasksGroupProgressPanel extends JPanel
 	final private JTable _tasks;
 	final private JButton _cancelBtn = new JButton(_cancel);
 	private TasksGroup _group;
-	private ParentDialog _parent;
 }

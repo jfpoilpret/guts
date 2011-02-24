@@ -21,9 +21,7 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 
 import net.guts.gui.window.ActiveWindow;
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.JDialogConfig;
-import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.RootPaneConfig;
 import net.guts.gui.window.WindowController;
 
 import com.google.inject.Inject;
@@ -33,7 +31,7 @@ import com.google.inject.Singleton;
 @Singleton
 class DialogFactoryImpl implements DialogFactory
 {
-	@Inject DialogFactoryImpl(Injector injector, WindowController windowController, 
+	@Inject DialogFactoryImpl(Injector injector, WindowController windowController,
 		ActiveWindow activeWindow)
 	{
 		_injector = injector;
@@ -41,76 +39,46 @@ class DialogFactoryImpl implements DialogFactory
 		_activeWindow = activeWindow;
 	}
 	
-	/*
-	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(javax.swing.JComponent, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
-	 */
-	@Override public boolean showDialog(
-		JComponent panel, BoundsPolicy bounds, StatePolicy state)
+	@Override public void showDialog(JComponent view, RootPaneConfig<JDialog> config)
 	{
-		resetPanel(panel);
-		return show(panel, bounds, state);
+		// Create dialog
+		JDialog dialog = createDialog();
+		dialog.setName(view.getName() + "-dialog");
+		dialog.setContentPane(view);
+		// Show the dialog
+		_windowController.show(dialog, config);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.application.WindowController.BoundsPolicy, boolean)
-	 */
-	@Override public <T extends JComponent> boolean showDialog(
-		Class<T> clazz, BoundsPolicy bounds, StatePolicy state)
+	@Override public void showDialog(
+		Class<? extends JComponent> viewClass, RootPaneConfig<JDialog> config)
 	{
-		return showDialog(clazz, bounds, state, null);
-	}
-	
-	/*
-	 * (non-Javadoc)
-	 * @see net.guts.gui.dialog.DialogFactory#showDialog(java.lang.Class, net.guts.gui.dialog.ComponentInitializer, net.guts.gui.application.WindowController.BoundsPolicy)
-	 */
-	@Override public <T extends JComponent> boolean showDialog(Class<T> clazz, 
-		BoundsPolicy bounds, StatePolicy state, PanelInitializer<T> initializer)
-	{
-		T panel = _injector.getInstance(clazz);
-		resetPanel(panel);
-		if (initializer != null)
-		{
-			initializer.init(panel);
-		}
-		return show(panel, bounds, state);
+		JComponent view = _injector.getInstance(viewClass);
+		showDialog(view, config);
 	}
 
-	static private void resetPanel(JComponent panel)
-	{
-		if (panel instanceof Resettable)
-		{
-			((Resettable) panel).reset();
-		}
-	}
-	
-	private boolean show(JComponent panel, BoundsPolicy bounds, StatePolicy state)
+	private JDialog createDialog()
 	{
 		// Find right parent first
 		Window active = _activeWindow.get();
-		GDialog dialog;
+		JDialog dialog;
 		if (active instanceof JDialog)
 		{
-			dialog = new GDialog((JDialog) active, panel);
+			dialog = new JDialog((JDialog) active);
 		}
 		else if (active instanceof JFrame)
 		{
-			dialog = new GDialog((JFrame) active, panel);
+			dialog = new JDialog((JFrame) active);
 		}
 		else
 		{
 			// No currently active parent
-			dialog = new GDialog((JFrame) null, panel);
+			dialog = new JDialog((JFrame) null);
 		}
-		dialog.init();
-		_windowController.show(
-			dialog, JDialogConfig.create().bounds(bounds).state(state).config());
-		return !dialog.wasCancelled();
+		dialog.setModal(true);
+		return dialog;
 	}
 
 	final private Injector _injector;
-	final private WindowController _windowController;
 	final private ActiveWindow _activeWindow;
+	final private WindowController _windowController;
 }

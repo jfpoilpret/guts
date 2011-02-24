@@ -22,63 +22,37 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import net.guts.demo.addressbook.singleframe.domain.Contact;
+import net.guts.gui.naming.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
-public class ContactDetailPanel extends JPanel
+public class ContactStep extends JPanel implements ComponentHolder
 {
-	static final private long serialVersionUID = -2653616540903403972L;
+	static final private long serialVersionUID = 4307142630118960207L;
 
-	public ContactDetailPanel()
+	public ContactStep()
 	{
 		// Layout panel
 		DesignGridLayout layout = new DesignGridLayout(this);
 		layout.row().grid(_lblFirstName).add(_txfFirstName);
 		layout.row().grid(_lblLastName).add(_txfLastName);
 		layout.row().grid(_lblBirth).add(_txfBirth);
-		_home.layout(layout);
-		_office.layout(layout);
 	}
-	
+
 	public void modelToView(Contact contact)
 	{
 		_contact = contact;
-		if (_contact != null)
-		{
-			_txfFirstName.setText(contact.getFirstName());
-			_txfLastName.setText(contact.getLastName());
-			_txfBirth.setValue(contact.getBirth());
-			_home.setAddress(_contact.getHome());
-			_office.setAddress(_contact.getOffice());
-		}
-		else
-		{
-			_txfFirstName.setText("");
-			_txfLastName.setText("");
-			_txfBirth.setValue(null);
-			_home.reset();
-			_office.reset();
-		}
-	}
+		_txfFirstName.setText(_contact.getFirstName());
+		_txfLastName.setText(_contact.getLastName());
+		_txfBirth.setValue(_contact.getBirth());
+    }
 	
-	public Contact viewToModel()
+	public void accept()
 	{
-		if (_contact == null)
-		{
-			_contact = new Contact();
-		}
-		else
-		{
-			_contact = _contact.copy();
-		}
 		// Binding from Swing to Domain
 		_contact.setFirstName(_txfFirstName.getText());
 		_contact.setLastName(_txfLastName.getText());
 		_contact.setBirth((Date) _txfBirth.getValue());
-
-		_home.updateAddress(_contact.getHome());
-		_office.updateAddress(_contact.getOffice());
-		return _contact;
-	}
+    }
 
 	final private JLabel _lblFirstName = new JLabel();
 	final private JTextField _txfFirstName = new JTextField(20);
@@ -86,7 +60,5 @@ public class ContactDetailPanel extends JPanel
 	final private JTextField _txfLastName = new JTextField(20);
 	final private JLabel _lblBirth = new JLabel();
 	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private AddressPanel _home = new AddressPanel();
-	final private AddressPanel _office = new AddressPanel();
 	private Contact _contact;
 }

@@ -19,85 +19,60 @@ import java.util.Date;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
 
-import net.guts.demo.addressbook.singleframe.business.AddressBookService;
 import net.guts.demo.addressbook.singleframe.domain.Address;
 import net.guts.demo.addressbook.singleframe.domain.Contact;
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.dialog.support.AbstractTabbedPanel;
-import net.guts.gui.dialog.support.TabPanelAcceptor;
 import net.guts.gui.naming.ComponentHolder;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-@Singleton
-public class ContactDetailTabPanel extends AbstractTabbedPanel
+public class ContactDetailTabPanel extends JPanel
 {
 	static final private long serialVersionUID = -2466527938965223045L;
 
 	public ContactDetailTabPanel()
     {
-	    _tabbedPane.add(_contactTab);
-	    _tabbedPane.add(_home);
-	    _tabbedPane.add(_office);
+	    _tabs.add(_contactTab);
+	    _tabs.add(_home);
+	    _tabs.add(_office);
+
+	    DesignGridLayout layout = new DesignGridLayout(this);
+		layout.row().grid().add(_tabs);
     }
 
-	@Override protected GutsAction getTabsAcceptAction()
-	{
-		return _accept;
-	}
-
-	public void setContact(Contact contact)
+	public void modelToView(Contact contact)
 	{
 		if (contact == null)
 		{
 			_contact = new Contact();
-		    _create = true;
 		}
 		else
 		{
 			_contact = contact.copy();
-		    _create = false;
 		}
 		_contactTab.setContact(_contact);
 		_home.setAddress(_contact.getHome());
 		_office.setAddress(_contact.getOffice());
 	}
-
-	@Override public void reset()
-    {
-		setContact(null);
-    }
-
-	private final GutsAction _accept = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-		    // Save everything
-			if (_create)
-			{
-				_service.createContact(_contact);
-			}
-			else
-			{
-				_service.modifyContact(_contact);
-			}
-			getParentDialog().close(false);
-		}
-	};
 	
+	public Contact viewToModel()
+	{
+		// Force accept on every tab
+		_contactTab.accept();
+		_home.accept();
+		_office.accept();
+		return _contact;
+	}
+
+	private final JTabbedPane _tabs = new JTabbedPane();
 	private final ContactTab _contactTab = new ContactTab();
 	private final AddressTab _home = new AddressTab();
 	private final AddressTab _office = new AddressTab();
 	private Contact _contact;
-	private boolean _create;
-	@Inject private AddressBookService _service;
 }
 
-class ContactTab extends JPanel implements TabPanelAcceptor, ComponentHolder
+class ContactTab extends JPanel implements ComponentHolder
 {
 	static final private long serialVersionUID = 1402493075589899746L;
 
@@ -135,7 +110,7 @@ class ContactTab extends JPanel implements TabPanelAcceptor, ComponentHolder
 	private Contact _contact;
 }
 
-class AddressTab extends JPanel implements TabPanelAcceptor, ComponentHolder
+class AddressTab extends JPanel implements ComponentHolder
 {
 	static final private long serialVersionUID = -8039187194458016644L;
 

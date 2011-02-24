@@ -173,7 +173,8 @@ final public class TemplateHelper
 			((JComponent) view).putClientProperty(MODIFIED_VIEW_MARKER, type);
 		}
 	}
-	
+
+	//TODO should be promoted to a more generic utility (used by ModalDialogInputBlocker)
 	static public void close(RootPaneContainer container)
 	{
 		if (container instanceof Window)
