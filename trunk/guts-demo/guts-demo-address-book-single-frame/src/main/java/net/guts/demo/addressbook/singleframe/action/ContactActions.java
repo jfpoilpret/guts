@@ -16,19 +16,14 @@ package net.guts.demo.addressbook.singleframe.action;
 
 import java.awt.Component;
 
-import javax.swing.JComponent;
-
 import net.guts.demo.addressbook.singleframe.business.AddressBookService;
-import net.guts.demo.addressbook.singleframe.dialog.ContactDetailPanel;
-import net.guts.demo.addressbook.singleframe.dialog.ContactDetailTabPanel;
-import net.guts.demo.addressbook.singleframe.dialog.ContactStep;
-import net.guts.demo.addressbook.singleframe.dialog.HomeAddressStep;
-import net.guts.demo.addressbook.singleframe.dialog.OfficeAddressStep;
+import net.guts.demo.addressbook.singleframe.dialog.ContactDetailPanelController;
+import net.guts.demo.addressbook.singleframe.dialog.ContactDetailTabController;
+import net.guts.demo.addressbook.singleframe.dialog.ContactDetailWizardController;
 import net.guts.demo.addressbook.singleframe.domain.Contact;
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.AbstractTask;
@@ -37,12 +32,8 @@ import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
-import net.guts.gui.template.okcancel.OkCancel;
-import net.guts.gui.template.wizard.Wizard;
-import net.guts.gui.window.JDialogConfig;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -102,33 +93,11 @@ public class ContactActions
 		return _deleteContact;
 	}
 
-	private void showContactWithOneDialog(Contact contact)
-	{
-		final boolean isNew = (contact == null);
-		final ContactDetailPanel panel = _contactDetail.get();
-		panel.modelToView(contact);
-		OkCancel template = OkCancel.create().withCancel().withOK(new GutsAction()
-		{
-			@Override protected void perform()
-			{
-				if (isNew)
-				{
-					_service.createContact(panel.viewToModel());
-				}
-				else
-				{
-					_service.modifyContact(panel.viewToModel());
-				}
-			}
-		});
-		_dialogFactory.showDialog(panel, JDialogConfig.create().merge(template).config());
-	}
-	
 	final private GutsAction _createContact = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-			showContactWithOneDialog(null);
+			_detailController.showContactDialog(null);
 		}
 	};
 
@@ -136,7 +105,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showContactWithOneDialog(_selected);
+			_detailController.showContactDialog(_selected);
 		}
 	};
 
@@ -168,33 +137,11 @@ public class ContactActions
 		}
 	};
 
-	private void showContactWithTabs(Contact contact)
-	{
-		final boolean isNew = (contact == null);
-		final ContactDetailTabPanel panel = _tabContactDetail.get();
-		panel.modelToView(contact);
-		OkCancel template = OkCancel.create().withCancel().withOK(new GutsAction()
-		{
-			@Override protected void perform()
-			{
-				if (isNew)
-				{
-					_service.createContact(panel.viewToModel());
-				}
-				else
-				{
-					_service.modifyContact(panel.viewToModel());
-				}
-			}
-		});
-		_dialogFactory.showDialog(panel, JDialogConfig.create().merge(template).config());
-	}
-	
 	final private GutsAction _createContactWithTabs = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-			showContactWithTabs(null);
+			_tabController.showContactTabs(null);
 		}
 	};
 
@@ -202,48 +149,15 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showContactWithTabs(_selected);
+			_tabController.showContactTabs(_selected);
 		}
 	};
 	
-	private void showContactWithWizard(final Contact contact, final boolean isNew)
-	{
-		// Instantiate each step panel, setup their models
-		_contactStep.modelToView(contact);
-		_homeAddressStep.modelToView(contact);
-		_officeAddressStep.modelToView(contact);
-		// Prepare wizard config
-		Wizard wizard = Wizard.create()
-			.mapNextStep(_contactStep)
-			.mapNextStep(_homeAddressStep)
-			.mapNextStep(_officeAddressStep)
-			.withFinish(new GutsAction()
-			{
-				@Override protected void perform()
-				{
-					_contactStep.accept();
-					_homeAddressStep.accept();
-					_officeAddressStep.accept();
-					if (isNew)
-					{
-						_service.createContact(contact);
-					}
-					else
-					{
-						_service.modifyContact(contact);
-					}
-				}
-			});
-		JComponent mainView = wizard.mainView();
-		mainView.setName("ContactDetailWizardPanel");
-		_dialogFactory.showDialog(mainView, JDialogConfig.create().merge(wizard).config());
-	}
-
 	final private GutsAction _createContactWithWizard = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-			showContactWithWizard(new Contact(), true);
+			_wizardController.showContactWizard(new Contact(), true);
 		}
 	};
 
@@ -251,21 +165,18 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showContactWithWizard(_selected, false);
+			_wizardController.showContactWizard(_selected, false);
 		}
 	};
 
 	// Services
-	@Inject private DialogFactory _dialogFactory;
 	@Inject private MessageFactory _messageFactory;
 	@Inject private AddressBookService _service;
 	
 	// Panel providers
-	@Inject Provider<ContactDetailPanel> _contactDetail;
-	@Inject Provider<ContactDetailTabPanel> _tabContactDetail;
-	@Inject ContactStep _contactStep;
-	@Inject HomeAddressStep _homeAddressStep;
-	@Inject OfficeAddressStep _officeAddressStep;
+	@Inject ContactDetailWizardController _wizardController;
+	@Inject ContactDetailTabController _tabController;
+	@Inject ContactDetailPanelController _detailController;
 	
 	private Contact _selected = null;
 }
