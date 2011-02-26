@@ -23,7 +23,6 @@ import net.guts.gui.template.okcancel.OkCancel;
 import net.guts.gui.window.JDialogConfig;
 
 import com.google.inject.Inject;
-import com.google.inject.Provider;
 import com.google.inject.Singleton;
 
 @Singleton
@@ -32,30 +31,26 @@ public class ContactDetailPanelController
 	public void showContactDialog(Contact contact)
 	{
 		final boolean isNew = (contact == null);
-		final ContactDetailPanel panel = _contactDetail.get();
-		panel.modelToView(contact);
+		_contactDetail.modelToView(contact);
 		OkCancel template = OkCancel.create().withCancel().withOK(new GutsAction()
 		{
 			@Override protected void perform()
 			{
 				if (isNew)
 				{
-					_service.createContact(panel.viewToModel());
+					_service.createContact(_contactDetail.viewToModel());
 				}
 				else
 				{
-					_service.modifyContact(panel.viewToModel());
+					_service.modifyContact(_contactDetail.viewToModel());
 				}
 			}
 		});
-		_dialogFactory.showDialog(panel, JDialogConfig.create().merge(template).config());
+		_dialogFactory.showDialog(
+			_contactDetail, JDialogConfig.create().merge(template).config());
 	}
 	
-	// Services
 	@Inject private DialogFactory _dialogFactory;
 	@Inject private AddressBookService _service;
-	
-	//TODO is a provider really needed here? can't we use just a singleton?
-	// Panel providers
-	@Inject Provider<ContactDetailPanel> _contactDetail;
+	@Inject ContactDetailPanel _contactDetail;
 }
