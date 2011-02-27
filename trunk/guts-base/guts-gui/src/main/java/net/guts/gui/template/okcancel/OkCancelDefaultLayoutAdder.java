@@ -14,15 +14,23 @@
 
 package net.guts.gui.template.okcancel;
 
+import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.Insets;
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.swing.Box;
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JPanel;
+import javax.swing.border.EmptyBorder;
+
+import static net.guts.gui.util.LayoutHelper.bottomGap;
+import static net.guts.gui.util.LayoutHelper.leftGap;
+import static net.guts.gui.util.LayoutHelper.relatedHorizontalGap;
+import static net.guts.gui.util.LayoutHelper.rightGap;
+import static net.guts.gui.util.LayoutHelper.topGap;
 
 class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 {
@@ -31,24 +39,15 @@ class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 	{
 		// Create a new view that will embed the given view and all added buttons
 		JPanel fullView = new JPanel();
-		fullView.setLayout(new GridBagLayout());
+		fullView.setLayout(new BorderLayout());
 
-		// Get only the non null buttons
-		List<JButton> buttons = extractRealButtons(ok, cancel, apply);
+		// Add view to the center of the panel
+		fullView.add(view, BorderLayout.CENTER);
 		
-		GridBagConstraints constraints = new GridBagConstraints();
-		constraints.gridx = 0;
-		constraints.gridy = 0;
-		constraints.gridwidth = buttons.size() + 1;
-		constraints.gridheight = 1;
-		constraints.anchor = GridBagConstraints.NORTHWEST;
-		constraints.fill = GridBagConstraints.BOTH;
-		constraints.weightx = 1.0;
-		constraints.weighty = 1.0;
-		fullView.add(view, constraints);
+		// Create a panel with all buttons and add it at the bottom
+		JPanel buttons = createButtonsPanel(extractRealButtons(ok, cancel, apply), fullView);
+		fullView.add(buttons, BorderLayout.SOUTH);
 
-		layoutButtons(fullView, buttons);
-		
 		return fullView;
 	}
 
@@ -65,32 +64,66 @@ class OkCancelDefaultLayoutAdder implements OkCancelLayoutAdder
 		return realButtons;
 	}
 	
-	static private void layoutButtons(JPanel pane, List<JButton> buttons)
+	static private void setupButtonsSize(List<JButton> buttons)
 	{
-		GridBagConstraints constraints = new GridBagConstraints();
-		// Common for all 4 cells of the common bar
-		constraints.gridy = 1;
-		constraints.gridwidth = 1;
-		constraints.gridheight = 1;
-		constraints.weighty = 0.0;
-		constraints.anchor = GridBagConstraints.CENTER;
-		constraints.insets = new Insets(INSET, INSET, INSET, INSET);
-
-		// Add the empty cell on the left (buttons will be right-aligned)
-		constraints.gridx = 0;
-		constraints.fill = GridBagConstraints.HORIZONTAL;
-		constraints.weightx = 1.0;
-		pane.add(new JPanel(), constraints);
-		
-		// Add each button then
-		constraints.fill = GridBagConstraints.NONE;
-		constraints.weightx = 0.0;
+		int width = 0;
+		int height = 0;
 		for (JButton button: buttons)
 		{
-			constraints.gridx++;
-			pane.add(button, constraints);
+			width = Math.max(width, button.getPreferredSize().width);
+			height = Math.max(height, button.getPreferredSize().height);
+		}
+		Dimension size = new Dimension(width, height);
+		for (JButton button: buttons)
+		{
+			button.setMinimumSize(size);
+			button.setPreferredSize(size);
+			button.setMaximumSize(size);
 		}
 	}
 	
-	static final private int INSET = 10;
+	static private JPanel createButtonsPanel(List<JButton> buttons, JPanel container)
+	{
+		// Make all sizes consistent
+		setupButtonsSize(buttons);
+
+		// Create panel that will hold all buttons
+		JPanel buttonsPanel = new JPanel();
+		buttonsPanel.setLayout(new BoxLayout(buttonsPanel, BoxLayout.X_AXIS));
+		buttonsPanel.add(Box.createHorizontalGlue());
+		int maxVgap = 0;
+
+		// Build the buttons box and calculate all needed sizes
+		for (int i = 0; i < buttons.size(); i++)
+		{
+			JButton left = buttons.get(i);
+			int vgap = topGap(buttonsPanel, left);
+			maxVgap = Math.max(maxVgap, vgap);
+			if (i == 0)
+			{
+				// Add left gutter
+				int hgap = leftGap(buttonsPanel, left);
+				buttonsPanel.add(Box.createHorizontalStrut(hgap));
+			}
+			buttonsPanel.add(left);
+			if (i != buttons.size() - 1)
+			{
+				// Add inter-buttons gutter
+				JButton right = buttons.get(i + 1);
+				int gap = relatedHorizontalGap(buttonsPanel, left, right);
+				buttonsPanel.add(Box.createHorizontalStrut(gap));
+			}
+			else
+			{
+				// Add right gutter
+				int hgap = rightGap(buttonsPanel, left);
+				buttonsPanel.add(Box.createHorizontalStrut(hgap));
+			}
+		}
+		
+		// Add border around box
+		int vgap = bottomGap(container, buttonsPanel);
+		buttonsPanel.setBorder(new EmptyBorder(vgap, 0, maxVgap, 0));
+		return buttonsPanel;
+	}
 }
