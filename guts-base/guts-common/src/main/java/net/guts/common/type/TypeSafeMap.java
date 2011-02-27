@@ -25,7 +25,6 @@ import com.google.inject.TypeLiteral;
  *
  * @author Jean-Francois Poilpret
  */
-//TODO Put into guts-common instead
 public class TypeSafeMap
 {
 	public void putAll(TypeSafeMap map, boolean replaceWhenKeyExists)
