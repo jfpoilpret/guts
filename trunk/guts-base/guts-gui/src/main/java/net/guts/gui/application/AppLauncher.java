@@ -140,10 +140,6 @@ final class AppLauncher
 			// Provide default resource values for common stuff: GutsApplicationActions
 			Resources.bindPackageBundles(
 				binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
-			// Provide default resource values for common stuff: AbstractPanel...
-			//TODO remove later...
-//			Resources.bindPackageBundles(
-//				binder(), AbstractPanel.class, GutsGuiResource.PATH);
 		}
 	}
 

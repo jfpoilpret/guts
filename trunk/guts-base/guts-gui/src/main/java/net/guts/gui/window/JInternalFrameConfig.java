@@ -32,8 +32,6 @@ import javax.swing.JInternalFrame;
 final public class JInternalFrameConfig 
 extends AbstractConfig<JInternalFrame, JInternalFrameConfig>
 {
-	//TODO add properties:
-	// for minimize, maximize...
 	private JInternalFrameConfig()
 	{
 		set(BoundsPolicy.class, BoundsPolicy.PACK_AND_CENTER);
