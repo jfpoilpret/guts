@@ -18,8 +18,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 
 import net.guts.demo.addressbook.singleframe.domain.Address;
-import net.guts.gui.dialog.layout.GroupHeader;
 import net.guts.gui.naming.ComponentHolder;
+import net.guts.gui.util.GroupHeader;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 public class AddressPanel implements ComponentHolder

@@ -19,7 +19,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.guts.gui.dialog.layout.GroupHeader;
+import net.guts.gui.util.GroupHeader;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 public class DemoView1 extends JPanel

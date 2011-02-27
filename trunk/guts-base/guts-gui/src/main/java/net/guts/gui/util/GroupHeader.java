@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.dialog.layout;
+package net.guts.gui.util;
 
 import javax.swing.JLabel;
 import javax.swing.JSeparator;
