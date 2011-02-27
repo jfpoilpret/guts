@@ -3,7 +3,7 @@ Guts-GUI is a GUI framework based on Google Guice dependency injection library a
 inspired by the Swing Application Framework (JSR-296).
 
 <h3>Guts GUI framework API roadmap</h3>
-{@link net.guts.gui.application} package contains the core classes to start a new application. 
+{@code net.guts.gui.application} package contains the core classes to start a new application. 
 There are two possible main classes to derive from in order to build either an application or 
 an applet. 
 <p/>
@@ -23,6 +23,7 @@ Here is the API description for what the Guts-GUI framework provides:
 	and <a href="net/guts/gui/exit/package-summary.html">shutdown management</a></li>
 	<li><a href="net/guts/gui/application/support/package-summary.html">Lifecycle support</a> 
 	for useful abstract {@linkplain net.guts.gui.application.AppLifecycleStarter}s.</li>
+	<li><a href="net/guts/gui/window/package-summary.html">Window management</a></li>
 	<li><a href="net/guts/gui/action/package-summary.html">Action Management</a> including 
 	resource injection, and standard actions support such as cut, copy, paste</li>
 	<li><a href="net/guts/gui/menu/package-summary.html">Menu factory</a> support in relation 
@@ -34,11 +35,11 @@ Here is the API description for what the Guts-GUI framework provides:
 	<li>Automatic <a href="net/guts/gui/session/package-summary.html">Session Storage</a> 
 	allowing for restoring, across launches, the application real estate as set by the user 
 	(e.g. window position and size, table column headers width...)</li>
-	<li>Support for <a href="net/guts/gui/dialog/package-summary.html">dialogs creation</a>
-	to deal with common behavior (OK and Cancel buttons) and special dialogs such as
-	wizards or tabbed dialogs</li>
+	<li>Support for <a href="net/guts/gui/dialog/package-summary.html">dialogs creation</a></li>
 	<li>Support for internationalized 
 	<a href="net/guts/gui/message/package-summary.html">Message Boxes</a></li>
+	<li><a href="net/guts/gui/template/package-summary.html">Special "template" system</a>
+	that allows consistent decoration of window content</li>
 	<li>Since Resource Injection and Session Storage depend on all components' names
 	(as set by {@code Component.setName()}), support for 
 	<a href="net/guts/gui/naming/package-summary.html">automatically naming components</a>
