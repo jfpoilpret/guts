@@ -78,7 +78,6 @@ public class AbstractConfig<T extends RootPaneContainer, U extends AbstractConfi
 		return new RootPaneConfig<T>(_properties);
 	}
 	
-	//TODO check generics are OK, in particular the second ?
 	final public U merge(AbstractConfig<? super T, ?> config)
 	{
 		_properties.putAll(config._properties, false);

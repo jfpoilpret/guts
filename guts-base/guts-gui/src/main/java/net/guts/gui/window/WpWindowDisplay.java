@@ -28,7 +28,6 @@ extends AbstractWindowProcessor<Window, V>
 
 	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
 	{
-		//TODO special case for dialog?
 		root.setVisible(true);
 	}
 }

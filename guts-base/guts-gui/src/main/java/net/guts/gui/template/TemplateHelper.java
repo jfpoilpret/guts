@@ -174,7 +174,6 @@ final public class TemplateHelper
 		}
 	}
 
-	//TODO should be promoted to a more generic utility (used by ModalDialogInputBlocker)
 	static public void close(RootPaneContainer container)
 	{
 		if (container instanceof Window)
