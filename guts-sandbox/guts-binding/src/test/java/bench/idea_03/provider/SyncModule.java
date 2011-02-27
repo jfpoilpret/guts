@@ -21,7 +21,7 @@ public final class SyncModule extends AbstractModule {
 
 		bindListener(
 				net.guts.common.injection.Matchers
-						.hasMethodAnnotatedWith(Sync.class),
+						.hasPublicMethodAnnotatedWith(Sync.class),
 				typeListener);
 
 		//
