@@ -16,7 +16,7 @@ package net.guts.gui.window;
 
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.util.TypeSafeMap;
+import net.guts.common.type.TypeSafeMap;
 
 import com.google.inject.TypeLiteral;
 
