@@ -42,22 +42,28 @@ class AnnotationProcessor
 		}
 	}
 	
+	//FIXME private methods seem not working?
 	private List<ExceptionHandler> findHandlers(Class<?> clazz)
 	{
 		List<ExceptionHandler> handlers = new ArrayList<ExceptionHandler>();
-		for (Method method: clazz.getMethods())
+		Class<?> oneClass = clazz;
+		while (oneClass != null)
 		{
-			// Analyze each consumer method
-			HandlesException handles = method.getAnnotation(HandlesException.class);
-			if (handles != null)
+			for (Method method: oneClass.getDeclaredMethods())
 			{
-				// Check that method has the right prototype: boolean f(Throwable e)
-				ExceptionHandler handler = analyzeMethod(method, handles.priority());
-				if (handler != null)
+				// Analyze each consumer method
+				HandlesException handles = method.getAnnotation(HandlesException.class);
+				if (handles != null)
 				{
-					handlers.add(handler);
+					// Check that method has the right prototype: boolean f(Throwable e)
+					ExceptionHandler handler = analyzeMethod(method, handles.priority());
+					if (handler != null)
+					{
+						handlers.add(handler);
+					}
 				}
 			}
+			oneClass = oneClass.getSuperclass();
 		}
 		return handlers;
 	}

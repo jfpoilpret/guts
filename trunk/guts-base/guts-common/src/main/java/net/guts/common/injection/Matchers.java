@@ -80,6 +80,30 @@ public final class Matchers
 		{
 			@Override public boolean matches(TypeLiteral<?> type)
 			{
+				Class<?> clazz = type.getRawType();
+				while (clazz != null)
+				{
+					for (Method m: clazz.getDeclaredMethods())
+					{
+						if (m.isAnnotationPresent(annotation))
+						{
+							return true;
+						}
+					}
+					clazz = clazz.getSuperclass();
+				}
+				return false;
+			}
+		};
+	}
+	
+	static final public Matcher<TypeLiteral<?>> hasPublicMethodAnnotatedWith(
+		final Class<? extends Annotation> annotation)
+	{
+		return new AbstractMatcher<TypeLiteral<?>>()
+		{
+			@Override public boolean matches(TypeLiteral<?> type)
+			{
 				for (Method m: type.getRawType().getMethods())
 				{
 					if (m.isAnnotationPresent(annotation))

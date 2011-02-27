@@ -70,7 +70,7 @@ final public class EventModule extends AbstractModule
 			InjectionListeners.requestInjection(binder(), new ConsumerInjectionListener());
 		OneTypeListener<Object> typeListener = 
 			new OneTypeListener<Object>(Object.class, injectionListener);
-		bindListener(Matchers.hasMethodAnnotatedWith(Consumes.class), typeListener);
+		bindListener(Matchers.hasPublicMethodAnnotatedWith(Consumes.class), typeListener);
 		
 		// Perform assisted inject for AnnotationProcessor
 		bind(AnnotationProcessorFactory.class).toProvider(FactoryProvider.newFactory(
