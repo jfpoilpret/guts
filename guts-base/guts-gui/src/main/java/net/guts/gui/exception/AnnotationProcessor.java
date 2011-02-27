@@ -42,7 +42,6 @@ class AnnotationProcessor
 		}
 	}
 	
-	//FIXME private methods seem not working?
 	private List<ExceptionHandler> findHandlers(Class<?> clazz)
 	{
 		List<ExceptionHandler> handlers = new ArrayList<ExceptionHandler>();
