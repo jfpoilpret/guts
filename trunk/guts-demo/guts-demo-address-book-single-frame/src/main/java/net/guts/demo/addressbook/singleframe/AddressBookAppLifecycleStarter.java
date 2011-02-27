@@ -56,7 +56,7 @@ public class AddressBookAppLifecycleStarter extends SingleFrameLifecycle
 	// CSOFF: GenericIllegalRegexp
 	// Handle exceptions on the EDT
 	@HandlesException
-	public boolean handle(Throwable e)
+	boolean handle(Throwable e)
 	{
 		// Log the exception
 		_logger.info("Exception has occurred!", e);
