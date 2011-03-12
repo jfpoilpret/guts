@@ -3,57 +3,72 @@ package net.guts.properties;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
 
-public class PropertyImpl<BeanType, FieldType> {
+import com.google.inject.TypeLiteral;
 
-	static <BeanTypeStatic, FieldTypeStatic> PropertyImpl<BeanTypeStatic, FieldTypeStatic> //
-	create(PropertyDescriptor descriptor) {
-		return new PropertyImpl<BeanTypeStatic, FieldTypeStatic>(descriptor);
+//TODO factory (fluent API and typesafe) for PropertyImpl
+class PropertyImpl<B, T> implements Property<B, T>
+{
+	static <B, T> Property<B, T> create(PropertyDescriptor descriptor)
+	{
+		return new PropertyImpl<B, T>(descriptor);
 	}
 
-	protected PropertyImpl(PropertyDescriptor descriptor) {
+	PropertyImpl(PropertyDescriptor descriptor)
+	{
 		_descriptor = descriptor;
 	}
 
-	public Class<?> type() {
-		return _descriptor.getPropertyType();
+	@SuppressWarnings("unchecked") 
+	@Override public TypeLiteral<T> type()
+	{
+		return (TypeLiteral<T>) TypeLiteral.get(_descriptor.getPropertyType());
 	}
 
 	@SuppressWarnings("unchecked")
-	public FieldType get(BeanType bean) {
-		try {
-			return (FieldType) _descriptor.getReadMethod().invoke(bean);
-		} catch (Exception e) {
+	@Override public T get(B bean)
+	{
+		try
+		{
+			return (T) _descriptor.getReadMethod().invoke(bean);
+		}
+		catch (Exception e)
+		{
 			throw convert(e);
 		}
 	}
 
-	public void set(BeanType bean, FieldType value) {
-		try {
+	@Override public void set(B bean, T value)
+	{
+		try
+		{
 			_descriptor.getWriteMethod().invoke(bean, value);
-		} catch (Exception e) {
+		}
+		catch (Exception e)
+		{
 			throw convert(e);
 		}
 	}
 
-	public String name() {
+	@Override public String name()
+	{
 		return _descriptor.getName();
 	}
 
-	// TODO Methods for adding/removing PCL for this variable? Maybe not needed
-	// here?
-	// Binding outside or inside?
-
-	static private RuntimeException convert(Throwable e) {
-		if (e instanceof InvocationTargetException) {
+	static private RuntimeException convert(Throwable e)
+	{
+		if (e instanceof InvocationTargetException)
+		{
 			return convert(((InvocationTargetException) e).getTargetException());
-		} else if (e instanceof RuntimeException) {
+		}
+		else if (e instanceof RuntimeException)
+		{
 			return (RuntimeException) e;
-		} else {
-			e.printStackTrace();
+		}
+		else
+		{
 			return new RuntimeException(e);
 		}
 	}
 
 	private final PropertyDescriptor _descriptor;
-
 }
