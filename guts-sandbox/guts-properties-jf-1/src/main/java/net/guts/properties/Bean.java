@@ -10,28 +10,25 @@ import net.sf.cglib.proxy.Enhancer;
 //TODO add PCL at Property level
 //TODO static Utils class to make it easier to use!
 //TODO support write-only properties?
+//TODO support chain calls?
 
-public class Bean<FieldType> {
-
+public class Bean<B>
+{
 	// TODO cache synchronization?
 	@SuppressWarnings("unchecked")
-	public static <FieldTypeStatic> Bean<FieldTypeStatic> create(
-			Class<FieldTypeStatic> clazz) {
-
-		Bean<FieldTypeStatic> helper = (Bean<FieldTypeStatic>) _cache
-				.get(clazz);
-
-		if (helper == null) {
-			helper = new Bean<FieldTypeStatic>(clazz);
+	public static <B> Bean<B> create(Class<B> clazz)
+	{
+		Bean<B> helper = (Bean<B>) _cache.get(clazz);
+		if (helper == null)
+		{
+			helper = new Bean<B>(clazz);
 			_cache.put(clazz, helper);
 		}
-
 		return helper;
-
 	}
 
-	protected Bean(Class<FieldType> clazz) {
-
+	protected Bean(Class<B> clazz)
+	{
 		_clazz = clazz;
 		_properties = ReflectUtils.getBeanProperties(_clazz);
 		_mockInterceptor = new MockInterceptor(_properties);
@@ -42,15 +39,17 @@ public class Bean<FieldType> {
 		enhancer.setCallback(_mockInterceptor);
 
 		_mock = clazz.cast(enhancer.create());
-
 	}
 
-	public Class<FieldType> type() {
+	public Class<B> type()
+	{
 		return _clazz;
 	}
 
 	// Used in conjunction with property() method (as argument)
-	public FieldType mock() {
+	//TODO find a better name for it?
+	public B mock()
+	{
 		return _mock;
 	}
 
@@ -59,83 +58,78 @@ public class Bean<FieldType> {
 	// This pattern will always survive bean refactoring (compile-safe)!
 	// The returned reference can be used to get/set property value or get its
 	// name (in a safe way)
-	public <U> PropertyImpl<FieldType, U> property(U mockCall) {
-
+	public <U> Property<B, U> property(U mockCall)
+	{
 		PropertyDescriptor property = _mockInterceptor.lastUsedProperty();
-
 		checkType(mockCall, property);
-
 		return PropertyImpl.create(property);
-
 	}
 
 	// Create a new bean that delegates to this one but makes all its properties
 	// bound
 	// TODO use T & ChangeListenerAdapter as returned type?
-
-	public FieldType proxy(FieldType source) {
-
+	public B proxy(B source)
+	{
 		// Create a proxy with cglib
 		Enhancer enhancer = new Enhancer();
 
 		enhancer.setSuperclass(_clazz);
-
 		enhancer.setInterfaces(new Class[] { ChangeListenerAdapter.class,
 				ProxySource.class });
-
-		enhancer.setCallback(new ProxyInterceptor<FieldType>(source,
+		enhancer.setCallback(new ProxyInterceptor<B>(source,
 				_properties));
-
 		return _clazz.cast(enhancer.create());
-
 	}
 
 	@SuppressWarnings("unchecked")
-	public FieldType source(FieldType proxy) {
-		if (proxy instanceof ProxySource) {
+	public B source(B proxy)
+	{
+		if (proxy instanceof ProxySource)
+		{
 			Object source = ((ProxySource) proxy).source();
-			if (_clazz.isAssignableFrom(source.getClass())) {
-				return (FieldType) source;
+			if (_clazz.isAssignableFrom(source.getClass()))
+			{
+				return (B) source;
 			}
 		}
 		return proxy;
 	}
 
-	private void checkType(Object property, PropertyDescriptor descriptor) {
-
+	private void checkType(Object property, PropertyDescriptor descriptor)
+	{
 		String message = null;
-
 		// Check that a method has been called on _mock
-		if (descriptor == null) {
+		if (descriptor == null)
+		{
 			message = "No getter was called on mock()!";
 		}
-
 		// Check that last call returned the right type
-		else if (property != null) {
-
+		else if (property != null)
+		{
 			Class<?> expected = descriptor.getPropertyType();
-
 			Class<?> actual = property.getClass();
-			if (expected.isPrimitive()) {
+			if (expected.isPrimitive())
+			{
 				expected = WRAPPERS.get(expected);
 			}
-
-			if (expected != actual) {
+			if (expected != actual)
+			{
 				message = "Getter called on mock() doesn't match passed argument!";
 			}
-
-		} else if (descriptor.getPropertyType().isPrimitive()) {
+		}
+		else if (descriptor.getPropertyType().isPrimitive())
+		{
 			message = "Getter called on mock() doesn't match passed argument!";
 		}
 
 		// TODO pending cases: should make sure mock getters always return non
 		// null!
 
-		if (message != null) {
+		if (message != null)
+		{
 			// FIXME use better exception with better reasons
 			throw new RuntimeException(message);
 		}
-
 	}
 
 	// TODO Remove WRAPPERS with cglib util!
@@ -143,7 +137,8 @@ public class Bean<FieldType> {
 	// during comparison
 	private static final Map<Class<?>, Class<?>> WRAPPERS = new HashMap<Class<?>, Class<?>>();
 
-	static {
+	static
+	{
 		WRAPPERS.put(byte.class, Byte.class);
 		WRAPPERS.put(short.class, Short.class);
 		WRAPPERS.put(char.class, Character.class);
@@ -158,9 +153,8 @@ public class Bean<FieldType> {
 	// ObjectHelper<T> instance)
 	private static final Map<Class<?>, Bean<?>> _cache = new HashMap<Class<?>, Bean<?>>();
 
-	private final Class<FieldType> _clazz;
+	private final Class<B> _clazz;
 	private final PropertyDescriptor[] _properties;
 	private final MockInterceptor _mockInterceptor;
-	private final FieldType _mock;
-
+	private final B _mock;
 }
