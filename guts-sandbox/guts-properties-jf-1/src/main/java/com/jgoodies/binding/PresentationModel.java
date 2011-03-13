@@ -901,11 +901,12 @@ public class PresentationModel<B> extends Model {
      *
      * @since 1.1
      */
-    public ComponentValueModel getComponentModel(String propertyName) {
-        ComponentValueModel componentModel = componentModels.get(propertyName);
+    @SuppressWarnings("unchecked") 
+    public <T> ComponentValueModel<T> getComponentModel(String propertyName) {
+        ComponentValueModel<T> componentModel = (ComponentValueModel<T>) componentModels.get(propertyName);
         if (componentModel == null) {
-            AbstractValueModel<?> model = getModel(propertyName);
-            componentModel = new ComponentValueModel(model);
+            ValueModel<T> model = (ValueModel<T>) getModel(propertyName);
+            componentModel = new ComponentValueModel<T>(model);
             componentModels.put(propertyName, componentModel);
         }
         return componentModel;
@@ -1075,12 +1076,13 @@ public class PresentationModel<B> extends Model {
      *
      * @since 1.1
      */
-    public ComponentValueModel getBufferedComponentModel(String propertyName) {
-        ComponentValueModel bufferedComponentModel =
-            bufferedComponentModels.get(propertyName);
+    @SuppressWarnings("unchecked") 
+    public <T> ComponentValueModel<T> getBufferedComponentModel(String propertyName) {
+        ComponentValueModel<T> bufferedComponentModel =
+            (ComponentValueModel<T>) bufferedComponentModels.get(propertyName);
         if (bufferedComponentModel == null) {
-            AbstractValueModel<?> model = getBufferedModel(propertyName);
-            bufferedComponentModel = new ComponentValueModel(model);
+            ValueModel<T> model = (ValueModel<T>) getBufferedModel(propertyName);
+            bufferedComponentModel = new ComponentValueModel<T>(model);
             bufferedComponentModels.put(propertyName, bufferedComponentModel);
         }
         return bufferedComponentModel;
