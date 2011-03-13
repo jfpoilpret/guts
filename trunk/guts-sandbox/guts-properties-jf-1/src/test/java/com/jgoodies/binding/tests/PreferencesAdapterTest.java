@@ -185,13 +185,13 @@ public final class PreferencesAdapterTest extends TestCase {
         try {
             adapter.setValue(3);
             fail("Failed to reject writing a value type inconsistent with the default value type.");
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             // The expected behavior
         }
         try {
             adapter.setValue(new Integer(3));
             fail("Failed to reject writing a value type inconsistent with the default value type.");
-        } catch (ClassCastException e) {
+        } catch (IllegalArgumentException e) {
             // The expected behavior
         }
     }

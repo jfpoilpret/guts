@@ -151,12 +151,12 @@ public final class PreferencesAdapter<T> extends AbstractValueModel<T> {
      */
     @Override public void setValue(T newValue) {
         checkNotNull(newValue, "The value must not be null.");
-//        Class valueType = newValue.getClass();
-//        if (type != valueType)
-//            throw new IllegalArgumentException(
-//                    "The type of the value set must be consistent "
-//                  + "with the default value type " + type);
-//
+        Class<?> valueType = newValue.getClass();
+        if (type != valueType)
+            throw new IllegalArgumentException(
+                    "The type of the value set must be consistent "
+                  + "with the default value type " + type);
+
         T oldValue = getValue();
         if (newValue instanceof Boolean) {
             setBoolean(((Boolean) newValue).booleanValue());
