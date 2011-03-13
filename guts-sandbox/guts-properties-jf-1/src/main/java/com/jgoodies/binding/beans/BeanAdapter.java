@@ -41,8 +41,6 @@ import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
 
-import net.guts.properties.Bean;
-
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
@@ -323,8 +321,6 @@ public class BeanAdapter<B> extends Model {
 
     // Fields *****************************************************************
 
-    private final Bean<B> bean;
-    
     /**
      * Holds a ValueModel that holds the bean
      * that in turn holds the adapted property.
@@ -453,7 +449,6 @@ public class BeanAdapter<B> extends Model {
      *     does not provide a pair of methods to register a multicast
      *     PropertyChangeListener
      */
-    @SuppressWarnings("unchecked") 
     public BeanAdapter(
         ValueModel<B> beanChannel,
         boolean observeChanges) {
@@ -478,7 +473,6 @@ public class BeanAdapter<B> extends Model {
             addChangeHandlerTo(initialBean);
         }
         storedOldBean = initialBean;
-        bean = Bean.create((Class<B>) initialBean.getClass());
     }
 
 
@@ -1422,6 +1416,7 @@ public class BeanAdapter<B> extends Model {
         }
 
 
+        @SuppressWarnings("unchecked") 
         protected void fireChange(B currentBean) {
             T newValue;
             if (currentBean == null) {
@@ -1440,6 +1435,7 @@ public class BeanAdapter<B> extends Model {
         }
 
 
+        @SuppressWarnings("unchecked") 
         protected void setBean0(B oldBean, B newBean) {
             T oldValue;
             T newValue;
