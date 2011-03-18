@@ -63,7 +63,6 @@ public final class CombinedTest extends TestCase {
         testPersonChange(false);
     }
 
-    @SuppressWarnings("unchecked") 
     private void testPersonChange(boolean usePresentationModel) {
         String phoneNumber = "32168";
         Person person1 = new Person();
@@ -71,13 +70,22 @@ public final class CombinedTest extends TestCase {
         Person person2 = new Person();
 
         PresentationModel<Person> masterModel = new PresentationModel<Person>(person1);
-        SelectionInList<Phone> sil = SelectionInList.createFromList(
-                (ValueModel<List<Phone>>) masterModel.getModel(Person.PROPERTYNAME_PHONES));
+        ValueModel<List<Phone>> tempModel1 = masterModel.getModel(Person.PROPERTYNAME_PHONES);
+        SelectionInList<Phone> sil = SelectionInList.createFromList(tempModel1);
 
         ValueModel<Phone> selectionHolder = sil.getSelectionHolder();
-        ValueModel<String> phoneNumberModel = usePresentationModel
-            ? (ValueModel<String>) new PresentationModel<Phone>(selectionHolder).getModel(Phone.PROPERTYNAME_NUMBER)
-            : new PropertyAdapter<Phone, String>(selectionHolder, Phone.PROPERTYNAME_NUMBER, true);
+//        ValueModel<String> phoneNumberModel = usePresentationModel
+//        ? new PresentationModel<Phone>(selectionHolder).getModel(Phone.PROPERTYNAME_NUMBER)
+//        : new PropertyAdapter<Phone, String>(selectionHolder, Phone.PROPERTYNAME_NUMBER, true);
+        ValueModel<String> phoneNumberModel = null;
+        if (usePresentationModel)
+        {
+        	phoneNumberModel = new PresentationModel<Phone>(selectionHolder).getModel(Phone.PROPERTYNAME_NUMBER);
+        }
+        else
+        {
+        	phoneNumberModel = new PropertyAdapter<Phone, String>(selectionHolder, Phone.PROPERTYNAME_NUMBER, true);
+        }
 
         JTextField phoneNumberField = BasicComponentFactory.createTextField(phoneNumberModel);
 
