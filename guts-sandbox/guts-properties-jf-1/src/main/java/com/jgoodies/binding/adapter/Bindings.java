@@ -89,7 +89,7 @@ import com.jgoodies.common.base.Preconditions;
  * @see com.jgoodies.binding.value.ValueModel
  * @see BasicComponentFactory
  */
-public final class Bindings {
+public class Bindings {
 
     /**
      * A JTextComponent client property key used to store and retrieve
@@ -146,7 +146,7 @@ public final class Bindings {
     static final WeakTrigger FOCUS_LOST_TRIGGER = new WeakTrigger();
 
 
-    private Bindings() {
+    protected Bindings() {
         // Suppresses default constructor; prevents instantiation.
     }
 
@@ -650,9 +650,6 @@ public final class Bindings {
      *
      * @since 1.2
      */
-    //TODO make it type-safe: 
-//    public static <T> void bind(JComponent component, T getter, ValueModel<T> valueModel) {
-//	usage: bind(field, Models.of(JTextField.class).getText(), textValueModel);
     public static void bind(JComponent component, String propertyName, ValueModel<?> valueModel) {
         checkNotNull(component, "The component must not be null.");
         checkNotNull(valueModel, "The value model must not be null.");
