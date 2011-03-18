@@ -602,7 +602,7 @@ public class PresentationModel<B> extends Model {
      * @see #PROPERTYNAME_AFTER_BEAN
      * @see BeanAdapter
      */
-    public void beforeBeanChange(B oldBean, B newBean) {
+    protected void beforeBeanChange(B oldBean, B newBean) {
         firePropertyChange(PROPERTYNAME_BEFORE_BEAN, oldBean, newBean, true);
     }
 
@@ -632,7 +632,7 @@ public class PresentationModel<B> extends Model {
      * @see #PROPERTYNAME_AFTER_BEAN
      * @see BeanAdapter
      */
-    public void afterBeanChange(B oldBean, B newBean) {
+    protected void afterBeanChange(B oldBean, B newBean) {
         setChanged(false);
         firePropertyChange(PROPERTYNAME_AFTER_BEAN, oldBean, newBean, true);
     }
@@ -802,7 +802,7 @@ public class PresentationModel<B> extends Model {
      * @see #getModel(String, String, String)
      * @see #getBufferedModel(String)
      */
-    public AbstractValueModel<?> getModel(String propertyName) {
+    public <T> ValueModel<T> getModel(String propertyName) {
         return beanAdapter.getValueModel(propertyName);
     }
 
@@ -957,7 +957,7 @@ public class PresentationModel<B> extends Model {
      * @see #getModel(String)
      * @see #getBufferedModel(String, String, String)
      */
-    public BufferedValueModel<?> getBufferedModel(String propertyName) {
+    public <T> BufferedValueModel<T> getBufferedModel(String propertyName) {
         return getBufferedModel(propertyName, null, null);
     }
 
@@ -1005,7 +1005,7 @@ public class PresentationModel<B> extends Model {
      * @see #getBufferedModel(String)
      */
     @SuppressWarnings({"rawtypes", "unchecked" }) 
-    public BufferedValueModel<?> getBufferedModel(String propertyName,
+    public <T> BufferedValueModel<T> getBufferedModel(String propertyName,
                                       String getterName,
                                       String setterName) {
         WrappedBuffer<?> wrappedBuffer = wrappedBuffers.get(propertyName);
@@ -1021,7 +1021,7 @@ public class PresentationModel<B> extends Model {
                    "You must not invoke this method twice "
                   + "with different getter and/or setter names.");
         }
-        return wrappedBuffer.buffer;
+        return (BufferedValueModel<T>) wrappedBuffer.buffer;
     }
 
 
