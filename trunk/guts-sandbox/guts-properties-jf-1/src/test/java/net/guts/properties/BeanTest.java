@@ -1,4 +1,4 @@
-package net.sf.beanutils;
+package net.guts.properties;
 
 import static org.testng.Assert.*;
 
@@ -22,15 +22,13 @@ public class BeanTest {
 
 	@Test
 	public void checkPropertyName() throws Exception {
-		Property<Bean1, String> property = (Property<Bean1, String>) _b1helper
-				.property(_b1mock.getOneString());
+		Property<Bean1, String> property = _b1helper.property(_b1mock.getOneString());
 		assertEquals("oneString", property.name());
 	}
 
 	@Test
 	public void checkStringPropertyGet() throws Exception {
-		Property<Bean1, String> property = (Property<Bean1, String>) _b1helper
-				.property(_b1mock.getOneString());
+		Property<Bean1, String> property = _b1helper.property(_b1mock.getOneString());
 
 		Bean1 bean = new Bean1();
 
@@ -41,8 +39,7 @@ public class BeanTest {
 
 	@Test
 	public void checkStringPropertySet() throws Exception {
-		Property<Bean1, String> property = (Property<Bean1, String>) _b1helper
-				.property(_b1mock.getOneString());
+		Property<Bean1, String> property = _b1helper.property(_b1mock.getOneString());
 
 		Bean1 bean = new Bean1();
 
@@ -53,8 +50,7 @@ public class BeanTest {
 
 	@Test
 	public void checkPrimitivePropertyGet() throws Exception {
-		Property<Bean1, Integer> property = (Property<Bean1, Integer>) _b1helper
-				.property(_b1mock.getOneInt());
+		Property<Bean1, Integer> property = _b1helper.property(_b1mock.getOneInt());
 
 		Bean1 bean = new Bean1();
 
