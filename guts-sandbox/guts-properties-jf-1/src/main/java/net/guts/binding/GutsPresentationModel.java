@@ -8,7 +8,6 @@ import com.jgoodies.binding.value.ComponentValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 //TODO javadoc + javdoc refs to JGoodies PM
-//TODO improve Bean and Property
 public class GutsPresentationModel<B>
 {
 	protected GutsPresentationModel(Class<B> clazz)

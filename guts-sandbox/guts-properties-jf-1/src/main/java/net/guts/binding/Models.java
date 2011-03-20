@@ -12,7 +12,6 @@ import com.jgoodies.binding.value.ComponentValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
-//TODO - Bindings extensions for some type-unsafe API?
 public class Models
 {
 	static public <B> GutsPresentationModel<B> createPM(Class<B> clazz)
