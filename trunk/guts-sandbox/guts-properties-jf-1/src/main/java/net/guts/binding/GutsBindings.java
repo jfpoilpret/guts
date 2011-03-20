@@ -14,7 +14,7 @@ public class GutsBindings extends Bindings
 	{
 	}
 	
-	//TODO:	usage: bind(field, Models.of(JTextField.class).getText(), textValueModel);
+	// Usage: bind(field, Models.of(JTextField.class).getText(), textValueModel);
 	@SuppressWarnings("unchecked") 
 	public static <C extends JComponent, T> void bind(
 		C component, T getter, ValueModel<T> valueModel)
