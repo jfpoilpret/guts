@@ -5,7 +5,6 @@ import java.lang.reflect.InvocationTargetException;
 
 import com.google.inject.TypeLiteral;
 
-//TODO factory (fluent API and typesafe) for PropertyImpl
 class PropertyImpl<B, T> implements Property<B, T>
 {
 	static <B, T> Property<B, T> create(PropertyDescriptor descriptor)
