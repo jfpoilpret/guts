@@ -15,22 +15,22 @@ class MockInterceptor implements MethodInterceptor
 
 	PropertyDescriptor lastUsedProperty()
 	{
-		PropertyDescriptor property = _lastUsedProperty;
-		_lastUsedProperty = null;
+		PropertyDescriptor property = _lastUsedProperty.get();
+		_lastUsedProperty.set(null);
 		return property;
 	}
 
 	@Override public Object intercept(
 		Object target, Method method, Object[] args, MethodProxy proxy) throws Throwable
 	{
-		_lastUsedProperty = null;
+		_lastUsedProperty.set(null);
 
 		// Check this is a getter
 		for (PropertyDescriptor descriptor : _properties)
 		{
 			if (method.equals(descriptor.getReadMethod()))
 			{
-				_lastUsedProperty = descriptor;
+				_lastUsedProperty.set(descriptor);
 				break;
 			}
 		}
@@ -42,7 +42,7 @@ class MockInterceptor implements MethodInterceptor
 	}
 
 	private final PropertyDescriptor[] _properties;
-	// FIXME should be in a ThreadLocal no?
 	//TODO push descriptors to a stack for chained calls of getters in different mocks?
-	private PropertyDescriptor _lastUsedProperty = null;
+	private final ThreadLocal<PropertyDescriptor> _lastUsedProperty = 
+		new ThreadLocal<PropertyDescriptor>();
 }
