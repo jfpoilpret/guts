@@ -295,7 +295,7 @@ public final class PresentationModelTest extends TestCase {
     }
 
 
-    @SuppressWarnings("unchecked") public void testSetTriggerChannelUpdatesExistingBufferedValueModels() {
+    public void testSetTriggerChannelUpdatesExistingBufferedValueModels() {
         Object value1 = "value1";
         Object value2 = "value2";
         Object value3 = "value3";
@@ -306,7 +306,7 @@ public final class PresentationModelTest extends TestCase {
         Trigger trigger1 = new Trigger();
         Trigger trigger2 = new Trigger();
         PresentationModel<TestBean> model = new PresentationModel<TestBean>(bean, trigger1);
-        BufferedValueModel<Object> buffer = (BufferedValueModel<Object>) model.getBufferedModel("readWriteObjectProperty");
+        BufferedValueModel<Object> buffer = model.getBufferedModel("readWriteObjectProperty");
         buffer.setValue(value2);
 
         trigger1.triggerCommit();
