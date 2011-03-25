@@ -1,3 +1,17 @@
+//  Copyright 2009 Jean-Francois Poilpret
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package net.guts.binding;
 
 import java.util.prefs.Preferences;
@@ -12,8 +26,12 @@ import com.jgoodies.binding.value.ComponentValueModel;
 import com.jgoodies.binding.value.ValueHolder;
 import com.jgoodies.binding.value.ValueModel;
 
-public class Models
+final public class Models
 {
+	private Models()
+	{
+	}
+	
 	static public <B> GutsPresentationModel<B> createPM(Class<B> clazz)
 	{
 		return new GutsPresentationModel<B>(clazz);
@@ -35,7 +53,8 @@ public class Models
 		return new ValueHolder<T>(value);
 	}
 	
-	static public <T> BufferedValueModel<T> bufferedModelFor(ValueModel<T> value, ValueModel<Boolean> trigger)
+	static public <T> BufferedValueModel<T> bufferedModelFor(
+		ValueModel<T> value, ValueModel<Boolean> trigger)
 	{
 		return new BufferedValueModel<T>(value, trigger);
 	}
@@ -63,39 +82,46 @@ public class Models
 		return propertyModel(beanModel, (Class<B>) beanModel.getValue().getClass(), getter);
 	}
 	
-	static public <B, T> ValueModel<T> propertyModel(ValueModel<B> beanModel, Class<B> clazz, T getter)
+	static public <B, T> ValueModel<T> propertyModel(
+		ValueModel<B> beanModel, Class<B> clazz, T getter)
 	{
 		Bean<B> helper = Bean.create(clazz);
 		Property<B, T> property = helper.property(getter);
 		return new PropertyAdapter<B, T>(beanModel, property.name());
 	}
 	
-	static public ValueModel<Boolean> preferenceModel(Preferences prefs, String key, Boolean defaultValue)
+	static public ValueModel<Boolean> preferenceModel(
+		Preferences prefs, String key, Boolean defaultValue)
 	{
 		return new PreferencesAdapter<Boolean>(prefs, key, defaultValue);
 	}
 	
-	static public ValueModel<String> preferenceModel(Preferences prefs, String key, String defaultValue)
+	static public ValueModel<String> preferenceModel(
+		Preferences prefs, String key, String defaultValue)
 	{
 		return new PreferencesAdapter<String>(prefs, key, defaultValue);
 	}
 	
-	static public ValueModel<Integer> preferenceModel(Preferences prefs, String key, Integer defaultValue)
+	static public ValueModel<Integer> preferenceModel(
+		Preferences prefs, String key, Integer defaultValue)
 	{
 		return new PreferencesAdapter<Integer>(prefs, key, defaultValue);
 	}
 	
-	static public ValueModel<Long> preferenceModel(Preferences prefs, String key, Long defaultValue)
+	static public ValueModel<Long> preferenceModel(
+		Preferences prefs, String key, Long defaultValue)
 	{
 		return new PreferencesAdapter<Long>(prefs, key, defaultValue);
 	}
 	
-	static public ValueModel<Float> preferenceModel(Preferences prefs, String key, Float defaultValue)
+	static public ValueModel<Float> preferenceModel(
+		Preferences prefs, String key, Float defaultValue)
 	{
 		return new PreferencesAdapter<Float>(prefs, key, defaultValue);
 	}
 	
-	static public ValueModel<Double> preferenceModel(Preferences prefs, String key, Double defaultValue)
+	static public ValueModel<Double> preferenceModel(
+		Preferences prefs, String key, Double defaultValue)
 	{
 		return new PreferencesAdapter<Double>(prefs, key, defaultValue);
 	}

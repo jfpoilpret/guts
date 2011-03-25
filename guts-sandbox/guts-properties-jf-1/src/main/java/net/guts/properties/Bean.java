@@ -1,16 +1,27 @@
+//  Copyright 2009 Jean-Francois Poilpret
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package net.guts.properties;
 
 import java.beans.PropertyDescriptor;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import net.sf.cglib.core.ReflectUtils;
 import net.sf.cglib.proxy.Enhancer;
-
-//TODO add PCL at Property level
-//TODO static Utils class to make it easier to use!
-//TODO support write-only properties?
-//TODO support chain calls?
 
 public class Bean<B>
 {
@@ -31,12 +42,12 @@ public class Bean<B>
 	{
 		_clazz = clazz;
 		_properties = ReflectUtils.getBeanProperties(_clazz);
-		_mockInterceptor = new MockInterceptor(_properties);
+		MockInterceptor mockInterceptor = new MockInterceptor(_properties);
 
 		// Create a mock immediately with cglib
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(clazz);
-		enhancer.setCallback(_mockInterceptor);
+		enhancer.setCallback(mockInterceptor);
 
 		_mock = clazz.cast(enhancer.create());
 	}
@@ -53,6 +64,8 @@ public class Bean<B>
 		return _mock;
 	}
 
+	//TODO how can we support getters that return collections and then 
+	//calls on those collections?
 	// Returns a beans property reference without using its hard-coded string
 	// name
 	// This pattern will always survive bean refactoring (compile-safe)!
@@ -60,24 +73,20 @@ public class Bean<B>
 	// name (in a safe way)
 	public <U> Property<B, U> property(U mockCall)
 	{
-		PropertyDescriptor property = _mockInterceptor.lastUsedProperty();
-		checkType(mockCall, property);
-		return PropertyImpl.create(property);
+		List<PropertyDescriptor> properties = RecordedGetters.calledProperties();
+		checkType(mockCall, properties);
+		return PropertyImpl.create(properties);
 	}
 
 	// Create a new bean that delegates to this one but makes all its properties
 	// bound
-	// TODO use T & ChangeListenerAdapter as returned type?
 	public B proxy(B source)
 	{
 		// Create a proxy with cglib
 		Enhancer enhancer = new Enhancer();
-
 		enhancer.setSuperclass(_clazz);
-		enhancer.setInterfaces(new Class[] { ChangeListenerAdapter.class,
-				ProxySource.class });
-		enhancer.setCallback(new ProxyInterceptor<B>(source,
-				_properties));
+		enhancer.setInterfaces(new Class[] { ChangeListenerAdapter.class, ProxySource.class });
+		enhancer.setCallback(new ProxyInterceptor<B>(source, _properties));
 		return _clazz.cast(enhancer.create());
 	}
 
@@ -95,66 +104,57 @@ public class Bean<B>
 		return proxy;
 	}
 
-	private void checkType(Object property, PropertyDescriptor descriptor)
+	//TODO use specific exception class instead of just RuntimeException!
+	//TODO specific exception should build messages that are better for debugging
+	private void checkType(Object property, List<PropertyDescriptor> descriptors)
 	{
-		String message = null;
 		// Check that a method has been called on _mock
-		if (descriptor == null)
+		if (descriptors.isEmpty())
 		{
-			message = "No getter was called on mock()!";
+			throw new RuntimeException("No getter was called on mock()!");
 		}
+
 		// Check that last call returned the right type
-		else if (property != null)
+		PropertyDescriptor lastDescriptor = descriptors.get(descriptors.size() - 1);
+		if (property != null)
 		{
-			Class<?> expected = descriptor.getPropertyType();
+			Class<?> expected = BeanHelper.toWrapper(lastDescriptor.getPropertyType());
 			Class<?> actual = property.getClass();
-			if (expected.isPrimitive())
-			{
-				expected = WRAPPERS.get(expected);
-			}
 			if (expected != actual)
 			{
-				message = "Getter called on mock() doesn't match passed argument!";
+				throw new RuntimeException(
+					"Getter called on mock() doesn't match passed argument!");
 			}
 		}
-		else if (descriptor.getPropertyType().isPrimitive())
+		else if (lastDescriptor.getPropertyType().isPrimitive())
 		{
-			message = "Getter called on mock() doesn't match passed argument!";
+			throw new RuntimeException(
+				"Getter called on mock() doesn't match passed argument!");
 		}
 
-		// TODO pending cases: should make sure mock getters always return non
-		// null!
-
-		if (message != null)
+		//TODO have to check all types not only the last one in the chain!
+		Iterator<PropertyDescriptor> i = descriptors.iterator();
+		PropertyDescriptor current = i.next();
+		while (i.hasNext())
 		{
-			// FIXME use better exception with better reasons
-			throw new RuntimeException(message);
+			PropertyDescriptor next = i.next();
+			Class<?> expected = BeanHelper.toWrapper(current.getPropertyType());
+			Class<?> actual = next.getReadMethod().getDeclaringClass();
+			if (expected != actual)
+			{
+				throw new RuntimeException(
+					"Chained getter called on mock() doesn't match passed argument!");
+			}
+			
+			current = next;
 		}
 	}
 
-	// TODO Remove WRAPPERS with cglib util!
-	// Used for making primitive class and their wrapepr classes equal
-	// during comparison
-	private static final Map<Class<?>, Class<?>> WRAPPERS = new HashMap<Class<?>, Class<?>>();
-
-	static
-	{
-		WRAPPERS.put(byte.class, Byte.class);
-		WRAPPERS.put(short.class, Short.class);
-		WRAPPERS.put(char.class, Character.class);
-		WRAPPERS.put(int.class, Integer.class);
-		WRAPPERS.put(long.class, Long.class);
-		WRAPPERS.put(float.class, Float.class);
-		WRAPPERS.put(double.class, Double.class);
-		WRAPPERS.put(boolean.class, Boolean.class);
-	}
-
-	// Global cache of ObjectHelper objects (each class T should have only one
-	// ObjectHelper<T> instance)
+	// Global cache of Bean instances (each class B should have only one
+	// Bean<B> instance)
 	private static final Map<Class<?>, Bean<?>> _cache = new HashMap<Class<?>, Bean<?>>();
 
 	private final Class<B> _clazz;
 	private final PropertyDescriptor[] _properties;
-	private final MockInterceptor _mockInterceptor;
 	private final B _mock;
 }
