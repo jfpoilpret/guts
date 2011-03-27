@@ -18,8 +18,6 @@ import java.beans.PropertyDescriptor;
 import java.util.ArrayList;
 import java.util.List;
 
-//TODO refactor storage of called getters into a static util class, shared by all mocks
-//TODO then push each descriptors to a stack in a ThreadLocal
 final class RecordedGetters
 {
 	private RecordedGetters()
