@@ -25,9 +25,8 @@ import net.sf.cglib.proxy.Enhancer;
 
 public class Bean<B>
 {
-	// TODO cache synchronization?
 	@SuppressWarnings("unchecked")
-	public static <B> Bean<B> create(Class<B> clazz)
+	synchronized public static <B> Bean<B> create(Class<B> clazz)
 	{
 		Bean<B> helper = (Bean<B>) _cache.get(clazz);
 		if (helper == null)
@@ -104,14 +103,12 @@ public class Bean<B>
 		return proxy;
 	}
 
-	//TODO use specific exception class instead of just RuntimeException!
-	//TODO specific exception should build messages that are better for debugging
 	private void checkType(Object property, List<PropertyDescriptor> descriptors)
 	{
 		// Check that a method has been called on _mock
 		if (descriptors.isEmpty())
 		{
-			throw new RuntimeException("No getter was called on mock()!");
+			throw new IllegalStateException("No getter called on any bean mock()!");
 		}
 
 		// Check that last call returned the right type
@@ -122,17 +119,17 @@ public class Bean<B>
 			Class<?> actual = property.getClass();
 			if (expected != actual)
 			{
-				throw new RuntimeException(
-					"Getter called on mock() doesn't match passed argument!");
+				throw new IllegalStateException(
+					"Last getter called on mock() doesn't match passed argument!");
 			}
 		}
 		else if (lastDescriptor.getPropertyType().isPrimitive())
 		{
-			throw new RuntimeException(
-				"Getter called on mock() doesn't match passed argument!");
+			throw new IllegalStateException(
+				"Last getter called on mock() doesn't match passed argument!");
 		}
 
-		//TODO have to check all types not only the last one in the chain!
+		// Check all chained types match
 		Iterator<PropertyDescriptor> i = descriptors.iterator();
 		PropertyDescriptor current = i.next();
 		while (i.hasNext())
@@ -142,14 +139,14 @@ public class Bean<B>
 			Class<?> actual = next.getReadMethod().getDeclaringClass();
 			if (expected != actual)
 			{
-				throw new RuntimeException(
+				throw new IllegalStateException(
 					"Chained getter called on mock() doesn't match passed argument!");
 			}
 			
 			current = next;
 		}
 	}
-
+	
 	// Global cache of Bean instances (each class B should have only one
 	// Bean<B> instance)
 	private static final Map<Class<?>, Bean<?>> _cache = new HashMap<Class<?>, Bean<?>>();

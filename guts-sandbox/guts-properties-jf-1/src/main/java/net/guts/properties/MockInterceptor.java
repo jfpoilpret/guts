@@ -17,6 +17,8 @@ package net.guts.properties;
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.Map;
 
 import net.sf.cglib.proxy.MethodInterceptor;
 import net.sf.cglib.proxy.MethodProxy;
@@ -40,25 +42,67 @@ class MockInterceptor implements MethodInterceptor
 				RecordedGetters.pushProperty(descriptor);
 
 				//  Return a new Bean mock when possible
-				Class<?> returnType = descriptor.getPropertyType();
-				if (Modifier.isFinal(returnType.getModifiers()))
-				{
-					//TODO avoid returning null if possible, eg try reflection to instantiate
-					// a default instance...
-					return null;
-				}
-				else
-				{
-					return Bean.create(returnType).mock();
-				}
+				return createDefault(descriptor.getPropertyType());
 			}
 		}
 
-		// For any non-property call, we just don't care
-		//TODO or should we throw an exception because it's a case of misuse?
-		return null;
+		// For any non-property call, we just don't allow it
+		String msg = String.format(
+			"Calling `%s.%s` is not supported. Only getters can be called", 
+			method.getDeclaringClass().getSimpleName(), method.getName());
+		throw new UnsupportedOperationException(msg);
 	}
 	//CSON: IllegalThrows
+
+	//CSOFF: IllegalCatch
+	static private Object createDefault(Class<?> type)
+	{
+		Object defaultValue = DEFAULTS.get(type);
+		if (defaultValue != null)
+		{
+			return defaultValue;
+		}
+		else if (Modifier.isFinal(type.getModifiers()))
+		{
+			// Try reflection to instantiate a default instance
+			try
+			{
+				return type.newInstance();
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
+		}
+		else
+		{
+			return Bean.create(type).mock();
+		}
+	}
+	//CSON: IllegalCatch
+	
+	static private final Map<Class<?>, Object> DEFAULTS = new HashMap<Class<?>, Object>();
+	
+	static
+	{
+		DEFAULTS.put(byte.class, (byte) 0);
+		DEFAULTS.put(Byte.class, (byte) 0);
+		DEFAULTS.put(char.class, (char) 0);
+		DEFAULTS.put(Character.class, (char) 0);
+		DEFAULTS.put(short.class, (short) 0);
+		DEFAULTS.put(Short.class, (short) 0);
+		DEFAULTS.put(int.class, 0);
+		DEFAULTS.put(Integer.class, 0);
+		DEFAULTS.put(long.class, 0L);
+		DEFAULTS.put(Long.class, 0L);
+		DEFAULTS.put(float.class, 0.0f);
+		DEFAULTS.put(Float.class, 0.0f);
+		DEFAULTS.put(double.class, 0.0);
+		DEFAULTS.put(Double.class, 0.0);
+		DEFAULTS.put(boolean.class, false);
+		DEFAULTS.put(Boolean.class, false);
+		DEFAULTS.put(String.class, "");
+	}
 
 	private final PropertyDescriptor[] _properties;
 }

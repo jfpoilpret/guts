@@ -22,11 +22,15 @@ import java.beans.PropertyChangeListener;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import com.google.inject.TypeLiteral;
+
 @Test(groups = "utest") 
 public class BeanTest
 {
 	@BeforeMethod public void init()
 	{
+		// Reset all called properties
+		RecordedGetters.calledProperties();
 		_b1helper = Bean.create(Bean1.class);
 		_b1mock = _b1helper.mock();
 	}
@@ -71,20 +75,20 @@ public class BeanTest
 	}
 	
 	// check API misuse (eg don't use mock to get property())
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalStateException.class) 
 	public void checkAPIMisuseNoPreviousMockCall() throws Exception
 	{
 		_b1helper.property(0);
 	}
 	
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalStateException.class) 
 	public void checkAPIMisuseBadPreviousMockCall() throws Exception
 	{
 		_b1mock.getOneString();
 		_b1helper.property(0);
 	}
 	
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalStateException.class) 
 	public void checkAPIMisuseBadPreviousMockCall2() throws Exception
 	{
 		_b1mock.getOneInt();
@@ -92,13 +96,13 @@ public class BeanTest
 	}
 	
 	// check final beans / methods
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalArgumentException.class) 
 	public void checkErrorOnFinalBeanClass() throws Exception
 	{
 		Bean.create(Bean2.class);
 	}
 	
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalStateException.class) 
 	public void checkErrorOnFinalMethod() throws Exception
 	{
 		Bean<Bean3> helper = Bean.create(Bean3.class);
@@ -111,7 +115,7 @@ public class BeanTest
 	// - exception for any bean with a final getter? => restricts usage!
 	// - log (where?) list of final methods during mock construction?
 	// - let it as an option to API user?
-	@Test(expectedExceptions = RuntimeException.class) 
+	@Test(expectedExceptions = IllegalStateException.class) 
 	public void checkErrorOnFinalMethod2() throws Exception
 	{
 		Bean<Bean3> helper = Bean.create(Bean3.class);
@@ -128,13 +132,23 @@ public class BeanTest
 		Property<Bean4, String> property = helper4.property(mock.getBean1().getOneString());
 		assertNotNull(property, "Property for Bean4.getBean1.getOneString()");
 		assertEquals(property.name(), "bean1.oneString", "Property's name for Bean4.getBean1().getOneString()");
-		assertEquals(property.type(), String.class, "Property's type for Bean4.getBean1().getOneString()");
+		assertEquals(property.type(), TypeLiteral.get(String.class), "Property's type for Bean4.getBean1().getOneString()");
 	}
 	
-	//TODO further checks with property extraction (error cases)
-	// eg several get() inconsistent in terms of returned types
-	// eg non-getter methods (forbidden)
-
+	@Test(expectedExceptions = UnsupportedOperationException.class) 
+	public void checkNonGetterCallsAreIllegal()
+	{
+		_b1mock.setOneInt(0);
+	}
+	
+	@Test(expectedExceptions = IllegalStateException.class) 
+	public void checkMismatchedTypes()
+	{
+		_b1mock.getOneInt();
+		_b1mock.getOneInt();
+		_b1helper.property(0);
+	}
+	
 	// check proxy generation
 	@Test public void checkProxyGeneration()
 	{
@@ -217,9 +231,6 @@ public class BeanTest
 		PropertyChangeEvent event = listener.getEvent();
 		assertNull(event, "Passed event");
 	}
-	
-	// TODO
-	// check proxy for bean that already has PCL support
 	
 	static public class Bean1
 	{
