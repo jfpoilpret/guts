@@ -115,7 +115,7 @@ public class BeanTest
 	// - exception for any bean with a final getter? => restricts usage!
 	// - log (where?) list of final methods during mock construction?
 	// - let it as an option to API user?
-	@Test(expectedExceptions = IllegalStateException.class) 
+	@Test(enabled = false, expectedExceptions = IllegalStateException.class) 
 	public void checkErrorOnFinalMethod2() throws Exception
 	{
 		Bean<Bean3> helper = Bean.create(Bean3.class);
