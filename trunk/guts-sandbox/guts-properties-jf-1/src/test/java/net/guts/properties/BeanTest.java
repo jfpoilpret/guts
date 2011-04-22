@@ -18,6 +18,7 @@ import static org.testng.Assert.*;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Date;
 
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -39,6 +40,16 @@ public class BeanTest
 	{
 		Property<Bean1, String> property = _b1helper.property(_b1mock.getOneString());
 		assertEquals("oneString", property.name());
+	}
+	
+	@Test public void checkConsecutivePropertyNames() throws Exception
+	{
+		Property<Bean1, String> property1 = _b1helper.property(_b1mock.getOneString());
+		Property<Bean1, Integer> property2 = _b1helper.property(_b1mock.getOneInt());
+		Property<Bean1, Date> property3 = _b1helper.property(_b1mock.getOneDate());
+		assertEquals("oneString", property1.name());
+		assertEquals("oneInt", property2.name());
+		assertEquals("oneDate", property3.name());
 	}
 	
 	@Test public void checkStringPropertyGet() throws Exception
@@ -236,7 +247,18 @@ public class BeanTest
 	{
 		private String _oneString;
 		private int _oneInt;
+		private Date _oneDate;
 		
+		public Date getOneDate()
+		{
+			return _oneDate;
+		}
+
+		public void setOneDate(Date oneDate)
+		{
+			_oneDate = oneDate;
+		}
+
 		public int getOneInt()
 		{
 			return _oneInt;
