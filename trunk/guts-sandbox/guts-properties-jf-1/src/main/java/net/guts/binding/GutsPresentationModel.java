@@ -24,17 +24,10 @@ import com.jgoodies.binding.value.ValueModel;
 //TODO javadoc + javdoc refs to JGoodies PM
 public class GutsPresentationModel<B>
 {
-	protected GutsPresentationModel(Class<B> clazz)
+	public GutsPresentationModel(
+		Class<B> clazz, ValueModel<B> beanChannel, ValueModel<Boolean> trigger)
 	{
 		_helper = Bean.create(clazz);
-		ValueModel<B> beanChannel = Models.holder();
-		_pm = new PresentationModel<B>(beanChannel);
-	}
-
-	protected GutsPresentationModel(Class<B> clazz, ValueModel<Boolean> trigger)
-	{
-		_helper = Bean.create(clazz);
-		ValueModel<B> beanChannel = Models.holder();
 		_pm = new PresentationModel<B>(beanChannel, trigger);
 	}
 
