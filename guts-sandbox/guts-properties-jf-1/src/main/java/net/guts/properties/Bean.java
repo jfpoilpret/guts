@@ -22,6 +22,7 @@ import java.util.Map;
 
 import net.sf.cglib.core.ReflectUtils;
 import net.sf.cglib.proxy.Enhancer;
+import net.sf.cglib.proxy.Factory;
 
 public class Bean<B>
 {
@@ -117,7 +118,13 @@ public class Bean<B>
 		{
 			Class<?> expected = BeanHelper.toWrapper(lastDescriptor.getPropertyType());
 			Class<?> actual = property.getClass();
-			if (expected != actual)
+			// Either:
+			// - both types are the same 
+			// - or the actual type is a mock of the expected type
+			if (	expected != actual
+				&&	!(		property instanceof Factory
+						&&	((Factory) property).getCallback(0) instanceof MockInterceptor
+						&&	expected == actual.getSuperclass()))
 			{
 				throw new IllegalStateException(
 					"Last getter called on mock() doesn't match passed argument!");

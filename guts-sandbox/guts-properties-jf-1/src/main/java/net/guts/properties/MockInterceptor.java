@@ -76,7 +76,14 @@ class MockInterceptor implements MethodInterceptor
 		}
 		else
 		{
-			return Bean.create(type).mock();
+			try
+			{
+				return Bean.create(type).mock();
+			}
+			catch (Exception e)
+			{
+				return null;
+			}
 		}
 	}
 	//CSON: IllegalCatch
