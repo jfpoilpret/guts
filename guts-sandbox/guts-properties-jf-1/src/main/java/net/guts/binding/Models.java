@@ -34,23 +34,49 @@ final public class Models
 	
 	static public <B> GutsPresentationModel<B> createPM(Class<B> clazz)
 	{
-		return new GutsPresentationModel<B>(clazz);
+		ValueModel<B> beanChannel = holder(true);
+		ValueModel<Boolean> trigger = holder();
+		return new GutsPresentationModel<B>(clazz, beanChannel, trigger);
 	}
-	
-	static public <B> GutsPresentationModel<B> createPM(
+
+	static public <B> GutsPresentationModel<B> createTriggerPM(
 		Class<B> clazz, ValueModel<Boolean> trigger)
 	{
-		return new GutsPresentationModel<B>(clazz, trigger);
+		ValueModel<B> beanChannel = holder(true);
+		return new GutsPresentationModel<B>(clazz, beanChannel, trigger);
 	}
-	
+
+	static public <B> GutsPresentationModel<B> createPM(
+		Class<B> clazz, ValueModel<B> beanChannel)
+	{
+		ValueModel<Boolean> trigger = holder();
+		return new GutsPresentationModel<B>(clazz, beanChannel, trigger);
+	}
+
+	static public <B> GutsPresentationModel<B> createTriggerPM(
+		Class<B> clazz, ValueModel<B> beanChannel, ValueModel<Boolean> trigger)
+	{
+		return new GutsPresentationModel<B>(clazz, beanChannel, trigger);
+	}
+
 	static public <T> ValueModel<T> holder()
 	{
 		return new ValueHolder<T>();
 	}
 	
+	static public <T> ValueModel<T> holder(boolean checkIdentity)
+	{
+		return new ValueHolder<T>(null, checkIdentity);
+	}
+	
 	static public <T> ValueModel<T> holderFor(T value)
 	{
 		return new ValueHolder<T>(value);
+	}
+	
+	static public <T> ValueModel<T> holderFor(T value, boolean checkIdentity)
+	{
+		return new ValueHolder<T>(value, checkIdentity);
 	}
 	
 	static public <T> BufferedValueModel<T> bufferedModelFor(
