@@ -21,6 +21,7 @@ import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.matcher.Matcher;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI action management system. 
@@ -66,6 +67,10 @@ public final class ActionModule extends AbstractModule
 		OneTypeListener<Object> typeListener = 
 			new OneTypeListener<Object>(Object.class, injectionListener);
 		bindListener(Matchers.hasFieldsOfType(GutsAction.class), typeListener);
+		
+		// Add interceptor to methods that return GutsAction to ensure registration
+		bindInterceptor(Matchers.anyClass(), Matchers.isMethodReturnSubtype(GutsAction.class),
+			new GutsActionInterceptor(getProvider(ActionRegistrationManager.class)));
 	}
 
 	@Override public boolean equals(Object other)

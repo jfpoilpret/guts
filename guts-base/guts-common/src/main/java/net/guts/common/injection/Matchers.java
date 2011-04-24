@@ -29,6 +29,19 @@ public final class Matchers
 	private Matchers()
 	{
 	}
+
+	static final public Matcher<? super Class<?>> anyClass()
+	{
+		return ANY;
+	}
+	
+	static final private Matcher<? super Class<?>> ANY = new AbstractMatcher<Class<?>>()
+	{
+		@Override public boolean matches(Class<?> type)
+		{
+			return true;
+		}
+	};
 	
 	static final public Matcher<TypeLiteral<?>> hasFieldsOfType(final Class<?>... fieldTypes)
 	{
@@ -114,5 +127,33 @@ public final class Matchers
 				return false;
 			}
 		};
+	}
+	
+	
+	static final public Matcher<? super Method> isMethodReturnSubtype(final Class<?> type)
+	{
+		return new AbstractMatcher<Method>()
+		{
+			@Override public boolean matches(Method method)
+			{
+				return type.isAssignableFrom(method.getReturnType());
+			}
+		};
+	}
+	
+	static final public Matcher<? super Method> isMethodReturnType(final TypeLiteral<?> type)
+	{
+		return new AbstractMatcher<Method>()
+		{
+			@Override public boolean matches(Method method)
+			{
+				return method.getGenericReturnType() == type.getType();
+			}
+		};
+	}
+	
+	static final public Matcher<? super Method> isMethodReturnType(Class<?> type)
+	{
+		return isMethodReturnType(TypeLiteral.get(type));
 	}
 }
