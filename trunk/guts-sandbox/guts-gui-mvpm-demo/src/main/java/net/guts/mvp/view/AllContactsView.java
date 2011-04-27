@@ -80,11 +80,11 @@ public class AllContactsView extends JPanel
 		GutsBindings.bind(txfLastName, model.selection.lastName);
 		GutsBindings.bind(txfBirth, model.selection.birth);
 		GutsBindings.bind(txaAddress, model.selection.homeAddress.compactAddress);
-		connectTitle(this, model.selection.title);
+		GutsBindings.connectTitle(this, model.selection.title);
 
 		//TODO move out of the View!
 		// Connect actions to existence of selection
-		connectEmpty(selection, delete, modify);
+		GutsBindings.connectActionsEnableToSelection(selection, delete, modify);
 		GutsBindings.bindDoubleClick(table, modify);
 		GutsBindings.bindEnter(table, modify);
 		
@@ -102,42 +102,6 @@ public class AllContactsView extends JPanel
 		layout.row().right().add(btnCreate, btnModify, btnDelete);
 	}
 	
-	//TODO put to some utility class in guts-properties!
-	static void connectEmpty(final SelectionInList<?> selection, final Action... actions)
-	{
-		selection.addPropertyChangeListener(
-			SelectionInList.PROPERTYNAME_SELECTION_EMPTY, new PropertyChangeListener()
-		{
-			@Override public void propertyChange(PropertyChangeEvent evt)
-			{
-				for (Action action: actions)
-				{
-					action.setEnabled(!selection.isSelectionEmpty());
-				}
-			}
-		});
-		for (Action action: actions)
-		{
-			action.setEnabled(!selection.isSelectionEmpty());
-		}
-	}
-	
-	//TODO put to some util class?
-	static void connectTitle(final JComponent view, final ValueModel<String> model)
-	{
-		if (view.getRootPane() != null)
-		{
-			PropertyConnector.connectAndUpdate(model, view.getRootPane().getParent(), "title");
-		}
-		view.addHierarchyListener(new HierarchyListener()
-		{
-			@Override public void hierarchyChanged(HierarchyEvent e)
-			{
-				PropertyConnector.connectAndUpdate(model, view.getRootPane().getParent(), "title");
-			}
-		});
-	}
-
 	//TODO move all actions out of View!???
 	
 	final private GutsAction create = new GutsAction()
