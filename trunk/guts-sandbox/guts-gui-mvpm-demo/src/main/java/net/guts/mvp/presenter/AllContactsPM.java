@@ -22,7 +22,6 @@ import net.guts.binding.GutsTableModelBuilder;
 import net.guts.binding.Models;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.mvp.business.AddressBookService;
@@ -39,10 +38,10 @@ import com.jgoodies.binding.value.ValueModel;
 public class AllContactsPM
 {
 	@Inject
-	AllContactsPM(AddressBookService service, ResourceInjector injector)
+	AllContactsPM(AddressBookService service, ContactPMFactory contactPMFactory)
 	{
 		this.service = service;
-		this.injector = injector;
+		this.contactPMFactory = contactPMFactory;
 
 		// Create all necessary models here
 		ValueModel<Contact> selectionModel = Models.holder(true);
@@ -83,9 +82,7 @@ public class AllContactsPM
 	
 	private ContactPM newContactPM(ValueModel<Contact> model)
 	{
-		ContactPM pm = new ContactPM(model);
-		injector.injectInstance(pm);
-		return pm;
+		return contactPMFactory.create(model);
 	}
 
 	public GutsAction saveContact(final ContactPM contact)
@@ -137,5 +134,5 @@ public class AllContactsPM
 	final public ContactPM selection;
 	
 	final private AddressBookService service;
-	final private ResourceInjector injector;
+	final private ContactPMFactory contactPMFactory;
 }
