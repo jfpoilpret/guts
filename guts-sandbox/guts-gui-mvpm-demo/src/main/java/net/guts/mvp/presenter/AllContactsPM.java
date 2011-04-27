@@ -53,7 +53,8 @@ public class AllContactsPM
 		Contact of = builder.of();
 		builder.addProperty(of.getFirstName())
 				.addProperty(of.getLastName())
-				.addProperty(of.getBirth());
+				.addProperty(of.getBirth())
+				.addProperty(of.getHome().getCity());
 		contactsTableModel = builder.buildModel();
 	}
 	
