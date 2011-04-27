@@ -14,7 +14,15 @@
 
 package net.guts.binding;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+
+import javax.swing.Action;
 import javax.swing.JComponent;
+import javax.swing.JTable;
+import javax.swing.KeyStroke;
 
 import net.guts.properties.Bean;
 
@@ -26,6 +34,27 @@ public class GutsBindings extends Bindings
 	// Prevent direct instantiation
 	protected GutsBindings()
 	{
+	}
+
+	public static void bindDoubleClick(final JTable table, final Action action)
+	{
+		table.addMouseListener(new MouseAdapter()
+		{
+			@Override public void mouseClicked(MouseEvent e)
+			{
+				if (e.getClickCount() == 2 && action.isEnabled())
+				{
+					action.actionPerformed(
+						new ActionEvent(table, ActionEvent.ACTION_PERFORMED, ""));
+				}
+			}
+		});
+	}
+	
+	public static void bindEnter(final JTable table, final Action action)
+	{
+		table.getActionMap().put("ENTER", action);
+		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "ENTER");
 	}
 	
 	// Usage: bind(field, Models.of(JTextField.class).getText(), textValueModel);
