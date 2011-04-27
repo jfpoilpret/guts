@@ -36,10 +36,10 @@ import com.jgoodies.binding.value.ValueModel;
 
 //TODO refactor to better name (Contact(s)PM ?)
 @Singleton
-public class ContactsListDetailPM
+public class AllContactsPM
 {
 	@Inject
-	ContactsListDetailPM(AddressBookService service)
+	AllContactsPM(AddressBookService service)
 	{
 		_service = service;
 

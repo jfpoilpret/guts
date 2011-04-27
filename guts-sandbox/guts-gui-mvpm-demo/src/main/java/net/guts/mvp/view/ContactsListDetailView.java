@@ -43,7 +43,7 @@ import net.guts.gui.window.JDialogConfig;
 
 import net.guts.mvp.domain.Contact;
 import net.guts.mvp.presenter.ContactPM;
-import net.guts.mvp.presenter.ContactsListDetailPM;
+import net.guts.mvp.presenter.AllContactsPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
@@ -57,7 +57,7 @@ public class ContactsListDetailView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
 
-	@Inject public ContactsListDetailView(ContactsListDetailPM model, 
+	@Inject public ContactsListDetailView(AllContactsPM model, 
 		ContactViewFactory contactViewFactory,
 		DialogFactory dialogFactory, MessageFactory messageFactory)
 	{
@@ -183,7 +183,7 @@ public class ContactsListDetailView extends JPanel
 	
 	final private ContactViewFactory _contactViewFactory;
 	
-	final private ContactsListDetailPM _model;
+	final private AllContactsPM _model;
 	final private SelectionInList<Contact> _selection;
 	
 	final private JTable _table = new JTable();
