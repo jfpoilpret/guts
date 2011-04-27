@@ -98,7 +98,7 @@ public class AllContactsPM
 		};
 	}
 	
-	final public GutsAction _saveSelectedContact = new TaskAction()
+	final public GutsAction saveSelectedContact = new TaskAction()
 	{
 		@Override protected void perform()
 		{
