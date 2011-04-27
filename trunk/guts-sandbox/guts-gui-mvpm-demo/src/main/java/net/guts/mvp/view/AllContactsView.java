@@ -25,17 +25,9 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 
 import net.guts.binding.GutsBindings;
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.DialogFactory;
-import net.guts.gui.message.MessageFactory;
-import net.guts.gui.message.UserChoice;
-import net.guts.gui.task.blocker.InputBlockers;
-import net.guts.gui.template.okcancel.OkCancel;
-import net.guts.gui.window.JDialogConfig;
 
+import net.guts.mvp.action.AllContactsUiActions;
 import net.guts.mvp.domain.Contact;
-import net.guts.mvp.presenter.ContactPM;
 import net.guts.mvp.presenter.AllContactsPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
@@ -48,15 +40,9 @@ public class AllContactsView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
 
-	@Inject public AllContactsView(AllContactsPM model, 
-		ContactViewFactory contactViewFactory,
-		DialogFactory dialogFactory, MessageFactory messageFactory)
+	@Inject AllContactsView(AllContactsPM model, AllContactsUiActions uiActions)
 	{
-		this.dialogFactory = dialogFactory;
-		this.messageFactory = messageFactory;
-		this.contactViewFactory = contactViewFactory;
-		this.model = model;
-		selection = model.contacts;
+		contacts = model.contacts;
 		
 		// Initialize components
 		txfFirstName.setEditable(false);
@@ -65,19 +51,19 @@ public class AllContactsView extends JPanel
 		table.setModel(model.contactsTableModel);
 
 		// Setup components bindings
-		GutsBindings.bind(table, selection);
+		GutsBindings.bind(table, contacts);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GutsBindings.bind(txfFirstName, model.selection.firstName);
 		GutsBindings.bind(txfLastName, model.selection.lastName);
 		GutsBindings.bind(txfBirth, model.selection.birth);
 		GutsBindings.bind(txaAddress, model.selection.homeAddress.compactAddress);
 		GutsBindings.connectTitle(this, model.selection.title);
+		btnCreate.setAction(uiActions.create);
+		btnModify.setAction(uiActions.modify);
+		btnDelete.setAction(uiActions.delete);
 
-		//TODO move out of the View!
-		// Connect actions to existence of selection
-		GutsBindings.connectActionsEnableToSelection(selection, delete, modify);
-		GutsBindings.bindDoubleClick(table, modify);
-		GutsBindings.bindEnter(table, modify);
+		GutsBindings.bindDoubleClick(table, uiActions.modify);
+		GutsBindings.bindEnter(table, uiActions.modify);
 		
 		// Layout the form
 		//TODO add more info (address)
@@ -93,53 +79,7 @@ public class AllContactsView extends JPanel
 		layout.row().right().add(btnCreate, btnModify, btnDelete);
 	}
 	
-	//TODO move all actions out of View!???
-	
-	final private GutsAction create = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			// ask PM to create new ContactPM
-			ContactPM contactModel = model.createContact();
-			OkCancel template = OkCancel.create().withOK(model.saveContact(contactModel)).withCancel();
-			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = contactViewFactory.create(contactModel);
-			dialogFactory.showDialog(view, config.config());
-		}
-	};
-	
-	final private GutsAction modify = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			OkCancel template = OkCancel.create().withOK(model._saveSelectedContact).withCancel();
-			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = contactViewFactory.create(model.selection);
-			dialogFactory.showDialog(view, config.config());
-		}
-	};
-	
-	final private GutsAction delete = new TaskAction()
-	{
-		@Override protected void perform()
-		{
-			// First ask user confirmation
-			Contact selected = selection.getSelection();
-			if (UserChoice.YES == messageFactory.showMessage(
-				"confirm-delete", selected.getFirstName(), selected.getLastName()))
-			{
-				submit(model.getDeleteTask(), InputBlockers.actionBlocker(this));
-			}
-		}
-	};
-	
-	final private DialogFactory dialogFactory;
-	final private MessageFactory messageFactory;
-	
-	final private ContactViewFactory contactViewFactory;
-	
-	final private AllContactsPM model;
-	final private SelectionInList<Contact> selection;
+	final private SelectionInList<Contact> contacts;
 	
 	final private JTable table = new JTable();
 	final private JLabel lblFirstName = new JLabel();
@@ -150,7 +90,7 @@ public class AllContactsView extends JPanel
 	final private JFormattedTextField txfBirth = new JFormattedTextField();
 	final private JLabel lblAddress = new JLabel();
 	final private JTextArea txaAddress = new JTextArea(4, 40);
-	final private JButton btnModify = new JButton(modify);
-	final private JButton btnCreate = new JButton(create);
-	final private JButton btnDelete = new JButton(delete);
+	final private JButton btnModify = new JButton();
+	final private JButton btnCreate = new JButton();
+	final private JButton btnDelete = new JButton();
 }
