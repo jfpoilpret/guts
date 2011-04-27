@@ -22,6 +22,8 @@ import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.okcancel.OkCancelModule;
+import net.guts.mvp.presenter.ContactPM;
+import net.guts.mvp.presenter.ContactPMFactory;
 import net.guts.mvp.view.ContactView;
 import net.guts.mvp.view.ContactViewFactory;
 
@@ -59,6 +61,8 @@ public class AddressBookMain extends AbstractApplication
 				// Bind the factory for ContactViews
 				bind(ContactViewFactory.class).toProvider(
 					FactoryProvider.newFactory(ContactViewFactory.class, ContactView.class));
+				bind(ContactPMFactory.class).toProvider(
+					FactoryProvider.newFactory(ContactPMFactory.class, ContactPM.class));
 			}
 		});
 	}

@@ -18,15 +18,23 @@ import java.util.Date;
 
 import net.guts.binding.GutsPresentationModel;
 import net.guts.binding.Models;
+import net.guts.gui.resource.ResourceInjector;
+import net.guts.mvp.business.AddressBookService;
 import net.guts.mvp.domain.Contact;
 
+import com.google.inject.Inject;
+import com.google.inject.assistedinject.Assisted;
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
 
 public class ContactPM
 {
-	ContactPM(ValueModel<Contact> contact)
+	@Inject ContactPM(@Assisted ValueModel<Contact> contact, 
+		ResourceInjector injector, AddressBookService service)
 	{
+		this.service = service;
+		injector.injectInstance(this);
+		
 		// Create all necessary models here
 		model = Models.createPM(Contact.class, contact);
 		
@@ -46,6 +54,8 @@ public class ContactPM
 	{
 		return model.getBeanChannel();
 	}
+	
+	//TODO add methods or ValueModels to access picture (through AddressBookService)
 
 	// Strangely this class must be public or JGoodies Bindings will throw an exception...
 	@SuppressWarnings("serial") 
@@ -75,6 +85,7 @@ public class ContactPM
 		}
 	}
 	
+	final private AddressBookService service;
 	final private GutsPresentationModel<Contact> model;
 	final public ValueModel<String> firstName;
 	final public ValueModel<String> lastName;
