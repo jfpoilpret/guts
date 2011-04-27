@@ -22,7 +22,7 @@ import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.exception.HandlesException;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.window.JDialogConfig;
-import net.guts.mvp.view.ContactsListDetailView;
+import net.guts.mvp.view.AllContactsView;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -33,7 +33,7 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 	static final private Logger _logger = LoggerFactory.getLogger(AddressBookLifecycle.class);
 	
 	@Inject
-	public AddressBookLifecycle(ContactsListDetailView contactsView,
+	public AddressBookLifecycle(AllContactsView contactsView,
 		DialogFactory dialogFactory, ExitController exitController)
 	{
 		_contactsView = contactsView;
@@ -60,7 +60,7 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 		return true;
 	}
 	
-	final private ContactsListDetailView _contactsView;
+	final private AllContactsView _contactsView;
 	final private DialogFactory _dialogFactory;
 	final private ExitController _exitController;
 }

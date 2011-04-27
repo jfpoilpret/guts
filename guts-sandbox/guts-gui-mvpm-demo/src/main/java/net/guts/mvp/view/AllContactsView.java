@@ -53,11 +53,11 @@ import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 
 @Singleton
-public class ContactsListDetailView extends JPanel
+public class AllContactsView extends JPanel
 {
 	static final private long serialVersionUID = 7068262166438989381L;
 
-	@Inject public ContactsListDetailView(AllContactsPM model, 
+	@Inject public AllContactsView(AllContactsPM model, 
 		ContactViewFactory contactViewFactory,
 		DialogFactory dialogFactory, MessageFactory messageFactory)
 	{
