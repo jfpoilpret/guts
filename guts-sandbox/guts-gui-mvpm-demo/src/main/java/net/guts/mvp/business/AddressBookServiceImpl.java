@@ -37,32 +37,32 @@ public class AddressBookServiceImpl implements AddressBookService
 	public AddressBookServiceImpl()
 	{
 		// Hard-code a few contacts
-		_contacts.add(create("John", "Smith", "24.09.1966", null));
-		_contacts.add(create("Phoebe", "Smith", "04.04.1978", null));
-		_contacts.add(create("Luke", "Smith", "04.06.2003", null));
-		_contacts.add(create("Linda", "Doe", "27.10.1960", "San Francisco"));
-		_contacts.add(create("Mary", "Doe", "04.05.1964", "New York"));
+		contacts.add(create("John", "Smith", "24.09.1966", null));
+		contacts.add(create("Phoebe", "Smith", "04.04.1978", null));
+		contacts.add(create("Luke", "Smith", "04.06.2003", null));
+		contacts.add(create("Linda", "Doe", "27.10.1960", "San Francisco"));
+		contacts.add(create("Mary", "Doe", "04.05.1964", "New York"));
 	}
 
 	@Override public void createContact(Contact contact)
 	{
-		contact.setId(++_next);
-		_contacts.add(contact);
+		contact.setId(++next);
+		contacts.add(contact);
 	}
 
 	@Override public List<Contact> getAllContacts()
 	{
-		return _contacts;
+		return contacts;
 	}
 
 	@Override public void modifyContact(Contact contact)
 	{
-		_contacts.set(findById(contact.getId()), contact);
+		contacts.set(findById(contact.getId()), contact);
 	}
 
 	@Override public void removeContact(Contact contact)
 	{
-		_contacts.remove(findById(contact.getId()));
+		contacts.remove(findById(contact.getId()));
 	}
 
 	@Override public Icon getContactPicture(int id)
@@ -80,7 +80,7 @@ public class AddressBookServiceImpl implements AddressBookService
 	@Override public List<Contact> searchContacts(Contact criteria)
 	{
 		List<Contact> results = new ArrayListModel<Contact>();
-		for (Contact contact: _contacts)
+		for (Contact contact: contacts)
 		{
 			if (match(contact, criteria))
 			{
@@ -149,7 +149,7 @@ public class AddressBookServiceImpl implements AddressBookService
 	protected int findById(int id)
 	{
 		int index = 0;
-		for (Contact contact: _contacts)
+		for (Contact contact: contacts)
 		{
 			if (contact.getId() == id)
 			{
@@ -165,7 +165,7 @@ public class AddressBookServiceImpl implements AddressBookService
 		Date birthDate;
 		try
 		{
-			birthDate = _format.parse(birth);
+			birthDate = format.parse(birth);
 		}
 		catch (ParseException e)
 		{
@@ -173,7 +173,7 @@ public class AddressBookServiceImpl implements AddressBookService
 		}
 		
 		Contact contact = new Contact();
-		contact.setId(++_next);
+		contact.setId(++next);
 		contact.setFirstName(firstName);
 		contact.setLastName(lastName);
 		contact.setBirth(birthDate);
@@ -184,7 +184,7 @@ public class AddressBookServiceImpl implements AddressBookService
 		return Bean.create(Contact.class).proxy(contact);
 	}
 
-	final private List<Contact> _contacts = new ArrayListModel<Contact>();
-	private int _next = 0;
-	static final private DateFormat _format = new SimpleDateFormat("dd.MM.yyyy");
+	final private List<Contact> contacts = new ArrayListModel<Contact>();
+	private int next = 0;
+	static final private DateFormat format = new SimpleDateFormat("dd.MM.yyyy");
 }

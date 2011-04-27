@@ -29,14 +29,14 @@ public class AddressView implements ComponentHolder
 	public AddressView(AddressPM model)
 	{
 		// Initialize components
-		_lblCity.setHorizontalAlignment(JLabel.RIGHT);
+		lblCity.setHorizontalAlignment(JLabel.RIGHT);
 		
 		// Bind components to the PM
-		Bindings.bind(_txfStreet1, model._street1);
-		Bindings.bind(_txfStreet2, model._street2);
-		Bindings.bind(_txfZip, model._zip);
-		Bindings.bind(_txfCity, model._city);
-		Bindings.bind(_txfPhone, model._phone);
+		Bindings.bind(txfStreet1, model.street1);
+		Bindings.bind(txfStreet2, model.street2);
+		Bindings.bind(txfZip, model.zip);
+		Bindings.bind(txfCity, model.city);
+		Bindings.bind(txfPhone, model.phone);
 	}
 
 	public void layout(DesignGridLayout layout)
@@ -48,23 +48,23 @@ public class AddressView implements ComponentHolder
 	{
 		if (separator)
 		{
-			_header.layout(layout);
+			header.layout(layout);
 		}
-		layout.row().grid(_lblStreet1).add(_txfStreet1);
-		layout.row().grid(_lblStreet2).add(_txfStreet2);
-		layout.row().grid(_lblZip).add(_txfZip).grid(_lblCity).add(_txfCity);
-		layout.row().grid(_lblPhone).add(_txfPhone);
+		layout.row().grid(lblStreet1).add(txfStreet1);
+		layout.row().grid(lblStreet2).add(txfStreet2);
+		layout.row().grid(lblZip).add(txfZip).grid(lblCity).add(txfCity);
+		layout.row().grid(lblPhone).add(txfPhone);
 	}
 	
-	final private GroupHeader _header = GroupHeader.create();
-	final private JLabel _lblStreet1 = new JLabel();
-	final private JTextField _txfStreet1 = new JTextField(32);
-	final private JLabel _lblStreet2 = new JLabel();
-	final private JTextField _txfStreet2 = new JTextField(32);
-	final private JLabel _lblZip = new JLabel();
-	final private JTextField _txfZip = new JTextField(8);
-	final private JLabel _lblCity = new JLabel();
-	final private JTextField _txfCity = new JTextField(20);
-	final private JLabel _lblPhone = new JLabel();
-	final private JTextField _txfPhone = new JTextField(10);
+	final private GroupHeader header = GroupHeader.create();
+	final private JLabel lblStreet1 = new JLabel();
+	final private JTextField txfStreet1 = new JTextField(32);
+	final private JLabel lblStreet2 = new JLabel();
+	final private JTextField txfStreet2 = new JTextField(32);
+	final private JLabel lblZip = new JLabel();
+	final private JTextField txfZip = new JTextField(8);
+	final private JLabel lblCity = new JLabel();
+	final private JTextField txfCity = new JTextField(20);
+	final private JLabel lblPhone = new JLabel();
+	final private JTextField txfPhone = new JTextField(10);
 }

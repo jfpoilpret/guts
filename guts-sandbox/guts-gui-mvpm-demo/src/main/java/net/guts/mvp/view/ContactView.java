@@ -33,29 +33,29 @@ public class ContactView extends JPanel
 	@Inject public ContactView(@Assisted ContactPM model)
 	{
 		// Widgets setup
-		_home = new AddressView(model._homeAddress);
-		_office = new AddressView(model._officeAddress);
+		home = new AddressView(model.homeAddress);
+		office = new AddressView(model.officeAddress);
 
 		// Bind the widgets to the model
-		Bindings.bind(_txfFirstName, model._firstName);
-		Bindings.bind(_txfLastName, model._lastName);
-		Bindings.bind(_txfBirth, model._birth);
+		Bindings.bind(txfFirstName, model.firstName);
+		Bindings.bind(txfLastName, model.lastName);
+		Bindings.bind(txfBirth, model.birth);
 		
 		// Layout the view
 		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().grid(_lblFirstName).add(_txfFirstName);
-		layout.row().grid(_lblLastName).add(_txfLastName);
-		layout.row().grid(_lblBirth).add(_txfBirth);
-		_home.layout(layout, true);
-		_office.layout(layout, true);
+		layout.row().grid(lblFirstName).add(txfFirstName);
+		layout.row().grid(lblLastName).add(txfLastName);
+		layout.row().grid(lblBirth).add(txfBirth);
+		home.layout(layout, true);
+		office.layout(layout, true);
 	}
 
-	final private JLabel _lblFirstName = new JLabel();
-	final private JTextField _txfFirstName = new JTextField();
-	final private JLabel _lblLastName = new JLabel();
-	final private JTextField _txfLastName = new JTextField();
-	final private JLabel _lblBirth = new JLabel();
-	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private AddressView _home;
-	final private AddressView _office;
+	final private JLabel lblFirstName = new JLabel();
+	final private JTextField txfFirstName = new JTextField();
+	final private JLabel lblLastName = new JLabel();
+	final private JTextField txfLastName = new JTextField();
+	final private JLabel lblBirth = new JLabel();
+	final private JFormattedTextField txfBirth = new JFormattedTextField();
+	final private AddressView home;
+	final private AddressView office;
 }

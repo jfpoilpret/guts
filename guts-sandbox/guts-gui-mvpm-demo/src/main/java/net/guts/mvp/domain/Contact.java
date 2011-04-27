@@ -18,70 +18,70 @@ import java.util.Date;
 
 public class Contact
 {
-	private int _id;
-	private String _firstName;
-	private String _lastName;
-	private Date _birth;
-	private Address _home = new Address();
-	private Address _office = new Address();
+	private int id;
+	private String firstName;
+	private String lastName;
+	private Date birth;
+	private Address home = new Address();
+	private Address office = new Address();
 
 	public int getId()
 	{
-		return _id;
+		return id;
 	}
 
 	public void setId(int id)
 	{
-		this._id = id;
+		this.id = id;
 	}
 	
 	public Date getBirth()
 	{
-		return _birth;
+		return birth;
 	}
 	
 	public void setBirth(Date birth)
 	{
-		this._birth = birth;
+		this.birth = birth;
 	}
 	
 	public String getFirstName()
 	{
-		return _firstName;
+		return firstName;
 	}
 	
 	public void setFirstName(String firstName)
 	{
-		this._firstName = firstName;
+		this.firstName = firstName;
 	}
 	
 	public Address getHome()
 	{
-		return _home;
+		return home;
 	}
 	
 	public void setHome(Address home)
 	{
-		this._home = home;
+		this.home = home;
 	}
 	
 	public String getLastName()
 	{
-		return _lastName;
+		return lastName;
 	}
 	
 	public void setLastName(String lastName)
 	{
-		this._lastName = lastName;
+		this.lastName = lastName;
 	}
 	
 	public Address getOffice()
 	{
-		return _office;
+		return office;
 	}
 	
 	public void setOffice(Address office)
 	{
-		this._office = office;
+		this.office = office;
 	}
 }
