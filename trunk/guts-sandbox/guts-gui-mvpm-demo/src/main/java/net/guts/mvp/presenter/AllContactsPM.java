@@ -22,6 +22,7 @@ import net.guts.binding.GutsTableModelBuilder;
 import net.guts.binding.Models;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
+import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.mvp.business.AddressBookService;
@@ -38,14 +39,15 @@ import com.jgoodies.binding.value.ValueModel;
 public class AllContactsPM
 {
 	@Inject
-	AllContactsPM(AddressBookService service)
+	AllContactsPM(AddressBookService service, ResourceInjector injector)
 	{
 		this.service = service;
+		this.injector = injector;
 
 		// Create all necessary models here
 		ValueModel<Contact> selectionModel = Models.holder(true);
 		contacts = new SelectionInList<Contact>(service.getAllContacts(), selectionModel);
-		selection = new ContactPM(selectionModel);
+		selection = newContactPM(selectionModel);
 		
 		GutsTableModelBuilder<Contact> builder = newTableModelFor(Contact.class);
 		Contact of = builder.of();
@@ -75,7 +77,14 @@ public class AllContactsPM
 		blank.setHome(Bean.create(Address.class).proxy(blank.getHome()));
 		blank.setOffice(Bean.create(Address.class).proxy(blank.getOffice()));
 		blank = Bean.create(Contact.class).proxy(blank);
-		return new ContactPM(Models.holderFor(blank, true));
+		return newContactPM(Models.holderFor(blank, true));
+	}
+	
+	private ContactPM newContactPM(ValueModel<Contact> model)
+	{
+		ContactPM pm = new ContactPM(model);
+		injector.injectInstance(pm);
+		return pm;
 	}
 
 	public GutsAction saveContact(final ContactPM contact)
@@ -127,4 +136,5 @@ public class AllContactsPM
 	final public ContactPM selection;
 	
 	final private AddressBookService service;
+	final private ResourceInjector injector;
 }
