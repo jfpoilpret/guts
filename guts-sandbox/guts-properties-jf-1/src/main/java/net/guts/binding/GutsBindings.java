@@ -15,9 +15,13 @@
 package net.guts.binding;
 
 import java.awt.event.ActionEvent;
+import java.awt.event.HierarchyEvent;
+import java.awt.event.HierarchyListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 import javax.swing.JComponent;
@@ -27,6 +31,8 @@ import javax.swing.KeyStroke;
 import net.guts.properties.Bean;
 
 import com.jgoodies.binding.adapter.Bindings;
+import com.jgoodies.binding.beans.PropertyConnector;
+import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 
 public class GutsBindings extends Bindings
@@ -34,6 +40,44 @@ public class GutsBindings extends Bindings
 	// Prevent direct instantiation
 	protected GutsBindings()
 	{
+	}
+
+	public static void connectTitle(final JComponent view, final ValueModel<String> model)
+	{
+		if (view.getRootPane() != null)
+		{
+			PropertyConnector.connectAndUpdate(model, view.getRootPane().getParent(), "title");
+		}
+		view.addHierarchyListener(new HierarchyListener()
+		{
+			@Override public void hierarchyChanged(HierarchyEvent e)
+			{
+				PropertyConnector.connectAndUpdate(
+					model, view.getRootPane().getParent(), "title");
+			}
+		});
+	}
+
+	public static void connectActionsEnableToSelection(
+		final SelectionInList<?> selection, final Action... actions)
+	{
+		selection.addPropertyChangeListener(
+			SelectionInList.PROPERTYNAME_SELECTION_EMPTY, new PropertyChangeListener()
+		{
+			@Override public void propertyChange(PropertyChangeEvent evt)
+			{
+				enableIfSelection(selection, actions);
+			}
+		});
+		enableIfSelection(selection, actions);
+	}
+	
+	private static void enableIfSelection(SelectionInList<?> selection, Action... actions)
+	{
+		for (Action action: actions)
+		{
+			action.setEnabled(!selection.isSelectionEmpty());
+		}
 	}
 
 	public static void bindDoubleClick(final JTable table, final Action action)
