@@ -95,8 +95,7 @@ public class AddressPM
 		}
 	}
 
-	//TODO does it need be public????
-	final public GutsPresentationModel<Address> address;
+	final private GutsPresentationModel<Address> address;
 	
 	final public ValueModel<String> street1;
 	final public ValueModel<String> street2;
