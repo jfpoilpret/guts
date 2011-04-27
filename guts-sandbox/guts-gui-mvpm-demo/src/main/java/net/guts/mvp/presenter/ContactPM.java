@@ -47,9 +47,9 @@ public class ContactPM
 		return model.getBeanChannel();
 	}
 
-	//TODO does it have to be public???
+	// Strangely this class must be public or JGoodies Bindings will throw an exception...
 	@SuppressWarnings("serial") 
-	static public class TitleConverter extends AbstractConverter<Contact, String>
+	public class TitleConverter extends AbstractConverter<Contact, String>
 	{
 		public TitleConverter(ValueModel<Contact> subject)
 		{
@@ -66,17 +66,13 @@ public class ContactPM
 			if (contact != null)
 			{
 				return String.format(
-					TITLE_WITH_CONTACT_FORMAT, contact.getFirstName(), contact.getLastName());
+					titleWithContactFormat, contact.getFirstName(), contact.getLastName());
 			}
 			else
 			{
-				return TITLE_WITHOUT_CONTACT;
+				return titleWithoutContact;
 			}
 		}
-		
-		//TODO inject as resource
-		static final private String TITLE_WITH_CONTACT_FORMAT = "Contact: `%s %s`";
-		static final private String TITLE_WITHOUT_CONTACT = "Contacts List";
 	}
 	
 	final private GutsPresentationModel<Contact> model;
@@ -86,4 +82,8 @@ public class ContactPM
 	final public AddressPM homeAddress;
 	final public AddressPM officeAddress;
 	final public ValueModel<String> title;
+
+	// Injected as resource
+	private String titleWithContactFormat;
+	private String titleWithoutContact;
 }
