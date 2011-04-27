@@ -33,7 +33,7 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 	static final private Logger _logger = LoggerFactory.getLogger(AddressBookLifecycle.class);
 	
 	@Inject
-	public AddressBookLifecycle(AllContactsView contactsView,
+	AddressBookLifecycle(AllContactsView contactsView,
 		DialogFactory dialogFactory, ExitController exitController)
 	{
 		this.contactsView = contactsView;
@@ -43,7 +43,7 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 
 	@Override public void startup(String[] args)
 	{
-		// Show initiali view with contacts list
+		// Show initial view with contacts list
 		dialogFactory.showDialog(contactsView, JDialogConfig.create().config());
 		
 		// Shutdown when dialog has closed

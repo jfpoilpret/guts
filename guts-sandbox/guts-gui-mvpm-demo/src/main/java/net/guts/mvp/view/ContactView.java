@@ -30,7 +30,7 @@ public class ContactView extends JPanel
 {
 	static final private long serialVersionUID = -1436540113538430985L;
 	
-	@Inject public ContactView(@Assisted ContactPM model)
+	@Inject ContactView(@Assisted ContactPM model)
 	{
 		// Widgets setup
 		home = new AddressView(model.homeAddress);
