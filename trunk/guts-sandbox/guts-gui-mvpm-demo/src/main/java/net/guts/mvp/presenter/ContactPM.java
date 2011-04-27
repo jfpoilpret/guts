@@ -28,23 +28,23 @@ public class ContactPM
 	ContactPM(ValueModel<Contact> contact)
 	{
 		// Create all necessary models here
-		_model = Models.createPM(Contact.class, contact);
+		model = Models.createPM(Contact.class, contact);
 		
 		// Following line is redundant with previous declaration of Contact mock, hence useless
-		Contact of = _model.of();
-		_firstName = _model.getPropertyModel(of.getFirstName());
-		_lastName = _model.getPropertyModel(of.getLastName());
-		_birth = _model.getPropertyModel(of.getBirth());
+		Contact of = model.of();
+		firstName = model.getPropertyModel(of.getFirstName());
+		lastName = model.getPropertyModel(of.getLastName());
+		birth = model.getPropertyModel(of.getBirth());
 		
-		_homeAddress = new AddressPM(_model.getPropertyModel(of.getHome()));
-		_officeAddress = new AddressPM(_model.getPropertyModel(of.getOffice()));
+		homeAddress = new AddressPM(model.getPropertyModel(of.getHome()));
+		officeAddress = new AddressPM(model.getPropertyModel(of.getOffice()));
 		
-		_title = new TitleConverter(_model.getBeanChannel());
+		title = new TitleConverter(model.getBeanChannel());
 	}
 	
 	ValueModel<Contact> contactModel()
 	{
-		return _model.getBeanChannel();
+		return model.getBeanChannel();
 	}
 
 	//TODO does it have to be public???
@@ -79,11 +79,11 @@ public class ContactPM
 		static final private String TITLE_WITHOUT_CONTACT = "Contacts List";
 	}
 	
-	final private GutsPresentationModel<Contact> _model;
-	final public ValueModel<String> _firstName;
-	final public ValueModel<String> _lastName;
-	final public ValueModel<Date> _birth;
-	final public AddressPM _homeAddress;
-	final public AddressPM _officeAddress;
-	final public ValueModel<String> _title;
+	final private GutsPresentationModel<Contact> model;
+	final public ValueModel<String> firstName;
+	final public ValueModel<String> lastName;
+	final public ValueModel<Date> birth;
+	final public AddressPM homeAddress;
+	final public AddressPM officeAddress;
+	final public ValueModel<String> title;
 }

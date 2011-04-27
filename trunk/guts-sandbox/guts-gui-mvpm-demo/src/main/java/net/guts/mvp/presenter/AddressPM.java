@@ -23,19 +23,19 @@ import com.jgoodies.binding.value.ValueModel;
 
 public class AddressPM
 {
-	AddressPM(ValueModel<Address> address)
+	AddressPM(ValueModel<Address> addressModel)
 	{
 		// Create all necessary models here
-		_address = Models.createPM(Address.class, address);
+		address = Models.createPM(Address.class, addressModel);
 
-		Address of = _address.of();
-		_street1 = _address.getPropertyModel(of.getStreet1());
-		_street2 = _address.getPropertyModel(of.getStreet2());
-		_zip = _address.getPropertyModel(of.getZip());
-		_city = _address.getPropertyModel(of.getCity());
-		_phone = _address.getPropertyModel(of.getPhone());
+		Address of = address.of();
+		street1 = address.getPropertyModel(of.getStreet1());
+		street2 = address.getPropertyModel(of.getStreet2());
+		zip = address.getPropertyModel(of.getZip());
+		city = address.getPropertyModel(of.getCity());
+		phone = address.getPropertyModel(of.getPhone());
 		
-		_compactAddress = new CompactAddressConverter(address); 
+		compactAddress = new CompactAddressConverter(addressModel); 
 	}
 	
 	@SuppressWarnings("serial") 
@@ -96,12 +96,12 @@ public class AddressPM
 	}
 
 	//TODO does it need be public????
-	final public GutsPresentationModel<Address> _address;
+	final public GutsPresentationModel<Address> address;
 	
-	final public ValueModel<String> _street1;
-	final public ValueModel<String> _street2;
-	final public ValueModel<String> _zip;
-	final public ValueModel<String> _city;
-	final public ValueModel<String> _phone;
-	final public ValueModel<String> _compactAddress;
+	final public ValueModel<String> street1;
+	final public ValueModel<String> street2;
+	final public ValueModel<String> zip;
+	final public ValueModel<String> city;
+	final public ValueModel<String> phone;
+	final public ValueModel<String> compactAddress;
 }

@@ -61,45 +61,45 @@ public class AllContactsView extends JPanel
 		ContactViewFactory contactViewFactory,
 		DialogFactory dialogFactory, MessageFactory messageFactory)
 	{
-		_dialogFactory = dialogFactory;
-		_messageFactory = messageFactory;
-		_contactViewFactory = contactViewFactory;
-		_model = model;
-		_selection = model._contacts;
+		this.dialogFactory = dialogFactory;
+		this.messageFactory = messageFactory;
+		this.contactViewFactory = contactViewFactory;
+		this.model = model;
+		selection = model.contacts;
 		
 		// Initialize components
-		_txfFirstName.setEditable(false);
-		_txfLastName.setEditable(false);
-		_txfBirth.setEditable(false);
-		_table.setModel(model._contactsTableModel);
+		txfFirstName.setEditable(false);
+		txfLastName.setEditable(false);
+		txfBirth.setEditable(false);
+		table.setModel(model.contactsTableModel);
 
 		// Setup components bindings
-		GutsBindings.bind(_table, _selection);
-		_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		GutsBindings.bind(_txfFirstName, model._selection._firstName);
-		GutsBindings.bind(_txfLastName, model._selection._lastName);
-		GutsBindings.bind(_txfBirth, model._selection._birth);
-		GutsBindings.bind(_txaAddress, model._selection._homeAddress._compactAddress);
-		connectTitle(this, model._selection._title);
+		GutsBindings.bind(table, selection);
+		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		GutsBindings.bind(txfFirstName, model.selection.firstName);
+		GutsBindings.bind(txfLastName, model.selection.lastName);
+		GutsBindings.bind(txfBirth, model.selection.birth);
+		GutsBindings.bind(txaAddress, model.selection.homeAddress.compactAddress);
+		connectTitle(this, model.selection.title);
 
 		//TODO move out of the View!
 		// Connect actions to existence of selection
-		connectEmpty(_selection, _delete, _modify);
-		GutsBindings.bindDoubleClick(_table, _modify);
-		GutsBindings.bindEnter(_table, _modify);
+		connectEmpty(selection, delete, modify);
+		GutsBindings.bindDoubleClick(table, modify);
+		GutsBindings.bindEnter(table, modify);
 		
 		// Layout the form
 		//TODO add more info (address)
 		DesignGridLayout layout = new DesignGridLayout(this);
 		layout.withoutConsistentWidthAcrossNonGridRows();
-		layout.row().center().add(new JScrollPane(_table));
+		layout.row().center().add(new JScrollPane(table));
 		layout.emptyRow();
-		layout.row().grid(_lblFirstName).add(_txfFirstName);
-		layout.row().grid(_lblLastName).add(_txfLastName);
-		layout.row().grid(_lblBirth).add(_txfBirth);
-		layout.row().grid(_lblAddress).add(_txaAddress);
+		layout.row().grid(lblFirstName).add(txfFirstName);
+		layout.row().grid(lblLastName).add(txfLastName);
+		layout.row().grid(lblBirth).add(txfBirth);
+		layout.row().grid(lblAddress).add(txaAddress);
 		layout.emptyRow();
-		layout.row().right().add(_btnCreate, _btnModify, _btnDelete);
+		layout.row().right().add(btnCreate, btnModify, btnDelete);
 	}
 	
 	//TODO put to some utility class in guts-properties!
@@ -140,62 +140,62 @@ public class AllContactsView extends JPanel
 
 	//TODO move all actions out of View!???
 	
-	final private GutsAction _create = new GutsAction()
+	final private GutsAction create = new GutsAction()
 	{
 		@Override protected void perform()
 		{
 			// ask PM to create new ContactPM
-			ContactPM contactModel = _model.createContact();
-			OkCancel template = OkCancel.create().withOK(_model.saveContact(contactModel)).withCancel();
+			ContactPM contactModel = model.createContact();
+			OkCancel template = OkCancel.create().withOK(model.saveContact(contactModel)).withCancel();
 			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = _contactViewFactory.create(contactModel);
-			_dialogFactory.showDialog(view, config.config());
+			ContactView view = contactViewFactory.create(contactModel);
+			dialogFactory.showDialog(view, config.config());
 		}
 	};
 	
-	final private GutsAction _modify = new GutsAction()
+	final private GutsAction modify = new GutsAction()
 	{
 		@Override protected void perform()
 		{
-			OkCancel template = OkCancel.create().withOK(_model._saveSelectedContact).withCancel();
+			OkCancel template = OkCancel.create().withOK(model._saveSelectedContact).withCancel();
 			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = _contactViewFactory.create(_model._selection);
-			_dialogFactory.showDialog(view, config.config());
+			ContactView view = contactViewFactory.create(model.selection);
+			dialogFactory.showDialog(view, config.config());
 		}
 	};
 	
-	final private GutsAction _delete = new TaskAction()
+	final private GutsAction delete = new TaskAction()
 	{
 		@Override protected void perform()
 		{
 			// First ask user confirmation
-			Contact selection = _selection.getSelection();
-			if (UserChoice.YES == _messageFactory.showMessage(
-				"confirm-delete", selection.getFirstName(), selection.getLastName()))
+			Contact selected = selection.getSelection();
+			if (UserChoice.YES == messageFactory.showMessage(
+				"confirm-delete", selected.getFirstName(), selected.getLastName()))
 			{
-				submit(_model.getDeleteTask(), InputBlockers.actionBlocker(this));
+				submit(model.getDeleteTask(), InputBlockers.actionBlocker(this));
 			}
 		}
 	};
 	
-	final private DialogFactory _dialogFactory;
-	final private MessageFactory _messageFactory;
+	final private DialogFactory dialogFactory;
+	final private MessageFactory messageFactory;
 	
-	final private ContactViewFactory _contactViewFactory;
+	final private ContactViewFactory contactViewFactory;
 	
-	final private AllContactsPM _model;
-	final private SelectionInList<Contact> _selection;
+	final private AllContactsPM model;
+	final private SelectionInList<Contact> selection;
 	
-	final private JTable _table = new JTable();
-	final private JLabel _lblFirstName = new JLabel();
-	final private JTextField _txfFirstName = new JTextField();
-	final private JLabel _lblLastName = new JLabel();
-	final private JTextField _txfLastName = new JTextField();
-	final private JLabel _lblBirth = new JLabel();
-	final private JFormattedTextField _txfBirth = new JFormattedTextField();
-	final private JLabel _lblAddress = new JLabel();
-	final private JTextArea _txaAddress = new JTextArea(4, 40);
-	final private JButton _btnModify = new JButton(_modify);
-	final private JButton _btnCreate = new JButton(_create);
-	final private JButton _btnDelete = new JButton(_delete);
+	final private JTable table = new JTable();
+	final private JLabel lblFirstName = new JLabel();
+	final private JTextField txfFirstName = new JTextField();
+	final private JLabel lblLastName = new JLabel();
+	final private JTextField txfLastName = new JTextField();
+	final private JLabel lblBirth = new JLabel();
+	final private JFormattedTextField txfBirth = new JFormattedTextField();
+	final private JLabel lblAddress = new JLabel();
+	final private JTextArea txaAddress = new JTextArea(4, 40);
+	final private JButton btnModify = new JButton(modify);
+	final private JButton btnCreate = new JButton(create);
+	final private JButton btnDelete = new JButton(delete);
 }

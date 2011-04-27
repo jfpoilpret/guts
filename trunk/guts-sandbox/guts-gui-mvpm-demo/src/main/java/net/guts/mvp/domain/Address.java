@@ -16,70 +16,70 @@ package net.guts.mvp.domain;
 
 public class Address
 {
-	private String _street1;
-	private String _street2;
-	private String _zip;
-	private String _city;
-	private String _country;
-	private String _phone;
+	private String street1;
+	private String street2;
+	private String zip;
+	private String city;
+	private String country;
+	private String phone;
 
 	public String getCity()
 	{
-		return _city;
+		return city;
 	}
 
 	public void setCity(String city)
 	{
-		_city = city;
+		this.city = city;
 	}
 
 	public String getCountry()
 	{
-		return _country;
+		return country;
 	}
 
 	public void setCountry(String country)
 	{
-		_country = country;
+		this.country = country;
 	}
 
 	public String getPhone()
 	{
-		return _phone;
+		return phone;
 	}
 
 	public void setPhone(String phone)
 	{
-		_phone = phone;
+		this.phone = phone;
 	}
 
 	public String getStreet1()
 	{
-		return _street1;
+		return street1;
 	}
 
 	public void setStreet1(String street1)
 	{
-		_street1 = street1;
+		this.street1 = street1;
 	}
 
 	public String getStreet2()
 	{
-		return _street2;
+		return street2;
 	}
 
 	public void setStreet2(String street2)
 	{
-		_street2 = street2;
+		this.street2 = street2;
 	}
 
 	public String getZip()
 	{
-		return _zip;
+		return zip;
 	}
 
 	public void setZip(String zip)
 	{
-		_zip = zip;
+		this.zip = zip;
 	}
 }

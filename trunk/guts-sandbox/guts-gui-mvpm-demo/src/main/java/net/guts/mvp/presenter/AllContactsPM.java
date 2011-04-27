@@ -34,37 +34,36 @@ import com.google.inject.Singleton;
 import com.jgoodies.binding.list.SelectionInList;
 import com.jgoodies.binding.value.ValueModel;
 
-//TODO refactor to better name (Contact(s)PM ?)
 @Singleton
 public class AllContactsPM
 {
 	@Inject
 	AllContactsPM(AddressBookService service)
 	{
-		_service = service;
+		this.service = service;
 
 		// Create all necessary models here
-		ValueModel<Contact> selection = Models.holder(true);
-		_contacts = new SelectionInList<Contact>(_service.getAllContacts(), selection);
-		_selection = new ContactPM(selection);
+		ValueModel<Contact> selectionModel = Models.holder(true);
+		contacts = new SelectionInList<Contact>(service.getAllContacts(), selectionModel);
+		selection = new ContactPM(selectionModel);
 		
 		GutsTableModelBuilder<Contact> builder = newTableModelFor(Contact.class);
 		Contact of = builder.of();
 		builder.addProperty(of.getFirstName())
 				.addProperty(of.getLastName())
 				.addProperty(of.getBirth());
-		_contactsTableModel = builder.buildModel();
+		contactsTableModel = builder.buildModel();
 	}
 	
 	public Task<?> getDeleteTask()
 	{
-		final Contact selection = _contacts.getSelection();
+		final Contact selection = contacts.getSelection();
 		return new Task<Void>()
 		{
 			@Override 
 			public Void execute(FeedbackController controller) throws InterruptedException
 			{
-				_service.removeContact(selection);
+				service.removeContact(selection);
 				return null;
 			}
 		};
@@ -91,7 +90,7 @@ public class AllContactsPM
 					{
 						@Override public Void execute(FeedbackController controller) throws Exception
 						{
-							_service.createContact(contact.contactModel().getValue());
+							service.createContact(contact.contactModel().getValue());
 							return null;
 						}
 					});
@@ -103,7 +102,7 @@ public class AllContactsPM
 	{
 		@Override protected void perform()
 		{
-			final Contact selection = _contacts.getSelection();
+			final Contact selection = contacts.getSelection();
 			submit(new Task<Void>()
 			{
 				@Override public Void execute(FeedbackController controller) throws Exception
@@ -111,11 +110,11 @@ public class AllContactsPM
 					// Check if new contact
 					if (selection.getId() == 0)
 					{
-						_service.createContact(selection);
+						service.createContact(selection);
 					}
 					else
 					{
-						_service.modifyContact(selection);
+						service.modifyContact(selection);
 					}
 					return null;
 				}
@@ -123,9 +122,9 @@ public class AllContactsPM
 		}
 	};
 	
-	final public SelectionInList<Contact> _contacts;
-	final public TableModel _contactsTableModel;
-	final public ContactPM _selection;
+	final public SelectionInList<Contact> contacts;
+	final public TableModel contactsTableModel;
+	final public ContactPM selection;
 	
-	final private AddressBookService _service;
+	final private AddressBookService service;
 }

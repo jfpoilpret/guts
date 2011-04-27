@@ -36,18 +36,18 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 	public AddressBookLifecycle(AllContactsView contactsView,
 		DialogFactory dialogFactory, ExitController exitController)
 	{
-		_contactsView = contactsView;
-		_dialogFactory = dialogFactory;
-		_exitController = exitController;
+		this.contactsView = contactsView;
+		this.dialogFactory = dialogFactory;
+		this.exitController = exitController;
 	}
 
 	@Override public void startup(String[] args)
 	{
 		// Show initiali view with contacts list
-		_dialogFactory.showDialog(_contactsView, JDialogConfig.create().config());
+		dialogFactory.showDialog(contactsView, JDialogConfig.create().config());
 		
 		// Shutdown when dialog has closed
-		_exitController.shutdown();
+		exitController.shutdown();
 	}
 
 	@Override public void ready()
@@ -60,7 +60,7 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 		return true;
 	}
 	
-	final private AllContactsView _contactsView;
-	final private DialogFactory _dialogFactory;
-	final private ExitController _exitController;
+	final private AllContactsView contactsView;
+	final private DialogFactory dialogFactory;
+	final private ExitController exitController;
 }

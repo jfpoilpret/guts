@@ -16,14 +16,10 @@ package net.guts.mvp;
 
 import java.util.List;
 
-import net.guts.gui.action.ActionNamePolicy;
-import net.guts.gui.action.DefaultActionNamePolicy;
 import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
-import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.ComponentNamingModule;
-import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.okcancel.OkCancelModule;
 import net.guts.mvp.view.ContactView;
@@ -56,10 +52,6 @@ public class AddressBookMain extends AbstractApplication
 				// Setup ResourceModule root bundle
 				Resources.bindRootBundle(binder(), getClass(), "resources");
 
-				// Set our own component naming policy
-				bind(ComponentNamePolicy.class).toInstance(new AddressBookComponentNamePolicy());
-				bind(ActionNamePolicy.class).toInstance(new AddressBookActionNamePolicy());
-				
 				// Most important: bind the AppLifecycleStarter
 				bind(AppLifecycleStarter.class)
 					.to(AddressBookLifecycle.class).asEagerSingleton();
@@ -69,23 +61,5 @@ public class AddressBookMain extends AbstractApplication
 					FactoryProvider.newFactory(ContactViewFactory.class, ContactView.class));
 			}
 		});
-	}
-}
-
-//Special policy for automatically naming Swing components:
-//Don't use "-" as a name separator, since all fields names already start with "_"
-class AddressBookComponentNamePolicy extends DefaultComponentNamePolicy
-{
-	@Override protected String separator()
-	{
-		return "";
-	}
-}
-
-class AddressBookActionNamePolicy extends DefaultActionNamePolicy
-{
-	@Override protected String separator()
-	{
-		return "";
 	}
 }
