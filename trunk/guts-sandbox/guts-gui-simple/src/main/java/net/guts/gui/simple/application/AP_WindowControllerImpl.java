@@ -27,11 +27,11 @@ import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
 import net.guts.event.Consumes;
-import net.guts.gui.application.WindowController.BoundsPolicy;
-import net.guts.gui.application.WindowController.StatePolicy;
 import net.guts.gui.exit.ExitController;
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.session.SessionManager;
+import net.guts.gui.window.BoundsPolicy;
+import net.guts.gui.window.StatePolicy;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
