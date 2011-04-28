@@ -66,7 +66,6 @@ public class AllContactsView extends JPanel
 		GutsBindings.bindEnter(table, uiActions.modify);
 		
 		// Layout the form
-		//TODO add more info (address)
 		DesignGridLayout layout = new DesignGridLayout(this);
 		layout.withoutConsistentWidthAcrossNonGridRows();
 		layout.row().center().add(new JScrollPane(table));
