@@ -20,6 +20,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
+import javax.swing.Action;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -59,7 +61,9 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			@Override public boolean process(Field field, GutsAction action)
 			{
 				// First of all, ensure that action has a name
-				action.name(_policy.actionName(instance, action, field.getName()));
+			    if (action.name() == null){
+			        action.name(_policy.actionName(instance, action, field.getName()));
+			    }
 				registerAction(action);
 				return true;
 			}
@@ -74,17 +78,17 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 			{
 				_injector.injectMembers(action);
 			}
-			String name = action.name();
-			if (name == null)
-			{
-				_logger.error("registerAction() can't register unnamed GutsAction class {}", 
-					action.getClass().getName());
-			}
-			else
-			{
-				_resourceInjector.injectInstance(action, name);
-			}
 		}
+        String name = action.name();
+        if (name == null)
+        {
+            _logger.error("registerAction() can't register unnamed GutsAction class {}", 
+                action.getClass().getName());
+        }
+        else
+        {
+            _resourceInjector.injectInstance(action, name);
+        }
 	}
 	
 	@Consumes(priority = Integer.MIN_VALUE + 2) 
