@@ -37,9 +37,18 @@ public class DefaultActionNamePolicy implements ActionNamePolicy
 	 */
 	@Override public String actionName(Object parent, GutsAction action, String field)
 	{
-		return parent.getClass().getSimpleName() + separator() + field;
+		return prefixFromClass(parent.getClass()) + separator() + field;
 	}
 
+	private String prefixFromClass(Class<?> clazz){
+	    String name = clazz.getSimpleName();
+	    int dollarPos = name.indexOf("$$");
+	    if (dollarPos >= 0){
+	        name = name.substring(0, dollarPos);
+	    }
+	    return name;
+	}
+	
 	/**
 	 * Defines the string to use to separate the parent class name from the field name
 	 * when assembling the complete name of an action.
