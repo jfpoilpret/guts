@@ -42,7 +42,11 @@ public interface ActionNamePolicy
 	 * {@code parent} class instance, passed to 
 	 * {@link ActionRegistrationManager#registerActions(Object)}.
 	 * <p/>
-	 * 
+	 * If you implement your own {@code ActionNamePolicy} and want to use the
+	 * class name of {@code parent}, please be aware that class names may be
+	 * transformed by using Guice interceptors (which is itself based on
+	 * CGLIB). Take a look at {@link DefaultActionNamePolicy} implementation
+	 * to see how the "real" class name can be extracted from an intercepted class.
 	 * 
 	 * @param parent the object that holds {@code action} in {@code field} field
 	 * @param action the action for which to build a name

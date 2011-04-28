@@ -21,7 +21,6 @@ import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.matcher.Matcher;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI action management system. 

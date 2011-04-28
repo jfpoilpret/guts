@@ -32,23 +32,36 @@ public class DefaultActionNamePolicy implements ActionNamePolicy
 	 * where:
 	 * <ul>
 	 * <li>{@code [sep]} is a separator as returned by {@link #separator()}</li>
-	 * <li>{@code parentName} is a simple name of the class of {@code parent}</li>
+	 * <li>{@code parentName} is a simple name of the class of {@code parent}, as returned
+	 * by {@link #extractClassName(Class)}</li>
 	 * </ul>
 	 */
 	@Override public String actionName(Object parent, GutsAction action, String field)
 	{
-		return prefixFromClass(parent.getClass()) + separator() + field;
-	}
-
-	private String prefixFromClass(Class<?> clazz){
-	    String name = clazz.getSimpleName();
-	    int dollarPos = name.indexOf("$$");
-	    if (dollarPos >= 0){
-	        name = name.substring(0, dollarPos);
-	    }
-	    return name;
+		return extractClassName(parent.getClass()) + separator() + field;
 	}
 	
+	/**
+	 * Extracts the class name of the passed argument, to be used as the first part of
+	 * the action name.
+	 * Default implementation {@link Class#getSimpleName() takes the simple name} of 
+	 * {@code clazz} and removes any characters that might have been added by CGLIB-based
+	 * interceptors (ie anything following "{@literal $$}").
+	 * 
+	 * @param clazz the class of which to extract the name
+	 * @return the extracted name for {@code clazz}
+	 */
+	protected String extractClassName(Class<?> clazz)
+	{
+		String name = clazz.getSimpleName();
+		int index = name.indexOf("$$");
+		if (index > -1)
+		{
+			name = name.substring(0, index);
+		}
+		return name;
+	}
+
 	/**
 	 * Defines the string to use to separate the parent class name from the field name
 	 * when assembling the complete name of an action.

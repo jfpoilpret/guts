@@ -38,6 +38,12 @@ public interface ComponentNamePolicy
 	/**
 	 * Called to build the name of the {@code parent Component} passed to
 	 * {@link ComponentNamingService#setComponentName(Component)}.  
+	 * <p/>
+	 * If you implement your own {@code ComponentNamePolicy} and want to use the
+	 * class name of {@code parent}, please be aware that class names may be
+	 * transformed by using Guice interceptors (which is itself based on
+	 * CGLIB). Take a look at {@link DefaultComponentNamePolicy} implementation
+	 * to see how the "real" class name can be extracted from an intercepted class.
 	 * 
 	 * @param parent the root component to build a name for
 	 * @return the name to set for {@code parent}
