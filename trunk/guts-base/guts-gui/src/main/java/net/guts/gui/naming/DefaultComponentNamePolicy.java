@@ -32,7 +32,28 @@ public class DefaultComponentNamePolicy implements ComponentNamePolicy
 	 */
 	@Override public String parentName(Component parent)
 	{
-		 return parent.getClass().getSimpleName();
+		 return extractClassName(parent.getClass());
+	}
+
+	/**
+	 * Extracts the class name of the passed argument, to be used as the first part of
+	 * the component name.
+	 * Default implementation {@link Class#getSimpleName() takes the simple name} of 
+	 * {@code clazz} and removes any characters that might have been added by CGLIB-based
+	 * interceptors (ie anything following "{@literal $$}").
+	 * 
+	 * @param clazz the class of which to extract the name
+	 * @return the extracted name for {@code clazz}
+	 */
+	protected String extractClassName(Class<?> clazz)
+	{
+		String name = clazz.getSimpleName();
+		int index = name.indexOf("$$");
+		if (index > -1)
+		{
+			name = name.substring(0, index);
+		}
+		return name;
 	}
 
 	/**
@@ -42,6 +63,8 @@ public class DefaultComponentNamePolicy implements ComponentNamePolicy
 	 * <br/>
 	 * where:
 	 * <ul>
+	 * <li>{@code parentName} is a simple name of the class of {@code parent}, as returned
+	 * by {@link #extractClassName(Class)}</li>
 	 * <li>{@code [sep]} is a separator as returned by {@link #separator()}</li>
 	 * <li>{@code holderX} is a holder string from {@code holders}</li>
 	 * </ul>
