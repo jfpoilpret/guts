@@ -24,7 +24,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
+import javax.swing.Icon;
 import javax.swing.JComponent;
+import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 
@@ -108,5 +110,10 @@ public class GutsBindings extends Bindings
 	{
 		Bean<C> helper = Bean.create((Class<C>) component.getClass());
 		bind(component, helper.property(getter).name(), valueModel);
+	}
+	
+	public static void bind(JLabel label, ValueModel<Icon> icon)
+	{
+		bind(label, Models.of(JLabel.class).getIcon(), icon);
 	}
 }
