@@ -48,6 +48,7 @@ public class Bean<B>
 		Enhancer enhancer = new Enhancer();
 		enhancer.setSuperclass(clazz);
 		enhancer.setCallback(mockInterceptor);
+		enhancer.setInterceptDuringConstruction(false);
 
 		_mock = clazz.cast(enhancer.create());
 	}

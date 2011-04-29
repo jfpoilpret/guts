@@ -20,6 +20,9 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
 
+import javax.swing.Icon;
+import javax.swing.JLabel;
+
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
@@ -50,6 +53,13 @@ public class BeanTest
 		assertEquals("oneString", property1.name());
 		assertEquals("oneInt", property2.name());
 		assertEquals("oneDate", property3.name());
+	}
+	
+	@Test public void checkJLabelIconPropertyName() throws Exception
+	{
+		Bean<JLabel> helper = Bean.create(JLabel.class);
+		Property<JLabel, Icon> property = helper.property(helper.mock().getIcon());
+		assertEquals("icon", property.name());
 	}
 	
 	@Test public void checkStringPropertyGet() throws Exception
