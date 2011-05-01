@@ -82,7 +82,7 @@ public class GutsBindings extends Bindings
 		}
 	}
 
-	public static void bindDoubleClick(final JTable table, final Action action)
+	public static void connectDoubleClick(final JTable table, final Action action)
 	{
 		table.addMouseListener(new MouseAdapter()
 		{
@@ -97,7 +97,7 @@ public class GutsBindings extends Bindings
 		});
 	}
 	
-	public static void bindEnter(final JTable table, final Action action)
+	public static void connectEnter(final JTable table, final Action action)
 	{
 		table.getActionMap().put("ENTER", action);
 		table.getInputMap().put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "ENTER");
@@ -112,8 +112,23 @@ public class GutsBindings extends Bindings
 		bind(component, helper.property(getter).name(), valueModel);
 	}
 	
-	public static void bind(JLabel label, ValueModel<Icon> icon)
+	@SuppressWarnings("unchecked") 
+	public static <C extends JComponent, T> void connect(
+		C component, T getter, ValueModel<T> valueModel)
 	{
-		bind(label, Models.of(JLabel.class).getIcon(), icon);
+		Bean<C> helper = Bean.create((Class<C>) component.getClass());
+		PropertyConnector connector = PropertyConnector.connect(
+			component, helper.property(getter).name(), valueModel, "value");
+		connector.updateProperty1();
+	}
+	
+	public static void connectText(JLabel label, ValueModel<String> text)
+	{
+		connect(label, Models.of(JLabel.class).getText(), text);
+	}
+	
+	public static void connectIcon(JLabel label, ValueModel<Icon> icon)
+	{
+		connect(label, Models.of(JLabel.class).getIcon(), icon);
 	}
 }
