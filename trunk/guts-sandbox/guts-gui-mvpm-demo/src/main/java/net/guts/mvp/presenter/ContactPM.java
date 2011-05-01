@@ -16,6 +16,8 @@ package net.guts.mvp.presenter;
 
 import java.util.Date;
 
+import javax.swing.Icon;
+
 import net.guts.binding.GutsPresentationModel;
 import net.guts.binding.Models;
 import net.guts.gui.resource.ResourceInjector;
@@ -25,6 +27,7 @@ import net.guts.mvp.domain.Contact;
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.jgoodies.binding.value.AbstractConverter;
+import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
 public class ContactPM
@@ -46,6 +49,8 @@ public class ContactPM
 		
 		homeAddress = new AddressPM(model.getPropertyModel(of.getHome()));
 		officeAddress = new AddressPM(model.getPropertyModel(of.getOffice()));
+		picture = new PictureModel();
+		pictureText = new PictureLabelConverter(picture);
 		
 		title = new TitleConverter(model.getBeanChannel());
 	}
@@ -55,13 +60,11 @@ public class ContactPM
 		return model.getBeanChannel();
 	}
 	
-	//TODO add methods or ValueModels to access picture (through AddressBookService)
-
 	// Strangely this class must be public or JGoodies Bindings will throw an exception...
 	@SuppressWarnings("serial") 
 	public class TitleConverter extends AbstractConverter<Contact, String>
 	{
-		public TitleConverter(ValueModel<Contact> subject)
+		TitleConverter(ValueModel<Contact> subject)
 		{
 			super(subject);
 		}
@@ -85,6 +88,60 @@ public class ContactPM
 		}
 	}
 	
+	// Strangely this class must be public or JGoodies Bindings will throw an exception...
+	public class PictureLabelConverter extends AbstractConverter<Icon, String>
+	{
+		PictureLabelConverter(ValueModel<Icon> model)
+		{
+			super(model);
+		}
+		
+		@Override public void setValue(String unused)
+		{
+			// Nothing to do, this converter is one way only
+		}
+
+		@Override public String convertFromSubject(Icon picture)
+		{
+			if (picture == null)
+			{
+				//TODO that string should be resource-injected
+				return "No picture for this contact";
+			}
+			else
+			{
+				return null;
+			}
+		}
+	}
+
+	//TODO Need to listen to changes in getBeanChannel and propagate changes to listeners
+	// Strangely this class must be public or JGoodies Bindings will throw an exception...
+	public class PictureModel extends AbstractValueModel<Icon>
+	{
+		PictureModel()
+		{
+		}
+		
+		@Override public Icon getValue()
+		{
+			Contact contact = model.getBeanChannel().getValue();
+			if (contact != null)
+			{
+				return service.getContactPicture(contact.getId());
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		@Override public void setValue(Icon picture)
+		{
+			// Do nothing, current AddressBookService has no way to change contact picture
+		}
+	}
+	
 	final private AddressBookService service;
 	final private GutsPresentationModel<Contact> model;
 	final public ValueModel<String> firstName;
@@ -92,6 +149,8 @@ public class ContactPM
 	final public ValueModel<Date> birth;
 	final public AddressPM homeAddress;
 	final public AddressPM officeAddress;
+	final public ValueModel<Icon> picture;
+	final public ValueModel<String> pictureText;
 	final public ValueModel<String> title;
 
 	// Injected as resource

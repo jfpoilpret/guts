@@ -62,8 +62,8 @@ public class AllContactsView extends JPanel
 		btnModify.setAction(uiActions.modify);
 		btnDelete.setAction(uiActions.delete);
 
-		GutsBindings.bindDoubleClick(table, uiActions.modify);
-		GutsBindings.bindEnter(table, uiActions.modify);
+		GutsBindings.connectDoubleClick(table, uiActions.modify);
+		GutsBindings.connectEnter(table, uiActions.modify);
 		
 		// Layout the form
 		DesignGridLayout layout = new DesignGridLayout(this);
