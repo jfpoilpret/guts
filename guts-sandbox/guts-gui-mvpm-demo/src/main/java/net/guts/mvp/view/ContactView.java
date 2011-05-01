@@ -17,6 +17,7 @@ package net.guts.mvp.view;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import net.guts.binding.GutsBindings;
@@ -41,13 +42,14 @@ public class ContactView extends JPanel
 		GutsBindings.bind(txfFirstName, model.firstName);
 		GutsBindings.bind(txfLastName, model.lastName);
 		GutsBindings.bind(txfBirth, model.birth);
-		//FIXME hereafter we want one-way-only binding not bidirectional!!!
-		GutsBindings.connectIcon(picture, model.picture);
-		GutsBindings.connectText(picture, model.pictureText);
+		GutsBindings.connect(picture, Models.of(Picture.class).getIcon(), model.picture);
 		
 		// Layout the view
 		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().grid(lblFirstName).add(txfFirstName).grid().add(picture);
+		JScrollPane scroller = new JScrollPane(picture);
+		scroller.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scroller.setVerticalScrollBarPolicy(JScrollPane.VERTICAL_SCROLLBAR_NEVER);
+		layout.row().grid(lblFirstName).add(txfFirstName).grid().add(scroller);
 		layout.row().grid(lblLastName).add(txfLastName).grid().spanRow();
 		layout.row().grid(lblBirth).add(txfBirth).grid().spanRow();
 		home.layout(layout, true);
@@ -60,7 +62,7 @@ public class ContactView extends JPanel
 	final private JTextField txfLastName = new JTextField();
 	final private JLabel lblBirth = new JLabel();
 	final private JFormattedTextField txfBirth = new JFormattedTextField();
-	final private JLabel picture = new JLabel();
+	final private Picture picture = new Picture();
 	final private AddressView home;
 	final private AddressView office;
 }
