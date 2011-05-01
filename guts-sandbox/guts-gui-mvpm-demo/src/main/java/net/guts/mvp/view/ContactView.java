@@ -19,12 +19,13 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import net.guts.binding.GutsBindings;
+import net.guts.binding.Models;
 import net.guts.mvp.presenter.ContactPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
-import com.jgoodies.binding.adapter.Bindings;
 
 public class ContactView extends JPanel
 {
@@ -37,15 +38,18 @@ public class ContactView extends JPanel
 		office = new AddressView(model.officeAddress);
 
 		// Bind the widgets to the model
-		Bindings.bind(txfFirstName, model.firstName);
-		Bindings.bind(txfLastName, model.lastName);
-		Bindings.bind(txfBirth, model.birth);
+		GutsBindings.bind(txfFirstName, model.firstName);
+		GutsBindings.bind(txfLastName, model.lastName);
+		GutsBindings.bind(txfBirth, model.birth);
+		//FIXME hereafter we want one-way-only binding not bidirectional!!!
+		GutsBindings.connectIcon(picture, model.picture);
+		GutsBindings.connectText(picture, model.pictureText);
 		
 		// Layout the view
 		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().grid(lblFirstName).add(txfFirstName);
-		layout.row().grid(lblLastName).add(txfLastName);
-		layout.row().grid(lblBirth).add(txfBirth);
+		layout.row().grid(lblFirstName).add(txfFirstName).grid().add(picture);
+		layout.row().grid(lblLastName).add(txfLastName).grid().spanRow();
+		layout.row().grid(lblBirth).add(txfBirth).grid().spanRow();
 		home.layout(layout, true);
 		office.layout(layout, true);
 	}
@@ -56,6 +60,7 @@ public class ContactView extends JPanel
 	final private JTextField txfLastName = new JTextField();
 	final private JLabel lblBirth = new JLabel();
 	final private JFormattedTextField txfBirth = new JFormattedTextField();
+	final private JLabel picture = new JLabel();
 	final private AddressView home;
 	final private AddressView office;
 }
