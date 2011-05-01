@@ -50,7 +50,6 @@ public class ContactPM
 		homeAddress = new AddressPM(model.getPropertyModel(of.getHome()));
 		officeAddress = new AddressPM(model.getPropertyModel(of.getOffice()));
 		picture = new PictureModel();
-		pictureText = new PictureLabelConverter(picture);
 		
 		title = new TitleConverter(model.getBeanChannel());
 	}
@@ -88,33 +87,6 @@ public class ContactPM
 		}
 	}
 	
-	// Strangely this class must be public or JGoodies Bindings will throw an exception...
-	public class PictureLabelConverter extends AbstractConverter<Icon, String>
-	{
-		PictureLabelConverter(ValueModel<Icon> model)
-		{
-			super(model);
-		}
-		
-		@Override public void setValue(String unused)
-		{
-			// Nothing to do, this converter is one way only
-		}
-
-		@Override public String convertFromSubject(Icon picture)
-		{
-			if (picture == null)
-			{
-				//TODO that string should be resource-injected
-				return "No picture for this contact";
-			}
-			else
-			{
-				return null;
-			}
-		}
-	}
-
 	//TODO Need to listen to changes in getBeanChannel and propagate changes to listeners
 	// Strangely this class must be public or JGoodies Bindings will throw an exception...
 	public class PictureModel extends AbstractValueModel<Icon>
@@ -132,6 +104,7 @@ public class ContactPM
 			}
 			else
 			{
+				//TODO repalce with a default image that says "no image"
 				return null;
 			}
 		}
@@ -150,7 +123,6 @@ public class ContactPM
 	final public AddressPM homeAddress;
 	final public AddressPM officeAddress;
 	final public ValueModel<Icon> picture;
-	final public ValueModel<String> pictureText;
 	final public ValueModel<String> title;
 
 	// Injected as resource
