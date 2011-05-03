@@ -98,15 +98,17 @@ public class ContactPM
 		@Override public Icon getValue()
 		{
 			Contact contact = model.getBeanChannel().getValue();
+			Icon picture = null;
 			if (contact != null)
 			{
-				return service.getContactPicture(contact.getId());
+				picture = service.getContactPicture(contact.getId());
+				if (picture == null)
+				{
+					// Replace with a default image that says "no image"
+					picture = noPicture;
+				}
 			}
-			else
-			{
-				//TODO repalce with a default image that says "no image"
-				return null;
-			}
+			return picture;
 		}
 
 		@Override public void setValue(Icon picture)
@@ -128,4 +130,5 @@ public class ContactPM
 	// Injected as resource
 	private String titleWithContactFormat;
 	private String titleWithoutContact;
+	private Icon noPicture;
 }
