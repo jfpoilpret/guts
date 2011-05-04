@@ -28,7 +28,7 @@ import net.guts.binding.GutsBindings;
 
 import net.guts.mvpm.action.AllContactsUiActions;
 import net.guts.mvpm.domain.Contact;
-import net.guts.mvpm.presenter.AllContactsPM;
+import net.guts.mvpm.pm.AllContactsPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.mvpm.presenter;
+package net.guts.mvpm.pm;
 
 import static net.guts.binding.GutsTableModelBuilder.newTableModelFor;
 
