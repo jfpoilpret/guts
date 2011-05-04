@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 
 import net.guts.binding.GutsBindings;
 import net.guts.binding.Models;
-import net.guts.mvpm.presenter.ContactPM;
+import net.guts.mvpm.pm.ContactPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;

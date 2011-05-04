@@ -14,7 +14,7 @@
 
 package net.guts.mvpm.view;
 
-import net.guts.mvpm.presenter.ContactPM;
+import net.guts.mvpm.pm.ContactPM;
 
 public interface ContactViewFactory
 {	

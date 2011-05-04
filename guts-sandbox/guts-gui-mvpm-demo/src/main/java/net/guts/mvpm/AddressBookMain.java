@@ -22,8 +22,8 @@ import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.okcancel.OkCancelModule;
-import net.guts.mvpm.presenter.ContactPM;
-import net.guts.mvpm.presenter.ContactPMFactory;
+import net.guts.mvpm.pm.ContactPM;
+import net.guts.mvpm.pm.ContactPMFactory;
 import net.guts.mvpm.view.ContactView;
 import net.guts.mvpm.view.ContactViewFactory;
 

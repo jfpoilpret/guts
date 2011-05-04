@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 
 import net.guts.gui.naming.ComponentHolder;
 import net.guts.gui.util.GroupHeader;
-import net.guts.mvpm.presenter.AddressPM;
+import net.guts.mvpm.pm.AddressPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.jgoodies.binding.adapter.Bindings;
