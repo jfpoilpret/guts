@@ -42,7 +42,7 @@ public class AllContactsView extends JPanel
 
 	@Inject AllContactsView(AllContactsPM model, AllContactsUiActions uiActions)
 	{
-		contacts = model.contacts;
+		SelectionInList<Contact> contacts = model.contacts;
 		
 		// Initialize components
 		txfFirstName.setEditable(false);
@@ -77,8 +77,6 @@ public class AllContactsView extends JPanel
 		layout.emptyRow();
 		layout.row().right().add(btnCreate, btnModify, btnDelete);
 	}
-	
-	final private SelectionInList<Contact> contacts;
 	
 	final private JTable table = new JTable();
 	final private JLabel lblFirstName = new JLabel();
