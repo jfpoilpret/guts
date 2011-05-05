@@ -27,13 +27,11 @@ import javax.swing.ListSelectionModel;
 import net.guts.binding.GutsBindings;
 
 import net.guts.mvpm.action.AllContactsUiActions;
-import net.guts.mvpm.domain.Contact;
 import net.guts.mvpm.pm.AllContactsPM;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import com.jgoodies.binding.list.SelectionInList;
 
 @Singleton
 public class AllContactsView extends JPanel
@@ -42,8 +40,6 @@ public class AllContactsView extends JPanel
 
 	@Inject AllContactsView(AllContactsPM model, AllContactsUiActions uiActions)
 	{
-		SelectionInList<Contact> contacts = model.contacts;
-		
 		// Initialize components
 		txfFirstName.setEditable(false);
 		txfLastName.setEditable(false);
@@ -51,7 +47,7 @@ public class AllContactsView extends JPanel
 		table.setModel(model.contactsTableModel);
 
 		// Setup components bindings
-		GutsBindings.bind(table, contacts);
+		GutsBindings.bind(table, model.contacts);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		GutsBindings.bind(txfFirstName, model.selection.firstName);
 		GutsBindings.bind(txfLastName, model.selection.lastName);
