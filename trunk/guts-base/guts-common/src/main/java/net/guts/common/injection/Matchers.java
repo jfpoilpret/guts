@@ -110,6 +110,19 @@ public final class Matchers
 		};
 	}
 	
+	static final public Matcher<TypeLiteral<?>> isAnnotatedWith(
+		final Class<? extends Annotation> annotation)
+	{
+		return new AbstractMatcher<TypeLiteral<?>>()
+		{
+			@Override public boolean matches(TypeLiteral<?> type)
+			{
+				Class<?> clazz = type.getRawType();
+				return clazz.isAnnotationPresent(annotation);
+			}
+		};
+	}
+	
 	static final public Matcher<TypeLiteral<?>> hasPublicMethodAnnotatedWith(
 		final Class<? extends Annotation> annotation)
 	{
