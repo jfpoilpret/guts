@@ -29,6 +29,9 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 
+import net.guts.common.injection.InjectionListeners;
+import net.guts.common.injection.Matchers;
+import net.guts.common.injection.OneTypeListener;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
 import net.guts.gui.util.CursorInfo;
@@ -209,6 +212,12 @@ public final class ResourceModule extends AbstractModule
 		Windows.bindWindowProcessor(binder(), WindowProcessor.RESOURCE_INJECTION)
 			.to(WpResourceInjection.class);
 
+		// Add automatic resource injection for classes annotated with @InjectResources(prefix)
+		ResourceInjectionListener injectionListener = InjectionListeners.requestInjection(
+			binder(), new ResourceInjectionListener());
+		OneTypeListener<Object> typeListener = 
+			new OneTypeListener<Object>(Object.class, injectionListener);
+		bindListener(Matchers.isAnnotatedWith(InjectResources.class), typeListener);
 	}
 	
 	private <T> void bindConverter(
