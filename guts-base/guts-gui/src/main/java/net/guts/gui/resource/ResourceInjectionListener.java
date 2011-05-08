@@ -19,6 +19,7 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 import net.guts.common.injection.AbstractInjectionListener;
+import net.guts.common.type.TypeHelper;
 import net.guts.event.Consumes;
 
 import com.google.inject.Inject;
@@ -36,7 +37,7 @@ class ResourceInjectionListener extends AbstractInjectionListener<Object>
 	@Override protected void registerInjectee(Object injectee)
 	{
 		// Get the annotation and prefix
-		Class<?> clazz = injectee.getClass();
+		Class<?> clazz = TypeHelper.extractPureClass(injectee);
 		InjectResources annotation = clazz.getAnnotation(InjectResources.class);
 		String prefix = annotation.prefix();
 		if (prefix.equals(""))

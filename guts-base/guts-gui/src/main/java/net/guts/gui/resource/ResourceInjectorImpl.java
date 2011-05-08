@@ -190,6 +190,7 @@ class ResourceInjectorImpl implements ResourceInjector
 		}
 	}
 
+	//TODO Improve (or remove) this method: is it needed to remove CGLIB subclass?
 	@SuppressWarnings("unchecked") 
 	private <T> Class<? extends T> getClass(T instance)
 	{
