@@ -23,6 +23,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
+import net.guts.common.type.TypeHelper;
 import net.guts.event.Channel;
 import net.guts.event.EventService;
 
@@ -101,7 +102,7 @@ public class EventServiceImpl implements EventService
 
 	@Override public void registerConsumers(Object instance)
 	{
-		Class<?> clazz = instance.getClass();
+		Class<?> clazz = TypeHelper.extractPureClass(instance);
 		Lock read = _lock.readLock();
 		read.lock();
 		try
