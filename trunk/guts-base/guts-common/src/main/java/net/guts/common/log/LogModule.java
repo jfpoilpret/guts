@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import net.guts.common.injection.Matchers;
+import net.guts.common.type.TypeHelper;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.MembersInjector;
@@ -42,7 +43,8 @@ class SLF4JTypeListener implements TypeListener
 {
 	@Override public <T> void hear(TypeLiteral<T> typeLiteral, TypeEncounter<T> typeEncounter)
 	{
-		for (Field field: typeLiteral.getRawType().getDeclaredFields())
+		Class<? super T> clazz = TypeHelper.extractPureClass(typeLiteral.getRawType());
+		for (Field field: clazz.getDeclaredFields())
 		{
 			if (	field.getType() == Logger.class
 				&&	field.isAnnotationPresent(InjectLogger.class))
