@@ -25,6 +25,23 @@ public final class TypeHelper
 	private TypeHelper()
 	{
 	}
+
+	@SuppressWarnings("unchecked") 
+	static public <T> Class<? super T> extractPureClass(T instance)
+	{
+		return extractPureClass((Class<T>) instance.getClass());
+	}
+	
+	@SuppressWarnings("unchecked") 
+	static public <T> Class<? super T> extractPureClass(Class<T> type)
+	{
+		Class<?> clazz = type;
+		while (clazz.getSimpleName().contains("$$"))
+		{
+			clazz = clazz.getSuperclass();
+		}
+		return (Class<? super T>) clazz;
+	}
 	
 	static public String getPackage(Class<?> type)
 	{
