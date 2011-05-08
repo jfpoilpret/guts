@@ -29,6 +29,7 @@ import net.guts.common.cleaner.Cleaner;
 import net.guts.common.ref.ReflectHelper;
 import net.guts.common.ref.WeakRefSet;
 import net.guts.common.ref.WeakRefSet.Performer;
+import net.guts.common.type.TypeHelper;
 import net.guts.event.Consumes;
 import net.guts.gui.resource.ResourceInjector;
 
@@ -54,7 +55,7 @@ class ActionRegistrationManagerImpl implements ActionRegistrationManager
 	@Override public void registerActions(final Object instance)
 	{
 		// Check all fields of instance class
-		List<Field> fields = findActions(instance.getClass());
+		List<Field> fields = findActions(TypeHelper.extractPureClass(instance));
 		ReflectHelper.processFieldsValues(instance, fields, GutsAction.class, 
 			new ReflectHelper.FieldValueProcessor<GutsAction>()
 		{

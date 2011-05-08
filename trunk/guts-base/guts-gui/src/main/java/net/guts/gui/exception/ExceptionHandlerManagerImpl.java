@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.type.TypeHelper;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
@@ -87,7 +88,8 @@ class ExceptionHandlerManagerImpl implements ExceptionHandlerManager
 	 */
 	@Override public void registerExceptionHandlers(Object instance)
 	{
-		List<ExceptionHandler> handlers = _processor.process(instance.getClass());
+		List<ExceptionHandler> handlers = 
+			_processor.process(TypeHelper.extractPureClass(instance));
 		synchronized (_handlers)
 		{
 			for (ExceptionHandler handler: handlers)
