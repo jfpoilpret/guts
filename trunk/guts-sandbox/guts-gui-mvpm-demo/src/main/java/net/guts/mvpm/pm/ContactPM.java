@@ -14,6 +14,8 @@
 
 package net.guts.mvpm.pm;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Date;
 
 import javax.swing.Icon;
@@ -30,6 +32,7 @@ import net.guts.mvpm.domain.Contact;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
@@ -53,6 +56,16 @@ public class ContactPM
 		officeAddress = new AddressPM(model.getPropertyModel(of.getOffice()));
 		picture = new PictureModel();
 		title = new TitleConverter(contact);
+		
+		// Connect save action with dirtiness of buffered models
+		model.addPropertyChangeListener(
+			PresentationModel.PROPERTYNAME_BUFFERING, dirtyListener);
+		homeAddress.address.addPropertyChangeListener(
+			PresentationModel.PROPERTYNAME_BUFFERING, dirtyListener);
+		officeAddress.address.addPropertyChangeListener(
+			PresentationModel.PROPERTYNAME_BUFFERING, dirtyListener);
+
+		save.setEnabled(false);
 	}
 	
 	ValueModel<Contact> contactModel()
@@ -157,6 +170,18 @@ public class ContactPM
 			}
 		}
 	}
+
+	final private PropertyChangeListener dirtyListener = new PropertyChangeListener()
+	{
+		@Override public void propertyChange(PropertyChangeEvent evt)
+		{
+			// Find out from all models if data needs to be saved
+			boolean isBuffering = model.isBuffering();
+			isBuffering |= homeAddress.address.isBuffering();
+			isBuffering |= officeAddress.address.isBuffering();
+			save.setEnabled(isBuffering);
+		}
+	};
 
 	final private AddressBookService service;
 	final private GutsPresentationModel<Contact> model;
