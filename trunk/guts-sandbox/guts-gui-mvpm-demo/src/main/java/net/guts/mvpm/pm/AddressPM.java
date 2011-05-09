@@ -18,7 +18,6 @@ import net.guts.binding.GutsPresentationModel;
 import net.guts.binding.Models;
 import net.guts.mvpm.domain.Address;
 
-import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
 
 public class AddressPM
@@ -29,78 +28,18 @@ public class AddressPM
 		address = Models.createPM(Address.class, addressModel);
 
 		Address of = address.of();
-		street1 = address.getPropertyModel(of.getStreet1());
-		street2 = address.getPropertyModel(of.getStreet2());
-		zip = address.getPropertyModel(of.getZip());
-		city = address.getPropertyModel(of.getCity());
-		phone = address.getPropertyModel(of.getPhone());
-		
-		compactAddress = new CompactAddressConverter(addressModel); 
+		street1 = address.getBufferedModel(of.getStreet1());
+		street2 = address.getBufferedModel(of.getStreet2());
+		zip = address.getBufferedModel(of.getZip());
+		city = address.getBufferedModel(of.getCity());
+		phone = address.getBufferedModel(of.getPhone());
 	}
 	
-	@SuppressWarnings("serial") 
-	static private class CompactAddressConverter extends AbstractConverter<Address, String>
-	{
-		CompactAddressConverter(ValueModel<Address> address)
-		{
-			super(address);
-		}
-		
-		@Override public void setValue(String compactAddress)
-		{
-			throw new UnsupportedOperationException(
-				"Can't convert address from compact format String to an Address value");
-		}
-
-		@Override public String convertFromSubject(Address address)
-		{
-			if (address != null)
-			{
-				StringBuilder builder = new StringBuilder();
-				append(builder, address.getStreet1());
-				append(builder, address.getStreet2());
-				append(builder, address.getZip(), address.getCity());
-				return builder.toString();
-			}
-			else
-			{
-				return null;
-			}
-		}
-		
-		static private void append(StringBuilder builder, String part1, String part2)
-		{
-			String line;
-			if (part1 != null && part1.trim().length() != 0)
-			{
-				line = part1 + " " + part2;
-			}
-			else
-			{
-				line = part2;
-			}
-			append(builder, line);
-		}
-		
-		static private void append(StringBuilder builder, String line)
-		{
-			if (line != null && line.trim().length() != 0)
-			{
-				if (builder.length() > 0)
-				{
-					builder.append('\n');
-				}
-				builder.append(line.trim());
-			}
-		}
-	}
-
-	final private GutsPresentationModel<Address> address;
+	final GutsPresentationModel<Address> address;
 	
 	final public ValueModel<String> street1;
 	final public ValueModel<String> street2;
 	final public ValueModel<String> zip;
 	final public ValueModel<String> city;
 	final public ValueModel<String> phone;
-	final public ValueModel<String> compactAddress;
 }

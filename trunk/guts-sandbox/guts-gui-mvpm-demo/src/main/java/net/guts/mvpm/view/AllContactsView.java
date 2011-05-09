@@ -49,11 +49,11 @@ public class AllContactsView extends JPanel
 		// Setup components bindings
 		GutsBindings.bind(table, model.contacts);
 		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		GutsBindings.bind(txfFirstName, model.selection.firstName);
-		GutsBindings.bind(txfLastName, model.selection.lastName);
-		GutsBindings.bind(txfBirth, model.selection.birth);
-		GutsBindings.bind(txaAddress, model.selection.homeAddress.compactAddress);
-		GutsBindings.connectTitle(this, model.selection.title);
+		GutsBindings.bind(txfFirstName, model.selectionFirstName);
+		GutsBindings.bind(txfLastName, model.selectionLastName);
+		GutsBindings.bind(txfBirth, model.selectionBirth);
+		GutsBindings.bind(txaAddress, model.selectionCompactAddress);
+		GutsBindings.connectTitle(this, model.title);
 		btnCreate.setAction(uiActions.create);
 		btnModify.setAction(uiActions.modify);
 		btnDelete.setAction(uiActions.delete);

@@ -16,12 +16,14 @@ package net.guts.mvpm.pm;
 
 import static net.guts.binding.GutsTableModelBuilder.newTableModelFor;
 
+import java.util.Date;
+
 import javax.swing.table.TableModel;
 
+import net.guts.binding.GutsPresentationModel;
 import net.guts.binding.GutsTableModelBuilder;
 import net.guts.binding.Models;
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.TaskAction;
+import net.guts.gui.resource.InjectResources;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
 import net.guts.mvpm.business.AddressBookService;
@@ -32,9 +34,11 @@ import net.guts.properties.Bean;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import com.jgoodies.binding.list.SelectionInList;
+import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.ValueModel;
 
 @Singleton
+@InjectResources(autoUpdate = true)
 public class AllContactsPM
 {
 	@Inject
@@ -44,12 +48,20 @@ public class AllContactsPM
 		this.contactPMFactory = contactPMFactory;
 
 		// Create all necessary models here
-		ValueModel<Contact> selectionModel = Models.holder(true);
-		contacts = new SelectionInList<Contact>(service.getAllContacts(), selectionModel);
-		selection = newContactPM(selectionModel);
+		ValueModel<Contact> selection = Models.holder(true);
+		contacts = new SelectionInList<Contact>(service.getAllContacts(), selection);
+		selectionPM = newContactPM(selection);
+		GutsPresentationModel<Contact> selectionModel = Models.createPM(Contact.class, selection);
+		
+		Contact of = Models.of(Contact.class);
+		selectionFirstName = selectionModel.getPropertyModel(of.getFirstName());
+		selectionLastName = selectionModel.getPropertyModel(of.getLastName());
+		selectionBirth = selectionModel.getPropertyModel(of.getBirth());
+		selectionCompactAddress = new CompactAddressModel(
+			selectionModel.getPropertyModel(of.getHome()));
+		title = new TitleConverter(selection);
 		
 		GutsTableModelBuilder<Contact> builder = newTableModelFor(Contact.class);
-		Contact of = builder.of();
 		builder.addProperty(of.getFirstName())
 				.addProperty(of.getLastName())
 				.addProperty(of.getBirth())
@@ -85,54 +97,48 @@ public class AllContactsPM
 		return contactPMFactory.create(model);
 	}
 
-	public GutsAction saveContact(final ContactPM contact)
+	// Strangely this class must be public or JGoodies Bindings will throw an exception...
+	@SuppressWarnings("serial") 
+	public class TitleConverter extends AbstractConverter<Contact, String>
 	{
-		// Note: it is necessary to name the action because auto-naming can't work with
-		// actions that are created "on the fly"
-		return new TaskAction("saveContact")
+		TitleConverter(ValueModel<Contact> subject)
 		{
-			@Override protected void perform()
-			{
-				submit(new Task<Void>()
-					{
-						@Override public Void execute(FeedbackController controller) throws Exception
-						{
-							service.createContact(contact.contactModel().getValue());
-							return null;
-						}
-					});
-			}
-		};
-	}
-	
-	final public GutsAction saveSelectedContact = new TaskAction()
-	{
-		@Override protected void perform()
-		{
-			final Contact selection = contacts.getSelection();
-			submit(new Task<Void>()
-			{
-				@Override public Void execute(FeedbackController controller) throws Exception
-				{
-					// Check if new contact
-					if (selection.getId() == 0)
-					{
-						service.createContact(selection);
-					}
-					else
-					{
-						service.modifyContact(selection);
-					}
-					return null;
-				}
-			});
+			super(subject);
 		}
-	};
+
+		@Override public void setValue(String unused)
+		{
+			// Nothing to do, this converter is one way only
+		}
+
+		@Override public String convertFromSubject(Contact contact)
+		{
+			if (contact != null)
+			{
+				return String.format(
+					titleWithContactFormat, contact.getFirstName(), contact.getLastName());
+			}
+			else
+			{
+				return titleWithoutContact;
+			}
+		}
+	}
 	
 	final public SelectionInList<Contact> contacts;
 	final public TableModel contactsTableModel;
-	final public ContactPM selection;
+	final public ContactPM selectionPM;
+	final public ValueModel<String> title;
+
+	final public ValueModel<String> selectionFirstName;
+	final public ValueModel<String> selectionLastName;
+	final public ValueModel<Date> selectionBirth;
+	final public ValueModel<String> selectionCompactAddress;
 	
 	final private AddressBookService service;
 	final private ContactPMFactory contactPMFactory;
+
+	// Injected as resource
+	private String titleWithContactFormat;
+	private String titleWithoutContact;
 }

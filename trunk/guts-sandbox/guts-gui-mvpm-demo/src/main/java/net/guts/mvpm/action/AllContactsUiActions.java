@@ -56,7 +56,9 @@ public class AllContactsUiActions
 		{
 			// ask PM to create new ContactPM
 			ContactPM contactModel = model.createContact();
-			OkCancel template = OkCancel.create().withOK(model.saveContact(contactModel)).withCancel();
+			OkCancel template = OkCancel.create()
+				.withOK(contactModel.save)
+				.withCancel(contactModel.cancel);
 			JDialogConfig config = JDialogConfig.create().merge(template);
 			ContactView view = contactViewFactory.create(contactModel);
 			dialogFactory.showDialog(view, config.config());
@@ -67,9 +69,11 @@ public class AllContactsUiActions
 	{
 		@Override protected void perform()
 		{
-			OkCancel template = OkCancel.create().withOK(model.saveSelectedContact).withCancel();
+			OkCancel template = OkCancel.create()
+				.withOK(model.selectionPM.save)
+				.withCancel(model.selectionPM.cancel);
 			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = contactViewFactory.create(model.selection);
+			ContactView view = contactViewFactory.create(model.selectionPM);
 			dialogFactory.showDialog(view, config.config());
 		}
 	};
