@@ -54,8 +54,11 @@ public class GutsBindings extends Bindings
 		{
 			@Override public void hierarchyChanged(HierarchyEvent e)
 			{
-				PropertyConnector.connectAndUpdate(
-					model, view.getRootPane().getParent(), "title");
+				if (view.getRootPane() != null)
+				{
+					PropertyConnector.connectAndUpdate(
+						model, view.getRootPane().getParent(), "title");
+				}
 			}
 		});
 	}
