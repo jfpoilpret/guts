@@ -30,10 +30,10 @@ import net.guts.mvpm.domain.Contact;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
 
-//TODO also add title for detail
 @InjectResources(autoUpdate = true)
 public class ContactPM
 {
@@ -52,6 +52,7 @@ public class ContactPM
 		homeAddress = new AddressPM(model.getPropertyModel(of.getHome()));
 		officeAddress = new AddressPM(model.getPropertyModel(of.getOffice()));
 		picture = new PictureModel();
+		title = new TitleConverter(contact);
 	}
 	
 	ValueModel<Contact> contactModel()
@@ -59,7 +60,7 @@ public class ContactPM
 		return model.getBeanChannel();
 	}
 
-	//TODO Normally we need to listen to changes in getBeanChannel and propagate changes 
+	// Normally we need to listen to changes in getBeanChannel and propagate changes 
 	// to listeners, but not required here because picture cannot change.
 	// Strangely this class must be public or JGoodies Bindings will throw an exception...
 	public class PictureModel extends AbstractValueModel<Icon>
@@ -129,6 +130,34 @@ public class ContactPM
 		}
 	};
 
+	// Strangely this class must be public or JGoodies Bindings will throw an exception...
+	@SuppressWarnings("serial") 
+	public class TitleConverter extends AbstractConverter<Contact, String>
+	{
+		TitleConverter(ValueModel<Contact> subject)
+		{
+			super(subject);
+		}
+
+		@Override public void setValue(String unused)
+		{
+			// Nothing to do, this converter is one way only
+		}
+
+		@Override public String convertFromSubject(Contact contact)
+		{
+			if (contact != null && contact.getId() != 0)
+			{
+				return String.format(
+					titleContactFormat, contact.getFirstName(), contact.getLastName());
+			}
+			else
+			{
+				return titleNewContact;
+			}
+		}
+	}
+
 	final private AddressBookService service;
 	final private GutsPresentationModel<Contact> model;
 	final public ValueModel<String> firstName;
@@ -137,7 +166,10 @@ public class ContactPM
 	final public AddressPM homeAddress;
 	final public AddressPM officeAddress;
 	final public ValueModel<Icon> picture;
+	final public ValueModel<String> title;
 
 	// Injected as resource
 	private Icon noPicture;
+	private String titleContactFormat;
+	private String titleNewContact;
 }

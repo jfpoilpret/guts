@@ -43,6 +43,7 @@ public class ContactView extends JPanel
 		GutsBindings.bind(txfLastName, model.lastName);
 		GutsBindings.bind(txfBirth, model.birth);
 		GutsBindings.connect(picture, Models.of(Picture.class).getIcon(), model.picture);
+		GutsBindings.connectTitle(this, model.title);
 		
 		// Layout the view
 		DesignGridLayout layout = new DesignGridLayout(this);
