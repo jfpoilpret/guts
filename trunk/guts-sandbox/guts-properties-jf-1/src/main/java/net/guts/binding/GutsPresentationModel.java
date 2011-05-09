@@ -14,6 +14,8 @@
 
 package net.guts.binding;
 
+import java.beans.PropertyChangeListener;
+
 import net.guts.properties.Bean;
 
 import com.jgoodies.binding.PresentationModel;
@@ -111,7 +113,27 @@ public class GutsPresentationModel<B>
 		_pm.release();
 	}
 
-	protected PresentationModel<B> getSourceModel()
+	public void addPropertyChangeListener(PropertyChangeListener listener)
+	{
+		_pm.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener)
+	{
+		_pm.removePropertyChangeListener(listener);
+	}
+
+	public void addPropertyChangeListener(String property, PropertyChangeListener listener)
+	{
+		_pm.addPropertyChangeListener(property, listener);
+	}
+
+	public void removePropertyChangeListener(String property, PropertyChangeListener listener)
+	{
+		_pm.removePropertyChangeListener(property, listener);
+	}
+
+    protected PresentationModel<B> getSourceModel()
 	{
 		return _pm;
 	}
