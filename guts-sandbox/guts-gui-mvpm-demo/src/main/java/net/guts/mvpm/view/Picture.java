@@ -74,10 +74,6 @@ public class Picture extends JComponent implements Scrollable
 			// Always center the image
 			g.drawImage(icon.getImage(), x, y, width, height, null);
 		}
-		else
-		{
-			//TODO
-		}
 	}
 	
 	@Override public Dimension getPreferredScrollableViewportSize()
