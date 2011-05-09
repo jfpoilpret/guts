@@ -55,13 +55,7 @@ public class AllContactsUiActions
 		@Override protected void perform()
 		{
 			// ask PM to create new ContactPM
-			ContactPM contactModel = model.createContact();
-			OkCancel template = OkCancel.create()
-				.withOK(contactModel.save)
-				.withCancel(contactModel.cancel);
-			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = contactViewFactory.create(contactModel);
-			dialogFactory.showDialog(view, config.config());
+			openContactView(model.createContact());
 		}
 	};
 	
@@ -69,14 +63,19 @@ public class AllContactsUiActions
 	{
 		@Override protected void perform()
 		{
-			OkCancel template = OkCancel.create()
-				.withOK(model.selectionPM.save)
-				.withCancel(model.selectionPM.cancel);
-			JDialogConfig config = JDialogConfig.create().merge(template);
-			ContactView view = contactViewFactory.create(model.selectionPM);
-			dialogFactory.showDialog(view, config.config());
+			openContactView(model.selectionPM);
 		}
 	};
+	
+	private void openContactView(ContactPM contactModel)
+	{
+		OkCancel template = OkCancel.create()
+			.withOK(contactModel.save)
+			.withCancel(contactModel.cancel);
+		JDialogConfig config = JDialogConfig.create().merge(template);
+		ContactView view = contactViewFactory.create(contactModel);
+		dialogFactory.showDialog(view, config.config());
+	}
 	
 	final public GutsAction delete = new TaskAction()
 	{
