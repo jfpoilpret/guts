@@ -148,20 +148,33 @@
  * More specific ways to inject resources into one object can also be defined (see 
  * <a href="#rsrc5"></a> below for more details).
  * <p/>
- * If you need to inject other objects than GUI components inside windows, then you need
- * to get a reference to {@link net.guts.gui.resource.ResourceInjector} and perform direct 
- * calls to its methods; {@code ResourceInjector} can be injected by Guice in the classes 
- * that need it:
+ * If you need to inject other objects than GUI components inside windows, then you can
+ * use the {@link net.guts.gui.resource.InjectResources} annotation on classes that
+ * need to be injected with resources:
  * <pre>
- * public class SomeClass
+ * &#64;InjectResources public class SomeClass
  * {
- *     &#64;Inject public SomeClass(ResourceInjector injector)
- *     {
- *         injector.injectInstance(this, "somename");
- *     }
  *     ...
  * }
  * </pre>
+ * This will work only if {@code SomeClass} instances are created by Guice.
+ * <p/>
+ * If you need to inject other objects than GUI components inside windows and you
+ * want (or need) to initialize these objects yourself (i.e. they are not created 
+ * by Guice), then you need to get a reference to 
+ * {@link net.guts.gui.resource.ResourceInjector} and perform direct 
+ * calls to {@code ResourceInjector} methods:
+ * <pre>
+ * public class SomeClass
+ * {
+ *     ...
+ * }
+ * ...
+ * ResourceInjector injector = ...
+ * SomeClass object = new SomeClass();
+ * injector.injectInstance(object, "somename");
+ * </pre>
+ * <p/>
  * If you don't use Guts-GUI framework for your application but still want to use
  * {@link net.guts.gui.resource.ResourceInjector}, then you should make sure, when you 
  * create a Guice {@link com.google.inject.Injector}, to pass 
