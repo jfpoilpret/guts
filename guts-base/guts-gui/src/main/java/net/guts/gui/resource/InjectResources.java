@@ -20,11 +20,29 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+/**
+ * Annotates a class to tell {@link ResourceModule} that any instances, created 
+ * by Guice, of the annotated class, should have resources injected into them
+ * (by {@link ResourceInjector#injectInstance(Object, String)}).
+ * 
+ * @author Jean-Francois Poilpret
+ */
 @Documented
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.TYPE})
 public @interface InjectResources
 {
+	/**
+	 * The prefix that will be used when looking for properties to inject into instances 
+	 * of the annotated class. By default, the name of the annotated class is used as
+	 * prefix of property keys.
+	 */
 	String prefix() default "";
+	
+	/**
+	 * If {@code true}, later changes of current {@link java.util.Locale}, when set by
+	 * {@link ResourceInjector#setLocale}, instances of the annotated class will be
+	 * re-injected with resources for the new current {@code Locale}.
+	 */
 	boolean autoUpdate() default false;
 }
