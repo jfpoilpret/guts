@@ -43,6 +43,15 @@ final class OkCancelActions
 					config._result = OkCancel.Result.OK;
 					TemplateHelper.close(container);
 				}
+
+				@Override protected void handleCaughtException(RuntimeException e)
+				{
+					// If forced abortion, then don't close the dialog
+					if (!(e instanceof AbortApply.AbortApplyException))
+					{
+						throw e;
+					}
+				}
 			};
 		}
 		else
