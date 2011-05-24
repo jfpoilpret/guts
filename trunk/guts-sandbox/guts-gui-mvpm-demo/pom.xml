@@ -29,6 +29,12 @@
 		</dependency>
 
 		<dependency>
+			<groupId>com.jgoodies</groupId>
+			<artifactId>validation</artifactId>
+			<version>2.0.1</version>
+		</dependency>
+		
+		<dependency>
 			<groupId>net.java.dev.designgridlayout</groupId>
 			<artifactId>designgridlayout</artifactId>
 			<version>1.7</version>

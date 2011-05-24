@@ -22,7 +22,9 @@ import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.blocker.InputBlockers;
 import net.guts.gui.template.okcancel.OkCancel;
+import net.guts.gui.window.BoundsPolicy;
 import net.guts.gui.window.JDialogConfig;
+import net.guts.gui.window.StatePolicy;
 import net.guts.mvpm.domain.Contact;
 import net.guts.mvpm.pm.AllContactsPM;
 import net.guts.mvpm.pm.ContactPM;
@@ -72,7 +74,8 @@ public class AllContactsUiActions
 		OkCancel template = OkCancel.create()
 			.withOK(contactModel.save)
 			.withCancel(contactModel.cancel);
-		JDialogConfig config = JDialogConfig.create().merge(template);
+		//TODO remove StatePolicy later (for debug only)
+		JDialogConfig config = JDialogConfig.create().merge(template).state(StatePolicy.DONT_RESTORE);
 		ContactView view = contactViewFactory.create(contactModel);
 		dialogFactory.showDialog(view, config.config());
 	}
