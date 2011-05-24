@@ -96,12 +96,21 @@ public class GutsActionDecorator extends GutsAction
 	/* (non-Javadoc)
 	 * @see net.guts.gui.action.GutsAction#perform()
 	 */
+	//CSOFF: IllegalCatch
 	@Override final protected void perform()
 	{
 		beforeTargetPerform();
-		_target.actionPerformed(event());
-		afterTargetPerform();
+		try
+		{
+			_target.actionPerformed(event());
+			afterTargetPerform();
+		}
+		catch (RuntimeException e)
+		{
+			handleCaughtException(e);
+		}
 	}
+	//CSON: IllegalCatch
 
 	/**
 	 * Called just after calling {@code target} {@link #perform()}, this method
@@ -111,6 +120,23 @@ public class GutsActionDecorator extends GutsAction
 	protected void afterTargetPerform()
 	{
 	}
+
+	/**
+	 * Called if an exception was caught while {@code target} was performing its action.
+	 * Default behavior is to re-throw the caught exception.
+	 * <p/>
+	 * Note that {@link #afterTargetPerform()} is not called when 
+	 * {@code target.actionPerformed()} throws an exception.
+	 * 
+	 * @param e the exception caught by {@link #perform()} (thrown by 
+	 * {@code target.actionPerformed()}).
+	 */
+	//CSOFF: IllegalThrows
+	protected void handleCaughtException(RuntimeException e)
+	{
+		throw e;
+	}
+	//CSON: IllegalThrows
 
 	final private Action _target;
 }
