@@ -22,6 +22,7 @@ import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.okcancel.OkCancelModule;
+import net.guts.gui.validation.ValidationModule;
 import net.guts.mvpm.pm.ContactPM;
 import net.guts.mvpm.pm.ContactPMFactory;
 import net.guts.mvpm.view.ContactView;
@@ -46,6 +47,7 @@ public class AddressBookMain extends AbstractApplication
 		modules.add(new MessageModule());
 		modules.add(new ComponentNamingModule());
 		modules.add(new OkCancelModule());
+		modules.add(new ValidationModule());
 		// Finally, add our specific module
 		modules.add(new AbstractModule()
 		{
