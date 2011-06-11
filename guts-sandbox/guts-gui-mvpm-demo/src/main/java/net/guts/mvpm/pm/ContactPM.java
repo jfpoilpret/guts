@@ -37,10 +37,8 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
-import com.jgoodies.validation.Severity;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
-import com.jgoodies.validation.message.SimpleValidationMessage;
 import com.jgoodies.validation.util.DefaultValidationResultModel;
 
 @InjectResources(autoUpdate = true)
@@ -71,6 +69,7 @@ public class ContactPM
 		officeAddress.address.addPropertyChangeListener(
 			PresentationModel.PROPERTYNAME_BUFFERING, dirtyListener);
 
+		validator = new ContactPMValidation(this);
 		save.setEnabled(false);
 	}
 	
@@ -124,49 +123,9 @@ public class ContactPM
 	
 	private boolean validate()
 	{
-		ValidationResult result = new ValidationResult();
-		// Check mandatory fields first
-		checkMandatory(firstName, result);
-		checkMandatory(lastName, result);
-		// Check address is complete enough when some fields have been filled in
-		checkAddress(homeAddress, result);
-		checkAddress(officeAddress, result);
+		ValidationResult result = validator.validate();
 		validation.setResult(result);
 		return result.isEmpty();
-	}
-	
-	static private void checkAddress(AddressPM address, ValidationResult result)
-	{
-		if (!isEmpty(address.street1))
-		{
-			checkMandatory(address.city, result);
-		}
-		if (!isEmpty(address.street2))
-		{
-			checkMandatory(address.city, result);
-		}
-		if (isEmpty(address.city) != isEmpty(address.zip))
-		{
-			//TODO Externalize message as resources
-			result.add(new SimpleValidationMessage(
-				"If one of zip or city is filled in, then both fields must be", 
-				Severity.ERROR));
-		}
-	}
-	
-	static private void checkMandatory(ValueModel<String> model, ValidationResult result)
-	{
-		if (isEmpty(model))
-		{
-			//TODO Externalize message as resources
-			result.add(new SimpleValidationMessage("Field cannot be null", Severity.ERROR));
-		}
-	}
-	
-	static private boolean isEmpty(ValueModel<String> model)
-	{
-		String value = model.getValue();
-		return value == null || value.trim().isEmpty();
 	}
 	
 	final public GutsAction save = new TaskAction()
@@ -250,7 +209,8 @@ public class ContactPM
 	final public AddressPM officeAddress;
 	final public ValueModel<Icon> picture;
 	final public ValueModel<String> title;
-	
+
+	final private ContactPMValidation validator;
 	final public ValidationResultModel validation = new DefaultValidationResultModel();
 
 	// Injected as resource

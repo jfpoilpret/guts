@@ -25,13 +25,15 @@ import javax.swing.JTextField;
 import net.guts.binding.GutsBindings;
 import net.guts.binding.Models;
 import net.guts.mvpm.pm.ContactPM;
+import net.guts.mvpm.pm.ContactPMValidation;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
+import static com.jgoodies.validation.view.ValidationComponentUtils.setMessageKey;
+
 import com.jgoodies.validation.view.ValidationResultViewFactory;
 
-//TODO realtime validation check (in ContactPM)?
 public class ContactView extends JPanel
 {
 	static final private long serialVersionUID = -1436540113538430985L;
@@ -39,15 +41,19 @@ public class ContactView extends JPanel
 	@Inject ContactView(final @Assisted ContactPM model)
 	{
 		// Widgets setup
-		home = new AddressView(model.homeAddress);
-		office = new AddressView(model.officeAddress);
+		home = new AddressView(
+			model.homeAddress, ContactPMValidation.KEY_PREFIX_HOME);
+		office = new AddressView(
+			model.officeAddress, ContactPMValidation.KEY_PREFIX_OFFICE);
 		validation = ValidationResultViewFactory.createReportList(model.validation);
 		JList list = (JList) ((JScrollPane) validation).getViewport().getView();
 		list.setVisibleRowCount(3);
 		//TODO improve layout somehow: try to use DGL smart resize
 		
 		// Set keys for binding of validation results to individual components
-
+		setMessageKey(txfFirstName, ContactPMValidation.KEY_MANDATORY_FIRST_NAME);
+		setMessageKey(txfLastName, ContactPMValidation.KEY_MANDATORY_LAST_NAME);
+		
 		// Bind the widgets to the model
 		GutsBindings.bind(txfFirstName, model.firstName);
 		GutsBindings.bind(txfLastName, model.lastName);
