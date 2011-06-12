@@ -22,7 +22,7 @@ import javax.swing.JTextField;
 import net.guts.gui.naming.ComponentHolder;
 import net.guts.gui.util.GroupHeader;
 import net.guts.mvpm.pm.AddressPM;
-import net.guts.mvpm.pm.ContactPMValidation;
+import net.guts.mvpm.pm.ContactValidationKeys;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.jgoodies.binding.adapter.Bindings;
@@ -35,8 +35,8 @@ public class AddressView implements ComponentHolder
 		lblCity.setHorizontalAlignment(JLabel.RIGHT);
 		
 		// Set keys for binding of validation results to individual components
-		setMessageKey(txfZip, keyPrefix + ContactPMValidation.KEY_SUFFIX_MISSING_ZIP);
-		setMessageKey(txfCity, keyPrefix + ContactPMValidation.KEY_SUFFIX_MISSING_CITY);
+		setMessageKey(txfZip, keyPrefix + ContactValidationKeys.KEY_SUFFIX_MISSING_ZIP);
+		setMessageKey(txfCity, keyPrefix + ContactValidationKeys.KEY_SUFFIX_MISSING_CITY);
 
 		// Bind components to the PM
 		Bindings.bind(txfStreet1, model.street1);
