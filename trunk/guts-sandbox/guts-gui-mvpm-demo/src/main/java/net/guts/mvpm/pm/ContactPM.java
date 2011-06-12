@@ -44,7 +44,6 @@ import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.DefaultValidationResultModel;
 
-//TODO refactor by putting special PictureModel and TitleConverter out
 @InjectResources(autoUpdate = true)
 public class ContactPM
 {
