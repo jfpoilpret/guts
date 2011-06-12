@@ -247,7 +247,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
     private static String getMessagesToolTipText(ValidationResult result) {
         StringBuilder builder = new StringBuilder("<html>");
         for (ValidationMessage message : result.getMessages()) {
-            if (builder.length() > 0) {
+            if (builder.length() > "<html>".length()) {
                 builder.append("<br>");
             }
             builder.append(message.formattedText());
