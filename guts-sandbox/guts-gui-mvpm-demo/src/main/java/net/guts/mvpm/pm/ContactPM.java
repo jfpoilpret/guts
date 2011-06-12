@@ -14,6 +14,9 @@
 
 package net.guts.mvpm.pm;
 
+import static net.guts.gui.validation.ValidationHelper.checkMandatory;
+import static net.guts.gui.validation.ValidationHelper.isEmpty;
+
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.util.Date;
@@ -41,6 +44,7 @@ import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.DefaultValidationResultModel;
 
+//TODO refactor by putting special PictureModel and TitleConverter out
 @InjectResources(autoUpdate = true)
 public class ContactPM
 {
@@ -69,7 +73,6 @@ public class ContactPM
 		officeAddress.address.addPropertyChangeListener(
 			PresentationModel.PROPERTYNAME_BUFFERING, dirtyListener);
 
-		validator = new ContactPMValidation(this);
 		save.setEnabled(false);
 	}
 	
@@ -81,10 +84,9 @@ public class ContactPM
 	// Normally we need to listen to changes in getBeanChannel and propagate changes 
 	// to listeners, but not required here because picture cannot change.
 	// Strangely this class must be public or JGoodies Bindings will throw an exception...
+	@SuppressWarnings("serial") 
 	public class PictureModel extends AbstractValueModel<Icon>
 	{
-		private static final long serialVersionUID = -5066559085812900483L;
-
 		PictureModel()
 		{
 		}
@@ -123,9 +125,33 @@ public class ContactPM
 	
 	private boolean validate()
 	{
-		ValidationResult result = validator.validate();
+		ValidationResult result = new ValidationResult();
+		// Check mandatory fields first
+		checkMandatory(firstName, result, ContactValidationKeys.KEY_MANDATORY_FIRST_NAME);
+		checkMandatory(lastName, result, ContactValidationKeys.KEY_MANDATORY_LAST_NAME);
+		// Check address is complete enough when some fields have been filled in
+		checkAddress(homeAddress, result, ContactValidationKeys.KEY_PREFIX_HOME);
+		checkAddress(officeAddress, result, ContactValidationKeys.KEY_PREFIX_OFFICE);
 		validation.setResult(result);
 		return result.isEmpty();
+	}
+	
+	static private void checkAddress(AddressPM address, ValidationResult result, String key)
+	{
+		if ((!isEmpty(address.street1)) || (!isEmpty(address.street2)))
+		{
+			checkMandatory(
+				address.city, result, key + ContactValidationKeys.KEY_SUFFIX_MISSING_CITY);
+			checkMandatory(
+				address.zip, result, key + ContactValidationKeys.KEY_SUFFIX_MISSING_ZIP);
+		}
+		else if (isEmpty(address.city) != isEmpty(address.zip))
+		{
+			checkMandatory(
+				address.city, result, key + ContactValidationKeys.KEY_SUFFIX_MISSING_CITY);
+			checkMandatory(
+				address.zip, result, key + ContactValidationKeys.KEY_SUFFIX_MISSING_ZIP);
+		}
 	}
 	
 	final public GutsAction save = new TaskAction()
@@ -210,7 +236,6 @@ public class ContactPM
 	final public ValueModel<Icon> picture;
 	final public ValueModel<String> title;
 
-	final private ContactPMValidation validator;
 	final public ValidationResultModel validation = new DefaultValidationResultModel();
 
 	// Injected as resource

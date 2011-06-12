@@ -25,7 +25,7 @@ import javax.swing.JTextField;
 import net.guts.binding.GutsBindings;
 import net.guts.binding.Models;
 import net.guts.mvpm.pm.ContactPM;
-import net.guts.mvpm.pm.ContactPMValidation;
+import net.guts.mvpm.pm.ContactValidationKeys;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Inject;
@@ -42,17 +42,17 @@ public class ContactView extends JPanel
 	{
 		// Widgets setup
 		home = new AddressView(
-			model.homeAddress, ContactPMValidation.KEY_PREFIX_HOME);
+			model.homeAddress, ContactValidationKeys.KEY_PREFIX_HOME);
 		office = new AddressView(
-			model.officeAddress, ContactPMValidation.KEY_PREFIX_OFFICE);
+			model.officeAddress, ContactValidationKeys.KEY_PREFIX_OFFICE);
 		validation = ValidationResultViewFactory.createReportList(model.validation);
 		JList list = (JList) ((JScrollPane) validation).getViewport().getView();
 		list.setVisibleRowCount(3);
 		//TODO improve layout somehow: try to use DGL smart resize
 		
 		// Set keys for binding of validation results to individual components
-		setMessageKey(txfFirstName, ContactPMValidation.KEY_MANDATORY_FIRST_NAME);
-		setMessageKey(txfLastName, ContactPMValidation.KEY_MANDATORY_LAST_NAME);
+		setMessageKey(txfFirstName, ContactValidationKeys.KEY_MANDATORY_FIRST_NAME);
+		setMessageKey(txfLastName, ContactValidationKeys.KEY_MANDATORY_LAST_NAME);
 		
 		// Bind the widgets to the model
 		GutsBindings.bind(txfFirstName, model.firstName);
