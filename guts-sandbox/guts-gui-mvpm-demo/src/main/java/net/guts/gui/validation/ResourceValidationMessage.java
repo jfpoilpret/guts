@@ -20,6 +20,7 @@ import com.google.inject.Inject;
 import com.google.inject.assistedinject.Assisted;
 import com.jgoodies.validation.Severity;
 import com.jgoodies.validation.ValidationMessage;
+import com.jgoodies.validation.util.ValidationUtils;
 
 class ResourceValidationMessage implements ValidationMessage
 {
@@ -51,13 +52,36 @@ class ResourceValidationMessage implements ValidationMessage
 	// This method is called by ResourceInjector
 	void setText(String text)
 	{
-		_text = text;
+		_text = (text != null ? text : "");
 	}
 
-	//TODO missing hashcode and equals?
+	@Override public boolean equals(Object o)
+	{
+		if (o == this)
+		{
+			return true;
+		}
+		if (!(o instanceof ResourceValidationMessage))
+		{
+			return false;
+		}
+		ResourceValidationMessage other = (ResourceValidationMessage) o;
+		return		_severity.equals(other._severity)
+				&&	ValidationUtils.equals(_key, other._key)
+				&&	ValidationUtils.equals(_text, other._text);
+	}
+
+    @Override public int hashCode()
+	{
+		int result = 17;
+		result = 37 * result + _severity.hashCode();
+		result = 37 * result + _key.hashCode();
+		result = 37 * result + _text.hashCode();
+		return result;
+	}
 	
 	final private ResourceInjector _injector;
 	final private String _key;
 	final private Severity _severity;
-	private String _text;
+	private String _text = "";
 }
