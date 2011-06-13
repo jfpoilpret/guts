@@ -76,11 +76,7 @@ public class AllContactsUiActions
 			.withCancel(contactModel.cancel);
 		Validation validation = Validation.create().withModel(contactModel.validation);
 
-		//TODO remove StatePolicy later (for debug only)
-		JDialogConfig config = JDialogConfig.create()
-			.merge(template)
-			.merge(validation)
-			.state(StatePolicy.DONT_RESTORE);
+		JDialogConfig config = JDialogConfig.create().merge(template).merge(validation);
 		ContactView view = contactViewFactory.create(contactModel);
 		dialogFactory.showDialog(view, config.config());
 	}
