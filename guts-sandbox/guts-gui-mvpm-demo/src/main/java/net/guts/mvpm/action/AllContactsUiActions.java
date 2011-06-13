@@ -22,7 +22,7 @@ import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.task.blocker.InputBlockers;
 import net.guts.gui.template.okcancel.OkCancel;
-import net.guts.gui.validation.IconFeedbackPanel;
+import net.guts.gui.validation.Validation;
 import net.guts.gui.window.JDialogConfig;
 import net.guts.gui.window.StatePolicy;
 import net.guts.mvpm.domain.Contact;
@@ -74,12 +74,15 @@ public class AllContactsUiActions
 		OkCancel template = OkCancel.create()
 			.withOK(contactModel.save)
 			.withCancel(contactModel.cancel);
+		Validation validation = Validation.create().withModel(contactModel.validation);
+
 		//TODO remove StatePolicy later (for debug only)
-		JDialogConfig config = JDialogConfig.create().merge(template).state(StatePolicy.DONT_RESTORE);
+		JDialogConfig config = JDialogConfig.create()
+			.merge(template)
+			.merge(validation)
+			.state(StatePolicy.DONT_RESTORE);
 		ContactView view = contactViewFactory.create(contactModel);
-		IconFeedbackPanel panel = new IconFeedbackPanel(contactModel.validation, view);
-		dialogFactory.showDialog(panel, config.config());
-//		dialogFactory.showDialog(view, config.config());
+		dialogFactory.showDialog(view, config.config());
 	}
 	
 	final public GutsAction delete = new TaskAction()

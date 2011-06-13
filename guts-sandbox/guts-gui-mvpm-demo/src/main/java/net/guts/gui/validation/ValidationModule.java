@@ -14,6 +14,9 @@
 
 package net.guts.gui.validation;
 
+import net.guts.gui.window.WindowProcessor;
+import net.guts.gui.window.Windows;
+
 import com.google.inject.AbstractModule;
 import com.google.inject.assistedinject.FactoryProvider;
 
@@ -24,6 +27,8 @@ public final class ValidationModule extends AbstractModule
 		bind(ValidationMessageFactory.class).toProvider(FactoryProvider.newFactory(
 			ValidationMessageFactory.class, ResourceValidationMessage.class));
 		requestStaticInjection(ValidationHelper.class);
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1000)
+			.to(WpWindowValidation.class);
 	}
 	
 	@Override public boolean equals(Object other)
