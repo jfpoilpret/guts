@@ -48,8 +48,6 @@ public class ContactView extends JPanel
 		validation = ValidationResultViewFactory.createReportList(model.validation);
 		JList list = (JList) ((JScrollPane) validation).getViewport().getView();
 		list.setVisibleRowCount(3);
-		//TODO improve layout somehow: try to use DGL smart resize
-		// Problem is because validation list is invisible when panel first realized...
 		
 		// Set keys for binding of validation results to individual components
 		setMessageKey(txfFirstName, ContactValidationKeys.KEY_MANDATORY_FIRST_NAME);
