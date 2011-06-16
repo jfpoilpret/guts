@@ -22,6 +22,8 @@ import javax.swing.RootPaneContainer;
 import net.guts.gui.window.AbstractWindowProcessor;
 import net.guts.gui.window.RootPaneConfig;
 
+import com.jgoodies.validation.Validatable;
+import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 
 class WpWindowValidation<V extends RootPaneContainer> 
@@ -34,9 +36,21 @@ extends AbstractWindowProcessor<Window, V>
 
 	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
 	{
-		ValidationResultModel validation = config.get(ValidationResultModel.class);
-		if (validation != null)
+		ValidationConfig validationConfig = config.get(ValidationConfig.class);
+		if (validationConfig != null)
 		{
+			ValidationResultModel validation = validationConfig._model;
+			
+			// Require validation when possible
+			Validatable validator = validationConfig._validator;
+			if (validator != null)
+			{
+				ValidationResult result = validator.validate();
+				if (result != null)
+				{
+					validation.setResult(result);
+				}
+			}
 			RootPaneContainer container = (RootPaneContainer) root;
 			JComponent view = (JComponent) container.getContentPane();
 			JComponent feedback = new IconFeedbackPanel(validation, view);

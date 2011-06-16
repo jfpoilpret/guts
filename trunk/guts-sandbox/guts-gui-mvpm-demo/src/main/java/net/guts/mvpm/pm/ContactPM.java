@@ -40,12 +40,13 @@ import com.jgoodies.binding.PresentationModel;
 import com.jgoodies.binding.value.AbstractConverter;
 import com.jgoodies.binding.value.AbstractValueModel;
 import com.jgoodies.binding.value.ValueModel;
+import com.jgoodies.validation.Validatable;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 import com.jgoodies.validation.util.DefaultValidationResultModel;
 
 @InjectResources(autoUpdate = true)
-public class ContactPM
+public class ContactPM implements Validatable
 {
 	@Inject ContactPM(@Assisted ValueModel<Contact> contact, AddressBookService service)
 	{
@@ -122,7 +123,7 @@ public class ContactPM
 		}
 	};
 	
-	private boolean validate()
+	@Override public ValidationResult validate()
 	{
 		ValidationResult result = new ValidationResult();
 		// Check mandatory fields first
@@ -132,7 +133,7 @@ public class ContactPM
 		checkAddress(homeAddress, result, ContactValidationKeys.KEY_PREFIX_HOME);
 		checkAddress(officeAddress, result, ContactValidationKeys.KEY_PREFIX_OFFICE);
 		validation.setResult(result);
-		return result.isEmpty();
+		return result;
 	}
 	
 	static private void checkAddress(AddressPM address, ValidationResult result, String key)
@@ -157,7 +158,7 @@ public class ContactPM
 	{
 		@Override protected void perform()
 		{
-			if (!validate())
+			if (!validate().isEmpty())
 			{
 				AbortApply.abortApply();
 				return;

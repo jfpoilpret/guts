@@ -14,44 +14,14 @@
 
 package net.guts.gui.validation;
 
-import javax.swing.RootPaneContainer;
-
-import net.guts.gui.window.AbstractConfig;
-
 import com.jgoodies.validation.Validatable;
 import com.jgoodies.validation.ValidationResultModel;
+import com.jgoodies.validation.util.DefaultValidationResultModel;
 
-public final class Validation extends AbstractConfig<RootPaneContainer, Validation>
-{
-	private Validation()
-	{
-		set(ValidationConfig.class, _config);
-	}
-	
-	static public Validation create()
-	{
-		return new Validation();
-	}
-	
-	public Validation withModel(ValidationResultModel model)
-	{
-		if (model != null)
-		{
-			_config._model = model;
-		}
-		return this;
-	}
-	
-	public Validation withValidator(Validatable validator)
-	{
-		_config._validator = validator;
-		return this;
-	}
-	
-	public ValidationResultModel getModel()
-	{
-		return _config._model;
-	}
-
-	final private ValidationConfig _config = new ValidationConfig();
+//CSOFF: VisibilityModifier
+class ValidationConfig
+{	
+	ValidationResultModel _model = new DefaultValidationResultModel();
+	Validatable _validator = null;
 }
+//CSON: VisibilityModifier

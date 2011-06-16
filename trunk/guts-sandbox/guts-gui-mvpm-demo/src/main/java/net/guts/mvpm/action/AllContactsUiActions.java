@@ -24,7 +24,6 @@ import net.guts.gui.task.blocker.InputBlockers;
 import net.guts.gui.template.okcancel.OkCancel;
 import net.guts.gui.validation.Validation;
 import net.guts.gui.window.JDialogConfig;
-import net.guts.gui.window.StatePolicy;
 import net.guts.mvpm.domain.Contact;
 import net.guts.mvpm.pm.AllContactsPM;
 import net.guts.mvpm.pm.ContactPM;
@@ -74,7 +73,9 @@ public class AllContactsUiActions
 		OkCancel template = OkCancel.create()
 			.withOK(contactModel.save)
 			.withCancel(contactModel.cancel);
-		Validation validation = Validation.create().withModel(contactModel.validation);
+		Validation validation = Validation.create()
+			.withModel(contactModel.validation)
+			.withValidator(contactModel);
 
 		JDialogConfig config = JDialogConfig.create().merge(template).merge(validation);
 		ContactView view = contactViewFactory.create(contactModel);
