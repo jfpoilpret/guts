@@ -36,7 +36,8 @@
  *     .withCancel().withOK(model.getApplyAction());
  * 
  * Validation validationConfig = Validation.create()
- *     .withModel(model.getValidationModel()):
+ *     .withModel(model.getValidationModel())
+ *     .withValidator(model.getValidator()):
  * 
  * RootPaneConfig&lt;JDialog&gt; config = JDialogConfig.create()
  *     .merge(decorationConfig)
@@ -58,5 +59,7 @@
  * otherwise, this package won't do anything.
  * 
  * @see net.guts.gui.validation.Validation
+ * @see com.jgoodies.validation.Validatable
+ * @see com.jgoodies.validation.ValidationResultModel
  */
 package net.guts.gui.validation;
