@@ -75,6 +75,7 @@ public class AllContactsUiActions
 			.withCancel(contactModel.cancel);
 		Validation validation = Validation.create()
 			.withModel(contactModel.validation)
+			.withValidationWhenDisplayed()
 			.withValidator(contactModel);
 
 		JDialogConfig config = JDialogConfig.create().merge(template).merge(validation);

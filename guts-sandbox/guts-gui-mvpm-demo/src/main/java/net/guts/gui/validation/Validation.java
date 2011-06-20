@@ -84,6 +84,12 @@ public final class Validation extends AbstractConfig<RootPaneContainer, Validati
 		return this;
 	}
 	
+	public Validation withValidationWhenDisplayed()
+	{
+		_config._validateAtFirstDiplay = true;
+		return this;
+	}
+	
 	public ValidationResultModel getModel()
 	{
 		return _config._model;

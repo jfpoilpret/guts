@@ -23,5 +23,6 @@ class ValidationConfig
 {	
 	ValidationResultModel _model = new DefaultValidationResultModel();
 	Validatable _validator = null;
+	boolean _validateAtFirstDiplay = false;
 }
 //CSON: VisibilityModifier
