@@ -28,10 +28,8 @@ import javax.swing.RootPaneContainer;
 
 import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.GutsActionDecorator;
 import net.guts.gui.template.TemplateDecorator;
 import net.guts.gui.template.TemplateHelper;
-import net.guts.gui.template.wizard.Wizard.Result;
 import net.guts.gui.window.RootPaneConfig;
 import net.java.dev.designgridlayout.DesignGridLayout;
 import net.java.dev.designgridlayout.Tag;
@@ -53,6 +51,10 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		T container, Container view, RootPaneConfig<T> configuration)
 	{
 		setName(view.getName() + "-wizard");
+		_cancel.setName(view.getName() + "-cancel");
+		_ok.setName(view.getName() + "-ok");
+		_previous.setName(view.getName() + "-previous");
+		_next.setName(view.getName() + "-next");
 		_stepDescription.setName(view.getName() + "-label");
 		_stepDescription.setFont(_font);
 		// The following is required  in order to force the correct height for this label
@@ -83,12 +85,11 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		// Create the right actions when needed
 		_previous.setAction(setupAction(controller.previousAction()));
 		_next.setAction(setupAction(controller.nextAction()));
-		_cancel.setAction(
-			setupAction(createClosingAction("cancel", config._cancel, config, Result.CANCEL)));
-		GutsAction apply = 
-			setupAction(createClosingAction("finish", config._apply, config, Result.FINISH));
-		_ok.setAction(apply);
-		controller.setApplyAction(apply);
+		WizardActions actions = new WizardActions(container, config);
+		_actionRegistry.registerActions(actions);
+		_cancel.setAction(actions._cancel);
+		_ok.setAction(actions._ok);
+		controller.setApplyAction(actions._ok);
 		
 		controller.addWizardListener(new WizardListener()
 		{
@@ -107,33 +108,6 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		TemplateHelper.mapEscapeToCancel(container, _cancel.getAction());
 	}
 
-	private GutsAction createClosingAction(String name, Action action,
-		final WizardConfig config, final Wizard.Result result)
-	{
-		if (action != null)
-		{
-			return new GutsActionDecorator(name, action)
-			{
-				@Override protected void afterTargetPerform()
-				{
-					config._result = result;
-					TemplateHelper.close((RootPaneContainer) getRootPane().getParent());
-				}
-			};
-		}
-		else
-		{
-			return new GutsAction(name)
-			{
-				@Override protected void perform()
-				{
-					config._result = result;
-					TemplateHelper.close((RootPaneContainer) getRootPane().getParent());
-				}
-			};
-		}
-	}
-	
 	private GutsAction setupAction(GutsAction action)
 	{
 		if (action != null)

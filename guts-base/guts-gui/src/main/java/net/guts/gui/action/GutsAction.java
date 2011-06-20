@@ -16,6 +16,8 @@ package net.guts.gui.action;
 
 import java.awt.event.ActionEvent;
 import java.beans.PropertyChangeListener;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -108,6 +110,27 @@ abstract public class GutsAction implements Action
 		this(null);
 	}
 
+	static public enum ObserverPosition
+	{
+		FIRST,
+		LAST
+	}
+	
+	final public void addActionObserver(ObserverPosition position, GutsActionObserver observer)
+	{
+		if (observer != null)
+		{
+			if (position == null || position == ObserverPosition.LAST)
+			{
+				_observers.add(observer);
+			}
+			else
+			{
+				_observers.add(0, observer);
+			}
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see javax.swing.Action#addPropertyChangeListener(java.beans.PropertyChangeListener)
 	 */
@@ -159,9 +182,48 @@ abstract public class GutsAction implements Action
 	/* (non-Javadoc)
 	 * @see java.awt.event.ActionListener#actionPerformed(java.awt.event.ActionEvent)
 	 */
+	//CSOFF: IllegalCatch
 	@Override final public void actionPerformed(ActionEvent event)
 	{
-		_action.actionPerformed(event);
+		beforeActionPerform();
+		try
+		{
+			_action.actionPerformed(event);
+			afterActionPerform();
+		}
+		catch (RuntimeException e)
+		{
+			handleCaughtException(e);
+		}
+	}
+	//CSON: IllegalCatch
+	
+	private void beforeActionPerform()
+	{
+		for (GutsActionObserver observer: _observers)
+		{
+			observer.beforeActionPerform(this);
+		}
+	}
+
+	private void afterActionPerform()
+	{
+		for (GutsActionObserver observer: _observers)
+		{
+			observer.afterActionPerform(this);
+		}
+	}
+
+	private void handleCaughtException(RuntimeException e)
+	{
+		if (_observers.isEmpty())
+		{
+			throw e;
+		}
+		for (GutsActionObserver observer: _observers)
+		{
+			observer.handleCaughtException(this, e);
+		}
 	}
 
 	/**
@@ -251,6 +313,7 @@ abstract public class GutsAction implements Action
 	}
 	
 	final private Action _action = new InternalAction();
+	final private List<GutsActionObserver> _observers = new ArrayList<GutsActionObserver>(0);
 	private String _name;
 	private ActionEvent _event = null;
 	

@@ -19,6 +19,7 @@ import java.beans.PropertyChangeListener;
 
 import javax.swing.Action;
 
+//TODO maybe combine with GutsAction (with an additional constructor) if possible?
 /**
  * This class wraps an existing {@link GutsAction} in order to either add 
  * specific behavior before or after the {@code target} action is performed, 
@@ -30,13 +31,13 @@ import javax.swing.Action;
  *
  * @author Jean-Francois Poilpret
  */
-public class GutsActionDecorator extends GutsAction
+public class GutsActionWrapper extends GutsAction
 {
 	/**
 	 * Create a new wrapper for the given {@code target}, while enforcing a new
 	 * {@code name} for it.
 	 */
-	public GutsActionDecorator(String name, Action target)
+	public GutsActionWrapper(String name, Action target)
 	{
 		super(name);
 		_target = target;
@@ -57,7 +58,7 @@ public class GutsActionDecorator extends GutsAction
 		{
 			@Override public void propertyChange(PropertyChangeEvent evt)
 			{
-				Action action = (evt.getSource() == this ? _target : GutsActionDecorator.this);
+				Action action = (evt.getSource() == this ? _target : GutsActionWrapper.this);
 				action.putValue(evt.getPropertyName(), evt.getNewValue());
 			}
 		};
@@ -74,7 +75,7 @@ public class GutsActionDecorator extends GutsAction
 	 * and any later name change (through automatic naming) for any of these 
 	 * actions will not impact the other action name.
 	 */
-	public GutsActionDecorator(GutsAction target)
+	public GutsActionWrapper(GutsAction target)
 	{
 		this(target.name(), target);
 	}
@@ -89,37 +90,26 @@ public class GutsActionDecorator extends GutsAction
 	 * can be overridden to perform any necessary preliminary work.
 	 * Does nothing by default.
 	 */
-	protected void beforeTargetPerform()
-	{
-	}
+//	protected void beforeTargetPerform()
+//	{
+//	}
 
 	/* (non-Javadoc)
 	 * @see net.guts.gui.action.GutsAction#perform()
 	 */
-	//CSOFF: IllegalCatch
 	@Override final protected void perform()
 	{
-		beforeTargetPerform();
-		try
-		{
-			_target.actionPerformed(event());
-			afterTargetPerform();
-		}
-		catch (RuntimeException e)
-		{
-			handleCaughtException(e);
-		}
+		_target.actionPerformed(event());
 	}
-	//CSON: IllegalCatch
 
 	/**
 	 * Called just after calling {@code target} {@link #perform()}, this method
 	 * can be overridden to perform any necessary post-performance work.
 	 * Does nothing by default.
 	 */
-	protected void afterTargetPerform()
-	{
-	}
+//	protected void afterTargetPerform()
+//	{
+//	}
 
 	/**
 	 * Called if an exception was caught while {@code target} was performing its action.
@@ -132,10 +122,10 @@ public class GutsActionDecorator extends GutsAction
 	 * {@code target.actionPerformed()}).
 	 */
 	//CSOFF: IllegalThrows
-	protected void handleCaughtException(RuntimeException e)
-	{
-		throw e;
-	}
+//	protected void handleCaughtException(RuntimeException e)
+//	{
+//		throw e;
+//	}
 	//CSON: IllegalThrows
 
 	final private Action _target;
