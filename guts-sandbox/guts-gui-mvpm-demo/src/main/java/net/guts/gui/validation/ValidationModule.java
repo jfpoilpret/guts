@@ -32,7 +32,8 @@ import com.google.inject.assistedinject.FactoryProvider;
  * Injector injector = Guice.createInjector(new ValidationModule(), ...);
  * </pre>
  * <p/>
- * TODO
+ * This Module requires that {@code jgoodies-validation.jar} be present in the
+ * classpath, otherwise adding this Module will be effectless.
  * 
  * @author Jean-Francois Poilpret
  */

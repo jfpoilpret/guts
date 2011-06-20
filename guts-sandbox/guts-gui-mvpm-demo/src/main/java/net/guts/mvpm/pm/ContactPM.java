@@ -30,7 +30,6 @@ import net.guts.gui.action.TaskAction;
 import net.guts.gui.resource.InjectResources;
 import net.guts.gui.task.FeedbackController;
 import net.guts.gui.task.Task;
-import net.guts.gui.template.okcancel.AbortApply;
 import net.guts.mvpm.business.AddressBookService;
 import net.guts.mvpm.domain.Contact;
 
@@ -158,11 +157,6 @@ public class ContactPM implements Validatable
 	{
 		@Override protected void perform()
 		{
-			if (!validate().isEmpty())
-			{
-				AbortApply.abortApply();
-				return;
-			}
 			model.triggerCommit();
 			homeAddress.address.triggerCommit();
 			officeAddress.address.triggerCommit();

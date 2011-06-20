@@ -14,47 +14,110 @@
 
 package net.guts.gui.validation;
 
-import java.awt.Window;
+import java.awt.Component;
+import java.awt.Container;
 
+import javax.swing.Action;
+import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.window.AbstractWindowProcessor;
+import net.guts.gui.action.AbstractGutsActionObserver;
+import net.guts.gui.action.GutsAction;
+import net.guts.gui.action.GutsAction.ObserverPosition;
+import net.guts.gui.action.GutsActionObserver;
+import net.guts.gui.template.okcancel.AbortApply;
 import net.guts.gui.window.RootPaneConfig;
+import net.guts.gui.window.WindowProcessor;
 
 import com.jgoodies.validation.Validatable;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
 
-class WpWindowValidation<V extends RootPaneContainer> 
-extends AbstractWindowProcessor<Window, V>
+class WpWindowValidation implements WindowProcessor
 {
-	WpWindowValidation()
-	{
-		super(Window.class);
-	}
-
-	@Override protected void processRoot(Window root, RootPaneConfig<V> config)
+	@Override public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config)
 	{
 		ValidationConfig validationConfig = config.get(ValidationConfig.class);
 		if (validationConfig != null)
 		{
-			ValidationResultModel validation = validationConfig._model;
+			final ValidationResultModel validation = validationConfig._model;
 			
 			// Require validation when possible
-			Validatable validator = validationConfig._validator;
+			final Validatable validator = validationConfig._validator;
 			if (validator != null)
 			{
-				ValidationResult result = validator.validate();
-				if (result != null)
+				// Perform early validation (TODO make it configurable????)
+				performValidation(false, validator, validation);
+				// Perform systematic validation if possible
+				GutsAction ok = findButtonAction(root.getContentPane(), "ok");
+				GutsAction apply = findButtonAction(root.getContentPane(), "apply");
+				if (ok != null || apply != null)
 				{
-					validation.setResult(result);
+					GutsActionObserver observer = new AbstractGutsActionObserver()
+					{
+						@Override protected void beforeActionPerform()
+						{
+							performValidation(true, validator, validation);
+						}
+					};
+					addObserver(ok, observer);
+					addObserver(apply, observer);
 				}
 			}
-			RootPaneContainer container = (RootPaneContainer) root;
-			JComponent view = (JComponent) container.getContentPane();
+			JComponent view = (JComponent) root.getContentPane();
 			JComponent feedback = new IconFeedbackPanel(validation, view);
-			container.setContentPane(feedback);
+			root.setContentPane(feedback);
 		}
+	}
+	
+	static private void addObserver(GutsAction action, GutsActionObserver observer)
+	{
+		if (action != null)
+		{
+			action.addActionObserver(ObserverPosition.FIRST, observer);
+		}
+	}
+	
+	static private void performValidation(boolean abort,
+		Validatable validator, ValidationResultModel validation)
+	{
+		ValidationResult result = validator.validate();
+		if (result != null)
+		{
+			validation.setResult(result);
+			if (abort)
+			{
+				AbortApply.abortApply();
+			}
+		}
+	}
+	
+	static private GutsAction findButtonAction(Container container, String name)
+	{
+		for (Component child: container.getComponents())
+		{
+			if (child instanceof JButton)
+			{
+				Action action = ((JButton) child).getAction();
+				if (action instanceof GutsAction)
+				{
+					GutsAction gutsAction = (GutsAction) action;
+					if (name.equals(gutsAction.name()))
+					{
+						return gutsAction;
+					}
+				}
+			}
+			else if (child instanceof Container)
+			{
+				GutsAction action = findButtonAction((Container) child, name);
+				if (action != null)
+				{
+					return action;
+				}
+			}
+		}
+		return null;
 	}
 }
