@@ -47,8 +47,11 @@ class WpWindowValidation implements WindowProcessor
 			final Validatable validator = validationConfig._validator;
 			if (validator != null)
 			{
-				// Perform early validation (TODO make it configurable????)
-				performValidation(false, validator, validation);
+				// Perform early validation if required
+				if (validationConfig._validateAtFirstDiplay)
+				{
+					performValidation(false, validator, validation);
+				}
 				// Perform systematic validation if possible
 				GutsAction ok = findButtonAction(root.getContentPane(), "ok");
 				GutsAction apply = findButtonAction(root.getContentPane(), "apply");
