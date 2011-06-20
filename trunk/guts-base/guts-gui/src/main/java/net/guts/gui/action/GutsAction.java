@@ -185,9 +185,9 @@ abstract public class GutsAction implements Action
 	//CSOFF: IllegalCatch
 	@Override final public void actionPerformed(ActionEvent event)
 	{
-		beforeActionPerform();
 		try
 		{
+			beforeActionPerform();
 			_action.actionPerformed(event);
 			afterActionPerform();
 		}
