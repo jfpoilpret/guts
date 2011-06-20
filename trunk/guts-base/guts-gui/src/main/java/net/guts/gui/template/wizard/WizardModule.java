@@ -50,8 +50,10 @@ public final class WizardModule extends AbstractModule
 		install(new TemplateModule());
 		requestStaticInjection(Wizard.class);
 		// Provide default resource values for OK/Cancel/Next/Previous actions
+//		Resources.bindPackageBundles(
+//			binder(), WizardDecorator.class, GutsGuiResource.PATH);
 		Resources.bindPackageBundles(
-			binder(), WizardDecorator.class, GutsGuiResource.PATH);
+			binder(), WizardActions.class, GutsGuiResource.PATH);
 		Resources.bindMapConverter(binder(), String.class, String.class);
 	}
 	

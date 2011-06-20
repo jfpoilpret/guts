@@ -16,8 +16,10 @@ package net.guts.gui.template.okcancel;
 
 import javax.swing.RootPaneContainer;
 
+import net.guts.gui.action.AbstractGutsActionObserver;
 import net.guts.gui.action.GutsAction;
-import net.guts.gui.action.GutsActionDecorator;
+import net.guts.gui.action.GutsAction.ObserverPosition;
+import net.guts.gui.action.GutsActionWrapper;
 import net.guts.gui.template.TemplateHelper;
 
 // This exists only to ensure correct resource injection
@@ -36,15 +38,19 @@ final class OkCancelActions
 	{
 		if (config._hasOK && config._apply != null)
 		{
-			return new GutsActionDecorator("ok", config._apply)
+			// Important: it is important to create an anonymous class here so that it
+			// is recognized by ResourceInjector as belonging to OkCancelActions, and then
+			// it is correctly injected
+			GutsAction ok = new GutsActionWrapper("ok", config._apply){};
+			ok.addActionObserver(ObserverPosition.FIRST, new AbstractGutsActionObserver()
 			{
-				@Override protected void afterTargetPerform()
+				@Override public void afterActionPerform()
 				{
 					config._result = OkCancel.Result.OK;
 					TemplateHelper.close(container);
 				}
 
-				@Override protected void handleCaughtException(RuntimeException e)
+				@Override public void handleCaughtException(RuntimeException e)
 				{
 					// If forced abortion, then don't close the dialog
 					if (!(e instanceof AbortApply.AbortApplyException))
@@ -52,7 +58,8 @@ final class OkCancelActions
 						throw e;
 					}
 				}
-			};
+			});
+			return ok;
 		}
 		else
 		{
@@ -67,7 +74,7 @@ final class OkCancelActions
 			// Important: it is important to create an anonymous class here so that it
 			// is recognized by ResourceInjector as belonging to OkCancelActions, and then
 			// it is correctly injected
-			return new GutsActionDecorator("apply", config._apply){};
+			return new GutsActionWrapper("apply", config._apply){};
 		}
 		else
 		{
@@ -83,14 +90,18 @@ final class OkCancelActions
 		{
 			if (config._cancel != null)
 			{
-				cancel = new GutsActionDecorator("cancel", config._cancel)
+				// Important: it is important to create an anonymous class here so that it
+				// is recognized by ResourceInjector as belonging to OkCancelActions, and then
+				// it is correctly injected
+				cancel = new GutsActionWrapper("cancel", config._cancel){};
+				cancel.addActionObserver(ObserverPosition.LAST, new AbstractGutsActionObserver()
 				{
-					@Override protected void afterTargetPerform()
+					@Override protected void afterActionPerform()
 					{
 						config._result = OkCancel.Result.CANCEL;
 						TemplateHelper.close(container);
 					}
-				};
+				});
 			}
 			else
 			{
