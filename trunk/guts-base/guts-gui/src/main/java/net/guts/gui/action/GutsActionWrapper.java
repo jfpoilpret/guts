@@ -28,6 +28,9 @@ import javax.swing.Action;
  * Both {@code target} and {@code this} actions share the same {@link Action} 
  * properties at all times, so that you can manipulate either, it will impact 
  * both {@code Action} instances.
+ * <p/>
+ * However, {@code target} and {@code this} <b>don't share</b> their lists of
+ * {@code GutsActionObserver}s.
  *
  * @author Jean-Francois Poilpret
  */
@@ -85,15 +88,6 @@ public class GutsActionWrapper extends GutsAction
 		putValue(name, _target.getValue(name));
 	}
 
-	/**
-	 * Called just before calling {@code target} {@link #perform()}, this method
-	 * can be overridden to perform any necessary preliminary work.
-	 * Does nothing by default.
-	 */
-//	protected void beforeTargetPerform()
-//	{
-//	}
-
 	/* (non-Javadoc)
 	 * @see net.guts.gui.action.GutsAction#perform()
 	 */
@@ -101,32 +95,6 @@ public class GutsActionWrapper extends GutsAction
 	{
 		_target.actionPerformed(event());
 	}
-
-	/**
-	 * Called just after calling {@code target} {@link #perform()}, this method
-	 * can be overridden to perform any necessary post-performance work.
-	 * Does nothing by default.
-	 */
-//	protected void afterTargetPerform()
-//	{
-//	}
-
-	/**
-	 * Called if an exception was caught while {@code target} was performing its action.
-	 * Default behavior is to re-throw the caught exception.
-	 * <p/>
-	 * Note that {@link #afterTargetPerform()} is not called when 
-	 * {@code target.actionPerformed()} throws an exception.
-	 * 
-	 * @param e the exception caught by {@link #perform()} (thrown by 
-	 * {@code target.actionPerformed()}).
-	 */
-	//CSOFF: IllegalThrows
-//	protected void handleCaughtException(RuntimeException e)
-//	{
-//		throw e;
-//	}
-	//CSON: IllegalThrows
 
 	final private Action _target;
 }

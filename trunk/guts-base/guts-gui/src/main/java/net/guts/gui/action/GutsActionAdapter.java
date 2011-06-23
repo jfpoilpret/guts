@@ -14,7 +14,24 @@
 
 package net.guts.gui.action;
 
-public abstract class AbstractGutsActionObserver implements GutsActionObserver
+/**
+ * An abstract adapter class for listening to performance of a {@link GutsAction}. 
+ * The methods in this class are empty. This class exists as a convenience for 
+ * creating listener objects.
+ * <p/>
+ * Extend this class to create a {@code GutsActionObserver} and override only the 
+ * methods of interest (if you implement the {@code GutsActionObserver}
+ * interface, you have to define all its methods; this abstract class
+ * defines null methods for them all, so you can only have to define methods 
+ * you care about).
+ * <p/>
+ * Create a listener object using the extended class and then register it with a 
+ * {@code GutsAction} using {@link GutsAction#addActionObserver}.
+ * 
+ * @author Jean-Francois Poilpret
+ */
+//CSOFF: AbstractClassName
+public abstract class GutsActionAdapter implements GutsActionObserver
 {
 	/*
 	 * (non-Javadoc)
@@ -46,22 +63,43 @@ public abstract class AbstractGutsActionObserver implements GutsActionObserver
 		handleCaughtException(e);
 	}
 
+	/**
+	 * Return the {@link GutsAction} for which a listener method is being called.
+	 */
 	final protected GutsAction target()
 	{
 		return _target;
 	}
 	
+	/**
+	 * Called just before calling {@link #target()} {@code perform()}, this method
+	 * can be overridden to perform any necessary preliminary work.
+	 */
 	protected void beforeActionPerform()
 	{
 	}
 	
+	/**
+	 * Called just after calling {@link #target()} {@code perform()}, this method
+	 * can be implemented to perform any necessary post-performance work.
+	 */
 	protected void afterActionPerform()
 	{
 	}
 	
+	/**
+	 * Called if an exception was caught while {@link #target()} was performing its action.
+	 * <p/>
+	 * Note that {@link #afterTargetPerform()} is not called when 
+	 * {@code target.actionPerformed()} throws an exception.
+	 * 
+	 * @param e the exception caught by {@link GutsAction#perform()} (thrown by 
+	 * {@code target().actionPerformed()}).
+	 */
 	protected void handleCaughtException(RuntimeException e)
 	{
 	}
 	
 	private GutsAction _target;
 }
+//CSON: AbstractClassName
