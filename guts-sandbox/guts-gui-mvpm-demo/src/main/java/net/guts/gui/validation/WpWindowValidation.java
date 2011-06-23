@@ -22,14 +22,15 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.action.AbstractGutsActionObserver;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsAction.ObserverPosition;
+import net.guts.gui.action.GutsActionAdapter;
 import net.guts.gui.action.GutsActionObserver;
 import net.guts.gui.template.okcancel.AbortApply;
 import net.guts.gui.window.RootPaneConfig;
 import net.guts.gui.window.WindowProcessor;
 
+import com.jgoodies.validation.Severity;
 import com.jgoodies.validation.Validatable;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
@@ -57,7 +58,7 @@ class WpWindowValidation implements WindowProcessor
 				GutsAction apply = findButtonAction(root.getContentPane(), "apply");
 				if (ok != null || apply != null)
 				{
-					GutsActionObserver observer = new AbstractGutsActionObserver()
+					GutsActionObserver observer = new GutsActionAdapter()
 					{
 						@Override protected void beforeActionPerform()
 						{
@@ -89,7 +90,7 @@ class WpWindowValidation implements WindowProcessor
 		if (result != null)
 		{
 			validation.setResult(result);
-			if (abort)
+			if (abort && validation.getSeverity() != Severity.OK)
 			{
 				AbortApply.abortApply();
 			}
