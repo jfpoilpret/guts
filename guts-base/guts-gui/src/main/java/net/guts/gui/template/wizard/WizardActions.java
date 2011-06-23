@@ -17,7 +17,7 @@ package net.guts.gui.template.wizard;
 import javax.swing.Action;
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.action.AbstractGutsActionObserver;
+import net.guts.gui.action.GutsActionAdapter;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsAction.ObserverPosition;
 import net.guts.gui.action.GutsActionWrapper;
@@ -46,7 +46,7 @@ final class WizardActions
 			// is recognized by ResourceInjector as belonging to OkCancelActions, and then
 			// it is correctly injected
 			GutsAction wrapper = new GutsActionWrapper(name, action){};
-			wrapper.addActionObserver(ObserverPosition.LAST, new AbstractGutsActionObserver()
+			wrapper.addActionObserver(ObserverPosition.LAST, new GutsActionAdapter()
 			{
 				@Override protected void afterActionPerform()
 				{

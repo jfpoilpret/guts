@@ -110,12 +110,32 @@ abstract public class GutsAction implements Action
 		this(null);
 	}
 
+	/**
+	 * Position at which a {@link GutsActionObserver} shall be 
+	 * {@link GutsAction#addActionObserver added} into the list of all observers.
+	 */
 	static public enum ObserverPosition
 	{
+		/**
+		 * Indicates that a {@link GutsActionObserver} should be added at the beginning
+		 * of the <b>current</b> list of observers of a {@link GutsAction}.
+		 */
 		FIRST,
+		
+		/**
+		 * Indicates that a {@link GutsActionObserver} should be added at the end
+		 * of the <b>current</b> list of observers of a {@link GutsAction}.
+		 */
 		LAST
 	}
-	
+
+	/**
+	 * Add {@code observer} to the list of {@link GutsActionObserver}s for {@code this}.
+	 * 
+	 * @param position where in the list of observers should {@code observer} be added
+	 * @param observer the {@link GutsActionObserver} to add to the list of observers of
+	 * this {@code GutsAction}
+	 */
 	final public void addActionObserver(ObserverPosition position, GutsActionObserver observer)
 	{
 		if (observer != null)
@@ -226,11 +246,6 @@ abstract public class GutsAction implements Action
 		}
 	}
 
-	/**
-	 * Get the underlying {@link javax.swing.Action} so that you can bind it to a Swing 
-	 * component (such as a {@link javax.swing.JButton} or a {@link javax.swing.JMenuItem}),
-	 * or change its {@code enabled} state.
-	 */
 	final Action action()
 	{
 		return _action;

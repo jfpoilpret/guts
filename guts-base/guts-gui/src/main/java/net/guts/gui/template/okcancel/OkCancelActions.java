@@ -16,7 +16,7 @@ package net.guts.gui.template.okcancel;
 
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.action.AbstractGutsActionObserver;
+import net.guts.gui.action.GutsActionAdapter;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsAction.ObserverPosition;
 import net.guts.gui.action.GutsActionWrapper;
@@ -42,7 +42,7 @@ final class OkCancelActions
 			// is recognized by ResourceInjector as belonging to OkCancelActions, and then
 			// it is correctly injected
 			GutsAction ok = new GutsActionWrapper("ok", config._apply){};
-			ok.addActionObserver(ObserverPosition.FIRST, new AbstractGutsActionObserver()
+			ok.addActionObserver(ObserverPosition.FIRST, new GutsActionAdapter()
 			{
 				@Override public void afterActionPerform()
 				{
@@ -94,7 +94,7 @@ final class OkCancelActions
 				// is recognized by ResourceInjector as belonging to OkCancelActions, and then
 				// it is correctly injected
 				cancel = new GutsActionWrapper("cancel", config._cancel){};
-				cancel.addActionObserver(ObserverPosition.LAST, new AbstractGutsActionObserver()
+				cancel.addActionObserver(ObserverPosition.LAST, new GutsActionAdapter()
 				{
 					@Override protected void afterActionPerform()
 					{
