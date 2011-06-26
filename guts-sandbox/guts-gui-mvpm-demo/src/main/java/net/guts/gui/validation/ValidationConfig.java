@@ -24,5 +24,6 @@ class ValidationConfig
 	ValidationResultModel _model = new DefaultValidationResultModel();
 	Validatable _validator = null;
 	boolean _validateAtFirstDiplay = false;
+	boolean _autoFocus = false;
 }
 //CSON: VisibilityModifier

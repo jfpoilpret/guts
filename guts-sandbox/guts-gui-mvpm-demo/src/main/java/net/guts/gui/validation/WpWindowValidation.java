@@ -16,6 +16,7 @@ package net.guts.gui.validation;
 
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FocusTraversalPolicy;
 
 import javax.swing.Action;
 import javax.swing.JButton;
@@ -34,10 +35,12 @@ import com.jgoodies.validation.Severity;
 import com.jgoodies.validation.Validatable;
 import com.jgoodies.validation.ValidationResult;
 import com.jgoodies.validation.ValidationResultModel;
+import com.jgoodies.validation.view.ValidationComponentUtils;
 
 class WpWindowValidation implements WindowProcessor
 {
-	@Override public <T extends RootPaneContainer> void process(T root, RootPaneConfig<T> config)
+	@Override public <T extends RootPaneContainer> void process(
+		final T root, RootPaneConfig<T> config)
 	{
 		ValidationConfig validationConfig = config.get(ValidationConfig.class);
 		if (validationConfig != null)
@@ -48,10 +51,12 @@ class WpWindowValidation implements WindowProcessor
 			final Validatable validator = validationConfig._validator;
 			if (validator != null)
 			{
+				final boolean autoFocus = validationConfig._autoFocus;
+				
 				// Perform early validation if required
 				if (validationConfig._validateAtFirstDiplay)
 				{
-					performValidation(false, validator, validation);
+					performValidation(root, false, validator, validation, autoFocus);
 				}
 				// Perform systematic validation if possible
 				GutsAction ok = findButtonAction(root.getContentPane(), "ok");
@@ -62,7 +67,7 @@ class WpWindowValidation implements WindowProcessor
 					{
 						@Override protected void beforeActionPerform()
 						{
-							performValidation(true, validator, validation);
+							performValidation(root, true, validator, validation, autoFocus);
 						}
 					};
 					addObserver(ok, observer);
@@ -83,18 +88,54 @@ class WpWindowValidation implements WindowProcessor
 		}
 	}
 	
-	static private void performValidation(boolean abort,
-		Validatable validator, ValidationResultModel validation)
+	static private void performValidation(RootPaneContainer root, boolean abort,
+		Validatable validator, ValidationResultModel validation, boolean autoFocus)
 	{
 		ValidationResult result = validator.validate();
 		if (result != null)
 		{
+			Container contentPane = root.getContentPane();
 			validation.setResult(result);
+			ValidationComponentUtils.updateComponentTreeSeverity(contentPane, result);
 			if (abort && validation.getSeverity() != Severity.OK)
 			{
+				if (autoFocus)
+				{
+					focusFirstComponentWithError(contentPane);
+				}
 				AbortApply.abortApply();
 			}
 		}
+	}
+	
+	static private void focusFirstComponentWithError(Container pane)
+	{
+		Container focusRoot = pane.getFocusCycleRootAncestor();
+		FocusTraversalPolicy policy = focusRoot.getFocusTraversalPolicy();
+		Component component = policy.getDefaultComponent(focusRoot);
+		while (component != null)
+		{
+			if (focusIfError(component))
+			{
+				break;
+			}
+			component = policy.getComponentAfter(focusRoot, component);
+		}
+	}
+	
+	static private boolean focusIfError(Component component)
+	{
+		if (!(component instanceof JComponent))
+		{
+			return false;
+		}
+		Severity severity = ValidationComponentUtils.getSeverity((JComponent) component);
+		if (severity == null || severity == Severity.OK)
+		{
+			return false;
+		}
+		component.requestFocus();
+		return true;
 	}
 	
 	static private GutsAction findButtonAction(Container container, String name)

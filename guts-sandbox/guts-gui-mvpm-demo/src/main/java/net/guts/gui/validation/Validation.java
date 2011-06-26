@@ -89,6 +89,12 @@ public final class Validation extends AbstractConfig<RootPaneContainer, Validati
 		_config._validateAtFirstDiplay = true;
 		return this;
 	}
+
+	public Validation withAutoFocus()
+	{
+		_config._autoFocus = true;
+		return this;
+	}
 	
 	public ValidationResultModel getModel()
 	{
