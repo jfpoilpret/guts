@@ -76,6 +76,7 @@ public class AllContactsUiActions
 		Validation validation = Validation.create()
 			.withModel(contactModel.validation)
 			.withValidationWhenDisplayed()
+			.withAutoFocus()
 			.withValidator(contactModel);
 
 		JDialogConfig config = JDialogConfig.create().merge(template).merge(validation);
