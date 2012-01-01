@@ -61,7 +61,10 @@ public final class Validation extends AbstractConfig<RootPaneContainer, Validati
 	//TODO new methods to indicate when/how validation should occur?
 	
 	/**
-	 * TODO
+	 * Specify the {@link ValidationResultModel} to be used by the Validation
+	 * {@link net.guts.gui.window.WindowProcessor}. If not explicitly provided by
+	 * call this method, a default one is automatically created and can be obtained
+	 * by calling {@link #getModel()}.
 	 * 
 	 * @param model the {@link com.jgoodies.validation.ValidationResultModel} to be used
 	 * by the transparent panel to find out which components of the original view
