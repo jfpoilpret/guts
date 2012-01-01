@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<jnlp
+    spec="$jnlpspec"
+	codebase="file://${project.build.directory}/jnlp"
+	href="$outputFile"
+    >
+
+  <information>
+
+    <title>$project.Name</title>
+    <vendor>Jean-Francois Poilpret (Owner of Guts project on Kenai)</vendor>
+    <homepage href="http://kenai.com/projects/guts"/>
+    <description>$project.Description</description>
+
+    <offline-allowed/>
+
+  </information>
+
+  <security>
+     <all-permissions/>
+  </security>
+
+  <resources>
+
+    <j2se
+		version="$j2seVersion"
+		initial-heap-size="$javaHeapMinimum" max-heap-size="$javaHeapMaximum"
+		java-vm-args="$javaArgsString"
+    />
+
+     $dependencies
+
+  </resources>
+
+  <applet-desc main-class="$mainClass"/>
+
+</jnlp>
+
