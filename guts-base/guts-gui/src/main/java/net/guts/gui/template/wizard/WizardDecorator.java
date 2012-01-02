@@ -64,7 +64,7 @@ class WizardDecorator extends JPanel implements TemplateDecorator
 		WizardConfig config = configuration.get(WizardConfig.class);
 
 		DesignGridLayout layout = new DesignGridLayout(this);
-		layout.row().left().fill().add(_stepDescription);
+		layout.row().left().fill().add(_stepDescription).withOwnRowWidth();
 		layout.emptyRow();
 		layout.row().left().fill().add(new JSeparator());
 		layout.row().grid().add((JComponent) view);
