@@ -72,7 +72,7 @@ public class ContactsListView extends JPanel
 		_table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		_table.getSelectionModel().addListSelectionListener(new ListSelectionListener()
 		{
-			public void valueChanged(ListSelectionEvent event)
+			@Override public void valueChanged(ListSelectionEvent event)
 			{
 				int selected = _table.getSelectedRow();
 				if (selected != _lastSelection)

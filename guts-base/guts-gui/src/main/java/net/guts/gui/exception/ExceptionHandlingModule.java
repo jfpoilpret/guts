@@ -14,11 +14,10 @@
 
 package net.guts.gui.exception;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Exception Handling
@@ -46,7 +45,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jean-Francois Poilpret
  */
-public final class ExceptionHandlingModule extends AbstractModule
+public final class ExceptionHandlingModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -64,15 +63,5 @@ public final class ExceptionHandlingModule extends AbstractModule
 			Matchers.hasMethodAnnotatedWith(HandlesException.class), typeListener);
 		// Registers static injection of SwingExceptionHandler class
 		requestStaticInjection(SwingExceptionHandler.class);
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof ExceptionHandlingModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return ExceptionHandlingModule.class.hashCode();
 	}
 }

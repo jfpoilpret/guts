@@ -14,13 +14,12 @@
 
 package net.guts.gui.exit;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Exit Management system. 
@@ -39,7 +38,7 @@ import com.google.inject.AbstractModule;
  * 
  * @author Jean-Francois Poilpret
  */
-public final class ExitModule extends AbstractModule
+public final class ExitModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -58,15 +57,5 @@ public final class ExitModule extends AbstractModule
 		OneTypeListener<ExitChecker> typeListener = 
 			new OneTypeListener<ExitChecker>(ExitChecker.class, injectionListener);
 		bindListener(Matchers.isSubtypeOf(ExitChecker.class), typeListener);
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof ExitModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return ExitModule.class.hashCode();
 	}
 }

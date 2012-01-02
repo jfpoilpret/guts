@@ -1,0 +1,41 @@
+//  Copyright 2009 Jean-Francois Poilpret
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//     http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
+package net.guts.common.injection;
+
+import com.google.inject.AbstractModule;
+
+/**
+ * All GUTS Guice {@link com.google.inject.Module}s must behave as singletons, even if
+ * added several times in 
+ * {@link com.google.inject.Guice#createInjector(com.google.inject.Module...)}.
+ * <p/>
+ * This abstract {@code Module} ensures that several instances of the same subclass are
+ * considered equal when creating a Guice {@link com.google.inject.Injector}.
+ * 
+ * @see <a href="http://kenai.com/jira/browse/GUTS-52">JIRA GUTS-52</a>
+ * @author Jean-Francois Poilpret
+ */
+public abstract class AbstractSingletonModule extends AbstractModule
+{
+	@Override final public boolean equals(Object other)
+	{
+		return other != null && other.getClass() == this.getClass();
+	}
+
+	@Override final public int hashCode()
+	{
+		return this.getClass().hashCode();
+	}
+}

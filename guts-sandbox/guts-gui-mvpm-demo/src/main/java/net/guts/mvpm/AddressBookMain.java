@@ -30,7 +30,7 @@ import net.guts.mvpm.view.ContactViewFactory;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Module;
-import com.google.inject.assistedinject.FactoryProvider;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 public class AddressBookMain extends AbstractApplication
 {
@@ -61,10 +61,12 @@ public class AddressBookMain extends AbstractApplication
 					.to(AddressBookLifecycle.class).asEagerSingleton();
 				
 				// Bind the factory for ContactViews
-				bind(ContactViewFactory.class).toProvider(
-					FactoryProvider.newFactory(ContactViewFactory.class, ContactView.class));
-				bind(ContactPMFactory.class).toProvider(
-					FactoryProvider.newFactory(ContactPMFactory.class, ContactPM.class));
+				install(new FactoryModuleBuilder()
+					.implement(ContactView.class, ContactView.class)
+					.build(ContactViewFactory.class));
+				install(new FactoryModuleBuilder()
+					.implement(ContactPM.class, ContactPM.class)
+					.build(ContactPMFactory.class));
 			}
 		});
 	}

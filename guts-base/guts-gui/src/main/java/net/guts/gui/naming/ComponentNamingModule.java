@@ -16,11 +16,10 @@ package net.guts.gui.naming;
 
 import java.awt.Component;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI component automatic
@@ -50,7 +49,7 @@ import com.google.inject.AbstractModule;
  * @see ComponentNamingService
  * @author Jean-Francois Poilpret
  */
-public final class ComponentNamingModule extends AbstractModule
+public final class ComponentNamingModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()

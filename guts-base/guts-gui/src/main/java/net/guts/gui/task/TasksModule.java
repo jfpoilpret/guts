@@ -14,13 +14,13 @@
 
 package net.guts.gui.task;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 import net.guts.gui.resource.ResourceModule;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.assistedinject.FactoryProvider;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Tasks Management system.
@@ -39,7 +39,7 @@ import com.google.inject.assistedinject.FactoryProvider;
  *
  * @author Jean-Francois Poilpret
  */
-public final class TasksModule extends AbstractModule
+public final class TasksModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -50,8 +50,9 @@ public final class TasksModule extends AbstractModule
 		install(new ResourceModule());
 
 		// Bind TasksGroupFactory
-		bind(TasksGroupFactory.class).toProvider(
-			FactoryProvider.newFactory(TasksGroupFactory.class, TasksGroup.class));
+		install(new FactoryModuleBuilder()
+			.implement(TasksGroup.class, TasksGroup.class)
+			.build(TasksGroupFactory.class));
 
 		// Add type listener to automatically register new TasksGroup
 		TasksGroupRegisterInjectionListener injectionListener = 
@@ -60,15 +61,5 @@ public final class TasksModule extends AbstractModule
 		OneTypeListener<TasksGroup> typeListener = 
 			new OneTypeListener<TasksGroup>(TasksGroup.class, injectionListener);
 		bindListener(Matchers.isSubtypeOf(TasksGroup.class), typeListener);
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof TasksModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return TasksModule.class.hashCode();
 	}
 }

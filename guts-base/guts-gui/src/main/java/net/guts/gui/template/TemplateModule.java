@@ -14,10 +14,9 @@
 
 package net.guts.gui.template;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI templating system. 
@@ -32,7 +31,7 @@ import com.google.inject.AbstractModule;
  * 
  * @author jfpoilpret
  */
-public final class TemplateModule extends AbstractModule
+public final class TemplateModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -41,15 +40,5 @@ public final class TemplateModule extends AbstractModule
 	{
 		Windows.bindWindowProcessor(binder(), WindowProcessor.TEMPLATE_DECORATION)
 			.to(WpTemplateDecoration.class);
-	}
-	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof TemplateModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return TemplateModule.class.hashCode();
 	}
 }

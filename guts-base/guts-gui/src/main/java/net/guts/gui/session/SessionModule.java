@@ -24,10 +24,9 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Session State 
@@ -49,7 +48,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jean-Francois Poilpret
  */
-public final class SessionModule extends AbstractModule
+public final class SessionModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -69,9 +68,9 @@ public final class SessionModule extends AbstractModule
 		// Add WindowProcessor for WindowController
 		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
 			.to(WpWindowSessionStorage.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
 			.to(WpAppletSessionStorage.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 2)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE)
 			.to(WpInternalFrameSessionStorage.class);
 	}
 	
@@ -79,15 +78,5 @@ public final class SessionModule extends AbstractModule
 		Class<T> type, Class<? extends SessionState<T>> state)
 	{
 		Sessions.bindSessionConverter(binder(), type).to(state);
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof SessionModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return SessionModule.class.hashCode();
 	}
 }

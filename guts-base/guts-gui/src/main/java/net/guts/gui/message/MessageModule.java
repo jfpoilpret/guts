@@ -14,10 +14,9 @@
 
 package net.guts.gui.message;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Message Box factory.
@@ -41,7 +40,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jean-Francois Poilpret
  */
-public final class MessageModule extends AbstractModule
+public final class MessageModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -52,15 +51,5 @@ public final class MessageModule extends AbstractModule
 		// Bind special ResourceConverter used by MessageFactoryImpl
 		Resources.bindEnumConverter(binder(), MessageType.class);
 		Resources.bindEnumConverter(binder(), OptionType.class);
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof MessageModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return MessageModule.class.hashCode();
 	}
 }

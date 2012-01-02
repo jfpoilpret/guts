@@ -14,13 +14,12 @@
 
 package net.guts.gui.action;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
 import net.guts.gui.resource.ResourceModule;
 import net.guts.gui.resource.Resources;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI action management system. 
@@ -45,7 +44,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jean-Francois Poilpret
  */
-public final class ActionModule extends AbstractModule
+public final class ActionModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -70,15 +69,5 @@ public final class ActionModule extends AbstractModule
 		// Add interceptor to methods that return GutsAction to ensure registration
 		bindInterceptor(Matchers.anyClass(), Matchers.isMethodReturnSubtype(GutsAction.class),
 			new GutsActionInterceptor(getProvider(ActionRegistrationManager.class)));
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof ActionModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return ActionModule.class.hashCode();
 	}
 }

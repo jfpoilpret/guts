@@ -95,24 +95,23 @@ public final class InputBlockers
 		return new ModalDialogInputBlocker();
 	}
 	
-	//CSOFF: ParameterAssignmentCheck
 	static private JRootPane findComponentRoot(Component component)
 	{
-		while (component != null)
+		Component parent = component;
+		while (parent != null)
 		{
-			if (component instanceof JRootPane)
+			if (parent instanceof JRootPane)
 			{
-				return (JRootPane) component;
+				return (JRootPane) parent;
 			}
-			else if (component instanceof JPopupMenu)
+			else if (parent instanceof JPopupMenu)
 			{
-				return findComponentRoot(((JPopupMenu) component).getInvoker());
+				return findComponentRoot(((JPopupMenu) parent).getInvoker());
 			}
-			component = component.getParent();
+			parent = parent.getParent();
 		}
 		return null;
 	}
-	//CSON: ParameterAssignmentCheck
 	
 	static final private InputBlocker NO_BLOCKER = new InputBlocker()
 	{

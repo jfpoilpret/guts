@@ -25,14 +25,12 @@ import net.guts.gui.examples.addressbook.action.ContactActions;
 import net.guts.gui.examples.addressbook.docking.AddressBookLayout;
 import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.examples.addressbook.domain.Contact;
-import net.guts.gui.examples.addressbook.util.TasksGroupProgressPanel;
 import net.guts.gui.examples.addressbook.view.ContactDetailView;
 import net.guts.gui.examples.addressbook.view.ContactsListView;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.task.TaskInfo;
-import net.guts.gui.task.blocker.BlockerDialogPane;
 import net.guts.gui.util.EnumIconRenderer;
 
 import com.google.inject.AbstractModule;
@@ -58,12 +56,10 @@ class AddressBookModule extends AbstractModule
 
 		// Setup ResourceModule root bundle
 		Resources.bindRootBundle(binder(), getClass(), "resources");
+		//TODO are those lines still useful?
 		Resources.bindEnumConverter(binder(), TaskInfo.State.class);
 		EnumIconRenderer.bind(binder(), TaskInfo.State.class);
 
-		// Set our own blocker dialog panel
-		bind(BlockerDialogPane.class).to(TasksGroupProgressPanel.class);
-		
 		// Set our own component naming policy
 		bind(ComponentNamePolicy.class).toInstance(new AddressBookComponentNamePolicy());
 		bind(ActionNamePolicy.class).toInstance(new AddressBookActionNamePolicy());

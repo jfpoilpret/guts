@@ -17,11 +17,12 @@ package net.guts.gui.validation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
 
-import com.google.inject.AbstractModule;
-import com.google.inject.assistedinject.FactoryProvider;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
+import com.jgoodies.validation.ValidationMessage;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI Validation support, based
@@ -37,7 +38,7 @@ import com.google.inject.assistedinject.FactoryProvider;
  * 
  * @author Jean-Francois Poilpret
  */
-public final class ValidationModule extends AbstractModule
+public final class ValidationModule extends AbstractSingletonModule
 {
 	static final private Logger _logger = LoggerFactory.getLogger(ValidationModule.class);
 	
@@ -45,8 +46,10 @@ public final class ValidationModule extends AbstractModule
 	{
 		if (isJGoodiesValidationInClasspath())
 		{
-			bind(ValidationMessageFactory.class).toProvider(FactoryProvider.newFactory(
-				ValidationMessageFactory.class, ResourceValidationMessage.class));
+			install(new FactoryModuleBuilder()
+				.implement(ValidationMessage.class, ResourceValidationMessage.class)
+				.build(ValidationMessageFactory.class));
+			
 			requestStaticInjection(ValidationHelper.class);
 			Windows.bindWindowProcessor(binder(), WindowProcessor.SESSION_STORAGE + 1000)
 				.to(WpWindowValidation.class);
@@ -69,15 +72,5 @@ public final class ValidationModule extends AbstractModule
 		{
 			return false;
 		}
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof ValidationModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return ValidationModule.class.hashCode();
 	}
 }

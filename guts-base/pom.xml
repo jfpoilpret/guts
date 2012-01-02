@@ -21,7 +21,7 @@
 	<description>${project.name} is a build configuration parent for
 		all GUTS projects;
 		GUTS is the most innovative in the pack of SAF / JSR 296 descendants;
-		GUTS is a collection of utilities based on Google GUICE 2.0 dependency
+		GUTS is a collection of utilities based on Google GUICE 3.0 dependency
 		injection library with focus on SWING gui development.</description>
 
 	<url>http://guts.kenai.com/guts-base/</url>
@@ -395,17 +395,17 @@
 			<dependency>
 				<groupId>com.google.inject.extensions</groupId>
 				<artifactId>guice-multibindings</artifactId>
-				<version>2.0</version>
+				<version>3.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject.extensions</groupId>
-				<artifactId>guice-assisted-inject</artifactId>
-				<version>2.0</version>
+				<artifactId>guice-assistedinject</artifactId>
+				<version>3.0</version>
 			</dependency>
 			<dependency>
 				<groupId>com.google.inject</groupId>
 				<artifactId>guice</artifactId>
-				<version>2.0</version>
+				<version>3.0</version>
 			</dependency>
 			<dependency>
 				<groupId>org.testng</groupId>

@@ -129,34 +129,35 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 	//CSOFF: IllegalCatch
 	static private Field findField(Class<?> bean, String name)
 	{
-		while (bean != null)
+		Class<?> current = bean; 
+		while (current != null)
 		{
 			try
 			{
-				return bean.getDeclaredField(name);
+				return current.getDeclaredField(name);
 			}
 			catch (Exception e)
 			{
-				bean = bean.getSuperclass();
+				current = current.getSuperclass();
 			}
 		}
 		return null;
 	}
 	//CSON: IllegalCatch
 	
-	//CSOFF: IllegalCatchCheck
-	//CSOFF: ParameterAssignmentCheck
+	//CSOFF: IllegalCatch
 	static private Method findMethod(Class<?> bean, String name, TypeLiteral<?> type)
 	{
-		while (bean != null)
+		Class<?> current = bean; 
+		while (current != null)
 		{
 			try
 			{
 				if (type == null)
 				{
-					return bean.getDeclaredMethod(name);
+					return current.getDeclaredMethod(name);
 				}
-				Method method =  bean.getDeclaredMethod(name, type.getRawType());
+				Method method =  current.getDeclaredMethod(name, type.getRawType());
 				if (method.getGenericParameterTypes()[0].equals(type.getType()))
 				{
 					return method;
@@ -168,24 +169,23 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 			}
 			catch (Exception e)
 			{
-				bean = bean.getSuperclass();
+				current = current.getSuperclass();
 			}
 		}
 		return null;
 	}
-	//CSON: ParameterAssignmentCheck
-	//CSON: IllegalCatchCheck
+	//CSON: IllegalCatch
 	
-	//CSOFF: IllegalCatchCheck
-	//CSOFF: EmptyBlockCheck
-	//CSOFF: ParameterAssignmentCheck
+	//CSOFF: IllegalCatch
+	//CSOFF: EmptyBlock
 	static private Method findAnySetter(Class<?> bean, String name)
 	{
-		while (bean != null)
+		Class<?> current = bean; 
+		while (current != null)
 		{
 			try
 			{
-				for (Method method: bean.getDeclaredMethods())
+				for (Method method: current.getDeclaredMethods())
 				{
 					if (	method.getName().equals(name)
 						&&	method.getParameterTypes().length == 1)
@@ -198,13 +198,12 @@ class UntypedPropertyFactoryImpl implements UntypedPropertyFactory
 			{
 				// Fall back to superclass check
 			}
-			bean = bean.getSuperclass();
+			current = current.getSuperclass();
 		}
 		return null;
 	}
-	//CSON: ParameterAssignmentCheck
-	//CSON: EmptyBlockCheck
-	//CSON: IllegalCatchCheck
+	//CSON: EmptyBlock
+	//CSON: IllegalCatch
 	
 	static private String capitalize(String name)
 	{

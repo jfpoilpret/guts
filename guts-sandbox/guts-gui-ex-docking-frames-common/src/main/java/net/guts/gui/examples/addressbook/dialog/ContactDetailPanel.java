@@ -18,20 +18,13 @@ import java.util.Date;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.guts.gui.action.GutsAction;
-import net.guts.gui.dialog.Resettable;
-import net.guts.gui.dialog.support.AbstractPanel;
-import net.guts.gui.examples.addressbook.business.AddressBookService;
 import net.guts.gui.examples.addressbook.domain.Contact;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
-import com.google.inject.Inject;
-import com.google.inject.Singleton;
-
-@Singleton
-public class ContactDetailPanel extends AbstractPanel implements Resettable
+public class ContactDetailPanel extends JPanel
 {
 	static final private long serialVersionUID = -2653616540903403972L;
 
@@ -42,45 +35,36 @@ public class ContactDetailPanel extends AbstractPanel implements Resettable
 		layout.row().grid(_lblFirstName).add(_txfFirstName);
 		layout.row().grid(_lblLastName).add(_txfLastName);
 		layout.row().grid(_lblBirth).add(_txfBirth);
-
 		_home.layout(layout);
 		_office.layout(layout);
 	}
 	
-	@Override protected GutsAction getAcceptAction()
-	{
-		return _accept;
-	}
-
-	public void reset()
-	{
-		_contact = null;
-		_txfFirstName.setText("");
-		_txfLastName.setText("");
-		_txfBirth.setValue(null);
-		
-		_home.reset();
-		_office.reset();
-	}
-
-	public void setContact(Contact contact)
+	public void modelToView(Contact contact)
 	{
 		_contact = contact;
-		_txfFirstName.setText(contact.getFirstName());
-		_txfLastName.setText(contact.getLastName());
-		_txfBirth.setValue(contact.getBirth());
-		
-		_home.setAddress(_contact.getHome());
-		_office.setAddress(_contact.getOffice());
+		if (_contact != null)
+		{
+			_txfFirstName.setText(contact.getFirstName());
+			_txfLastName.setText(contact.getLastName());
+			_txfBirth.setValue(contact.getBirth());
+			_home.setAddress(_contact.getHome());
+			_office.setAddress(_contact.getOffice());
+		}
+		else
+		{
+			_txfFirstName.setText("");
+			_txfLastName.setText("");
+			_txfBirth.setValue(null);
+			_home.reset();
+			_office.reset();
+		}
 	}
-
-	private void accept()
-    {
-		boolean create = false;
+	
+	public Contact viewToModel()
+	{
 		if (_contact == null)
 		{
 			_contact = new Contact();
-			create = true;
 		}
 		else
 		{
@@ -93,26 +77,9 @@ public class ContactDetailPanel extends AbstractPanel implements Resettable
 
 		_home.updateAddress(_contact.getHome());
 		_office.updateAddress(_contact.getOffice());
-		
-		if (create)
-		{
-			_service.createContact(_contact);
-		}
-		else
-		{
-			_service.modifyContact(_contact);
-		}
-		getParentDialog().close(false);
+		return _contact;
 	}
 
-	final private GutsAction _accept = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			accept();
-		}
-	};
-	
 	final private JLabel _lblFirstName = new JLabel();
 	final private JTextField _txfFirstName = new JTextField(20);
 	final private JLabel _lblLastName = new JLabel();
@@ -122,5 +89,4 @@ public class ContactDetailPanel extends AbstractPanel implements Resettable
 	final private AddressPanel _home = new AddressPanel();
 	final private AddressPanel _office = new AddressPanel();
 	private Contact _contact;
-	@Inject private AddressBookService _service;
 }

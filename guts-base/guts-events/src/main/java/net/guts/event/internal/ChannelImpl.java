@@ -31,6 +31,7 @@ import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import net.guts.common.cleaner.Cleanable;
 import net.guts.common.cleaner.Cleaner;
+import net.guts.common.type.Nullable;
 import net.guts.event.Channel;
 import net.guts.event.ConsumerExceptionHandler;
 import net.guts.event.ConsumerReturnHandler;
@@ -38,7 +39,6 @@ import net.guts.event.ConsumerReturnHandler;
 import com.google.inject.Inject;
 import com.google.inject.TypeLiteral;
 import com.google.inject.assistedinject.Assisted;
-import com.google.inject.internal.Nullable;
 
 public class ChannelImpl<T> implements Channel<T>, Cleanable
 {

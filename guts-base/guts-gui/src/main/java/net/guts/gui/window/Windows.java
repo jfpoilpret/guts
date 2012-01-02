@@ -53,7 +53,8 @@ public final class Windows
 	
 	static MapBinder<Integer, WindowProcessor> windowProcessors(Binder binder)
 	{
-		return MapBinder.newMapBinder(binder, INTEGER_LITERAL, WINDOW_PROCESSOR_LITERAL);
+		return MapBinder.newMapBinder(binder, INTEGER_LITERAL, WINDOW_PROCESSOR_LITERAL)
+			.permitDuplicates();
 	}
 	
 	static final private TypeLiteral<Integer> INTEGER_LITERAL = TypeLiteral.get(Integer.class);

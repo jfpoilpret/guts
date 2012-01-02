@@ -14,14 +14,15 @@
 
 package net.guts.common.bean;
 
-import static net.guts.common.type.PrimitiveHelper.toWrapper;
-
 import java.lang.reflect.AccessibleObject;
 import java.security.AccessController;
 import java.security.PrivilegedAction;
 
+import static net.guts.common.type.PrimitiveHelper.toWrapper;
+
 import com.google.inject.TypeLiteral;
 
+//CSOFF: AbstractClassName
 abstract public class UntypedProperty
 {
 	UntypedProperty(String name, TypeLiteral<?> type, 
@@ -150,3 +151,4 @@ abstract public class UntypedProperty
 	private final AccessibleObject _getter;
 	private final AccessibleObject _setter;
 }
+//CSON: AbstractClassName

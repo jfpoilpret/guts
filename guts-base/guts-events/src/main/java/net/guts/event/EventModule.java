@@ -14,6 +14,7 @@
 
 package net.guts.event;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
@@ -25,9 +26,8 @@ import net.guts.event.internal.ConsumerInjectionListener;
 import net.guts.event.internal.InDeferredThreadExecutor;
 import net.guts.event.internal.InEDTExecutor;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
-import com.google.inject.assistedinject.FactoryProvider;
+import com.google.inject.assistedinject.FactoryModuleBuilder;
 
 /**
  * Guice {@link com.google.inject.Module} for GUTS-Events. This module must be added 
@@ -60,7 +60,7 @@ import com.google.inject.assistedinject.FactoryProvider;
  * 
  * @author Jean-Francois Poilpret
  */
-final public class EventModule extends AbstractModule
+final public class EventModule extends AbstractSingletonModule
 {
 	@Override protected void configure()
 	{
@@ -73,12 +73,14 @@ final public class EventModule extends AbstractModule
 		bindListener(Matchers.hasPublicMethodAnnotatedWith(Consumes.class), typeListener);
 		
 		// Perform assisted inject for AnnotationProcessor
-		bind(AnnotationProcessorFactory.class).toProvider(FactoryProvider.newFactory(
-			AnnotationProcessorFactory.class, AnnotationProcessor.class));
+		install(new FactoryModuleBuilder()
+			.implement(AnnotationProcessor.class, AnnotationProcessor.class)
+			.build(AnnotationProcessorFactory.class));
 		
 		// Perform assisted inject for ChannelImpl
-		bind(ChannelFactory.class).toProvider(FactoryProvider.newFactory(
-			ChannelFactory.class, ChannelImpl.class));
+		install(new FactoryModuleBuilder()
+			.implement(ChannelImpl.class, ChannelImpl.class)
+			.build(ChannelFactory.class));
 
 		// Initialize MultiMap to contain the dictionary of Executors to be
 		// used when @Consumes method have the matching annotations
@@ -90,15 +92,5 @@ final public class EventModule extends AbstractModule
 		
 		// Initialize empty MultiMap to contain handlers of results returned by consumers
 		Events.getHandlerMap(binder());
-	}
-
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof EventModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return EventModule.class.hashCode();
 	}
 }

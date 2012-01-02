@@ -17,9 +17,9 @@ package net.guts.gui.template.wizard;
 import javax.swing.Action;
 import javax.swing.RootPaneContainer;
 
-import net.guts.gui.action.GutsActionAdapter;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.GutsAction.ObserverPosition;
+import net.guts.gui.action.GutsActionAdapter;
 import net.guts.gui.action.GutsActionWrapper;
 import net.guts.gui.template.TemplateHelper;
 import net.guts.gui.template.wizard.Wizard.Result;

@@ -14,7 +14,7 @@
 
 package net.guts.gui.window;
 
-import com.google.inject.AbstractModule;
+import net.guts.common.injection.AbstractSingletonModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI {@link WindowController} 
@@ -33,7 +33,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jean-Francois Poilpret
  */
-public final class WindowModule extends AbstractModule
+public final class WindowModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -46,29 +46,19 @@ public final class WindowModule extends AbstractModule
 		// Add WP for various aspects
 		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT)
 			.to(WpWindowBoundsInit.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 1)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT)
 			.to(WpAppletBoundsInit.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT + 2)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.BOUNDS_INIT)
 			.to(WpInternalFrameBoundsInit.class);
 		// Add WP that adds close listeners to windows
 		Windows.bindWindowProcessor(binder(), WindowProcessor.CLOSE_CHECKER_SETUP)
 			.to(WpWindowCloseChecking.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.CLOSE_CHECKER_SETUP + 1)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.CLOSE_CHECKER_SETUP)
 			.to(WpInternalFrameCloseChecking.class);
 		// Add WP that eventually displays the window
 		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpWindowDisplay.class);
-		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY + 1)
+		Windows.bindWindowProcessor(binder(), WindowProcessor.DISPLAY)
 			.to(WpInternalFrameDisplay.class);
-	}
-	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof WindowModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return WindowModule.class.hashCode();
 	}
 }

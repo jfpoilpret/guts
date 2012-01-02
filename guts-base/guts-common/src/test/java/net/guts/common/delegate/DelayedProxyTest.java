@@ -105,12 +105,12 @@ public class DelayedProxyTest
 			_spy = spy;
 		}
 		
-		public void setA(int a)
+		@Override public void setA(int a)
 		{
 			_spy.setA(a);
 		}
 		
-		public void setB(String b)
+		@Override public void setB(String b)
 		{
 			_spy.setB(b);
 		}

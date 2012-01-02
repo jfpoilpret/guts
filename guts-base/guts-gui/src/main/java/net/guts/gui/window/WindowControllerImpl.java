@@ -18,6 +18,7 @@ import java.awt.EventQueue;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.TreeMap;
 
 import javax.swing.RootPaneContainer;
@@ -28,13 +29,17 @@ import com.google.inject.Singleton;
 @Singleton
 class WindowControllerImpl implements WindowController
 {
-	@Inject WindowControllerImpl(Map<Integer, WindowProcessor> processors)
+	@Inject WindowControllerImpl(Map<Integer, Set<WindowProcessor>> processors)
 	{
 		// Sort all processors according to order index key
-		TreeMap<Integer, WindowProcessor> sortedProcessors = 
-			new TreeMap<Integer, WindowProcessor>(processors);
+		TreeMap<Integer, Set<WindowProcessor>> sortedProcessors = 
+			new TreeMap<Integer, Set<WindowProcessor>>(processors);
 		// Then copy to a sorted list of WPs (no need to store index)
-		_processors = new ArrayList<WindowProcessor>(sortedProcessors.values());
+		_processors = new ArrayList<WindowProcessor>(processors.size());
+		for (Set<WindowProcessor> process: sortedProcessors.values())
+		{
+			_processors.addAll(process);
+		}
 	}
 
 	@Override public <T extends RootPaneContainer> void show(T root, RootPaneConfig<T> config)
