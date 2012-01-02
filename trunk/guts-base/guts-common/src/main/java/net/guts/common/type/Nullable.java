@@ -12,20 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.common.bean;
+package net.guts.common.type;
 
-import com.google.inject.ImplementedBy;
-//import com.google.inject.TypeLiteral;
+import java.lang.annotation.Documented;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
 
-/**
- * TODO
- *
- * @author Jean-Francois Poilpret
- */
-@ImplementedBy(TypedPropertyFactoryImpl.class)
-public interface TypedPropertyFactory
+@Documented
+@Retention(RetentionPolicy.RUNTIME)
+public @interface Nullable
 {
-	public <T> TypedProperty<T, ?> property(String name, Class<T> bean);
-	public <T, V> TypedProperty<T, V> property(String name, Class<T> bean, Class<V> type);
-//	public <T, V> Property<T, V> property(String name, Class<T> bean, TypeLiteral<V> type);
 }

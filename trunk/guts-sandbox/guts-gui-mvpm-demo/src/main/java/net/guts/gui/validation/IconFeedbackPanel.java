@@ -452,7 +452,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
     private final class ValidationResultChangeHandler implements 
             PropertyChangeListener {
 
-        public void propertyChange(PropertyChangeEvent evt) {
+        @Override public void propertyChange(PropertyChangeEvent evt) {
             updateFeedbackComponents();
         }
 
@@ -476,7 +476,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
          * @param name the string to be associated with the component
          * @param comp the component to be added
          */
-        public void addLayoutComponent(String name, Component comp) {
+        @Override public void addLayoutComponent(String name, Component comp) {
             // components are well known by the container
         }
 
@@ -484,7 +484,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
          * Removes the specified component from the layout.
          * @param comp the component to be removed
          */
-        public void removeLayoutComponent(Component comp) {
+        @Override public void removeLayoutComponent(Component comp) {
             // components are well known by the container
         }
 
@@ -496,7 +496,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
          * @return the preferred size of the given container
          * @see #minimumLayoutSize(Container)
          */
-        public Dimension preferredLayoutSize(Container parent) {
+        @Override public Dimension preferredLayoutSize(Container parent) {
             return content.getPreferredSize();
         }
 
@@ -508,7 +508,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
          * @return the minimum size of the given container
          * @see #preferredLayoutSize(Container)
          */
-        public Dimension minimumLayoutSize(Container parent) {
+        @Override public Dimension minimumLayoutSize(Container parent) {
             return content.getMinimumSize();
         }
 
@@ -517,7 +517,7 @@ public final class IconFeedbackPanel extends JLayeredPane {
          *
          * @param parent the container to be laid out
          */
-        public void layoutContainer(Container parent) {
+        @Override public void layoutContainer(Container parent) {
             Dimension size = parent.getSize();
             content.setBounds(0, 0, size.width, size.height);
         }

@@ -20,6 +20,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
+import net.guts.common.type.Nullable;
 import net.guts.gui.resource.ResourceInjector;
 import net.guts.gui.task.blocker.InputBlocker;
 import net.guts.gui.task.blocker.InputBlockers;
@@ -30,7 +31,6 @@ import com.google.inject.Inject;
 import com.google.inject.Injector;
 import com.google.inject.Singleton;
 import com.google.inject.assistedinject.Assisted;
-import com.google.inject.internal.Nullable;
 
 /**
  * Defined as a "group of {@link Task}s, executed by the same {@link ExecutorService}, 

@@ -21,6 +21,8 @@ package net.guts.common.bean;
  */
 public class PropertyException extends RuntimeException
 {
+	private static final long serialVersionUID = 2054200064274558260L;
+
 	/**
 	 * @param message
 	 */

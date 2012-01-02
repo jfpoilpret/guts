@@ -55,47 +55,45 @@ public final class TypeHelper
 	}
 	
 	//TODO also deal with interfaces?
-	//CSOFF: ParameterAssignmentCheck
 	static public <T> T findBestMatchInTypeHierarchy(Map<Class<?>, T> map, Class<?> type)
 	{
+		Class<?> current = type;
 		T value = null;
 		while (true)
 		{
-			value = map.get(type);
+			value = map.get(current);
 			if (value != null)
 			{
 				return value;
 			}
-			type = type.getSuperclass();
-			if (type == null)
+			current = current.getSuperclass();
+			if (current == null)
 			{
 				return null;
 			}
 		}
 	}
-	//CSON: ParameterAssignmentCheck
 
 	//TODO also deal with interfaces?
-	//CSOFF: ParameterAssignmentCheck
 	static public <T> List<T> findAllMatchesInTypeHierarchy(
 		Map<Class<?>, T> map, Class<?> type)
 	{
+		Class<?> current = type;
 		List<T> values = new ArrayList<T>();
 		while (true)
 		{
-			T value = map.get(type);
+			T value = map.get(current);
 			if (value != null)
 			{
 				values.add(value);
 			}
-			type = type.getSuperclass();
-			if (type == null)
+			current = current.getSuperclass();
+			if (current == null)
 			{
 				return values;
 			}
 		}
 	}
-	//CSON: ParameterAssignmentCheck
 
 	static public boolean typeIsSubtypeOf(
 		TypeLiteral<?> subtype, TypeLiteral<?> supertype)

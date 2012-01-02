@@ -17,19 +17,14 @@ package net.guts.gui.examples.addressbook.action;
 import java.awt.Component;
 
 import javax.swing.Icon;
-import javax.swing.JComponent;
 
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
-import net.guts.gui.dialog.DialogFactory;
-import net.guts.gui.dialog.PanelInitializer;
 import net.guts.gui.docking.ViewFactory;
 import net.guts.gui.docking.ViewHelperService;
 import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.dialog.ContactDetailPanel;
-import net.guts.gui.examples.addressbook.dialog.ContactDetailTabPanel;
-import net.guts.gui.examples.addressbook.dialog.ContactDetailWizardPanel;
+import net.guts.gui.examples.addressbook.dialog.ContactDetailPanelController;
 import net.guts.gui.examples.addressbook.docking.ViewHelper;
 import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.examples.addressbook.domain.Contact;
@@ -43,8 +38,6 @@ import net.guts.gui.task.Task;
 import net.guts.gui.task.TaskInfo;
 import net.guts.gui.task.TasksGroup;
 import net.guts.gui.task.blocker.InputBlockers;
-import net.guts.gui.window.BoundsPolicy;
-import net.guts.gui.window.StatePolicy;
 
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.CLocation;
@@ -62,12 +55,15 @@ public class ContactActions
 	static final public String OPEN_CONTACT_PICT_TOPIC = "OpenContactPicture";
 
 	@Inject public ContactActions(AddressBookService service,
-		DialogFactory dialogFactory, MessageFactory messageFactory,
-		ResourceInjector injector, CControl controller,
-		ViewFactory viewFactory, ViewHelperService viewHelper)
+		ContactDetailPanelController detailController,
+		MessageFactory messageFactory,
+		ResourceInjector injector, 
+		CControl controller,
+		ViewFactory viewFactory, 
+		ViewHelperService viewHelper)
 	{
 		_service = service;
-		_dialogFactory = dialogFactory;
+		_detailController = detailController;
 		_messageFactory = messageFactory;
 		_controller = controller;
 		_viewFactory = viewFactory;
@@ -96,8 +92,6 @@ public class ContactActions
 	public void setContactSelected(boolean contactSelected)
 	{
 		_modifyContact.setEnabled(contactSelected);
-		_modifyContactWithTabs.setEnabled(contactSelected);
-		_modifyContactWithWizard.setEnabled(contactSelected);
 		_deleteContact.setEnabled(contactSelected);
 	}
 	
@@ -106,48 +100,14 @@ public class ContactActions
 		return _createContact;
 	}
 	
-	public GutsAction createContactWithTabs()
-	{
-		return _createContactWithTabs;
-	}
-	
-	public GutsAction createContactWithWizard()
-	{
-		return _createContactWithWizard;
-	}
-	
 	public GutsAction modifyContact()
 	{
 		return _modifyContact;
 	}
 	
-	public GutsAction modifyContactWithTabs()
-	{
-		return _modifyContactWithTabs;
-	}
-	
-	public GutsAction modifyContactWithWizard()
-	{
-		return _modifyContactWithWizard;
-	}
-	
 	public GutsAction deleteContact()
 	{
 		return _deleteContact;
-	}
-
-	// GUTS-22: showDialog convenience method to avoid repeats
-	private <T extends JComponent> void showDialog(
-		Class<T> clazz, PanelInitializer<T> initializer)
-	{
-		_dialogFactory.showDialog(
-			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS, initializer);
-	}
-
-	private <T extends JComponent> void showDialog(Class<T> clazz)
-	{
-		_dialogFactory.showDialog(
-			clazz, BoundsPolicy.PACK_AND_CENTER, StatePolicy.RESTORE_IF_EXISTS);
 	}
 
 	//TODO any possibility to refactor parts of this method into a general docking utility?
@@ -190,7 +150,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactDetailPanel.class);
+			_detailController.showContactDialog(null);
 		}
 	};
 
@@ -198,13 +158,7 @@ public class ContactActions
 	{
 		@Override protected void perform()
 		{
-			showDialog(ContactDetailPanel.class, new PanelInitializer<ContactDetailPanel>()
-			{
-				public void init(ContactDetailPanel panel)
-				{
-					panel.setContact(_selected);
-				}
-			});
+			_detailController.showContactDialog(_selected);
 		}
 	};
 
@@ -264,55 +218,9 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _createContactWithTabs = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			showDialog(ContactDetailTabPanel.class);
-		}
-	};
-
-	final private GutsAction _modifyContactWithTabs = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			showDialog(ContactDetailTabPanel.class, 
-				new PanelInitializer<ContactDetailTabPanel>()
-			{
-				public void init(ContactDetailTabPanel panel)
-				{
-					panel.setContact(_selected);
-				}
-			});
-		}
-	};
-
-	final private GutsAction _createContactWithWizard = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			showDialog(ContactDetailWizardPanel.class);
-		}
-	};
-
-	final private GutsAction _modifyContactWithWizard = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			showDialog(ContactDetailWizardPanel.class, 
-				new PanelInitializer<ContactDetailWizardPanel>()
-			{
-				public void init(ContactDetailWizardPanel panel)
-				{
-					panel.setContact(_selected);
-				}
-			});
-		}
-	};
-
-	final private DialogFactory _dialogFactory;
 	final private MessageFactory _messageFactory;
 	final private AddressBookService _service;
+	final private ContactDetailPanelController _detailController;
 	final private CControl _controller;
 	final private ViewFactory _viewFactory;
 	final private ViewHelperService _viewHelper;

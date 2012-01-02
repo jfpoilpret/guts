@@ -29,6 +29,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.KeyStroke;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.injection.Matchers;
 import net.guts.common.injection.OneTypeListener;
@@ -38,7 +39,6 @@ import net.guts.gui.util.CursorInfo;
 import net.guts.gui.window.WindowProcessor;
 import net.guts.gui.window.Windows;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.TypeLiteral;
 
 /**
@@ -167,7 +167,7 @@ import com.google.inject.TypeLiteral;
  *
  * @author Jean-Francois Poilpret
  */
-public final class ResourceModule extends AbstractModule
+public final class ResourceModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -238,16 +238,6 @@ public final class ResourceModule extends AbstractModule
 		Resources.bindInstanceInjector(binder(), type).to(converter).asEagerSingleton();
 	}
 	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof ResourceModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return ResourceModule.class.hashCode();
-	}
-
 	static final private TypeLiteral<BeanPropertiesInjector<Component>> COMPONENT_INJECTOR =
 		new TypeLiteral<BeanPropertiesInjector<Component>>(){};
 	static final private TypeLiteral<BeanPropertiesInjector<Object>> OBJECT_INJECTOR =

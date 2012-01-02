@@ -21,11 +21,11 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.inject.internal.cglib.proxy.Callback;
-import com.google.inject.internal.cglib.proxy.Enhancer;
-import com.google.inject.internal.cglib.proxy.Factory;
-import com.google.inject.internal.cglib.proxy.MethodInterceptor;
-import com.google.inject.internal.cglib.proxy.MethodProxy;
+import com.google.inject.internal.cglib.proxy.$Callback;
+import com.google.inject.internal.cglib.proxy.$Enhancer;
+import com.google.inject.internal.cglib.proxy.$Factory;
+import com.google.inject.internal.cglib.proxy.$MethodInterceptor;
+import com.google.inject.internal.cglib.proxy.$MethodProxy;
 
 /**
  * Utility class that can create a "delayed proxy" that delegates all calls
@@ -54,7 +54,7 @@ final public class DelayedProxy
 	@SuppressWarnings("unchecked") 
 	static public <T> T create(Class<T> target)
 	{
-		return (T) Enhancer.create(target, new Delegate());
+		return (T) $Enhancer.create(target, new Delegate());
 	}
 
 	/**
@@ -73,10 +73,10 @@ final public class DelayedProxy
 		{
 			_logger.error("setDelegate() target must not be null");
 		}
-		if (source instanceof Factory)
+		if (source instanceof $Factory)
 		{
 			boolean isDelegate = false;
-			for (Callback callback: ((Factory) source).getCallbacks())
+			for ($Callback callback: (($Factory) source).getCallbacks())
 			{
 				if (callback instanceof Delegate)
 				{
@@ -96,7 +96,7 @@ final public class DelayedProxy
 		}
 	}
 	
-	static private class Delegate implements MethodInterceptor
+	static private class Delegate implements $MethodInterceptor
 	{
 		public void setDelegate(Object target)
 		{
@@ -113,7 +113,7 @@ final public class DelayedProxy
 
 		//CSOFF: IllegalThrows
 		@Override public Object intercept(
-			Object source, Method method, Object[] args, MethodProxy proxy)
+			Object source, Method method, Object[] args, $MethodProxy proxy)
 			throws Throwable
 		{
 			if (_target != null)

@@ -19,16 +19,16 @@ import java.lang.reflect.Field;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.common.injection.Matchers;
 import net.guts.common.type.TypeHelper;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.MembersInjector;
 import com.google.inject.TypeLiteral;
 import com.google.inject.spi.TypeEncounter;
 import com.google.inject.spi.TypeListener;
 
-public final class LogModule extends AbstractModule
+public final class LogModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()

@@ -16,13 +16,12 @@ package net.guts.gui.template.okcancel;
 
 import java.awt.LayoutManager;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.action.ActionModule;
 import net.guts.gui.application.GutsGuiResource;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.TemplateModule;
 import net.java.dev.designgridlayout.DesignGridLayoutManager;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI "OKCancel" templating 
@@ -47,7 +46,7 @@ import com.google.inject.AbstractModule;
  * 
  * @author jfpoilpret
  */
-public final class OkCancelModule extends AbstractModule
+public final class OkCancelModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -79,15 +78,5 @@ public final class OkCancelModule extends AbstractModule
 		{
 			return false;
 		}
-	}
-	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof OkCancelModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return OkCancelModule.class.hashCode();
 	}
 }

@@ -14,11 +14,10 @@
 
 package net.guts.gui.template.wizard;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.gui.application.GutsGuiResource;
 import net.guts.gui.resource.Resources;
 import net.guts.gui.template.TemplateModule;
-
-import com.google.inject.AbstractModule;
 
 /**
  * Guice {@link com.google.inject.Module} for Guts-GUI "Wizard" templating 
@@ -40,7 +39,7 @@ import com.google.inject.AbstractModule;
  * 
  * @author jfpoilpret
  */
-public final class WizardModule extends AbstractModule
+public final class WizardModule extends AbstractSingletonModule
 {
 	/* (non-Javadoc)
 	 * @see com.google.inject.AbstractModule#configure()
@@ -55,15 +54,5 @@ public final class WizardModule extends AbstractModule
 		Resources.bindPackageBundles(
 			binder(), WizardActions.class, GutsGuiResource.PATH);
 		Resources.bindMapConverter(binder(), String.class, String.class);
-	}
-	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof WizardModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return WizardModule.class.hashCode();
 	}
 }

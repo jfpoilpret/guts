@@ -22,7 +22,6 @@ import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.docking.OpenViewAction;
 import net.guts.gui.examples.addressbook.action.ContactActions;
 import net.guts.gui.examples.addressbook.action.GeneralActions;
-import net.guts.gui.examples.addressbook.action.TaskTestActions;
 import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.menu.MenuFactory;
 
@@ -39,8 +38,7 @@ public class AddressBookMenuBar extends JMenuBar
 	@Inject
 	public AddressBookMenuBar(MenuFactory menuFactory, 
 		GutsApplicationActions appActions, GeneralActions genActions,
-		ContactActions contactActions, TaskTestActions taskTestActions,
-		ActionRegistrationManager actionManager,
+		ContactActions contactActions, ActionRegistrationManager actionManager,
 		CControl controller)
 	{
 		add(menuFactory.createMenu("fileMenu", 
@@ -52,29 +50,11 @@ public class AddressBookMenuBar extends JMenuBar
 			appActions.paste()));
 		add(menuFactory.createMenu("contactMenu",
 			contactActions.createContact(),
-			contactActions.createContactWithTabs(),
-			contactActions.createContactWithWizard(),
-			MenuFactory.ACTION_SEPARATOR,
 			contactActions.modifyContact(),
-			contactActions.modifyContactWithTabs(),
-			contactActions.modifyContactWithWizard(),
-			MenuFactory.ACTION_SEPARATOR,
 			contactActions.deleteContact()));
 		add(menuFactory.createMenu("localeMenu", 
 			genActions.frenchLocale(), 
 			genActions.englishLocale()));
-		add(menuFactory.createMenu("taskTestMenu",
-			taskTestActions._oneTaskNoBlocker,
-			taskTestActions._oneTaskComponentBlocker,
-			taskTestActions._oneTaskActionBlocker,
-			taskTestActions._oneTaskWindowBlocker,
-			taskTestActions._oneTaskDialogBlocker,
-			taskTestActions._oneTaskProgressDialogBlocker,
-			MenuFactory.ACTION_SEPARATOR,
-			taskTestActions._oneTaskSerialExecutor,
-			taskTestActions._fiveTasksDialogBlocker,
-			taskTestActions._twoSerialTaskDialogBlocker,
-			taskTestActions._twoSerialGroupsDialogBlocker));
 //		RootMenuPiece viewsListMenu = new RootMenuPiece();
 //		viewsListMenu.add(new SingleCDockableListMenuPiece(controller));
 //		JMenu views = viewsListMenu.getMenu();
