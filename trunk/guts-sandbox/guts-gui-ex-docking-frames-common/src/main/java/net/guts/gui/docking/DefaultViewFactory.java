@@ -83,7 +83,6 @@ class DefaultViewFactory implements ViewFactory
 
 	private void initView(CDockable view, JComponent content, String id)
 	{
-		content.setName(id);
 		// Inject the content itself
 		_injector.injectHierarchy(content);
 		// Inject the dockable now (titleText, titleIcon...)
