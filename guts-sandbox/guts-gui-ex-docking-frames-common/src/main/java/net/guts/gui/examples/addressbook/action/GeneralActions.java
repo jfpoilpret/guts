@@ -30,37 +30,14 @@ public class GeneralActions
 		_injector = injector;
 	}
 	
-	public GutsAction throwException()
-	{
-		return _throwException;
-	}
-	
-	public GutsAction frenchLocale()
-	{
-		return _french;
-	}
-	
-	public GutsAction englishLocale()
-	{
-		return _english;
-	}
-	
-	// Only to demonstrate the exception handling
-	final private GutsAction _throwException = new GutsAction()
-	{
-		@Override protected void perform()
-		{
-			throw new IllegalArgumentException("Some message here");
-		}
-	};
-	final private GutsAction _french = new GutsAction()
+	final public GutsAction _french = new GutsAction()
 	{
 		@Override protected void perform()
 		{
 			_injector.setLocale(Locale.FRENCH);
 		}
 	};
-	final private GutsAction _english = new GutsAction()
+	final public GutsAction _english = new GutsAction()
 	{
 		@Override protected void perform()
 		{

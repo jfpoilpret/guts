@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ import bibliothek.gui.dock.common.MultipleCDockable;
 import bibliothek.gui.dock.common.event.CFocusListener;
 import bibliothek.gui.dock.common.intern.CDockable;
 import bibliothek.gui.dock.util.DirectWindowProvider;
+import bibliothek.gui.dock.util.DockUtilities;
 
 import com.google.inject.Inject;
 
@@ -36,20 +38,44 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 	@Inject void initDocking(
 		CControl controller, final Channel<CDockable> selectionChannel)
 	{
+		DockUtilities.disableCheckLayoutLocked();
 		_controller = controller;
+		_selectionChannel = selectionChannel;
 		// Add necessary listeners to docking events for Event Channels production
 		_controller.addFocusListener(new CFocusListener()
 		{
 			@Override public void focusLost(CDockable dockable)
 			{
-				selectionChannel.publish(null);
+				focusChanged(null);
 			}
 			
 			@Override public void focusGained(CDockable dockable)
 			{
-				selectionChannel.publish(dockable);
+				focusChanged(dockable);
 			}
 		});
+	}
+	
+	private void focusChanged(final CDockable dockable)
+	{
+		if (!_bypassFocusChange)
+		{
+			_bypassFocusChange = true;
+			SwingUtilities.invokeLater(new Runnable()
+			{
+				@Override public void run()
+				{
+					try
+					{
+						_selectionChannel.publish(dockable);
+					}
+					finally
+					{
+						_bypassFocusChange = false;
+					}
+				}
+			});
+		}
 	}
 
 	@Inject void injectFields(StorageMedium storage, ViewFactory viewFactory,
@@ -162,6 +188,8 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 	static final private int BUFFER_DEFAULT_SIZE = 8 * 1024;
 
 	private CControl _controller;
+	private Channel<CDockable> _selectionChannel;
+	private boolean _bypassFocusChange = false;
 	private StorageMedium _storage;
 	private ViewFactory _viewFactory;
 	private Map<String, LayoutInitializer> _layouts;

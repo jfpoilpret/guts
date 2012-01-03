@@ -40,10 +40,10 @@ public class AddressPanel implements ComponentHolder
 		{
 			_header.layout(layout);
 		}
-		layout.row().grid(_lblStreet1).add(_txfStreet1);
-		layout.row().grid(_lblStreet2).add(_txfStreet2);
-		layout.row().grid(_lblZip).add(_txfZip).grid(_lblCity).add(_txfCity);
-		layout.row().grid(_lblPhone).add(_txfPhone);
+		layout.row().grid(_lblStreet1).indent().add(_txfStreet1);
+		layout.row().grid(_lblStreet2).indent().add(_txfStreet2);
+		layout.row().grid(_lblZip).indent().add(_txfZip).grid(_lblCity).add(_txfCity);
+		layout.row().grid(_lblPhone).indent().add(_txfPhone);
 	}
 	
 	public void reset()

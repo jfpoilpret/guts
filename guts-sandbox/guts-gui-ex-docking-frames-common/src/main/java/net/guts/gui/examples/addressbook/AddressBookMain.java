@@ -20,6 +20,7 @@ import net.guts.gui.application.AbstractApplication;
 import net.guts.gui.docking.DockingModule;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
+import net.guts.gui.template.okcancel.OkCancelModule;
 
 import com.google.inject.Module;
 
@@ -43,6 +44,7 @@ public class AddressBookMain extends AbstractApplication
 		modules.add(new MessageModule());
 		modules.add(new ComponentNamingModule());
 		modules.add(new DockingModule());
+		modules.add(new OkCancelModule());
 		// Finally, add our specific module
 		modules.add(new AddressBookModule());
 	}

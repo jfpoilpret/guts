@@ -1,5 +1,6 @@
 package net.guts.gui.docking;
 
+import net.guts.common.injection.AbstractSingletonModule;
 import net.guts.event.EventModule;
 import net.guts.event.Events;
 import net.guts.gui.resource.ResourceModule;
@@ -8,10 +9,9 @@ import net.guts.gui.session.SessionModule;
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.intern.CDockable;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 
-public final class DockingModule extends AbstractModule
+public final class DockingModule extends AbstractSingletonModule
 {
 	@Override protected void configure()
 	{
@@ -40,15 +40,5 @@ public final class DockingModule extends AbstractModule
 		Docking.workingAreas(binder());
 		Docking.gridAreas(binder());
 		Docking.minimizeAreas(binder());
-	}
-	
-	@Override public boolean equals(Object other)
-	{
-		return other instanceof DockingModule;
-	}
-
-	@Override public int hashCode()
-	{
-		return DockingModule.class.hashCode();
 	}
 }
