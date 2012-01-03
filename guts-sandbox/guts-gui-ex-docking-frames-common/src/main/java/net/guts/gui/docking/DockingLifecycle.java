@@ -60,13 +60,13 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 	{
 		if (!_bypassFocusChange)
 		{
-			_bypassFocusChange = true;
 			SwingUtilities.invokeLater(new Runnable()
 			{
 				@Override public void run()
 				{
 					try
 					{
+						_bypassFocusChange = true;
 						_selectionChannel.publish(dockable);
 					}
 					finally
