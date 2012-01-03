@@ -45,6 +45,7 @@
 		<module>guts-common</module>
 		<module>guts-events</module>
 		<module>guts-gui</module>
+		<module>guts-gui-docking</module>
 	</modules>
 
 	<organization>
