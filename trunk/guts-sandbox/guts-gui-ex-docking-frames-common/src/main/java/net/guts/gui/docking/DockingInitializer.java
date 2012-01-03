@@ -16,30 +16,31 @@ package net.guts.gui.docking;
 
 import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.SingleCDockable;
-import bibliothek.gui.dock.common.SingleCDockableBackupFactory;
+import bibliothek.gui.dock.common.SingleCDockableFactory;
+import bibliothek.util.Filter;
 
 import com.google.inject.Inject;
 
 class DockingInitializer
 {
 	@Inject DockingInitializer(
-		CControl controller, final ViewFactory viewFactory, DockingSetup setup)
+		CControl controller, final ViewFactory viewFactory, final DockingSetup setup)
 	{
-		SingleCDockableBackupFactory backupFactory = new SingleCDockableBackupFactory()
+		Filter<String> ids = new Filter<String>()
+		{
+			@Override public boolean includes(String item)
+			{
+				return setup.listDockables().contains(item);
+			}
+		};
+		controller.addSingleDockableFactory(ids, new SingleCDockableFactory()
 		{
 			@Override public SingleCDockable createBackup(String id)
 			{
 				return viewFactory.createSingle(id);
 			}
-		};
+		});
 
-		// For each registered dockable, register a backup factory
-		// (to create it from a saved layout)
-		for (String id: setup.listDockables())
-		{
-			controller.addSingleBackupFactory(id, backupFactory);
-		}
-		
 		// Create each registered working area
 		DefaultMultipleCDockableFactory multiFactory = new DefaultMultipleCDockableFactory();
 		for (String id: setup.listWorkingAreas())

@@ -42,19 +42,18 @@ public class AddressBookMenuBar extends JMenuBar
 		CControl controller)
 	{
 		add(menuFactory.createMenu("fileMenu", 
-			genActions.throwException(), 
 			appActions.quit()));
 		add(menuFactory.createMenu("editMenu", 
 			appActions.cut(),
 			appActions.copy(),
 			appActions.paste()));
 		add(menuFactory.createMenu("contactMenu",
-			contactActions.createContact(),
-			contactActions.modifyContact(),
-			contactActions.deleteContact()));
+			contactActions._createContact,
+			contactActions._modifyContact,
+			contactActions._deleteContact));
 		add(menuFactory.createMenu("localeMenu", 
-			genActions.frenchLocale(), 
-			genActions.englishLocale()));
+			genActions._french, 
+			genActions._english));
 //		RootMenuPiece viewsListMenu = new RootMenuPiece();
 //		viewsListMenu.add(new SingleCDockableListMenuPiece(controller));
 //		JMenu views = viewsListMenu.getMenu();
@@ -66,7 +65,7 @@ public class AddressBookMenuBar extends JMenuBar
 			createViewAction(actionManager, Views.ContactPicture)));
 	}
 
-	private GutsAction createViewAction(ActionRegistrationManager manager, Views view)
+	static private GutsAction createViewAction(ActionRegistrationManager manager, Views view)
 	{
 		OpenViewAction action = new OpenViewAction(view.name());
 		manager.registerAction(action);

@@ -37,12 +37,12 @@ public class AddressBookLayout implements LayoutInitializer
 		pictureArea.setVisible(true);
 
 		SingleCDockable contactsList = factory.createSingle(Views.ContactList.name());
-		control.add(contactsList);
+		control.addDockable(contactsList);
 		contactsList.setLocation(base.normalWest(0.33));
 		contactsList.setVisible(true);
 
 		SingleCDockable contactDetail = factory.createSingle(Views.ContactDetail.name());
-		control.add(contactDetail);
+		control.addDockable(contactDetail);
 		contactDetail.setLocation(base.normalWest(0.33).south(0.5));
 		contactDetail.setVisible(true);
 	}

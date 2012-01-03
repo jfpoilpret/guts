@@ -95,21 +95,6 @@ public class ContactActions
 		_deleteContact.setEnabled(contactSelected);
 	}
 	
-	public GutsAction createContact()
-	{
-		return _createContact;
-	}
-	
-	public GutsAction modifyContact()
-	{
-		return _modifyContact;
-	}
-	
-	public GutsAction deleteContact()
-	{
-		return _deleteContact;
-	}
-
 	//TODO any possibility to refactor parts of this method into a general docking utility?
 	// (in ViewHelperService for instance)
 	private void showPictureView(Contact contact, Icon picture)
@@ -146,7 +131,7 @@ public class ContactActions
 		}
 	}
 	
-	final private GutsAction _createContact = new GutsAction()
+	final public GutsAction _createContact = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -154,7 +139,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _modifyContact = new GutsAction()
+	final public GutsAction _modifyContact = new GutsAction()
 	{
 		@Override protected void perform()
 		{
@@ -162,7 +147,7 @@ public class ContactActions
 		}
 	};
 
-	final private GutsAction _deleteContact = new TaskAction()
+	final public GutsAction _deleteContact = new TaskAction()
 	{
 		@Override protected void perform()
 		{

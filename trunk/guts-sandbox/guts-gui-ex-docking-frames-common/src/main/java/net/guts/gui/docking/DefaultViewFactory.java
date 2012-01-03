@@ -66,7 +66,7 @@ class DefaultViewFactory implements ViewFactory
 		{
 			MultipleCDockable view = 
 				_dockableFactory.createMulti(idFactory, factory, id, content);
-			_controller.add(view, id);
+			_controller.addDockable(id, view);
 			initView(view, content, id);
 			return view;
 		}
