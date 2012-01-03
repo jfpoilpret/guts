@@ -38,29 +38,10 @@
 	<dependencies>
 		<dependency>
 			<groupId>net.guts</groupId>
-			<artifactId>guts-gui</artifactId>
+			<artifactId>guts-gui-docking</artifactId>
 			<version>${project.version}</version>
 		</dependency>
 
-		<!-- TEMPORARY: should be transitive through guts-docking-frames later on -->
-		<!-- DockingFrames core library dependency-->
-		<dependency>
-			<groupId>org.dockingframes</groupId>
-			<artifactId>docking-frames-common</artifactId>
-			<version>1.1.0</version>
-<!--
-			<version>1.0.8-SNAPSHOT</version>
--->
-		</dependency>
-
-<!--
-		<dependency>
-			<groupId>org.dockingframes</groupId>
-			<artifactId>docking-frames-core</artifactId>
-			<version>1.0.7</version>
-		</dependency>
--->
-		
 		<!-- DesignGridLayout -->
 		<dependency>
 			<groupId>net.java.dev.designgridlayout</groupId>
