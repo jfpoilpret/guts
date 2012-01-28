@@ -1,5 +1,6 @@
 package net.guts.gui.docking;
 
+import java.awt.Window;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.DataInputStream;
@@ -9,7 +10,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.swing.JFrame;
+import javax.swing.JApplet;
+import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 
 import org.slf4j.Logger;
@@ -25,6 +27,7 @@ import bibliothek.gui.dock.common.CControl;
 import bibliothek.gui.dock.common.MultipleCDockable;
 import bibliothek.gui.dock.common.event.CFocusListener;
 import bibliothek.gui.dock.common.intern.CDockable;
+import bibliothek.gui.dock.util.AppletWindowProvider;
 import bibliothek.gui.dock.util.DirectWindowProvider;
 import bibliothek.gui.dock.util.DockUtilities;
 
@@ -90,9 +93,18 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 	 * (non-Javadoc)
 	 * @see net.guts.gui.application.support.SingleFrameLifecycle#initFrame(javax.swing.JFrame)
 	 */
-	@Override final protected void initFrame(JFrame mainFrame)
+	@Override final protected void initFrame(RootPaneContainer mainFrame)
 	{
-		_controller.setRootWindow(new DirectWindowProvider(mainFrame));
+		if (mainFrame instanceof JApplet)
+		{
+			_appletWindowProvider = new AppletWindowProvider((JApplet) mainFrame);
+			_controller.setRootWindow(_appletWindowProvider);
+			_appletWindowProvider.start();
+		}
+		else if (mainFrame instanceof Window)
+		{
+			_controller.setRootWindow(new DirectWindowProvider((Window) mainFrame));
+		}
 
 		LayoutInitializer initializer = _layouts.get(getDefaultPerspectiveId());
 		if (initializer == null)
@@ -108,13 +120,13 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 		}
 		
 		// Add the main DockStation to the frame
-		mainFrame.add(_controller.getContentArea());
+		mainFrame.getContentPane().add(_controller.getContentArea());
 		
 		// Initialize main frame
 		initMainFrame(mainFrame);
 	}
 	
-	abstract protected void	initMainFrame(JFrame frame);
+	abstract protected void	initMainFrame(RootPaneContainer frame);
 	
 	protected String getDefaultPerspectiveId()
 	{
@@ -146,6 +158,10 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 		for (MultipleCDockable dockable: dockables)
 		{
 			_controller.remove(dockable);
+		}
+		if (_appletWindowProvider != null)
+		{
+			_appletWindowProvider.stop();
 		}
 	}
 
@@ -193,5 +209,6 @@ public abstract class DockingLifecycle extends SingleFrameLifecycle
 	private StorageMedium _storage;
 	private ViewFactory _viewFactory;
 	private Map<String, LayoutInitializer> _layouts;
+	private AppletWindowProvider _appletWindowProvider;
 }
 //CSON: AbstractClassNameCheck

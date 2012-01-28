@@ -96,6 +96,7 @@ import com.google.inject.Module;
  *
  * @author Jean-Francois Poilpret
  */
+@Deprecated
 public abstract class AbstractApplet extends JApplet
 {
 	private static final long serialVersionUID = -4612796429377041791L;
