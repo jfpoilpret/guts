@@ -20,6 +20,7 @@ import net.guts.demo.addressbook.singleframe.util.TasksGroupProgressPanel;
 import net.guts.event.Events;
 import net.guts.gui.action.ActionNamePolicy;
 import net.guts.gui.action.DefaultActionNamePolicy;
+import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;
@@ -47,6 +48,9 @@ class AddressBookModule extends AbstractModule
 		// Set our own component naming policy
 		bind(ComponentNamePolicy.class).toInstance(new AddressBookComponentNamePolicy());
 		bind(ActionNamePolicy.class).toInstance(new AddressBookActionNamePolicy());
+		
+		bind(AppLifecycleStarter.class)
+			.to(AddressBookAppLifecycleStarter.class).asEagerSingleton();
 	}
 }
 

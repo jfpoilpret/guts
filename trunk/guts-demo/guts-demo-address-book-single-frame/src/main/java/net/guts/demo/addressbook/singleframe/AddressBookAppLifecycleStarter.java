@@ -14,7 +14,7 @@
 
 package net.guts.demo.addressbook.singleframe;
 
-import javax.swing.JFrame;
+import javax.swing.RootPaneContainer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,9 +47,9 @@ public class AddressBookAppLifecycleStarter extends SingleFrameLifecycle
 	/* (non-Javadoc)
 	 * @see net.guts.gui.application.support.SingleFrameLifecycle#initFrame(javax.swing.JFrame)
 	 */
-	@Override protected void initFrame(JFrame mainFrame)
+	@Override protected void initFrame(RootPaneContainer mainFrame)
 	{
-		mainFrame.setJMenuBar(_menuBar);
+		mainFrame.getRootPane().setJMenuBar(_menuBar);
 		mainFrame.setContentPane(_mainView);
 	}
 	
