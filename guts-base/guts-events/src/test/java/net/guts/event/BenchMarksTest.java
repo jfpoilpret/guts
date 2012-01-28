@@ -21,6 +21,7 @@ import java.lang.annotation.Target;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Executors;
+import java.util.concurrent.atomic.AtomicLong;
 
 import org.easymock.EasyMock;
 import org.testng.annotations.Test;
@@ -204,10 +205,11 @@ public class BenchMarksTest
 			channel.publish(j);
 		}
 		logTime("Deferred calls through Event Channel", timer.end(), numEvents, 1);
-		Thread.sleep(3000L);
+		Thread.sleep(1000L);
 		// Check all events were received
 		assertThat(consumer.getNumEvents()).as("Count of received events").isEqualTo(numEvents);
-		assertThat(consumer.getLastEvent()).as("Last received event").isEqualTo(numEvents - 1);
+		// In deferred mode, we cannot check the last event received because order may not be preserved
+//		assertThat(consumer.getLastEvent()).as("Last received event").isEqualTo(numEvents - 1);
 		EasyMock.verify(handler);
 	}
 
@@ -254,13 +256,13 @@ public class BenchMarksTest
 	{
 		protected void pushEvent(Long event)
 		{
-			_numEvents++;
+			_numEvents.incrementAndGet();
 			_lastEvent = event;
 		}
 		
 		public long getNumEvents()
 		{
-			return _numEvents;
+			return _numEvents.get();
 		}
 		
 		public Long getLastEvent()
@@ -268,7 +270,7 @@ public class BenchMarksTest
 			return _lastEvent;
 		}
 
-		private long _numEvents = 0;
+		private AtomicLong _numEvents = new AtomicLong(0);
 		private Long _lastEvent = null;
 	}
 	
