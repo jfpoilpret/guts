@@ -17,17 +17,17 @@ package net.guts.demo.addressbook.singleframe;
 import java.util.List;
 
 import net.guts.gui.application.AbstractApplication;
-import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.message.MessageModule;
 import net.guts.gui.naming.ComponentNamingModule;
 import net.guts.gui.template.okcancel.OkCancelModule;
 import net.guts.gui.template.wizard.WizardModule;
 
-import com.google.inject.AbstractModule;
 import com.google.inject.Module;
 
 public class AddressBookApp extends AbstractApplication
 {
+	private static final long serialVersionUID = 6120584596362689918L;
+
 	public static void main(String[] args)
 	{
 		new AddressBookApp().launch(args);
@@ -49,14 +49,5 @@ public class AddressBookApp extends AbstractApplication
 		modules.add(new WizardModule());
 		// Finally, add our specific module
 		modules.add(new AddressBookModule());
-		// And the module to start the UI as a JFrame (not an JApplet)
-		modules.add(new AbstractModule()
-		{
-			@Override protected void configure()
-			{
-				bind(AppLifecycleStarter.class)
-					.to(AddressBookAppLifecycleStarter.class).asEagerSingleton();
-			}
-		});
 	}
 }
