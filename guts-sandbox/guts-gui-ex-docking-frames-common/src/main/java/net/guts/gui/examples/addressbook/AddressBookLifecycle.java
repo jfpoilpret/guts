@@ -15,6 +15,7 @@
 package net.guts.gui.examples.addressbook;
 
 import javax.swing.JFrame;
+import javax.swing.RootPaneContainer;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,13 +42,10 @@ public class AddressBookLifecycle extends DockingLifecycle
 		_messageFactory = messageFactory;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.application.support.SingleFrameLifecycle#initFrame(javax.swing.JFrame)
-	 */
-	@Override protected void initMainFrame(JFrame mainFrame)
+	@Override protected void initMainFrame(RootPaneContainer mainFrame)
 	{
-		mainFrame.setSize(800, 600);
-		mainFrame.setJMenuBar(_menuBar);
+		mainFrame.getRootPane().getParent().setSize(800, 600);
+		mainFrame.getRootPane().setJMenuBar(_menuBar);
 	}
 	
 	@Override protected void showMainFrame(JFrame mainFrame, WindowController windowController)

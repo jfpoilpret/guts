@@ -26,6 +26,8 @@ import com.google.inject.Module;
 
 public class AddressBookMain extends AbstractApplication
 {
+	private static final long serialVersionUID = 2413291823920224998L;
+
 	public static void main(String[] args)
 	{
 		new AddressBookMain().launch(args);
