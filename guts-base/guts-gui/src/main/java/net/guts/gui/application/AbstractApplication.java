@@ -16,7 +16,11 @@ package net.guts.gui.application;
 
 import java.util.List;
 
+import javax.swing.JApplet;
+
+import com.google.inject.AbstractModule;
 import com.google.inject.Module;
+import com.google.inject.util.Providers;
 
 /**
  * This is the starting class to create a Guts-GUI based application.
@@ -81,8 +85,10 @@ import com.google.inject.Module;
  *
  * @author Jean-Francois Poilpret
  */
-public abstract class AbstractApplication
+public abstract class AbstractApplication extends JApplet
 {
+	private static final long serialVersionUID = 6486884374355341016L;
+	
 	/**
 	 * Override this method in your own launcher class. It will be called during the
 	 * launch process, so that you can pass your {@link com.google.inject.Module}s
@@ -105,6 +111,25 @@ public abstract class AbstractApplication
 	 * creation
 	 */
 	abstract protected void initModules(String[] args, List<Module> modules);
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.applet.Applet#init()
+	 */
+	@Override final public void init()
+	{
+		_appletSupport = new AppletSupport(this);
+		appletLaunch();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see java.applet.Applet#destroy()
+	 */
+	@Override final public void destroy()
+	{
+		_appletSupport.destroy();
+	}
 
 	/**
 	 * Should be called from your {@code main} method to actually launch the 
@@ -136,12 +161,32 @@ public abstract class AbstractApplication
 	 */
 	final protected void launch(final String[] args)
 	{
-		AppLauncher.launch(args, getClass(), new AbstractAppModuleInit()
+		if (_appletSupport == null)
 		{
-			@Override void initModules(String[] passedArgs, List<Module> modules)
+			AppLauncher.launch(args, getClass(), new AbstractAppModuleInit()
 			{
-				AbstractApplication.this.initModules(passedArgs, modules);
-			}
-		});
+				@Override void initModules(String[] passedArgs, List<Module> modules)
+				{
+					AbstractApplication.this.initModules(passedArgs, modules);
+					modules.add(new ApplicationModule());
+				}
+			});
+		}
 	}
+
+	private void appletLaunch()
+	{
+		AppLauncher.launch(null, getClass(), _appletSupport.appModuleInit());
+	}
+
+	// Special module to allow injection of null applet
+	static private class ApplicationModule extends AbstractModule
+	{
+		@Override protected void configure()
+		{
+			bind(JApplet.class).toProvider(Providers.of((JApplet) null));
+		}
+	}
+	
+	private AppletSupport _appletSupport = null;
 }

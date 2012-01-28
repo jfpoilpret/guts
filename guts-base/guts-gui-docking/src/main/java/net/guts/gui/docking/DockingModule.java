@@ -11,6 +11,34 @@ import bibliothek.gui.dock.common.intern.CDockable;
 
 import com.google.inject.Scopes;
 
+/**
+ * Guice {@link com.google.inject.Module} for Docking Frames integration into
+ * Guts-GUI framework. This module must be added to the list of modules passed to 
+ * {@link com.google.inject.Guice#createInjector}:
+ * <pre>
+ * Injector injector = Guice.createInjector(new DockingModule(), ...);
+ * </pre>
+ * <p/>
+ * Or, in a typical Guts-GUI application:
+ * <pre>
+ * public class MyApplication extends AbstractApplication
+ * {
+ *     ...
+ *     &#63;Override protected void initModules(String[] args, List&lt;Module&gt; modules)
+ *     {
+ *         modules.add(new DockingModule());
+ *         modules.add(new MyApplicationModule());
+ *     }
+ * }
+ * </pre>
+ * {@code DockingModule} makes the following bindings available to your application:
+ * <ul>
+ * TODO list of bindings available
+ * </ul>
+ * TODO must define binding for DockingLifecycle subclass
+ *
+ * @author Jean-Francois Poilpret
+ */
 public final class DockingModule extends AbstractSingletonModule
 {
 	@Override protected void configure()

@@ -17,8 +17,11 @@ package net.guts.gui.application.support;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 
+import javax.swing.JApplet;
 import javax.swing.JFrame;
+import javax.swing.RootPaneContainer;
 
+import net.guts.common.type.Nullable;
 import net.guts.gui.application.AppLifecycleStarter;
 import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.exit.ExitController;
@@ -60,12 +63,14 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 {
 	@Inject void init(
 		WindowController windowController, ExitController exitController,
-		MenuFactory menuFactory, GutsApplicationActions appActions)
+		MenuFactory menuFactory, GutsApplicationActions appActions,
+		@Nullable JApplet applet)
 	{
 		_windowController = windowController;
 		_exitController = exitController;
 		_menuFactory = menuFactory;
 		_appActions = appActions;
+		_applet = applet;
 	}
 
 	/**
@@ -85,7 +90,7 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	 * 
 	 * @param mainFrame the main frame to initialize
 	 */
-	abstract protected void initFrame(JFrame mainFrame);
+	abstract protected void initFrame(RootPaneContainer mainFrame);
 	
 	final protected GutsApplicationActions appActions()
 	{
@@ -109,20 +114,32 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	 */
 	@Override final public void startup(String[] args)
 	{
-		JFrame mainFrame = new JFrame();
-		mainFrame.setName("mainFrame");
-		mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-		mainFrame.addWindowListener(new WindowAdapter()
+		RootPaneContainer rootContainer = _applet;
+		if (_applet == null)
 		{
-			@Override public void windowClosing(WindowEvent arg0)
+			JFrame mainFrame = new JFrame();
+			mainFrame.setName("mainFrame");
+			mainFrame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
+			mainFrame.addWindowListener(new WindowAdapter()
 			{
-				_exitController.shutdown();
-			}
-		});
+				@Override public void windowClosing(WindowEvent arg0)
+				{
+					_exitController.shutdown();
+				}
+			});
+			rootContainer = mainFrame;
+		}
+		else
+		{
+			_applet.setName("mainFrame");
+		}
 
 		// Initialize the main frame content
-		initFrame(mainFrame);
-		showMainFrame(mainFrame, _windowController);
+		initFrame(rootContainer);
+		if (rootContainer instanceof JFrame)
+		{
+			showMainFrame((JFrame) rootContainer, _windowController);
+		}
 	}
 	
 	protected void showMainFrame(JFrame mainFrame, WindowController windowController)
@@ -134,5 +151,6 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	private ExitController _exitController;
 	private MenuFactory _menuFactory;
 	private GutsApplicationActions _appActions;
+	private JApplet _applet;
 }
 //CSON: AbstractClassName
