@@ -95,13 +95,6 @@ abstract public class MultiFrameLifecycle implements AppLifecycleStarter
 		return _menuFactory;
 	}
 
-	/* (non-Javadoc)
-	 * @see net.guts.gui.application.AppLifecycleStarter#ready()
-	 */
-	@Override public void ready()
-	{
-	}
-
 	final private List<JFrame> _allFrames = new ArrayList<JFrame>();
 	final private WindowListener _closeListener = new WindowAdapter()
 	{
