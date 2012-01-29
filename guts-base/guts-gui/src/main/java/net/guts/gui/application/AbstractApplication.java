@@ -268,7 +268,7 @@ public abstract class AbstractApplication extends JApplet
 			// Create an event channel called when GUI is ready
 			Events.bindChannel(binder(), Void.class, AppLifecycleStarter.READY_EVENT);
 			// Ensure this is injected!
-			requestInjection(this);
+			requestInjection(AbstractApplication.this);
 			if (_isApplet)
 			{
 				bind(JApplet.class).toInstance(AbstractApplication.this);
