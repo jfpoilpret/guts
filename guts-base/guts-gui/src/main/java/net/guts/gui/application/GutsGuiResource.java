@@ -23,5 +23,5 @@ public final class GutsGuiResource
 	}
 	
 	static final public String PATH = 
-		"/" + TypeHelper.getPackagePath(AppLauncher.class) + "/guts-gui";
+		"/" + TypeHelper.getPackagePath(AbstractApplication.class) + "/guts-gui";
 }
