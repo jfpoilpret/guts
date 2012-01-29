@@ -56,14 +56,6 @@ abstract public class DialogBasedLifecycle implements AppLifecycleStarter
 	abstract protected Class<? extends JComponent> getDialogClass();
 	
 	/* (non-Javadoc)
-	 * @see net.guts.gui.application.AppLifecycleStarter#ready()
-	 */
-	@Override final public void ready()
-	{
-		// This method will never be called, since startup(0 will force shutdown!
-	}
-
-	/* (non-Javadoc)
 	 * @see net.guts.gui.application.AppLifecycleStarter#startup(java.lang.String[])
 	 */
 	@Override final public void startup(String[] args)

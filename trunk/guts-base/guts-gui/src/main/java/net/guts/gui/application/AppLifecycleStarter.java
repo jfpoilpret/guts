@@ -31,6 +31,9 @@ package net.guts.gui.application;
  */
 public interface AppLifecycleStarter
 {
+	//TODO javadoc (take from below ready() method
+	static final public String READY_EVENT = "net.guts.gui.AppLifecycleStarter.ready";
+	
 	/**
 	 * This is the first method called by {@link AbstractApplication#launch}; it should
 	 * initialize and display its first window (or dialog).
@@ -45,7 +48,7 @@ public interface AppLifecycleStarter
 	 * application
 	 */
 	public void startup(String[] args);
-	
+
 	/**
 	 * Called after the window displayed by {@link #startup} is actually visible and all
 	 * events in the Event Dispatch Thread have been processed (ie all UI content has been
@@ -57,5 +60,5 @@ public interface AppLifecycleStarter
 	 * <p/>
 	 * This method is called from within the Event Dispatch Thread.
 	 */
-	public void ready();
+//	public void ready();
 }

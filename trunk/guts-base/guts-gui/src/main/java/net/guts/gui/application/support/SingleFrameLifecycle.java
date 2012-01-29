@@ -103,13 +103,6 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 	}
 
 	/* (non-Javadoc)
-	 * @see net.guts.gui.application.AppLifecycleStarter#ready()
-	 */
-	@Override public void ready()
-	{
-	}
-
-	/* (non-Javadoc)
 	 * @see net.guts.gui.application.AppLifecycleStarter#startup(java.lang.String[])
 	 */
 	@Override final public void startup(String[] args)

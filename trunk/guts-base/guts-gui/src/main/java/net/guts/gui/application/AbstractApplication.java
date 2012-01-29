@@ -27,6 +27,9 @@ import org.slf4j.LoggerFactory;
 
 import net.guts.common.injection.InjectionListeners;
 import net.guts.common.type.TypeHelper;
+import net.guts.event.Channel;
+import net.guts.event.Event;
+import net.guts.event.Events;
 import net.guts.gui.action.ActionModule;
 import net.guts.gui.exception.ExceptionHandlingModule;
 import net.guts.gui.exit.ExitController;
@@ -239,8 +242,7 @@ public abstract class AbstractApplication extends JApplet
 			{
 				@Override public void run()
 				{
-					//TODO replace with events
-					lifecycle.ready();
+					_readyChannel.publish(null);
 				}
 			});
 		}
@@ -263,6 +265,8 @@ public abstract class AbstractApplication extends JApplet
 			// Provide default resource values for common stuff: GutsApplicationActions
 			Resources.bindPackageBundles(
 				binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
+			// Create an event channel called when GUI is ready
+			Events.bindChannel(binder(), Void.class, AppLifecycleStarter.READY_EVENT);
 			// Ensure this is injected!
 			requestInjection(this);
 			if (_isApplet)
@@ -298,13 +302,16 @@ public abstract class AbstractApplication extends JApplet
 	}
 
 	@Inject void init(
+		@Event(topic = AppLifecycleStarter.READY_EVENT) Channel<Void> readyChannel,
 		WindowController windowController, ExitController exitController)
 	{
+		_readyChannel = readyChannel;
 		_windowController = windowController;
 		_exitController = exitController;
 	}
 
 	private boolean _isApplet = false;
-	private WindowController _windowController = null;
-	private ExitController _exitController = null;
+	private WindowController _windowController;
+	private ExitController _exitController;
+	private Channel<Void> _readyChannel;
 }
