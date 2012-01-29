@@ -14,11 +14,38 @@
 
 package net.guts.gui.application;
 
+import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.ResourceBundle;
 
 import javax.swing.JApplet;
+import javax.swing.JOptionPane;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import net.guts.common.injection.InjectionListeners;
+import net.guts.common.type.TypeHelper;
+import net.guts.gui.action.ActionModule;
+import net.guts.gui.exception.ExceptionHandlingModule;
+import net.guts.gui.exit.ExitController;
+import net.guts.gui.exit.ExitModule;
+import net.guts.gui.exit.ExitPerformer;
+import net.guts.gui.resource.ResourceModule;
+import net.guts.gui.resource.Resources;
+import net.guts.gui.session.SessionModule;
+import net.guts.gui.session.Sessions;
+import net.guts.gui.task.TasksModule;
+import net.guts.gui.window.JAppletConfig;
+import net.guts.gui.window.StatePolicy;
+import net.guts.gui.window.WindowController;
+import net.guts.gui.window.WindowModule;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Guice;
+import com.google.inject.Inject;
+import com.google.inject.Injector;
 import com.google.inject.Module;
 import com.google.inject.util.Providers;
 
@@ -88,6 +115,8 @@ import com.google.inject.util.Providers;
 public abstract class AbstractApplication extends JApplet
 {
 	private static final long serialVersionUID = 6486884374355341016L;
+	static final private Logger _logger = LoggerFactory.getLogger(AbstractApplication.class);
+	static final private String ERROR_INIT_GUI = "initialization-error";
 	
 	/**
 	 * Override this method in your own launcher class. It will be called during the
@@ -118,8 +147,8 @@ public abstract class AbstractApplication extends JApplet
 	 */
 	@Override final public void init()
 	{
-		_appletSupport = new AppletSupport(this);
-		appletLaunch();
+		_isApplet = true;
+		launch(null);
 	}
 
 	/*
@@ -128,7 +157,7 @@ public abstract class AbstractApplication extends JApplet
 	 */
 	@Override final public void destroy()
 	{
-		_appletSupport.destroy();
+		_exitController.shutdown();
 	}
 
 	/**
@@ -161,32 +190,121 @@ public abstract class AbstractApplication extends JApplet
 	 */
 	final protected void launch(final String[] args)
 	{
-		if (_appletSupport == null)
+		// Now startup the GUI in the EDT
+		EventQueue.invokeLater(new Runnable()
 		{
-			AppLauncher.launch(args, getClass(), new AbstractAppModuleInit()
+			@Override public void run()
 			{
-				@Override void initModules(String[] passedArgs, List<Module> modules)
+				launchInEDT(args);
+			}
+		});
+	}
+
+	// CSOFF: IllegalCatchCheck
+	private void launchInEDT(String[] args)
+	{
+		try
+		{
+			// Make sure we get all modules to initialize Guice injector
+			final List<Module> modules = new ArrayList<Module>();
+			modules.add(new WindowModule());
+			modules.add(new ResourceModule());
+			modules.add(new SessionModule());
+			modules.add(new ActionModule());
+			modules.add(new TasksModule());
+			modules.add(new ExceptionHandlingModule());
+			modules.add(new ExitModule());
+			modules.add(new AppModule());
+			List<Module> applicationModules = new ArrayList<Module>();
+			initModules(args, applicationModules);
+			modules.addAll(applicationModules);
+			
+			Injector injector = Guice.createInjector(modules);
+			InjectionListeners.injectListeners(injector);
+			
+			// Now we can start the GUI initialization
+			final AppLifecycleStarter lifecycle = 
+				injector.getInstance(AppLifecycleStarter.class);
+			lifecycle.startup(args);
+
+			// Call back to AppModuleInit (useful for applets)
+			if (_isApplet)
+			{
+				_windowController.show(this, 
+					JAppletConfig.create().state(StatePolicy.RESTORE_IF_EXISTS).config());
+			}
+			
+			// Then wait for the EDT to finish processing all events
+			EdtHelper.waitForIdle(new Runnable()
+			{
+				@Override public void run()
 				{
-					AbstractApplication.this.initModules(passedArgs, modules);
-					modules.add(new ApplicationModule());
+					//TODO replace with events
+					lifecycle.ready();
 				}
 			});
 		}
+		catch (Exception e)
+		{
+			_logger.error("Could not start application", e);
+			fatalError(ERROR_INIT_GUI, e);
+		}
 	}
-
-	private void appletLaunch()
-	{
-		AppLauncher.launch(null, getClass(), _appletSupport.appModuleInit());
-	}
-
-	// Special module to allow injection of null applet
-	static private class ApplicationModule extends AbstractModule
+	// CSON: IllegalCatchCheck
+	
+	private class AppModule extends AbstractModule
 	{
 		@Override protected void configure()
 		{
-			bind(JApplet.class).toProvider(Providers.of((JApplet) null));
+			// Bind the application class for SessionManager
+			Sessions.bindApplicationClass(binder(), AbstractApplication.this.getClass());
+			// Bind the generic Application actions
+			bind(GutsApplicationActions.class).asEagerSingleton();
+			// Provide default resource values for common stuff: GutsApplicationActions
+			Resources.bindPackageBundles(
+				binder(), GutsApplicationActions.class, GutsGuiResource.PATH);
+			// Ensure this is injected!
+			requestInjection(this);
+			if (_isApplet)
+			{
+				bind(JApplet.class).toInstance(AbstractApplication.this);
+				// Don't allow System.exit() for an applet!
+				bind(ExitPerformer.class).toInstance(new AppletExitPerformer());
+			}
+			else
+			{
+				bind(JApplet.class).toProvider(Providers.of((JApplet) null));
+			}
 		}
 	}
 	
-	private AppletSupport _appletSupport = null;
+	static private final class AppletExitPerformer implements ExitPerformer
+	{
+		@Override public void exitApplication()
+		{
+		}
+	}
+	
+	static private void fatalError(String id, Exception e)
+	{
+		// Fail graciously with Message Box!
+		// Needs a special bundle with system-level fatal error messages
+		String pack = TypeHelper.getPackagePath(AbstractApplication.class);
+		ResourceBundle bundle = ResourceBundle.getBundle(pack + "/guts-gui");
+		String title = String.format(bundle.getString(id + ".title"), e);
+		String message = String.format(bundle.getString(id + ".message"), e);
+		JOptionPane.showMessageDialog(null, message, title, JOptionPane.ERROR_MESSAGE);
+		System.exit(-1);
+	}
+
+	@Inject void init(
+		WindowController windowController, ExitController exitController)
+	{
+		_windowController = windowController;
+		_exitController = exitController;
+	}
+
+	private boolean _isApplet = false;
+	private WindowController _windowController = null;
+	private ExitController _exitController = null;
 }
