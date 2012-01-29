@@ -202,6 +202,20 @@ public abstract class AbstractApplication extends JApplet
 			}
 		});
 	}
+	
+	protected List<Module> defaultModules()
+	{
+		final List<Module> modules = new ArrayList<Module>();
+		modules.add(new WindowModule());
+		modules.add(new ResourceModule());
+		modules.add(new SessionModule());
+		modules.add(new ActionModule());
+		modules.add(new TasksModule());
+		modules.add(new ExceptionHandlingModule());
+		modules.add(new ExitModule());
+		modules.add(new AppModule());
+		return modules;
+	}
 
 	// CSOFF: IllegalCatchCheck
 	private void launchInEDT(String[] args)
@@ -209,15 +223,7 @@ public abstract class AbstractApplication extends JApplet
 		try
 		{
 			// Make sure we get all modules to initialize Guice injector
-			final List<Module> modules = new ArrayList<Module>();
-			modules.add(new WindowModule());
-			modules.add(new ResourceModule());
-			modules.add(new SessionModule());
-			modules.add(new ActionModule());
-			modules.add(new TasksModule());
-			modules.add(new ExceptionHandlingModule());
-			modules.add(new ExitModule());
-			modules.add(new AppModule());
+			final List<Module> modules = defaultModules();
 			List<Module> applicationModules = new ArrayList<Module>();
 			initModules(args, applicationModules);
 			modules.addAll(applicationModules);
