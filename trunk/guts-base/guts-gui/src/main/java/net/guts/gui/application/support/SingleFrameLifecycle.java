@@ -124,7 +124,7 @@ abstract public class SingleFrameLifecycle implements AppLifecycleStarter
 		}
 		else
 		{
-			_applet.setName("mainFrame");
+			_applet.setName("mainApplet");
 		}
 
 		// Initialize the main frame content
