@@ -50,10 +50,6 @@ public class AddressBookLifecycle implements AppLifecycleStarter
 		exitController.shutdown();
 	}
 
-	@Override public void ready()
-	{
-	}
-	
 	@HandlesException public boolean catches(Throwable e)
 	{
 		_logger.error("Uncaught exception has occurred!", e);
