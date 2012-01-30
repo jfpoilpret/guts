@@ -12,21 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook;
+package net.guts.demo.addressbook.docking;
 
+import net.guts.demo.addressbook.docking.action.ContactActions;
+import net.guts.demo.addressbook.docking.docking.AddressBookLayout;
+import net.guts.demo.addressbook.docking.docking.Views;
+import net.guts.demo.addressbook.docking.domain.Contact;
+import net.guts.demo.addressbook.docking.view.ContactDetailView;
+import net.guts.demo.addressbook.docking.view.ContactsListView;
 import net.guts.event.Events;
 import net.guts.gui.action.ActionNamePolicy;
 import net.guts.gui.action.DefaultActionNamePolicy;
 import net.guts.gui.application.AppLifecycleStarter;
-import static net.guts.gui.examples.addressbook.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
+
+import static net.guts.demo.addressbook.docking.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
 
 import net.guts.gui.docking.Docking;
-import net.guts.gui.examples.addressbook.action.ContactActions;
-import net.guts.gui.examples.addressbook.docking.AddressBookLayout;
-import net.guts.gui.examples.addressbook.docking.Views;
-import net.guts.gui.examples.addressbook.domain.Contact;
-import net.guts.gui.examples.addressbook.view.ContactDetailView;
-import net.guts.gui.examples.addressbook.view.ContactsListView;
 import net.guts.gui.naming.ComponentNamePolicy;
 import net.guts.gui.naming.DefaultComponentNamePolicy;
 import net.guts.gui.resource.Resources;

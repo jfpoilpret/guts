@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.action;
+package net.guts.demo.addressbook.docking.action;
 
 import java.awt.Component;
 
 import javax.swing.Icon;
 
+import net.guts.demo.addressbook.docking.business.AddressBookService;
+import net.guts.demo.addressbook.docking.dialog.ContactDetailPanelController;
+import net.guts.demo.addressbook.docking.docking.ViewHelper;
+import net.guts.demo.addressbook.docking.docking.Views;
+import net.guts.demo.addressbook.docking.domain.Contact;
+import net.guts.demo.addressbook.docking.view.ContactPictureView;
 import net.guts.event.Consumes;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.action.TaskAction;
 import net.guts.gui.docking.ViewFactory;
 import net.guts.gui.docking.ViewHelperService;
-import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.dialog.ContactDetailPanelController;
-import net.guts.gui.examples.addressbook.docking.ViewHelper;
-import net.guts.gui.examples.addressbook.docking.Views;
-import net.guts.gui.examples.addressbook.domain.Contact;
-import net.guts.gui.examples.addressbook.view.ContactPictureView;
 import net.guts.gui.message.MessageFactory;
 import net.guts.gui.message.UserChoice;
 import net.guts.gui.resource.ResourceInjector;

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.domain;
+package net.guts.demo.addressbook.docking.domain;
 
 import java.util.Date;
 

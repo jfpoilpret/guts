@@ -12,30 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.view;
+package net.guts.demo.addressbook.docking.docking;
 
-import java.awt.Dimension;
-
-import javax.swing.Icon;
-import javax.swing.JLabel;
-
-public class ContactPictureView extends JLabel
+public enum Views
 {
-	static final private long serialVersionUID = 7627517518039773295L;
-	static final private int IMG_SIZE = 200;
-	
-	public ContactPictureView(Icon picture)
-	{
-		setHorizontalAlignment(JLabel.CENTER);
-		setMinimumSize(new Dimension(IMG_SIZE, IMG_SIZE));
-		setIcon(picture);
-		if (picture != null)
-		{
-			setText("");
-		}
-		else
-		{
-			setText("No picture for this contact");
-		}
-	}
+	ContactList,
+	ContactDetail,
+	ContactPicture
 }

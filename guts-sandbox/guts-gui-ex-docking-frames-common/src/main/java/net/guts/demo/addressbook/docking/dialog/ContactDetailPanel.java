@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.dialog;
+package net.guts.demo.addressbook.docking.dialog;
 
 import java.util.Date;
 
@@ -21,7 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import net.guts.gui.examples.addressbook.domain.Contact;
+import net.guts.demo.addressbook.docking.domain.Contact;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 public class ContactDetailPanel extends JPanel

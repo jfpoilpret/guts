@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.view;
+package net.guts.demo.addressbook.docking.view;
 
 import java.awt.BorderLayout;
 import java.awt.event.MouseAdapter;
@@ -25,15 +25,16 @@ import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import net.guts.demo.addressbook.docking.business.AddressBookService;
+import net.guts.demo.addressbook.docking.docking.ViewHelper;
+import net.guts.demo.addressbook.docking.domain.Contact;
 import net.guts.event.Channel;
 import net.guts.event.Consumes;
 import net.guts.event.Event;
-import static net.guts.gui.examples.addressbook.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
+
+import static net.guts.demo.addressbook.docking.action.ContactActions.OPEN_CONTACT_PICT_TOPIC;
 
 import net.guts.gui.docking.ViewHelperService;
-import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.docking.ViewHelper;
-import net.guts.gui.examples.addressbook.domain.Contact;
 
 import bibliothek.gui.dock.common.intern.CDockable;
 

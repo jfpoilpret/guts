@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.dialog;
+package net.guts.demo.addressbook.docking.dialog;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 
-import net.guts.gui.examples.addressbook.domain.Address;
+import net.guts.demo.addressbook.docking.domain.Address;
 import net.guts.gui.naming.ComponentHolder;
 import net.guts.gui.util.GroupHeader;
 import net.java.dev.designgridlayout.DesignGridLayout;

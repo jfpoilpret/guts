@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.action;
+package net.guts.demo.addressbook.docking.action;
 
 import java.util.Locale;
 

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.business;
+package net.guts.demo.addressbook.docking.business;
 
 import java.util.List;
 
 import javax.swing.Icon;
 
-import net.guts.gui.examples.addressbook.domain.Contact;
+import net.guts.demo.addressbook.docking.domain.Contact;
 
 import com.google.inject.ImplementedBy;
 
