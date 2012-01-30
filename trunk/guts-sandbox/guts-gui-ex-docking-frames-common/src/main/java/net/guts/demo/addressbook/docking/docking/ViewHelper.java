@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.docking;
+package net.guts.demo.addressbook.docking.docking;
 
+import net.guts.demo.addressbook.docking.domain.Contact;
 import net.guts.gui.docking.ViewHelperService;
-import net.guts.gui.examples.addressbook.domain.Contact;
 
 import bibliothek.gui.dock.common.intern.CDockable;
 

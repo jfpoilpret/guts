@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.view;
+package net.guts.demo.addressbook.docking.view;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
+import net.guts.demo.addressbook.docking.domain.Contact;
 import net.guts.event.Consumes;
-import net.guts.gui.examples.addressbook.domain.Contact;
 import net.java.dev.designgridlayout.DesignGridLayout;
 
 import com.google.inject.Singleton;

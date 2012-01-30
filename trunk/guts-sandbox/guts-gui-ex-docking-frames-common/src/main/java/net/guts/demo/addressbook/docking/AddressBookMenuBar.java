@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook;
+package net.guts.demo.addressbook.docking;
 
 import javax.swing.JMenuBar;
 
+import net.guts.demo.addressbook.docking.action.ContactActions;
+import net.guts.demo.addressbook.docking.action.GeneralActions;
+import net.guts.demo.addressbook.docking.docking.Views;
 import net.guts.gui.action.ActionRegistrationManager;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.application.GutsApplicationActions;
 import net.guts.gui.docking.OpenViewAction;
-import net.guts.gui.examples.addressbook.action.ContactActions;
-import net.guts.gui.examples.addressbook.action.GeneralActions;
-import net.guts.gui.examples.addressbook.docking.Views;
 import net.guts.gui.menu.MenuFactory;
 
 import bibliothek.gui.dock.common.CControl;

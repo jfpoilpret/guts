@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-package net.guts.gui.examples.addressbook.dialog;
+package net.guts.demo.addressbook.docking.dialog;
 
-import net.guts.gui.examples.addressbook.business.AddressBookService;
-import net.guts.gui.examples.addressbook.domain.Contact;
+import net.guts.demo.addressbook.docking.business.AddressBookService;
+import net.guts.demo.addressbook.docking.domain.Contact;
 import net.guts.gui.action.GutsAction;
 import net.guts.gui.dialog.DialogFactory;
 import net.guts.gui.template.okcancel.OkCancel;
