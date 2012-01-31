@@ -15,14 +15,14 @@
 package net.guts.gui.application;
 
 /**
- * Called by {@link AbstractApplication#launch} or by {@link AbstractApplet#init()}
- * after Guice initialization, the bound implementation of this interface is used to 
- * start the real application (or applet) and, in particular, display the first 
- * window of the application or set the applet's content pane.
+ * Called by {@link AbstractApplication#launch} after Guice initialization, the 
+ * bound implementation of this interface is used to start the real application 
+ * (or applet) and, in particular, display the first window of the application or 
+ * set the applet's content pane.
  * <p/>
  * You have to provide an implementation of {@code AppLifecycleStarter} and bind it to
  * Guice in one of your {@link com.google.inject.Module}s as set in 
- * {@link AbstractApplication#initModules} or {@link AbstractApplet#initModules}:
+ * {@link AbstractApplication#initModules}:
  * <pre>
  * bind(AppLifecycleStarter.class).to(MyApplicationLifecycleStarter.class);
  * </pre>
@@ -31,7 +31,30 @@ package net.guts.gui.application;
  */
 public interface AppLifecycleStarter
 {
-	//TODO javadoc (take from below ready() method
+	/**
+	 * This is the name of the event sent (through guts-events) just after the 
+	 * application has started and made its content (frame, dialog...) visible. 
+	 * It gives all consumers of that event a chance to perform specific action
+	 * that can operate only on a visible GUI.
+	 * <p/>
+	 * Here is an example of such a hook:
+	 * <pre>
+	 * &#64;Consumes(topic = AppLifecycleStarter.READY_EVENT)
+	 * public void ready(Void nothing)
+	 * {
+	 *     // Some specific task here
+	 * }
+	 * </pre>
+	 * Note that the method needs to take a {@code Void} argument (due to a limitation
+	 * of guts-events library that requires every consumer to have exactly one 
+	 * argument of the type of the event).
+	 * <p/>
+	 * In general, you would rarely need to listen for this event, but it may be
+	 * useful to handle initialization of certain 3rd-party libraries that can't work before
+	 * the UI is fully visible.
+	 * <p/>
+	 * This event is handled from within the Event Dispatch Thread.
+	 */
 	static final public String READY_EVENT = "net.guts.gui.AppLifecycleStarter.ready";
 	
 	/**
@@ -48,17 +71,4 @@ public interface AppLifecycleStarter
 	 * application
 	 */
 	public void startup(String[] args);
-
-	/**
-	 * Called after the window displayed by {@link #startup} is actually visible and all
-	 * events in the Event Dispatch Thread have been processed (ie all UI content has been
-	 * painted), this method can be used to perform tasks that require the UI to be visible.
-	 * <p/>
-	 * In general, you would rarely need to put actual code in this method, but it may be
-	 * useful to handle initialization of certain 3rd-party libraries that can't work before
-	 * the UI is fully visible.
-	 * <p/>
-	 * This method is called from within the Event Dispatch Thread.
-	 */
-//	public void ready();
 }

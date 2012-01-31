@@ -4,11 +4,9 @@ inspired by the Swing Application Framework (JSR-296).
 
 <h3>Guts GUI framework API roadmap</h3>
 {@code net.guts.gui.application} package contains the core classes to start a new application. 
-There are two possible main classes to derive from in order to build either an application or 
-an applet. 
 <p/>
 In order to effectively use Guts-GUI framework, you'll need to have some basic knowledge 
-about Guice Depedency Injection library (from Google) which is at the core of Guts-GUI 
+about Guice Dependency Injection library (from Google) which is at the core of Guts-GUI 
 framework. In particular, you need to understand the {@code @Inject} annotation and the notion 
 of {@code Module}s. The following links provide good startup material on Guice:
 <ul>
@@ -31,7 +29,7 @@ Here is the API description for what the Guts-GUI framework provides:
 	<li>Automatic <a href="net/guts/gui/resource/package-summary.html">Resource Injection</a> 
 	of Swing components for internationalization purposes</li>
 	<li><a href="net/guts/gui/task/package-summary.html">Special support</a> for launching 
-	long tasks without blocking Swing Event Dispatch Thread</li>
+	long tasks without blocking the Swing Event Dispatch Thread</li>
 	<li>Automatic <a href="net/guts/gui/session/package-summary.html">Session Storage</a> 
 	allowing for restoring, across launches, the application real estate as set by the user 
 	(e.g. window position and size, table column headers width...)</li>
