@@ -100,10 +100,9 @@ import com.google.inject.util.Providers;
  * your own classes; failing that, your application will show nothing and will
  * exit immediately!
  * <p/>
- * Guts-GUI also has default implementations that will dynamically find the
+ * Guts-GUI will also provide default implementations that will dynamically find the
  * {@link com.google.inject.Module}s for your application, without any need
- * to subclass it. Refer to
- * <a href="net/guts/gui/application/support/package-summary.html">lifecycle support</a>.
+ * to subclass it. But such implementations are not available yet.
  * <p/>
  * In case any error occurs during initialization process, it will be logged and an error
  * message will be displayed to the end user. For localization of these fatal error
@@ -112,6 +111,18 @@ import com.google.inject.util.Providers;
  * {@link java.util.ResourceBundle}, which path (in classpath) is 
  * {@code `/net/guts/gui/application/guts-gui.properties`}. You can localize it by
  * providing files for specific {@link java.util.Locale}.
+ * <p/>
+ * Your application main class can also be deployed as an applet, 
+ * initialization will occur the same as for a normal application.
+ * <p/>
+ * Note that Guts-GUI framework also provides specific support, through
+ * {@link AppLifecycleStarter} implementations, for usual styles of applications,
+ * like {@link net.guts.gui.application.support.SingleFrameLifecycle},
+ * {@link net.guts.gui.application.support.MultiFrameLifecycle} or
+ * {@link net.guts.gui.application.support.DialogBasedLifecycle}.
+ * 
+ * Refer to
+ * <a href="net/guts/gui/application/support/package-summary.html">lifecycle support</a>.
  *
  * @author Jean-Francois Poilpret
  */
