@@ -46,6 +46,7 @@ public class InjectResourcesTest
 	{
 		Injector injector = createInjector();
 		InstanceWithAutoUpdate instance = injector.getInstance(InstanceWithAutoUpdate.class);
+		injector.getInstance(ResourceInjector.class).setLocale(Locale.ENGLISH);
 		Assertions.assertThat(instance.property).as("instance.property").isEqualTo("PROPERTY3-DEFAULT");
 		injector.getInstance(ResourceInjector.class).setLocale(Locale.FRENCH);
 		Assertions.assertThat(instance.property).as("instance.property").isEqualTo("PROPERTY3-FRENCH");
